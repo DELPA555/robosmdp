@@ -28,6 +28,7 @@
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script defer src="https://unpkg.com/lucide@latest"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1368822578971413"
      crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -167,6 +168,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     </a>
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:13px;padding-top:26px;margin-top:26px;border-top:1px solid #1e293b">
+      <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto 4px;padding:15px 24px;border-radius:18px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.borderColor='#475569';this.style.color='#cbd5e1'" onmouseout="this.style.borderColor='#334155';this.style.color='#94a3b8'">📊 Ver estadísticas completas</button>
       <p style="font-size:10px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.18em">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
         <a href="https://www.instagram.com/robos.mdp/" target="_blank" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#f472b6;text-decoration:none"><span style="font-size:13px;font-weight:900;letter-spacing:0">IG</span></a>
@@ -282,6 +284,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
     </div>
     <div style="padding:13px 16px;border-top:1px solid #f1f5f9;flex-shrink:0">
+      <button onclick="openStats()" style="width:100%;padding:12px;margin-bottom:8px;background:#0f172a;border:none;border-radius:13px;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">📊 Estadísticas</button>
       <button onclick="goL()" style="width:100%;padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:13px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
         <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
       </button>
@@ -538,6 +541,46 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 </div>
 
 <!-- IMAGE VIEWER -->
+<!-- ===== ESTADISTICAS ===== -->
+<div id="stats-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:#f8fafc">
+  <header style="padding:16px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#fff;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#0f172a;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px">📊</div>
+      <div>
+        <h2 style="font-size:16px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em">Estadísticas MDP</h2>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Datos en tiempo real • Mar del Plata</p>
+      </div>
+    </div>
+    <button onclick="closeStats()" style="padding:9px 18px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#64748b">Cerrar</button>
+  </header>
+  <div class="ns" style="flex:1;padding:20px 22px">
+    <div style="max-width:900px;margin:0 auto">
+      <div style="background:#fff;padding:4px;border-radius:14px;border:1px solid #e2e8f0;display:flex;gap:2px;margin-bottom:16px">
+        <button id="st-tab-robos" onclick="switchStatsTab('robos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔴 Robos</button>
+        <button id="st-tab-basura" onclick="switchStatsTab('basura')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟢 Basura</button>
+        <button id="st-tab-pozos" onclick="switchStatsTab('pozos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟡 Pozos</button>
+      </div>
+      <div id="st-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px 20px;margin-bottom:14px">
+        <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">📈 Evolución últimos 6 meses</p>
+        <div style="position:relative;height:220px"><canvas id="ch-meses"></canvas></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px" id="st-grid2">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px 20px">
+          <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">🎯 Por categoría</p>
+          <div style="position:relative;height:220px"><canvas id="ch-cats"></canvas></div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px 20px">
+          <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">📅 Por día de la semana</p>
+          <div style="position:relative;height:220px"><canvas id="ch-dias"></canvas></div>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:9px;color:#cbd5e1;font-weight:600;padding-bottom:20px">Datos generados en tiempo real desde los reportes vecinales · robosmdp.com.ar</p>
+    </div>
+  </div>
+</div>
+<style>@media(max-width:640px){#st-grid2{grid-template-columns:1fr!important}#st-cards{grid-template-columns:repeat(2,1fr)!important}}</style>
+
 <div id="iv" onclick="closeIV()">
   <img id="iv-img" src="" style="max-width:94%;max-height:90vh;object-fit:contain;border-radius:13px">
 </div>
@@ -1275,6 +1318,96 @@ function openIV(src){document.getElementById('iv-img').src=src;document.getEleme
 function closeIV(){document.getElementById('iv').style.display='none';}
 
 // ===== TOAST =====
+// ===== ESTADISTICAS =====
+let statsTab='robos';
+const STCH={meses:null,cats:null,dias:null};
+
+function openStats(){
+  document.getElementById('stats-p').style.display='flex';
+  ['robos','basura','pozos'].forEach(t=>loadReports(t));
+  statsTab=['robos','basura','pozos'].includes(G.tab)?G.tab:'robos';
+  switchStatsTab(statsTab);
+  // Si los datos aún no llegaron, re-render en 1.5s
+  setTimeout(()=>{if(document.getElementById('stats-p').style.display==='flex')renderStats();},1500);
+}
+
+function closeStats(){document.getElementById('stats-p').style.display='none';}
+
+function switchStatsTab(tab){
+  statsTab=tab;
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b'};
+  ['robos','basura','pozos'].forEach(t=>{
+    const b=document.getElementById('st-tab-'+t);
+    if(b){b.style.background=t===tab?colors[t]:'transparent';b.style.color=t===tab?'#fff':'#94a3b8';}
+  });
+  renderStats();
+}
+
+function renderStats(){
+  if(!window.Chart) {setTimeout(renderStats,400);return;}
+  const data=G.data[statsTab]||[];
+  const color=MOD_CFG[statsTab].color;
+  const now=new Date();
+  const mesStart=new Date(now.getFullYear(),now.getMonth(),1);
+  const hoyStart=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const semStart=new Date(now-7*864e5);
+
+  // CARDS
+  const tot=data.length;
+  const mes=data.filter(r=>getReportDate(r)>=mesStart).length;
+  const sem=data.filter(r=>getReportDate(r)>=semStart).length;
+  const extra=statsTab==='robos'
+    ?{n:data.filter(r=>getReportDate(r)>=hoyStart).length,l:'Hoy'}
+    :{n:data.filter(r=>r.resolved).length,l:'Resueltos'};
+  const cards=[{n:tot,l:'Total histórico'},{n:mes,l:'Este mes'},{n:sem,l:'Últimos 7 días'},extra];
+  document.getElementById('st-cards').innerHTML=cards.map(c=>
+    '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px 12px;text-align:center">'+
+    '<div style="font-size:26px;font-weight:900;color:'+color+'">'+c.n+'</div>'+
+    '<div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">'+c.l+'</div></div>'
+  ).join('');
+
+  // EVOLUCION 6 MESES
+  const mesesLbl=[],mesesVal=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const dEnd=new Date(now.getFullYear(),now.getMonth()-i+1,1);
+    mesesLbl.push(d.toLocaleDateString('es-AR',{month:'short'}).replace('.','').toUpperCase());
+    mesesVal.push(data.filter(r=>{const t=getReportDate(r);return t>=d&&t<dEnd;}).length);
+  }
+  if(STCH.meses)STCH.meses.destroy();
+  STCH.meses=new Chart(document.getElementById('ch-meses'),{
+    type:'bar',
+    data:{labels:mesesLbl,datasets:[{data:mesesVal,backgroundColor:color+'cc',borderRadius:8,maxBarThickness:48}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'#f1f5f9'}},
+      x:{ticks:{font:{family:'Inter',size:10,weight:'700'},color:'#64748b'},grid:{display:false}}}}
+  });
+
+  // POR CATEGORIA
+  const cats=CATS[statsTab];
+  const catCounts=cats.map(c=>data.filter(r=>r.type===c.id).length);
+  if(STCH.cats)STCH.cats.destroy();
+  STCH.cats=new Chart(document.getElementById('ch-cats'),{
+    type:'doughnut',
+    data:{labels:cats.map(c=>c.label),datasets:[{data:catCounts,backgroundColor:cats.map(c=>c.color),borderWidth:3,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:10,weight:'600'},color:'#64748b',padding:10,usePointStyle:true,pointStyleWidth:8}}}}
+  });
+
+  // POR DIA DE SEMANA
+  const diasLbl=['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+  const diasVal=[0,0,0,0,0,0,0];
+  data.forEach(r=>{diasVal[getReportDate(r).getDay()]++;});
+  if(STCH.dias)STCH.dias.destroy();
+  STCH.dias=new Chart(document.getElementById('ch-dias'),{
+    type:'bar',
+    data:{labels:diasLbl,datasets:[{data:diasVal,backgroundColor:color+'99',borderRadius:6,maxBarThickness:34}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'#f1f5f9'}},
+      x:{ticks:{font:{family:'Inter',size:9,weight:'700'},color:'#64748b'},grid:{display:false}}}}
+  });
+}
+
 function shareWA(tab,id){
   const r=G.data[tab].find(x=>x.id===id); if(!r) return;
   const cats=CATS[tab];
