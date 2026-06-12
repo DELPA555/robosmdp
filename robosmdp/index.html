@@ -26,6 +26,8 @@
 <script defer src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script defer src="https://unpkg.com/lucide@latest"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -169,6 +171,12 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:13px;padding-top:26px;margin-top:26px;border-top:1px solid #1e293b">
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto 4px;padding:15px 24px;border-radius:18px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.borderColor='#475569';this.style.color='#cbd5e1'" onmouseout="this.style.borderColor='#334155';this.style.color='#94a3b8'">📊 Ver estadísticas completas</button>
+      <div style="width:100%;max-width:420px;margin:0 auto;background:#1e293b;border:1px solid #334155;border-radius:18px;padding:20px;text-align:left">
+        <h2 style="font-size:14px;font-weight:900;color:#cbd5e1;text-transform:uppercase;letter-spacing:.02em;margin-bottom:10px">¿Qué es Robos MDP?</h2>
+        <p style="font-size:12px;color:#64748b;line-height:1.7;font-weight:500">Robos MDP es el mapa colaborativo de seguridad vecinal de <strong style="color:#94a3b8">Mar del Plata</strong>. Los vecinos reportan robos, hurtos y entraderas en tiempo real para visibilizar la inseguridad y ayudar a las víctimas a recuperar sus pertenencias.</p>
+        <p style="font-size:12px;color:#64748b;line-height:1.7;font-weight:500;margin-top:8px">También podés reportar <strong style="color:#4ade80">basura acumulada</strong> y <strong style="color:#fbbf24">pozos en la calzada</strong> de tu barrio. Cada reporte suma para construir un mapa real de los problemas de la ciudad.</p>
+      </div>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:15px 24px;border-radius:18px;border:none;background:#25D366;color:#fff;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px">📲 Compartir con tus vecinos</button>
       <p style="font-size:10px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.18em">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
         <a href="https://www.instagram.com/robos.mdp/" target="_blank" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#f472b6;text-decoration:none"><span style="font-size:13px;font-weight:900;letter-spacing:0">IG</span></a>
@@ -608,6 +616,7 @@ const G={
   maps:{robos:null,basura:null,pozos:null},
   data:{robos:[],basura:[],pozos:[]},
   markers:{robos:[],basura:[],pozos:[]},
+  cluster:{robos:null,basura:null,pozos:null},
   heat:null,heatOn:false,
   filter:'all',domFilter:null,
   loc:{robos:null,basura:null,pozos:null},
@@ -872,9 +881,20 @@ async function fetchCollectionREST(col,tab){
 
 function renderMk(tab){
   const map=G.maps[tab]; if(!map) return;
+  if(G.cluster[tab]){map.removeLayer(G.cluster[tab]);G.cluster[tab]=null;}
   G.markers[tab].forEach(m=>map.removeLayer(m));
   G.markers[tab]=[];
-  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,180);
+  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,500);
+  const cfgColor=MOD_CFG[tab].color;
+  const useCluster=window.L&&L.markerClusterGroup;
+  const group=useCluster?L.markerClusterGroup({
+    maxClusterRadius:46,showCoverageOnHover:false,spiderfyOnMaxZoom:true,
+    iconCreateFunction:function(cluster){
+      const n=cluster.getChildCount();
+      const size=n<10?38:n<50?46:54;
+      return L.divIcon({html:'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+cfgColor+';border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Inter,sans-serif;font-weight:900;font-size:'+(n<100?14:12)+'px">'+n+'</div>',className:'',iconSize:[size,size],iconAnchor:[size/2,size/2]});
+    }
+  }):null;
   list.forEach(r=>{
     const coords=getCoords(r);
     if(!coords) return;
@@ -884,10 +904,14 @@ function renderMk(tab){
       html:'<div class="mpin" style="background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:16px;height:16px;color:#fff;transform:rotate(45deg)"></i></div>',
       iconSize:[40,40],iconAnchor:[20,40]
     });
-    const mk=L.marker(coords,{icon}).addTo(map);
+    const mk=L.marker(coords,{icon});
     mk.bindPopup(mkPopup(r,cat,tab));
+    mk.on('popupopen',()=>safeIcons());
+    if(useCluster) group.addLayer(mk);
+    else mk.addTo(map);
     G.markers[tab].push(mk);
   });
+  if(useCluster){map.addLayer(group);G.cluster[tab]=group;}
   safeIcons();
 }
 
@@ -1518,7 +1542,20 @@ function getReportDate(r){
   const d=new Date(v);
   return Number.isNaN(d.getTime())?new Date(0):d;
 }
-function setT(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function setT(id,v){
+  const el=document.getElementById(id); if(!el) return;
+  const target=typeof v==='number'?v:parseInt(v);
+  if(isNaN(target)){el.textContent=v;return;}
+  const start=parseInt(el.textContent)||0;
+  if(start===target){el.textContent=target;return;}
+  const dur=700,t0=performance.now();
+  const step=t=>{
+    const p=Math.min((t-t0)/dur,1);
+    el.textContent=Math.round(start+(target-start)*(1-Math.pow(1-p,3)));
+    if(p<1)requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
 function tAgo(date){
   const d=Math.floor((Date.now()-date.getTime())/1000);
   if(d<60) return 'hace '+d+'s';
