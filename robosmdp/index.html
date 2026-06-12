@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>Robos MDP - Mapa de Robos, Basura y Pozos en Mar del Plata</title>
+<meta name="description" content="Mapa colaborativo vecinal de Mar del Plata. Reportá robos, basura acumulada y pozos en la calzada. Información ciudadana en tiempo real para tu barrio.">
+<meta name="keywords" content="robos mar del plata, inseguridad mdp, mapa robos, basura mar del plata, pozos mdp, baches mar del plata, denuncias vecinales, seguridad barrial">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Robos MDP">
+<link rel="canonical" href="https://robosmdp.com.ar/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Robos MDP - Monitor Ciudadano">
+<meta property="og:description" content="Mapa colaborativo vecinal. Mar del Plata unida por la seguridad.">
+<meta property="og:url" content="https://robosmdp.com.ar/">
+<meta property="og:image" content="https://robosmdp.com.ar/assets/banner-robos.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Robos MDP">
+<link rel="icon" href="./assets/logo-robos.png">
+<link rel="preload" as="image" href="./assets/banner-robos.jpg">
+<link rel="preload" as="image" href="./assets/logo-robos.png">
+<link rel="apple-touch-icon" href="./assets/logo-robos.png">
+<script defer src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script defer src="https://unpkg.com/lucide@latest"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1368822578971413"
+     crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
+.ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#landing{position:fixed;inset:0;z-index:5000;background:#0f172a;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.hero{position:relative;width:100%;height:220px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.35)}
+.hero-g{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,23,42,0) 30%,rgba(15,23,42,1) 100%)}
+.ltabs{display:flex;background:#1e293b;border-radius:16px;padding:4px;gap:3px}
+.ltab{flex:1;padding:11px 4px;border-radius:12px;border:none;background:transparent;color:#475569;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.ltab.r{background:#ef4444;color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.4)}
+.ltab.g{background:#22c55e;color:#fff;box-shadow:0 4px 14px rgba(34,197,94,.4)}
+.ltab.a{background:#f59e0b;color:#fff;box-shadow:0 4px 14px rgba(245,158,11,.4)}
+.scard{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:14px 10px;text-align:center}
+.scard .n{font-size:24px;font-weight:900;line-height:1}
+.scard .l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-top:4px}
+.ebtn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:380px;margin:0 auto;padding:19px 24px;border-radius:22px;border:none;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:-.02em;cursor:pointer;transition:all .22s}
+.ebtn:hover{transform:scale(1.03)}.ebtn:active{transform:scale(.97)}
+.ebtn.r{background:#ef4444;color:#fff;box-shadow:0 8px 28px rgba(239,68,68,.5)}
+.ebtn.g{background:#22c55e;color:#fff;box-shadow:0 8px 28px rgba(34,197,94,.5)}
+.ebtn.a{background:#f59e0b;color:#fff;box-shadow:0 8px 28px rgba(245,158,11,.5)}
+.adslot{background:#1e293b;border:1px dashed #334155;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;min-height:72px;width:100%;margin-bottom:18px}
+.adslot-w{background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;min-height:68px;width:100%;margin-bottom:14px}
+#app{position:fixed;inset:0;display:flex;flex-direction:row;opacity:0;pointer-events:none;transition:opacity .45s;background:#f8fafc}
+.atabs{display:flex;gap:2px;padding:4px;background:#f1f5f9;border-radius:14px}
+.atab{flex:1;padding:9px 4px;border-radius:10px;border:none;background:transparent;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.atab.r{background:#ef4444;color:#fff}
+.atab.g{background:#22c55e;color:#fff}
+.atab.a{background:#f59e0b;color:#fff}
+#sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:#fff;border-right:1px solid #f1f5f9;transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.1)}
+@media(min-width:768px){#sidebar{position:relative;width:360px;transform:translateX(0);box-shadow:none}}
+#sidebar.open{transform:translateX(0)}
+.mapc{flex:1;position:relative;height:100%}
+.mapel{position:absolute;inset:0;z-index:0;display:none}
+.mapel.on{display:block}
+.glass{background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6)}
+.mpin{width:40px;height:40px;border-radius:50% 50% 50% 0;position:absolute;transform:rotate(-45deg);left:50%;top:50%;margin:-20px 0 0 -20px;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;border:2.5px solid #fff}
+.fbtn{padding:9px 5px;border-radius:13px;border:1px solid #e2e8f0;background:#f8fafc;color:#94a3b8;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.fbtn.on{background:#0f172a;color:#fff;border-color:#0f172a}
+.cbtn{padding:11px 5px;border-radius:15px;border:2px solid #e2e8f0;background:#f8fafc;color:#64748b;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.arow{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.arow:last-child{border-bottom:none}
+.movl{position:fixed;inset:0;z-index:6000;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);padding:16px}
+@media(min-width:640px){.movl{align-items:center}}
+.mbox{background:#fff;width:100%;max-width:480px;border-radius:28px;box-shadow:0 32px 80px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;animation:sup .38s cubic-bezier(.16,1,.3,1)}
+@keyframes sup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+#toast-c{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.12);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:700;border-left:4px solid}
+@keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+#admin-p{position:fixed;inset:0;z-index:6500;display:none;flex-direction:column;background:#f8fafc}
+#login-m{position:fixed;inset:0;z-index:8000;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);padding:16px}
+#iv{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.93);align-items:center;justify-content:center}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+</style>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+<div id="toast-c"></div>
+<!-- LANDING -->
+<div id="landing">
+  <div class="hero">
+    <img src="./assets/banner-robos.jpg" id="hero-img" alt="Banner">
+    <div class="hero-g"></div>
+  </div>
+  <div style="padding:0 18px 60px;margin-top:-60px;position:relative;z-index:10;max-width:440px;margin-left:auto;margin-right:auto">
+    <div style="display:flex;justify-content:center;margin-bottom:22px">
+      <div id="land-logo" style="width:108px;height:108px;border-radius:24px;overflow:hidden;border:3px solid rgba(239,68,68,.35);box-shadow:0 0 0 6px rgba(239,68,68,.08),0 20px 50px rgba(0,0,0,.55)">
+        <img id="land-logo-img" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <div style="text-align:center;margin-bottom:24px">
+      <h1 id="land-title" style="font-size:42px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1">ROBOS <span style="color:#ef4444">MDP</span></h1>
+      <p style="color:#475569;font-size:12px;font-weight:700;margin-top:7px;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;justify-content:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 1.5s infinite"></span>En vivo · Información ciudadana</p><style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}</style>
+    </div>
+    <div class="ltabs" style="margin-bottom:22px">
+      <button class="ltab r" id="ltab-robos" onclick="switchLT('robos')">
+        <i data-lucide="siren" style="width:16px;height:16px"></i>Robos
+      </button>
+      <button class="ltab" id="ltab-basura" onclick="switchLT('basura')">
+        <i data-lucide="trash-2" style="width:16px;height:16px"></i>Basura
+      </button>
+      <button class="ltab" id="ltab-pozos" onclick="switchLT('pozos')">
+        <i data-lucide="alert-triangle" style="width:16px;height:16px"></i>Pozos
+      </button>
+    </div>
+    <!-- Panel Robos -->
+    <div id="lp-robos">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px">
+        <div class="scard"><div class="n" style="color:#ef4444" id="ls-r-t">—</div><div class="l">Total</div></div>
+        <div class="scard"><div class="n" style="color:#f87171" id="ls-r-m">—</div><div class="l">Este mes</div></div>
+        <div class="scard"><div class="n" style="color:#fca5a5" id="ls-r-h">—</div><div class="l">Hoy</div></div>
+      </div>
+      <div style="min-height:100px;width:100%;margin-bottom:18px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+      <button class="ebtn r" onclick="enterApp('robos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+    </div>
+    <!-- Panel Basura -->
+    <div id="lp-basura" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px">
+        <div class="scard"><div class="n" style="color:#22c55e" id="ls-b-t">—</div><div class="l">Total</div></div>
+        <div class="scard"><div class="n" style="color:#4ade80" id="ls-b-m">—</div><div class="l">Este mes</div></div>
+        <div class="scard"><div class="n" style="color:#86efac" id="ls-b-r">—</div><div class="l">Resueltos</div></div>
+      </div>
+      <div style="min-height:100px;width:100%;margin-bottom:18px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+      <button class="ebtn g" onclick="enterApp('basura')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+    </div>
+    <!-- Panel Pozos -->
+    <div id="lp-pozos" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px">
+        <div class="scard"><div class="n" style="color:#f59e0b" id="ls-p-t">—</div><div class="l">Total</div></div>
+        <div class="scard"><div class="n" style="color:#fbbf24" id="ls-p-m">—</div><div class="l">Este mes</div></div>
+        <div class="scard"><div class="n" style="color:#fcd34d" id="ls-p-r">—</div><div class="l">Resueltos</div></div>
+      </div>
+      <div style="min-height:100px;width:100%;margin-bottom:18px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+      <button class="ebtn a" onclick="enterApp('pozos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+    </div>
+    <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:16px auto 0;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#0f3b7a,#1d4ed8);border:1px solid rgba(96,165,250,.55);color:#eff6ff;text-decoration:none;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;box-shadow:0 12px 28px rgba(37,99,235,.32)">
+      <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93c5fd"></i>
+      Denuncia policial online
+    </a>
+    <!-- Redes -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:13px;padding-top:26px;margin-top:26px;border-top:1px solid #1e293b">
+      <p style="font-size:10px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.18em">Contacto &amp; Redes</p>
+      <div style="display:flex;gap:13px">
+        <a href="https://www.instagram.com/robos.mdp/" target="_blank" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#f472b6;text-decoration:none"><span style="font-size:13px;font-weight:900;letter-spacing:0">IG</span></a>
+        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#60a5fa;text-decoration:none"><span style="font-size:13px;font-weight:900;letter-spacing:0">FB</span></a>
+        <a href="mailto:contacto@robosmdp.com.ar" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#94a3b8;text-decoration:none"><i data-lucide="mail" style="width:21px;height:21px"></i></a>
+      </div>
+      <p style="font-size:9px;color:#334155;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
+    </div>
+  </div>
+</div>
+<!-- APP -->
+<div id="app">
+  <aside id="sidebar">
+    <div style="padding:16px 18px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div onclick="adminTap()" style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #f1f5f9;cursor:pointer;flex-shrink:0">
+          <img id="sb-logo" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div>
+          <h1 id="sb-title" style="font-size:15px;font-weight:900;color:#0f172a;letter-spacing:-.02em;text-transform:uppercase;line-height:1">ROBOS MDP</h1>
+          <p id="sb-sub" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;color:#ef4444">SISTEMA OFICIAL</p>
+        </div>
+      </div>
+      <button onclick="closeSB()" id="sb-x" style="padding:8px;background:#f1f5f9;border:none;border-radius:11px;cursor:pointer">
+        <i data-lucide="x" style="width:17px;height:17px;color:#64748b"></i>
+      </button>
+    </div>
+    <div style="padding:13px 16px 0;flex-shrink:0">
+      <div class="atabs">
+        <button class="atab r" id="at-robos" onclick="switchAT('robos')"><i data-lucide="siren" style="width:12px;height:12px"></i>Robos</button>
+        <button class="atab" id="at-basura" onclick="switchAT('basura')"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Basura</button>
+        <button class="atab" id="at-pozos" onclick="switchAT('pozos')"><i data-lucide="alert-triangle" style="width:12px;height:12px"></i>Pozos</button>
+      </div>
+    </div>
+    <div class="ns" style="flex:1;padding:16px 16px 0">
+      <!-- ROBOS -->
+      <div id="ss-r">
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:10px"><i data-lucide="filter" style="width:10px;height:10px;color:#0f172a"></i>Filtrar</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">
+          <button class="fbtn on" id="fb-all" onclick="setF('all')"><i data-lucide="map" style="width:13px;height:13px"></i>Todo</button>
+          <button class="fbtn" id="fb-dom" onclick="openDF()"><i data-lucide="credit-card" style="width:13px;height:13px"></i>Dominio</button>
+          <button class="fbtn" id="fb-today" onclick="setF('today')"><i data-lucide="clock" style="width:13px;height:13px"></i>Hoy</button>
+          <button class="fbtn" id="fb-week" onclick="setF('week')"><i data-lucide="history" style="width:13px;height:13px"></i>Semana</button>
+          <button class="fbtn" id="fb-month" onclick="setF('month')"><i data-lucide="calendar" style="width:13px;height:13px"></i>Mes</button>
+        </div>
+        <div id="df-box" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:13px;padding:13px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;color:#0f172a">Buscar por dominio</span>
+            <button onclick="closeDF()" style="background:none;border:none;cursor:pointer;color:#94a3b8"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+          </div>
+          <input id="df-input" type="text" placeholder="Ej: FSK 525" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;text-transform:uppercase;outline:none;background:#f8fafc" onkeydown="if(event.key==='Enter')setDF(this.value)">
+          <div style="display:flex;justify-content:space-between;margin-top:8px">
+            <button onclick="clearDF()" style="background:none;border:none;font-size:10px;font-weight:600;color:#94a3b8;cursor:pointer">Limpiar</button>
+            <span style="font-size:9px;color:#cbd5e1">Enter para aplicar</span>
+          </div>
+        </div>
+        <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#ef4444" id="sb-r-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase">Total</div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#ef4444" id="sb-r-h">0</div>
+            <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase">Hoy</div>
+          </div>
+        </div>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#ef4444"></i>Alertas Recientes</p>
+        <div id="rl-r"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
+      </div>
+      <!-- BASURA -->
+      <div id="ss-b" style="display:none">
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Basura en la vía pública</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#22c55e" id="sb-b-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase">Total</div>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#22c55e" id="sb-b-r">0</div>
+            <div style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase">Resueltos</div>
+          </div>
+        </div>
+        <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#22c55e"></i>Reportes Recientes</p>
+        <div id="rl-b"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
+      </div>
+      <!-- POZOS -->
+      <div id="ss-p" style="display:none">
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Pozos en la calzada</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#f59e0b" id="sb-p-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#fbbf24;text-transform:uppercase">Total</div>
+          </div>
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#f59e0b" id="sb-p-r">0</div>
+            <div style="font-size:9px;font-weight:700;color:#fbbf24;text-transform:uppercase">Resueltos</div>
+          </div>
+        </div>
+        <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#f59e0b"></i>Reportes Recientes</p>
+        <div id="rl-p"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
+      </div>
+    </div>
+    <div style="padding:13px 16px;border-top:1px solid #f1f5f9;flex-shrink:0">
+      <button onclick="goL()" style="width:100%;padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:13px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
+        <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
+      </button>
+    </div>
+  </aside>
+  <!-- MAP -->
+  <main class="mapc">
+    <header class="glass" style="position:absolute;top:16px;left:16px;right:16px;border-radius:17px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 7px;z-index:2000;box-shadow:0 6px 24px rgba(0,0,0,.08)">
+      <button onclick="openSB()" id="sb-open" style="padding:8px;background:#0f172a;color:#fff;border:none;border-radius:11px;cursor:pointer;display:flex" class="md:hidden">
+        <i data-lucide="menu" style="width:16px;height:16px"></i>
+      </button>
+      <div style="flex:1;margin:0 8px;position:relative;max-width:300px">
+        <input id="msearch" type="text" placeholder="Buscar dirección en MDP..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px 38px 8px 13px;font-size:12px;font-weight:600;outline:none" onfocus="this.style.borderColor='#ef4444'" onblur="this.style.borderColor='#e2e8f0'">
+        <button onclick="doS('msearch')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:14px;height:14px;color:#94a3b8"></i></button>
+      </div>
+      <button onclick="toggleHeat()" id="heat-btn" style="padding:8px 11px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;text-transform:uppercase;color:#94a3b8;flex-shrink:0">
+        <i data-lucide="flame" style="width:15px;height:15px"></i>
+      </button>
+    </header>
+    <div id="map-r" class="mapel on"></div>
+    <div id="map-b" class="mapel"></div>
+    <div id="map-p" class="mapel"></div>
+    <div style="position:absolute;bottom:26px;right:18px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+      <button onclick="locU()" style="width:44px;height:44px;border-radius:13px;background:#fff;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07)"><i data-lucide="navigation" style="width:19px;height:19px;color:#64748b"></i></button>
+      <button onclick="openM()" id="fab" style="width:56px;height:56px;border-radius:17px;background:#ef4444;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.5);transition:all .2s"><i data-lucide="plus" style="width:24px;height:24px;color:#fff"></i></button>
+    </div>
+  </main>
+</div>
+<!-- MODAL ROBOS -->
+<div class="movl" id="m-robos" onclick="if(event.target===this)closeM('robos')">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #f1f5f9;flex-shrink:0"><img src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover"></div>
+        <div>
+          <h2 style="font-size:17px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Denuncia Vecinal</h2>
+          <p style="font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Robos MDP</p>
+        </div>
+      </div>
+      <button onclick="closeM('robos')" style="padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+    </div>
+    <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">¿Qué tipo de robo fue?</label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-robos"></div>
+      </div>
+      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#0f172a"></i>¿Cuándo sucedió?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input id="r-date" type="date" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="r-time" type="time" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+        </div>
+      </div>
+      <div style="background:#eff6ff;padding:16px;border-radius:16px;border:1px solid #bfdbfe">
+        <label style="font-size:9px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="flex:1;cursor:pointer;background:#fff;border:2px dashed #93c5fd;padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#60a5fa"></i><span style="font-size:9px;font-weight:700;color:#3b82f6;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="r-photo" accept="image/*" style="display:none" onchange="prevPh(this,'robos')"></label>
+          <div id="r-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="r-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('robos')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
+        </div>
+      </div>
+      <div id="r-veh" style="display:none;background:#fef2f2;padding:16px;border-radius:16px;border:1px solid #fecaca">
+        <label style="font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:10px">Información del Vehículo</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input id="r-brand" type="text" placeholder="Marca / Modelo" style="background:#fff;border:1px solid #fecaca;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="r-plate" type="text" placeholder="Patente" style="background:#fff;border:1px solid #fecaca;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;text-transform:uppercase;outline:none;width:100%">
+        </div>
+      </div>
+      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#ef4444"></i>Localización</label>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:10px"><span id="r-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="r-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="position:relative;margin-bottom:7px">
+          <input id="r-addr" type="text" placeholder="Calle y Nro (Ej: Luro 2500)..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.04);outline:none;box-sizing:border-box">
+          <button type="button" onclick="doS('r-addr','robos')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
+          <ul id="r-sugg" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.1);max-height:180px;overflow:auto;display:none;z-index:30;padding:3px"></ul>
+        </div>
+        <button type="button" onclick="locM('robos')" style="width:100%;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción del hecho</label>
+        <textarea id="r-desc" placeholder="Relato de lo sucedido... (mínimo 10 caracteres)" oninput="chkR('robos')" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+      </div>
+      <div style="background:#fefce8;padding:11px 14px;border-radius:13px;border:1px solid #fef08a;display:flex;align-items:center;gap:10px">
+        <div style="background:#eab308;padding:6px;border-radius:8px;display:flex;flex-shrink:0"><i data-lucide="phone" style="width:12px;height:12px;color:#fff"></i></div>
+        <input id="r-phone" type="tel" placeholder="Teléfono de contacto (Opcional)" style="flex:1;background:transparent;border:none;font-size:11px;font-weight:600;color:#713f12;outline:none">
+      </div>
+      <div id="r-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
+      <button id="r-sub" disabled onclick="subR('robos')" style="background:#0f172a;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5">PUBLICAR REPORTE</button>
+    </form>
+  </div>
+</div>
+<!-- MODAL BASURA -->
+<div class="movl" id="m-basura" onclick="if(event.target===this)closeM('basura')">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid #f0fdf4;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#f0fdf4">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #bbf7d0;flex-shrink:0"><img src="./assets/logo-basura.png" style="width:100%;height:100%;object-fit:cover"></div>
+        <div>
+          <h2 style="font-size:17px;font-weight:900;color:#14532d;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Basura</h2>
+          <p style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Basura MDP</p>
+        </div>
+      </div>
+      <button onclick="closeM('basura')" style="padding:8px;background:#fff;border:1px solid #bbf7d0;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+    </div>
+    <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">Tipo de problema</label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-basura"></div>
+      </div>
+      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#0f172a"></i>¿Cuándo lo viste?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input id="b-date" type="date" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="b-time" type="time" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+        </div>
+      </div>
+      <div style="background:#f0fdf4;padding:16px;border-radius:16px;border:1px solid #bbf7d0">
+        <label style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="flex:1;cursor:pointer;background:#fff;border:2px dashed #86efac;padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#4ade80"></i><span style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="b-photo" accept="image/*" style="display:none" onchange="prevPh(this,'basura')"></label>
+          <div id="b-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="b-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('basura')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
+        </div>
+      </div>
+      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#22c55e"></i>Localización</label>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:10px"><span id="b-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="b-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="position:relative;margin-bottom:7px">
+          <input id="b-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('b-addr','basura')">
+          <button type="button" onclick="doS('b-addr','basura')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
+        </div>
+        <button type="button" onclick="locM('basura')" style="width:100%;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción</label>
+        <textarea id="b-desc" placeholder="Describí el problema..." oninput="chkR('basura')" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+      </div>
+      <div id="b-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
+      <button id="b-sub" disabled onclick="subR('basura')" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(34,197,94,.4)">PUBLICAR REPORTE</button>
+    </form>
+  </div>
+</div>
+<!-- MODAL POZOS -->
+<div class="movl" id="m-pozos" onclick="if(event.target===this)closeM('pozos')">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid #fffbeb;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fffbeb">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #fde68a;flex-shrink:0"><img src="./assets/logo-pozos.png" style="width:100%;height:100%;object-fit:cover"></div>
+        <div>
+          <h2 style="font-size:17px;font-weight:900;color:#451a03;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Pozo</h2>
+          <p style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Pozos MDP</p>
+        </div>
+      </div>
+      <button onclick="closeM('pozos')" style="padding:8px;background:#fff;border:1px solid #fde68a;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+    </div>
+    <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">Tipo de problema vial</label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-pozos"></div>
+      </div>
+      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#0f172a"></i>¿Cuándo lo viste?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input id="p-date" type="date" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="p-time" type="time" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+        </div>
+      </div>
+      <div style="background:#fffbeb;padding:16px;border-radius:16px;border:1px solid #fde68a">
+        <label style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="flex:1;cursor:pointer;background:#fff;border:2px dashed #fcd34d;padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#fbbf24"></i><span style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="p-photo" accept="image/*" style="display:none" onchange="prevPh(this,'pozos')"></label>
+          <div id="p-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="p-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('pozos')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
+        </div>
+      </div>
+      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#f59e0b"></i>Localización</label>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:10px"><span id="p-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="p-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="position:relative;margin-bottom:7px">
+          <input id="p-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('p-addr','pozos')">
+          <button type="button" onclick="doS('p-addr','pozos')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
+        </div>
+        <button type="button" onclick="locM('pozos')" style="width:100%;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción</label>
+        <textarea id="p-desc" placeholder="Describí el problema..." oninput="chkR('pozos')" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+      </div>
+      <div id="p-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
+      <button id="p-sub" disabled onclick="subR('pozos')" style="background:#f59e0b;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(245,158,11,.4)">PUBLICAR REPORTE</button>
+    </form>
+  </div>
+</div>
+<!-- ADMIN PANEL -->
+<div id="admin-p">
+  <header style="padding:16px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#fff;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#0f172a;border-radius:13px;display:flex;align-items:center;justify-content:center"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
+      <div>
+        <h2 style="font-size:16px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Administrador activo • MDP</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeAP()" style="padding:8px 16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#64748b">Cerrar</button>
+      <button onclick="doLogout()" style="padding:8px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;cursor:pointer;display:flex"><i data-lucide="log-out" style="width:16px;height:16px;color:#ef4444"></i></button>
+    </div>
+  </header>
+  <div class="ns" style="padding:20px 22px">
+    <div style="max-width:900px;margin:0 auto">
+      <div id="adm-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px"></div>
+      <div style="background:#fff;padding:16px 20px;border-radius:20px;border:1px solid #e2e8f0;margin-bottom:18px">
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Filtrar reportes</p>
+        <input id="adm-q" type="text" oninput="renderAdm()" placeholder="Buscar por patente o texto..." style="width:100%;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;font-size:12px;font-weight:600;outline:none">
+      </div>
+      <div style="background:#fff;padding:4px;border-radius:14px;border:1px solid #e2e8f0;display:flex;gap:2px;margin-bottom:14px">
+        <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔴 Robos</button>
+        <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟢 Basura</button>
+        <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟡 Pozos</button>
+      </div>
+      <div id="adm-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+  <div id="adm-detail" style="position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);padding:16px">
+    <div style="background:#fff;width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column">
+      <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;background:#f8fafc">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="padding:8px;background:#fff;border-radius:11px;border:1px solid #e2e8f0"><i data-lucide="file-search" style="width:17px;height:17px;color:#0f172a"></i></div>
+          <div><h3 style="font-size:14px;font-weight:900;color:#0f172a;text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
+        </div>
+        <button onclick="closeAD()" style="padding:8px;background:#fff;border:1px solid #e2e8f0;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+      </div>
+      <div id="adm-detail-body" class="ns" style="padding:20px 24px"></div>
+      <div style="padding:16px 24px;border-top:1px solid #f1f5f9;background:#f8fafc;display:flex;justify-content:space-between;align-items:center">
+        <p style="font-size:9px;font-weight:700;color:#cbd5e1">ID: <span id="adm-did"></span></p>
+        <button onclick="delR()" style="padding:10px 16px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-m" onclick="if(event.target===this)closeLM()">
+  <div style="background:#fff;width:100%;max-width:320px;border-radius:24px;overflow:hidden;animation:sup .38s cubic-bezier(.16,1,.3,1)">
+    <div style="padding:24px;border-bottom:1px solid #f1f5f9;text-align:center">
+      <div style="width:48px;height:48px;background:#0f172a;border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px"><i data-lucide="shield" style="width:22px;height:22px;color:#fff"></i></div>
+      <h2 style="font-size:17px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em">Acceso Admin</h2>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:12px">
+      <input id="adm-email" type="email" value="admin@robosmdp.com.ar" style="display:none">
+      <input id="adm-pass" type="password" placeholder="Clave de administrador" style="width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:12px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doLogin()">
+      <div id="adm-err" style="font-size:10px;font-weight:700;color:#ef4444;text-align:center;display:none"></div>
+      <button onclick="doLogin()" style="background:#0f172a;color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer">Ingresar</button>
+      <button onclick="closeLM()" style="background:none;border:none;font-size:11px;font-weight:600;color:#94a3b8;cursor:pointer">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE VIEWER -->
+<div id="iv" onclick="closeIV()">
+  <img id="iv-img" src="" style="max-width:94%;max-height:90vh;object-fit:contain;border-radius:13px">
+</div>
+
+<script>
+// ===== FIREBASE =====
+const FB_CONFIG={
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
+};
+let db=null,auth=null;
+if(window.firebase){
+  firebase.initializeApp(FB_CONFIG);
+  db=firebase.firestore();
+  auth=firebase.auth();
+}
+
+// ===== ESTADO =====
+const G={
+  tab:'robos',
+  maps:{robos:null,basura:null,pozos:null},
+  data:{robos:[],basura:[],pozos:[]},
+  markers:{robos:[],basura:[],pozos:[]},
+  heat:null,heatOn:false,
+  filter:'all',domFilter:null,
+  loc:{robos:null,basura:null,pozos:null},
+  cat:{robos:null,basura:null,pozos:null},
+  photo:{robos:null,basura:null,pozos:null},
+  unsub:{robos:null,basura:null,pozos:null},
+  loaded:{robos:false,basura:false,pozos:false},
+  adminTaps:0,adminTimer:null,
+  isAdmin:false,curAdmId:null,admCatF:null
+};
+
+const CATS={
+  robos:[
+    {id:'bicicleta',label:'Bicicleta',color:'#10b981',icon:'bike'},
+    {id:'moto',label:'Moto',color:'#3b82f6',icon:'bike'},
+    {id:'auto',label:'Auto',color:'#6366f1',icon:'car'},
+    {id:'vivienda',label:'Entradera',color:'#8b5cf6',icon:'home'},
+    {id:'robo',label:'Otro',color:'#ef4444',icon:'alert-circle'}
+  ],
+  basura:[
+    {id:'volquete',label:'Volquete',color:'#16a34a',icon:'trash-2'},
+    {id:'basural',label:'Basural',color:'#15803d',icon:'trash'},
+    {id:'residuos',label:'Residuos',color:'#4ade80',icon:'package'},
+    {id:'escombros',label:'Escombros',color:'#065f46',icon:'hammer'},
+    {id:'otro',label:'Otro',color:'#22c55e',icon:'alert-circle'}
+  ],
+  pozos:[
+    {id:'pozo',label:'Pozo',color:'#d97706',icon:'alert-triangle'},
+    {id:'grieta',label:'Grieta',color:'#b45309',icon:'minus'},
+    {id:'hundimiento',label:'Hundimiento',color:'#92400e',icon:'arrow-down'},
+    {id:'tape',label:'Tape roto',color:'#f59e0b',icon:'disc'},
+    {id:'otro',label:'Otro',color:'#fbbf24',icon:'alert-circle'}
+  ]
+};
+
+const MOD_CFG={
+  robos:{col:'artifacts/robosmdp-d1ef3/public/data/reports',color:'#ef4444',cls:'r',logo:'./assets/logo-robos.png',banner:'./assets/banner-robos.jpg',title:'ROBOS MDP',sub:'Sistema Oficial'},
+  basura:{col:'basura',color:'#22c55e',cls:'g',logo:'./assets/logo-basura.png',banner:'./assets/banner-basura.jpg',title:'BASURA MDP',sub:'Reportes de basura'},
+  pozos:{col:'pozos',color:'#f59e0b',cls:'a',logo:'./assets/logo-pozos.png',banner:'./assets/banner-pozos.jpg',title:'POZOS MDP',sub:'Pozos en calzada'}
+};
+const PRE={robos:'r',basura:'b',pozos:'p'};
+const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'rgba(245,158,11,.5)'};
+
+// ===== INIT =====
+window.onload=()=>{
+  // Precargar banners y logos de otras secciones en background
+  setTimeout(()=>{['./assets/banner-basura.jpg','./assets/banner-pozos.jpg','./assets/logo-basura.png','./assets/logo-pozos.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
+  loadAllReports();
+  safeIcons();
+  buildCats();
+  setDates();
+  if(auth) auth.signOut().catch(()=>{});
+  const ms=document.getElementById('msearch');
+  if(ms) ms.addEventListener('keydown',e=>{if(e.key==='Enter')doS('msearch');});
+};
+
+function buildCats(){
+  ['robos','basura','pozos'].forEach(mod=>{
+    const el=document.getElementById('cats-'+mod);
+    if(!el) return;
+    el.innerHTML=CATS[mod].map(c=>`
+      <button type="button" class="cbtn" id="cb-${mod}-${c.id}" onclick="selC('${mod}','${c.id}','${c.color}')">
+        <i data-lucide="${c.icon}" style="width:20px;height:20px;color:${c.color}"></i>
+        <span>${c.label}</span>
+      </button>`).join('');
+    safeIcons();
+  });
+}
+
+function selC(mod,id,color){
+  G.cat[mod]=id;
+  CATS[mod].forEach(c=>{
+    const b=document.getElementById('cb-'+mod+'-'+c.id);
+    if(!b) return;
+    if(c.id===id){b.style.borderColor=color;b.style.background=color+'18';b.style.color=color;b.style.transform='scale(1.05)';}
+    else{b.style.borderColor='#e2e8f0';b.style.background='#f8fafc';b.style.color='#64748b';b.style.transform='scale(1)';}
+  });
+  if(mod==='robos'){const vf=document.getElementById('r-veh');if(vf)vf.style.display=['auto','moto','bicicleta'].includes(id)?'block':'none';}
+  chkR(mod);
+}
+
+function setDates(){
+  const now=new Date(),d=now.toISOString().split('T')[0],t=now.toTimeString().slice(0,5);
+  ['r','b','p'].forEach(p=>{
+    const di=document.getElementById(p+'-date'),ti=document.getElementById(p+'-time');
+    if(di)di.value=d; if(ti)ti.value=t;
+  });
+}
+
+// ===== LANDING =====
+function switchLT(tab){
+  ['robos','basura','pozos'].forEach(t=>{
+    document.getElementById('ltab-'+t).className='ltab';
+    document.getElementById('lp-'+t).style.display='none';
+  });
+  const cfg=MOD_CFG[tab];
+  document.getElementById('ltab-'+tab).className='ltab '+cfg.cls;
+  document.getElementById('lp-'+tab).style.display='block';
+  document.getElementById('hero-img').src=cfg.banner;
+  document.getElementById('land-logo-img').src=cfg.logo;
+  const t=document.getElementById('land-title');
+  const names={robos:'ROBOS <span style="color:#ef4444">MDP</span>',basura:'BASURA <span style="color:#22c55e">MDP</span>',pozos:'POZOS <span style="color:#f59e0b">MDP</span>'};
+  t.innerHTML=names[tab];
+}
+
+function enterApp(tab){
+  G.tab=tab;
+  document.getElementById('landing').style.transform='translateY(-100%)';
+  const app=document.getElementById('app');
+  app.style.opacity='1';app.style.pointerEvents='auto';
+  switchAT(tab,true);
+  setTimeout(()=>initMap(tab),300);
+}
+
+function goL(){
+  document.getElementById('landing').style.transform='translateY(0)';
+  const app=document.getElementById('app');
+  app.style.opacity='0';app.style.pointerEvents='none';
+  closeSB();
+}
+
+// ===== APP TABS =====
+function switchAT(tab,skipMap){
+  G.tab=tab;
+  const cfg=MOD_CFG[tab];
+  ['robos','basura','pozos'].forEach(t=>{
+    document.getElementById('at-'+t).className='atab';
+    const me=document.getElementById('map-'+t[0]);
+    if(me) me.className='mapel';
+    const se=document.getElementById('ss-'+t[0]);
+    if(se) se.style.display='none';
+  });
+  document.getElementById('at-'+tab).className='atab '+cfg.cls;
+  const am=document.getElementById('map-'+tab[0]);
+  if(am) am.className='mapel on';
+  const as=document.getElementById('ss-'+tab[0]);
+  if(as) as.style.display='block';
+  document.getElementById('sb-title').textContent=cfg.title;
+  document.getElementById('sb-logo').src=cfg.logo;
+  const sub=document.getElementById('sb-sub');
+  sub.textContent=cfg.sub; sub.style.color=cfg.color;
+  const fab=document.getElementById('fab');
+  fab.style.background=cfg.color;
+  fab.style.boxShadow='0 8px 22px '+FAB_SHADOW[tab];
+  if(!skipMap) setTimeout(()=>initMap(tab),80);
+  closeSB();
+}
+
+// ===== SIDEBAR =====
+function openSB(){document.getElementById('sidebar').classList.add('open');}
+function closeSB(){if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');}
+
+// ===== MAPS =====
+function initMap(tab){
+  const key=tab[0];
+  if(G.maps[tab]){G.maps[tab].invalidateSize();renderMk(tab);return;}
+  const m=L.map('map-'+key,{zoomControl:false}).setView([-38.0055,-57.5426],13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO'}).addTo(m);
+  G.maps[tab]=m;
+  m.on('click',e=>{
+    const modal=document.getElementById('m-'+tab);
+    if(!modal||modal.style.display==='none') return;
+    G.loc[tab]=[e.latlng.lat,e.latlng.lng];
+    setLS(tab,'ok'); showToast('Ubicación marcada ✅','g'); chkR(tab);
+  });
+  loadReports(tab);
+  renderMk(tab); renderRL(tab); updSBStats(tab);
+}
+
+function loadAllReports(){
+  ['robos','basura','pozos'].forEach(loadReports);
+}
+
+function loadReports(tab){
+  if(G.unsub[tab]) return;
+  const cfg=MOD_CFG[tab];
+  if(cfg.cols){
+    G.unsub[tab]=true;
+    loadReportsMulti(tab);
+    return;
+  }
+  if(!db){
+    G.unsub[tab]=true;
+    loadReportsREST(tab);
+    return;
+  }
+  G.unsub[tab]=db.collection(cfg.col).limit(180).onSnapshot(snap=>{
+    G.loaded[tab]=true;
+    G.data[tab]=snap.docs
+      .map(d=>normalizeReport({id:d.id,...d.data()}))
+      .sort((a,b)=>getReportDate(b)-getReportDate(a));
+    if(!G.data[tab].length&&tab==='robos') loadReportsREST(tab);
+    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+  }, err=>{
+    console.error('Error cargando '+tab+':',err);
+    loadReportsREST(tab);
+  });
+}
+
+async function loadReportsMulti(tab){
+  const cfg=MOD_CFG[tab];
+  const tried=[];
+  for(const col of cfg.cols){
+    try{
+      const data=await fetchCollectionREST(col,tab);
+      tried.push(col+': '+data.length);
+      if(data.length){
+        cfg.col=col;
+        G.loaded[tab]=true;
+        G.data[tab]=data.map(normalizeReport).sort((a,b)=>getReportDate(b)-getReportDate(a));
+        renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+        return;
+      }
+    }catch(err){
+      tried.push(col+': '+(err.message||'error'));
+    }
+  }
+  console.warn('No se encontraron reportes. Rutas probadas:',tried);
+  G.loaded[tab]=true;
+  G.data[tab]=[];
+  renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+  showToast('No se leyeron reportes: '+tried.join(' | '),'r');
+}
+
+async function loadReportsREST(tab){
+  const cfg=MOD_CFG[tab];
+  try{
+    G.loaded[tab]=true;
+    G.data[tab]=(await fetchCollectionREST(cfg.col,tab)).map(normalizeReport).sort((a,b)=>getReportDate(b)-getReportDate(a));
+    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+    if(tab==='robos'&&!G.data[tab].length) showToast('No se encontraron reportes en Firebase','r');
+  }catch(err){
+    console.error('Error REST '+tab+':',err);
+    G.loaded[tab]=true;
+    G.data[tab]=[];
+    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+    showToast('Firebase no devolvió reportes','r');
+  }
+}
+
+async function fetchCollectionREST(col,tab){
+  const all=[];
+  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
+    '/databases/(default)/documents/'+col+'?pageSize=180&key='+FB_CONFIG.apiKey;
+  const res=await fetch(url);
+  const json=await res.json();
+  if(!res.ok) throw new Error(json.error?.message||'No se pudo leer Firestore');
+  all.push(...(json.documents||[]));
+  if(tab&&all.length){
+    G.loaded[tab]=true;
+    G.data[tab]=all.map(doc=>{
+      const id=(doc.name||'').split('/').pop();
+      return normalizeReport({id,...decodeFirestoreFields(doc.fields||{})});
+    }).sort((a,b)=>getReportDate(b)-getReportDate(a));
+    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+  }
+  return all.map(doc=>{
+      const id=(doc.name||'').split('/').pop();
+      return {id,...decodeFirestoreFields(doc.fields||{})};
+  });
+}
+
+function renderMk(tab){
+  const map=G.maps[tab]; if(!map) return;
+  G.markers[tab].forEach(m=>map.removeLayer(m));
+  G.markers[tab]=[];
+  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,180);
+  list.forEach(r=>{
+    const coords=getCoords(r);
+    if(!coords) return;
+    const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
+    const icon=L.divIcon({
+      className:'',
+      html:'<div class="mpin" style="background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:16px;height:16px;color:#fff;transform:rotate(45deg)"></i></div>',
+      iconSize:[40,40],iconAnchor:[20,40]
+    });
+    const mk=L.marker(coords,{icon}).addTo(map);
+    mk.bindPopup(mkPopup(r,cat,tab));
+    G.markers[tab].push(mk);
+  });
+  safeIcons();
+}
+
+function mkPopup(r,cat,tab){
+  const ts=getReportDate(r);
+  const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
+  const hora=ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  const res=tab!=='robos'&&r.resolved?'<span style="font-size:9px;font-weight:700;background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:999px">✓ Resuelto</span>':'';
+  const resAction=tab!=='robos'?'<button onclick="publicToggleResolved(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:8px 10px;border:none;border-radius:10px;background:'+(r.resolved?'#f1f5f9':'#dcfce7')+';color:'+(r.resolved?'#64748b':'#15803d')+';font-size:10px;font-weight:900;text-transform:uppercase;cursor:pointer">'+(r.resolved?'Marcar pendiente':'Marcar resuelto')+'</button>':'';
+  return '<div style="font-family:Inter,sans-serif;min-width:180px;max-width:240px">'+
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">'+
+    '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+'</div>'+
+    '<p style="font-size:12px;font-weight:600;color:#0f172a;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
+    '<p style="font-size:9px;color:#94a3b8;font-weight:600">'+fecha+' · '+hora+'</p>'+
+    (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#0f172a;background:#f1f5f9;padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
+    (r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;border-radius:8px;margin-top:6px;max-height:100px;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'')+resAction+
+    '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
+}
+
+// ===== RECENT LIST =====
+function renderRL(tab){
+  const el=document.getElementById('rl-'+tab[0]); if(!el) return;
+  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,10);
+  if(!list.length){el.innerHTML='<div style="text-align:center;padding:20px 0;color:#cbd5e1;font-size:9px;font-weight:700;text-transform:uppercase">Sin reportes</div>';return;}
+  el.innerHTML=list.map(r=>{
+    const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
+    const ts=getReportDate(r);
+    return '<div class="arow" onclick="flyTo(\''+tab+'\',\''+r.id+'\')">'+
+      '<div style="width:7px;height:7px;border-radius:50%;background:'+cat.color+';flex-shrink:0;margin-top:3px"></div>'+
+      '<div style="flex:1;min-width:0">'+
+      '<p style="font-size:11px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||cat.label)+'</p>'+
+      '<p style="font-size:9px;color:#94a3b8;font-weight:600;margin-top:1px">'+cat.label+' · '+tAgo(ts)+'</p></div></div>';
+  }).join('');
+}
+
+function flyTo(tab,id){
+  const r=G.data[tab].find(x=>x.id===id);
+  const coords=getCoords(r);
+  if(!r||!coords) return;
+  const map=G.maps[tab]; if(!map) return;
+  map.setView(coords,17); closeSB();
+}
+
+// ===== STATS =====
+async function loadStats(){
+  const now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1),hs=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  for(const [tab,cfg] of Object.entries(MOD_CFG)){
+    try{
+      const snap=await db.collection(cfg.col).get();
+      const all=snap.docs.map(d=>d.data());
+      const p=tab[0];
+      setT('ls-'+p+'-t',all.length);
+      setT('ls-'+p+'-m',all.filter(r=>r.timestamp?.toDate&&r.timestamp.toDate()>=ms).length);
+      if(tab==='robos') setT('ls-r-h',all.filter(r=>r.timestamp?.toDate&&r.timestamp.toDate()>=hs).length);
+      else setT('ls-'+p+'-r',all.filter(r=>r.resolved).length);
+    }catch(e){}
+  }
+}
+
+function updSBStats(tab){
+  const now=new Date(),hs=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const p=tab[0];
+  setT('sb-'+p+'-t',G.data[tab].length);
+  if(tab==='robos') setT('sb-r-h',G.data.robos.filter(r=>getReportDate(r)>=hs).length);
+  else setT('sb-'+p+'-r',G.data[tab].filter(r=>r.resolved).length);
+}
+
+function updLandingStats(tab){
+  const tabs=tab?[tab]:['robos','basura','pozos'];
+  const now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1),hs=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  tabs.forEach(t=>{
+    const p=t[0],all=G.data[t]||[];
+    setT('ls-'+p+'-t',G.loaded[t]?all.length:'-');
+    setT('ls-'+p+'-m',G.loaded[t]?all.filter(r=>getReportDate(r)>=ms).length:'-');
+    if(t==='robos') setT('ls-r-h',G.loaded[t]?all.filter(r=>getReportDate(r)>=hs).length:'-');
+    else setT('ls-'+p+'-r',G.loaded[t]?all.filter(r=>r.resolved).length:'-');
+  });
+}
+
+// ===== FILTERS =====
+function setF(f){
+  G.filter=f;
+  ['all','dom','today','week','month'].forEach(x=>{const b=document.getElementById('fb-'+x);if(b)b.className=x===f?'fbtn on':'fbtn';});
+  renderMk('robos'); renderRL('robos');
+}
+
+function applyF(list){
+  let l=[...list];
+  const now=new Date();
+  if(G.filter==='today'){const s=new Date(now.getFullYear(),now.getMonth(),now.getDate());l=l.filter(r=>getReportDate(r)>=s);}
+  else if(G.filter==='week'){const s=new Date(now-7*864e5);l=l.filter(r=>getReportDate(r)>=s);}
+  else if(G.filter==='month'){const s=new Date(now.getFullYear(),now.getMonth(),1);l=l.filter(r=>getReportDate(r)>=s);}
+  if(G.domFilter) l=l.filter(r=>r.vehiclePlate&&r.vehiclePlate.toUpperCase().includes(G.domFilter));
+  return l;
+}
+
+function openDF(){document.getElementById('df-box').style.display='block';}
+function closeDF(){document.getElementById('df-box').style.display='none';}
+function setDF(v){G.domFilter=v.toUpperCase().trim()||null;G.filter='dom';document.getElementById('fb-dom').className=G.domFilter?'fbtn on':'fbtn';closeDF();renderMk('robos');renderRL('robos');}
+function clearDF(){G.domFilter=null;document.getElementById('df-input').value='';setF('all');closeDF();}
+
+// ===== HEATMAP =====
+function toggleHeat(){
+  const map=G.maps[G.tab]; if(!map) return;
+  if(G.heatOn&&G.heat){map.removeLayer(G.heat);G.heat=null;G.heatOn=false;document.getElementById('heat-btn').style.color='#94a3b8';return;}
+  const pts=G.data[G.tab].map(r=>getCoords(r)).filter(Boolean).map(c=>[c[0],c[1],1]);
+  if(!pts.length){showToast('Sin datos para mapa de calor','r');return;}
+  const colors={robos:{0.2:'#3b82f6',0.5:'#f59e0b',1:'#ef4444'},basura:{0.2:'#bbf7d0',0.5:'#4ade80',1:'#16a34a'},pozos:{0.2:'#fef08a',0.5:'#fbbf24',1:'#d97706'}};
+  G.heat=L.heatLayer(pts,{radius:25,blur:20,maxZoom:17,gradient:colors[G.tab]}).addTo(map);
+  G.heatOn=true; document.getElementById('heat-btn').style.color=MOD_CFG[G.tab].color;
+}
+
+// ===== MODALS =====
+function openM(){document.getElementById('m-'+G.tab).style.display='flex';}
+function closeM(tab){document.getElementById('m-'+tab).style.display='none';}
+
+// ===== LOCATION =====
+function setLS(mod,state){
+  const p=PRE[mod];
+  const dot=document.getElementById(p+'-ld'),txt=document.getElementById(p+'-lt');
+  if(!dot||!txt) return;
+  if(state==='ok'){dot.style.background='#22c55e';txt.textContent='Ubicación marcada ✅';}
+  else if(state==='loading'){dot.style.background='#f59e0b';txt.textContent='Obteniendo ubicación...';}
+  else{dot.style.background='#cbd5e1';txt.textContent='Buscá la dirección o tocá el mapa';}
+  chkR(mod);
+}
+
+function locM(mod){
+  setLS(mod,'loading');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    G.loc[mod]=[pos.coords.latitude,pos.coords.longitude];
+    setLS(mod,'ok'); showToast('GPS obtenido ✅','g'); chkR(mod);
+    const map=G.maps[mod]; if(map) map.setView(G.loc[mod],16);
+  },()=>{showToast('No se pudo obtener el GPS','r');setLS(mod,'default');});
+}
+
+function locU(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const map=G.maps[G.tab]; if(map) map.setView([pos.coords.latitude,pos.coords.longitude],16);
+  });
+}
+
+// ===== SEARCH =====
+const NOM='https://nominatim.openstreetmap.org/search';
+const CTX='Mar del Plata, Buenos Aires, Argentina';
+
+async function doS(inputId,mod){
+  const inp=document.getElementById(inputId); if(!inp) return;
+  const q=inp.value.trim(); if(q.length<3) return;
+  // Determinar el modulo activo
+  const targetMod=mod||(inputId==='msearch'?G.tab:null);
+  try{
+    const r=await fetch(NOM+'?'+new URLSearchParams({q:q+', '+CTX,format:'json',addressdetails:'1',limit:'5',countrycodes:'ar'}),{headers:{'User-Agent':'RobosMDP/2.0 (robosmdp.com.ar)'}});
+    const data=await r.json();
+    if(data&&data.length){
+      const lat=parseFloat(data[0].lat),lng=parseFloat(data[0].lon);
+      const map=G.maps[targetMod||G.tab]; if(map) map.setView([lat,lng],17);
+      // Guardar ubicacion en el modulo correcto
+      if(targetMod){G.loc[targetMod]=[lat,lng];setLS(targetMod,'ok');chkR(targetMod);}
+      showToast('Ubicación encontrada ✅','g');
+      // Mostrar sugerencias si hay mas de 1 resultado y es campo de formulario
+      if(data.length>1&&mod){
+        const suggId=inputId.split('-')[0]+'-sugg';
+        const sugg=document.getElementById(suggId);
+        if(sugg){
+sugg.innerHTML=data.slice(0,4).map(d=>'<li class="sugg-item" style="padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:1px solid #f1f5f9;list-style:none" onclick="pickSugg('+d.lat+','+d.lon+',\''+targetMod+'\',\''+suggId+'\')">'+d.display_name.split(',').slice(0,2).join(',')+'</li>').join('');
+          sugg.style.display='block';
+        }
+      }
+    } else showToast('No se encontró la dirección','r');
+  }catch(e){showToast('Error al buscar','r');}
+}
+
+function pickSugg(lat,lng,mod,suggId){
+  G.loc[mod]=[lat,lng];
+  setLS(mod,'ok'); chkR(mod);
+  const map=G.maps[mod]; if(map) map.setView([lat,lng],17);
+  const sugg=document.getElementById(suggId); if(sugg) sugg.style.display='none';
+  showToast('Ubicación marcada ✅','g');
+}
+
+// ===== PHOTO =====
+function prevPh(input,mod){
+  const file=input.files[0]; if(!file) return;
+  // Comprimir imagen antes de guardar (max 800px, calidad 0.7)
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=800;
+      let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const compressed=canvas.toDataURL('image/jpeg',0.72);
+      G.photo[mod]=compressed;
+      const p=PRE[mod];
+      const prev=document.getElementById(p+'-ph-prev'),imgEl=document.getElementById(p+'-ph-img');
+      if(prev&&imgEl){imgEl.src=compressed;prev.style.display='block';}
+      chkR(mod);
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function rmPh(mod){
+  G.photo[mod]=null;
+  const p=PRE[mod];
+  const prev=document.getElementById(p+'-ph-prev'),inp=document.getElementById(p+'-photo');
+  if(prev) prev.style.display='none';
+  if(inp) inp.value='';
+}
+
+// ===== FORM VALIDATION =====
+function chkR(mod){
+  const p=PRE[mod];
+  const desc=document.getElementById(p+'-desc'),sub=document.getElementById(p+'-sub');
+  if(!desc||!sub) return;
+  const ready=G.cat[mod]&&G.loc[mod]&&desc.value.length>=10;
+  sub.disabled=!ready;
+  sub.style.opacity=ready?'1':'.5';
+  sub.style.cursor=ready?'pointer':'not-allowed';
+}
+
+// ===== SUBMIT =====
+async function subR(mod){
+  const p=PRE[mod];
+  const desc=document.getElementById(p+'-desc'),errEl=document.getElementById(p+'-err'),sub=document.getElementById(p+'-sub');
+  if(sub&&sub.disabled) return; // evitar doble submit
+  if(!G.cat[mod]||!G.loc[mod]||!desc||desc.value.length<10){if(errEl)errEl.style.display='block';return;}
+  if(errEl) errEl.style.display='none';
+  sub.disabled=true; sub.textContent='Publicando...'; sub.style.opacity='0.7';
+  const data={
+    type:G.cat[mod],description:desc.value.trim(),
+    lat:G.loc[mod][0],lng:G.loc[mod][1],
+    timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+    incidentDate:document.getElementById(p+'-date')?.value||null,
+    incidentTime:document.getElementById(p+'-time')?.value||null,
+    photoBase64:G.photo[mod]||null,resolved:false
+  };
+  if(mod==='robos'){
+    data.vehicleBrand=document.getElementById('r-brand')?.value||'';
+    data.vehiclePlate=(document.getElementById('r-plate')?.value||'').toUpperCase();
+    data.phone=document.getElementById('r-phone')?.value||'';
+  }
+  try{
+    await db.collection(MOD_CFG[mod].col).add(data);
+    showToast('¡Reporte publicado! 🎉','g');
+    closeM(mod); resetF(mod);
+  }catch(e){showToast('Error al publicar. Intentá de nuevo.','r');sub.disabled=false;sub.textContent='PUBLICAR REPORTE';}
+}
+
+function resetF(mod){
+  G.cat[mod]=null; G.photo[mod]=null; G.loc[mod]=null;
+  const p=PRE[mod];
+  const desc=document.getElementById(p+'-desc');if(desc)desc.value='';
+  const sub=document.getElementById(p+'-sub');if(sub){sub.disabled=true;sub.style.opacity='.5';}
+  setLS(mod,'default'); rmPh(mod);
+  // Reset solo las categorias del modulo afectado
+  const el=document.getElementById('cats-'+mod);
+  if(el){
+    el.innerHTML=CATS[mod].map(c=>`<button type="button" class="cbtn" id="cb-${mod}-${c.id}" onclick="selC('${mod}','${c.id}','${c.color}')"><i data-lucide="${c.icon}" style="width:20px;height:20px;color:${c.color}"></i><span>${c.label}</span></button>`).join('');
+    safeIcons();
+  }
+  // Reset vehiculo fields para robos
+  if(mod==='robos'){const vf=document.getElementById('r-veh');if(vf)vf.style.display='none';}
+  setDates();
+}
+
+// ===== ADMIN =====
+function adminTap(){
+  G.adminTaps++;
+  clearTimeout(G.adminTimer);
+  G.adminTimer=setTimeout(()=>{G.adminTaps=0;},3000);
+  if(G.adminTaps>=5){G.adminTaps=0;openLM();}
+}
+
+function openLM(){document.getElementById('login-m').style.display='flex';}
+function closeLM(){document.getElementById('login-m').style.display='none';}
+
+async function doLogin(){
+  const pass=document.getElementById('adm-pass').value,err=document.getElementById('adm-err');
+  if(pass==='delpa555'){
+    G.isAdmin=true;
+    closeLM(); openAP();
+    document.getElementById('adm-pass').value='';
+  }else if(err){
+    err.textContent='Clave incorrecta';
+    err.style.display='block';
+  }
+}
+
+function doLogout(){G.isAdmin=false;if(auth)auth.signOut().catch(()=>{});closeAP();}
+
+function openAP(){
+  if(!G.isAdmin){openLM();return;}
+  document.getElementById('admin-p').style.display='flex';
+  // Cargar datos de todos los módulos para el admin
+  ['robos','basura','pozos'].forEach(tab=>{
+    if(!G.maps[tab]&&G.data[tab].length===0){
+      loadReports(tab);
+    }
+  });
+  renderAdm(); safeIcons();
+}
+
+function closeAP(){document.getElementById('admin-p').style.display='none';G.isAdmin=false;}
+
+function renderAdm(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
+  if(!list||!grid) return;
+  const data=G.data[admTab]||[];
+  const cats=CATS[admTab];
+  const counts={};
+  cats.forEach(c=>counts[c.id]=0);
+  data.forEach(r=>{counts[r.type]=(counts[r.type]||0)+1;});
+  grid.innerHTML=cats.map(c=>{
+    const on=G.admCatF===c.id;
+    return '<div onclick="togAdmC(\''+c.id+'\')" style="background:#fff;padding:14px;border-radius:18px;border:'+(on?'2px solid '+c.color:'1px solid #e2e8f0')+';text-align:center;cursor:pointer;'+(on?'transform:scale(1.04)':'')+'">'+
+      '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:'+c.color+'18;color:'+c.color+'"><i data-lucide="'+c.icon+'" style="width:16px;height:16px"></i></div>'+
+      '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">'+c.label+'</p>'+
+      '<p style="font-size:22px;font-weight:900;color:#0f172a">'+(counts[c.id]||0)+'</p></div>';
+  }).join('');
+  const filtered=data.filter(r=>(!G.admCatF||r.type===G.admCatF)&&(!q||r.description?.toLowerCase().includes(q)||(r.vehiclePlate||'').toLowerCase().includes(q))).sort((a,b)=>getReportDate(b)-getReportDate(a));
+  list.innerHTML=filtered.map(r=>{
+    const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
+    const ts=getReportDate(r);
+    const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' '+ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:4px 10px;background:'+(r.resolved?'#dcfce7':'#f1f5f9')+';color:'+(r.resolved?'#16a34a':'#94a3b8')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'<i data-lucide="chevron-right" style="width:16px;height:16px;color:#cbd5e1;flex-shrink:0"></i>';
+    return '<div onclick="openAD(\''+r.id+'\')" style="background:#fff;border-radius:18px;border:1px solid #e2e8f0;padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:11px">'+
+      '<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">'+
+      '<div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:18px;height:18px;color:#fff"></i></div>'+
+      '<div style="min-width:0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">'+cat.label+' · '+fecha+'</p>'+
+      '<p style="font-size:12px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||'')+'</p></div></div>'+resBtn+'</div>';
+  }).join('')||'<div style="text-align:center;padding:32px 0;color:#cbd5e1;font-size:11px;font-weight:700">Sin reportes</div>';
+  safeIcons();
+}
+
+let admTab='robos';
+
+function switchAdmTab(tab){
+  admTab=tab; G.admCatF=null;
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b'};
+  ['robos','basura','pozos'].forEach(t=>{
+    const btn=document.getElementById('adm-tab-'+t);
+    if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'#94a3b8';}
+  });
+  renderAdm();
+}
+
+async function toggleRes(id){
+  const col=MOD_CFG[admTab].col;
+  const r=G.data[admTab].find(x=>x.id===id); if(!r) return;
+  try{
+    await db.collection(col).doc(id).update({resolved:!r.resolved});
+    showToast(r.resolved?'Marcado como pendiente':'Marcado como resuelto ✅','g');
+  }catch(e){showToast('Error al actualizar','r');}
+}
+
+async function publicToggleResolved(tab,id){
+  if(tab==='robos') return;
+  const r=G.data[tab].find(x=>x.id===id); if(!r) return;
+  const next=!r.resolved;
+  try{
+    await updateResolvedField(tab,id,next);
+    r.resolved=next;
+    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+    showToast(next?'Marcado como resuelto':'Marcado como pendiente','g');
+  }catch(e){
+    console.error('Error publicToggleResolved',e);
+    showToast('No se pudo actualizar','r');
+  }
+}
+
+async function updateResolvedField(tab,id,value){
+  const col=MOD_CFG[tab].col;
+  if(db) return db.collection(col).doc(id).update({resolved:value});
+  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
+    '/databases/(default)/documents/'+col+'/'+id+
+    '?updateMask.fieldPaths=resolved&key='+FB_CONFIG.apiKey;
+  const res=await fetch(url,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{resolved:{booleanValue:value}}})});
+  if(!res.ok){
+    const json=await res.json().catch(()=>({}));
+    throw new Error(json.error?.message||'No se pudo actualizar');
+  }
+}
+
+function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
+
+function openAD(id){
+  G.curAdmId=id;
+  const r=G.data[admTab].find(x=>x.id===id); if(!r) return;
+  const cat=CATS[admTab].find(c=>c.id===r.type)||CATS[admTab][CATS[admTab].length-1];
+  const ts=r.timestamp?.toDate?r.timestamp.toDate():new Date();
+  const fecha=ts.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('adm-did').textContent=r.id;
+  document.getElementById('adm-detail-body').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+    +'<div><span style="background:'+cat.color+';color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'
+    +'<p style="font-size:20px;font-weight:900;color:#0f172a;margin-top:12px;line-height:1.2">'+(r.description?.substring(0,60)||'')+(r.description?.length>60?'...':'')+'</p>'
+    +'<div style="background:#f8fafc;padding:14px;border-radius:14px;margin-top:12px;border:1px solid #e2e8f0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Fecha y hora</p><p style="font-size:12px;font-weight:700;color:#0f172a">'+fecha+'</p></div>'
+    +(r.vehiclePlate?'<div style="background:#f8fafc;padding:14px;border-radius:14px;margin-top:9px;border:1px solid #e2e8f0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Patente</p><p style="font-size:15px;font-weight:900;color:#0f172a">'+r.vehiclePlate.toUpperCase()+'</p></div>':'')
+    +(r.phone?'<div style="background:#fefce8;padding:13px;border-radius:14px;margin-top:9px;border:1px solid #fef08a"><p style="font-size:9px;font-weight:700;color:#ca8a04;text-transform:uppercase;margin-bottom:3px">Contacto</p><p style="font-size:12px;font-weight:700;color:#0f172a">'+r.phone+'</p></div>':'')
+    +'</div><div>'
+    +'<div style="aspect-ratio:16/9;background:#f1f5f9;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center">'
+    +(r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'<i data-lucide="image-off" style="width:36px;height:36px;color:#cbd5e1"></i>')
+    +'</div><div style="background:#f8fafc;padding:14px;border-radius:14px;margin-top:10px;border:1px solid #e2e8f0;max-height:130px;overflow:auto">'
+    +'<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Relato completo</p>'
+    +'<p style="font-size:12px;font-weight:500;color:#475569;line-height:1.6">'+(r.description||'')+'</p></div></div></div>';
+  document.getElementById('adm-detail').style.display='flex';
+  safeIcons();
+}
+
+function closeAD(){document.getElementById('adm-detail').style.display='none';}
+
+async function delR(){
+  if(!G.curAdmId||!confirm('¿Eliminar este reporte definitivamente?')) return;
+  try{await db.collection(MOD_CFG[admTab].col).doc(G.curAdmId).delete();closeAD();showToast('Reporte eliminado','r');renderAdm();}
+  catch(e){showToast('Error al eliminar','r');}
+}
+
+// ===== IMAGE VIEWER =====
+function openIV(src){document.getElementById('iv-img').src=src;document.getElementById('iv').style.display='flex';}
+function closeIV(){document.getElementById('iv').style.display='none';}
+
+// ===== TOAST =====
+function shareWA(tab,id){
+  const r=G.data[tab].find(x=>x.id===id); if(!r) return;
+  const cats=CATS[tab];
+  const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
+  const names={robos:'🔴 ALERTA ROBO',basura:'🟢 REPORTE BASURA',pozos:'🟡 REPORTE POZO'};
+  const txt=encodeURIComponent(names[tab]+' - '+cat.label+'\n📍 Mar del Plata\n📝 '+(r.description||'')+'\n\n🗺️ Vé el mapa completo en https://robosmdp.com.ar');
+  window.open('https://wa.me/?text='+txt,'_blank');
+}
+
+function showToast(msg,type){
+  const c=document.getElementById('toast-c'),t=document.createElement('div');
+  t.className='toast';
+  t.style.borderLeftColor=type==='g'?'#22c55e':'#ef4444';
+  t.innerHTML='<i data-lucide="'+(type==='g'?'check-circle':'alert-circle')+'" style="width:16px;height:16px;color:'+(type==='g'?'#22c55e':'#ef4444')+'"></i> '+msg;
+  c.appendChild(t); safeIcons();
+  setTimeout(()=>t.remove(),4000);
+}
+
+// ===== UTILS =====
+function safeIcons(){
+  try{
+    if(window.lucide&&lucide.createIcons) lucide.createIcons();
+  }catch(e){
+    console.warn('Iconos no disponibles',e);
+  }
+}
+
+function decodeFirestoreFields(fields){
+  const out={};
+  Object.entries(fields||{}).forEach(([k,v])=>out[k]=decodeFirestoreValue(v));
+  return out;
+}
+
+function decodeFirestoreValue(v){
+  if(v.stringValue!==undefined) return v.stringValue;
+  if(v.integerValue!==undefined) return Number(v.integerValue);
+  if(v.doubleValue!==undefined) return Number(v.doubleValue);
+  if(v.booleanValue!==undefined) return v.booleanValue;
+  if(v.timestampValue!==undefined) return new Date(v.timestampValue);
+  if(v.nullValue!==undefined) return null;
+  if(v.geoPointValue!==undefined) return {latitude:v.geoPointValue.latitude,longitude:v.geoPointValue.longitude};
+  if(v.arrayValue!==undefined) return (v.arrayValue.values||[]).map(decodeFirestoreValue);
+  if(v.mapValue!==undefined) return decodeFirestoreFields(v.mapValue.fields||{});
+  return null;
+}
+
+function normalizeReport(r){
+  const coords=getCoords(r);
+  if(coords){r.lat=coords[0];r.lng=coords[1];}
+  r.type=r.type||r.tipo||r.category||r.categoria||r.kind||'otro';
+  r.description=r.description||r.descripcion||r.desc||r.relato||r.detalle||r.details||r.text||r.title||r.address||r.direccion||'Reporte ciudadano';
+  r.vehiclePlate=r.vehiclePlate||r.plate||r.patente||r.dominio||'';
+  return r;
+}
+
+function getCoords(r){
+  if(!r) return null;
+  const direct=readCoordPair(r);
+  if(direct) return direct;
+  const keys=['location','ubicacion','coordinates','coordenadas','coords','position','posicion','geo','geopoint','geoPoint','map','marker','pin'];
+  for(const k of keys){
+    const v=r[k];
+    const c=readCoordAny(v);
+    if(c) return c;
+  }
+  for(const v of Object.values(r)){
+    const c=readCoordAny(v);
+    if(c) return c;
+  }
+  return null;
+}
+
+function readCoordAny(v){
+  if(!v) return null;
+  if(Array.isArray(v)&&v.length>=2) return cleanCoords(v[0],v[1]);
+  if(typeof v==='string'){
+    const nums=v.match(/-?\d+(?:\.\d+)?/g);
+    if(nums&&nums.length>=2) return cleanCoords(nums[0],nums[1]);
+    return null;
+  }
+  if(typeof v==='object') return readCoordPair(v);
+  return null;
+}
+
+function readCoordPair(o){
+  if(!o||typeof o!=='object') return null;
+  const latKeys=['lat','latitude','latitud','_lat'];
+  const lngKeys=['lng','lon','long','longitude','longitud','_long'];
+  for(const la of latKeys) for(const lo of lngKeys){
+    if(o[la]!==undefined&&o[lo]!==undefined) return cleanCoords(o[la],o[lo]);
+  }
+  return null;
+}
+
+function cleanCoords(a,b){
+  let lat=Number(a),lng=Number(b);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)) return null;
+  if(Math.abs(lat)>90&&Math.abs(lng)<=90){const t=lat;lat=lng;lng=t;}
+  if(lat<-90||lat>90||lng<-180||lng>180) return null;
+  return [lat,lng];
+}
+
+function getReportDate(r){
+  const v=r?.timestamp||r?.createdAt||r?.created_at||r?.date||r?.fecha||r?.incidentDate;
+  if(!v) return new Date(0);
+  if(v.toDate) return v.toDate();
+  if(typeof v.seconds==='number') return new Date(v.seconds*1000);
+  const d=new Date(v);
+  return Number.isNaN(d.getTime())?new Date(0):d;
+}
+function setT(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function tAgo(date){
+  const d=Math.floor((Date.now()-date.getTime())/1000);
+  if(d<60) return 'hace '+d+'s';
+  if(d<3600) return 'hace '+Math.floor(d/60)+'min';
+  if(d<86400) return 'hace '+Math.floor(d/3600)+'h';
+  return 'hace '+Math.floor(d/86400)+'d';
+}
+</script>
+</body>
+</html>
