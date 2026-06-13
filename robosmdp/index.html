@@ -41,56 +41,81 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 .ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
-#landing{position:fixed;inset:0;z-index:5000;background:#0f172a;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
-.hero{position:relative;width:100%;height:220px;overflow:hidden}
-.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.35)}
-.hero-g{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,23,42,0) 30%,rgba(15,23,42,1) 100%)}
-.ltabs{display:flex;background:#1e293b;border-radius:16px;padding:4px;gap:3px}
-.ltab{flex:1;padding:11px 4px;border-radius:12px;border:none;background:transparent;color:#475569;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
-.ltab.r{background:#ef4444;color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.4)}
-.ltab.g{background:#22c55e;color:#fff;box-shadow:0 4px 14px rgba(34,197,94,.4)}
-.ltab.a{background:#f59e0b;color:#fff;box-shadow:0 4px 14px rgba(245,158,11,.4)}
-.scard{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:14px 10px;text-align:center}
-.scard .n{font-size:24px;font-weight:900;line-height:1}
-.scard .l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-top:4px}
-.ebtn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:380px;margin:0 auto;padding:19px 24px;border-radius:22px;border:none;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:-.02em;cursor:pointer;transition:all .22s}
-.ebtn:hover{transform:scale(1.03)}.ebtn:active{transform:scale(.97)}
-.ebtn.r{background:#ef4444;color:#fff;box-shadow:0 8px 28px rgba(239,68,68,.5)}
-.ebtn.g{background:#22c55e;color:#fff;box-shadow:0 8px 28px rgba(34,197,94,.5)}
-.ebtn.a{background:#f59e0b;color:#fff;box-shadow:0 8px 28px rgba(245,158,11,.5)}
-.adslot{background:#1e293b;border:1px dashed #334155;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;min-height:72px;width:100%;margin-bottom:18px}
-.adslot-w{background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;min-height:68px;width:100%;margin-bottom:14px}
-#app{position:fixed;inset:0;display:flex;flex-direction:row;opacity:0;pointer-events:none;transition:opacity .45s;background:#f8fafc}
-.atabs{display:flex;gap:2px;padding:4px;background:#f1f5f9;border-radius:14px}
-.atab{flex:1;padding:9px 4px;border-radius:10px;border:none;background:transparent;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
-.atab.r{background:#ef4444;color:#fff}
-.atab.g{background:#22c55e;color:#fff}
-.atab.a{background:#f59e0b;color:#fff}
-#sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:#fff;border-right:1px solid #f1f5f9;transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.1)}
+#landing{position:fixed;inset:0;z-index:5000;background:#0a0e1a;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+#landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(900px circle at 50% -8%,rgba(239,68,68,.20),transparent 55%),radial-gradient(700px circle at 88% 12%,rgba(239,68,68,.10),transparent 50%),radial-gradient(600px circle at 8% 60%,rgba(59,130,246,.06),transparent 50%)}
+.land-wrap{position:relative;z-index:10}
+.hero{position:relative;width:100%;height:300px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.34) saturate(1.15);transform:scale(1.06);animation:heroZoom 20s ease-in-out infinite alternate}
+@keyframes heroZoom{from{transform:scale(1.06)}to{transform:scale(1.18)}}
+.hero-g{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,14,26,.4) 0%,rgba(10,14,26,.05) 28%,rgba(10,14,26,.8) 76%,#0a0e1a 100%)}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(239,68,68,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,.10) 1px,transparent 1px);background-size:36px 36px;-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 80%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 80%)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both}
+.ltabs{display:flex;background:rgba(30,41,59,.5);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.12);border-radius:18px;padding:5px;gap:4px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.ltab{flex:1;padding:12px 4px;border-radius:13px;border:none;background:transparent;color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;align-items:center;gap:6px}
+.ltab:hover{color:#cbd5e1}
+.ltab.r{background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;box-shadow:0 6px 20px rgba(239,68,68,.5)}
+.ltab.g{background:linear-gradient(135deg,#34d058,#16a34a);color:#fff;box-shadow:0 6px 20px rgba(34,197,94,.5)}
+.ltab.a{background:linear-gradient(135deg,#fbb024,#d97706);color:#fff;box-shadow:0 6px 20px rgba(245,158,11,.5)}
+.scard{position:relative;background:linear-gradient(160deg,rgba(30,41,59,.78),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.14);border-radius:18px;padding:16px 10px;text-align:center;overflow:hidden;transition:transform .25s,border-color .25s}
+.scard:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.32)}
+.scard .n{font-size:27px;font-weight:900;line-height:1;letter-spacing:-.03em}
+.scard .l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-top:6px}
+.ebtn{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:380px;margin:0 auto;padding:20px 24px;border-radius:20px;border:none;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;cursor:pointer;transition:transform .25s,box-shadow .25s;overflow:hidden;isolation:isolate}
+.ebtn::before{content:'';position:absolute;inset:0 auto 0 -120%;width:60%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s;z-index:-1}
+.ebtn:hover::before{left:160%}
+.ebtn:hover{transform:translateY(-3px)}.ebtn:active{transform:scale(.98)}
+.ebtn.r{background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;box-shadow:0 14px 34px rgba(239,68,68,.5)}
+.ebtn.g{background:linear-gradient(135deg,#4ade80,#16a34a);color:#fff;box-shadow:0 14px 34px rgba(34,197,94,.5)}
+.ebtn.a{background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;box-shadow:0 14px 34px rgba(245,158,11,.5)}
+.gcard{background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.14);border-radius:20px}
+.feat{display:flex;align-items:center;gap:8px;padding:11px 12px;background:rgba(30,41,59,.45);border:1px solid rgba(148,163,184,.12);border-radius:13px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.02em}
+.soc{width:50px;height:50px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.14);border-radius:15px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .2s,border-color .2s}
+.soc:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.35)}
+#app{position:fixed;inset:0;display:flex;flex-direction:row;opacity:0;pointer-events:none;transition:opacity .45s;background:#0a0e1a}
+.atabs{display:flex;gap:3px;padding:5px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.12);border-radius:14px}
+.atab{flex:1;padding:10px 4px;border-radius:10px;border:none;background:transparent;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#64748b;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.atab:hover{color:#cbd5e1}
+.atab.r{background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.45)}
+.atab.g{background:linear-gradient(135deg,#34d058,#16a34a);color:#fff;box-shadow:0 4px 14px rgba(34,197,94,.45)}
+.atab.a{background:linear-gradient(135deg,#fbb024,#d97706);color:#fff;box-shadow:0 4px 14px rgba(245,158,11,.45)}
+#sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:linear-gradient(180deg,#0f172a,#0a0e1a);border-right:1px solid rgba(148,163,184,.1);transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,.45)}
 @media(min-width:768px){#sidebar{position:relative;width:360px;transform:translateX(0);box-shadow:none}}
 #sidebar.open{transform:translateX(0)}
 .mapc{flex:1;position:relative;height:100%}
 .mapel{position:absolute;inset:0;z-index:0;display:none}
 .mapel.on{display:block}
-.glass{background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6)}
+.glass{background:rgba(15,23,42,.8);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(148,163,184,.16)}
 .mpin{width:40px;height:40px;border-radius:50% 50% 50% 0;position:absolute;transform:rotate(-45deg);left:50%;top:50%;margin:-20px 0 0 -20px;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;border:2.5px solid #fff}
-.fbtn{padding:9px 5px;border-radius:13px;border:1px solid #e2e8f0;background:#f8fafc;color:#94a3b8;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
-.fbtn.on{background:#0f172a;color:#fff;border-color:#0f172a}
-.cbtn{padding:11px 5px;border-radius:15px;border:2px solid #e2e8f0;background:#f8fafc;color:#64748b;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px}
-.arow{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.fbtn{padding:10px 5px;border-radius:13px;border:1px solid rgba(148,163,184,.14);background:rgba(30,41,59,.55);color:#94a3b8;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.fbtn:hover{border-color:rgba(148,163,184,.32);color:#cbd5e1}
+.fbtn.on{background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(239,68,68,.4)}
+.cbtn{padding:11px 5px;border-radius:15px;border:2px solid rgba(148,163,184,.18);background:rgba(30,41,59,.5);color:#94a3b8;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.arow{display:flex;align-items:flex-start;gap:10px;padding:11px 8px;margin:0 -8px;border-bottom:1px solid rgba(148,163,184,.1);cursor:pointer;border-radius:10px;transition:background .15s}
+.arow:hover{background:rgba(148,163,184,.07)}
 .arow:last-child{border-bottom:none}
 .movl{position:fixed;inset:0;z-index:6000;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);padding:16px}
 @media(min-width:640px){.movl{align-items:center}}
-.mbox{background:#fff;width:100%;max-width:480px;border-radius:28px;box-shadow:0 32px 80px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;animation:sup .38s cubic-bezier(.16,1,.3,1)}
+.mbox{background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:480px;border-radius:28px;box-shadow:0 32px 80px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;animation:sup .38s cubic-bezier(.16,1,.3,1)}
+.mbox input,.mbox textarea{background:rgba(15,23,42,.65)!important;border-color:rgba(148,163,184,.2)!important;color:#e2e8f0!important;color-scheme:dark}
+.mbox input::placeholder,.mbox textarea::placeholder{color:#64748b}
+.mbox input#r-phone{background:transparent!important;border:none!important;color:#fde68a!important}
 @keyframes sup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
 #toast-c{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-.toast{background:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.12);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:700;border-left:4px solid}
+.toast{background:linear-gradient(160deg,#1e293b,#0f172a);color:#e2e8f0;border:1px solid rgba(148,163,184,.16);padding:12px 16px;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:700;border-left:4px solid}
 @keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-#admin-p{position:fixed;inset:0;z-index:6500;display:none;flex-direction:column;background:#f8fafc}
+#admin-p{position:fixed;inset:0;z-index:6500;display:none;flex-direction:column;background:#0a0e1a;background-image:radial-gradient(900px circle at 50% -8%,rgba(239,68,68,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(59,130,246,.06),transparent 50%)}
 #login-m{position:fixed;inset:0;z-index:8000;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);padding:16px}
 #iv{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.93);align-items:center;justify-content:center}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .spin{animation:spin 1s linear infinite}
+.leaflet-popup-content-wrapper{background:linear-gradient(160deg,#1e293b,#0f172a);color:#e2e8f0;border:1px solid rgba(148,163,184,.18);border-radius:16px;box-shadow:0 18px 44px rgba(0,0,0,.55)}
+.leaflet-popup-content{margin:14px 16px;line-height:1.4}
+.leaflet-popup-tip{background:#0f172a;box-shadow:none}
+.leaflet-popup-close-button{color:#94a3b8!important;font-size:20px!important;padding:6px 8px 0 0!important}
+.leaflet-popup-close-button:hover{color:#fff!important;background:transparent!important}
+.leaflet-control-attribution{background:rgba(15,23,42,.72)!important;color:#64748b!important;border-radius:6px 0 0 0;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.leaflet-control-attribution a{color:#94a3b8!important}
 </style>
 
   <!-- PWA Manifest -->
@@ -102,19 +127,30 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <div id="landing">
   <div class="hero">
     <img src="./assets/banner-robos.jpg" id="hero-img" alt="Banner">
+    <div class="hero-grid"></div>
     <div class="hero-g"></div>
   </div>
-  <div style="padding:0 18px 60px;margin-top:-60px;position:relative;z-index:10;max-width:440px;margin-left:auto;margin-right:auto">
-    <div style="display:flex;justify-content:center;margin-bottom:22px">
-      <div id="land-logo" style="width:108px;height:108px;border-radius:24px;overflow:hidden;border:3px solid rgba(239,68,68,.35);box-shadow:0 0 0 6px rgba(239,68,68,.08),0 20px 50px rgba(0,0,0,.55)">
+  <div class="land-wrap" style="padding:0 18px 60px;margin-top:-92px;max-width:440px;margin-left:auto;margin-right:auto">
+    <div class="fu" style="display:flex;justify-content:center;margin-bottom:20px;animation-delay:.05s">
+      <div id="land-logo" style="width:112px;height:112px;border-radius:26px;overflow:hidden;border:3px solid rgba(239,68,68,.4);box-shadow:0 0 0 7px rgba(239,68,68,.07),0 0 60px rgba(239,68,68,.35),0 22px 55px rgba(0,0,0,.6)">
         <img id="land-logo-img" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
       </div>
     </div>
-    <div style="text-align:center;margin-bottom:24px">
-      <h1 id="land-title" style="font-size:42px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1">ROBOS <span style="color:#ef4444">MDP</span></h1>
-      <p style="color:#475569;font-size:12px;font-weight:700;margin-top:7px;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;justify-content:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 1.5s infinite"></span>En vivo · Información ciudadana</p><style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}</style>
+    <div class="fu" style="text-align:center;margin-bottom:18px;animation-delay:.12s">
+      <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);margin-bottom:14px">
+        <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 8px #22c55e;animation:pulse 1.5s infinite"></span>
+        <span style="color:#86efac;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em">En vivo · Tiempo real</span>
+      </div>
+      <h1 id="land-title" style="font-size:46px;font-weight:900;color:#fff;letter-spacing:-.035em;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.5)">ROBOS <span style="color:#ef4444">MDP</span></h1>
+      <p style="color:#94a3b8;font-size:13px;font-weight:600;margin-top:12px;line-height:1.5;max-width:330px;margin-left:auto;margin-right:auto">El mapa colaborativo de <strong style="color:#cbd5e1">Mar del Plata</strong>. Reportá y visualizá lo que pasa en tu barrio.</p>
+      <style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}</style>
     </div>
-    <div class="ltabs" style="margin-bottom:22px">
+    <div class="fu" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:22px;animation-delay:.18s">
+      <div class="feat" style="flex-direction:column;text-align:center;gap:5px"><i data-lucide="users" style="width:16px;height:16px;color:#ef4444"></i>Vecinal</div>
+      <div class="feat" style="flex-direction:column;text-align:center;gap:5px"><i data-lucide="zap" style="width:16px;height:16px;color:#f59e0b"></i>Al instante</div>
+      <div class="feat" style="flex-direction:column;text-align:center;gap:5px"><i data-lucide="shield-check" style="width:16px;height:16px;color:#22c55e"></i>Anónimo</div>
+    </div>
+    <div class="ltabs fu" style="margin-bottom:22px;animation-delay:.24s">
       <button class="ltab r" id="ltab-robos" onclick="switchLT('robos')">
         <i data-lucide="siren" style="width:16px;height:16px"></i>Robos
       </button>
@@ -164,44 +200,47 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
       <button class="ebtn a" onclick="enterApp('pozos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
     </div>
-    <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:16px auto 0;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#0f3b7a,#1d4ed8);border:1px solid rgba(96,165,250,.55);color:#eff6ff;text-decoration:none;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;box-shadow:0 12px 28px rgba(37,99,235,.32)">
+    <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:14px auto 0;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#0f3b7a,#1d4ed8);border:1px solid rgba(96,165,250,.55);color:#eff6ff;text-decoration:none;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;box-shadow:0 12px 28px rgba(37,99,235,.32)">
       <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93c5fd"></i>
       Denuncia policial online
     </a>
     <!-- Redes -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:13px;padding-top:26px;margin-top:26px;border-top:1px solid #1e293b">
-      <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto 4px;padding:15px 24px;border-radius:18px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.borderColor='#475569';this.style.color='#cbd5e1'" onmouseout="this.style.borderColor='#334155';this.style.color='#94a3b8'">📊 Ver estadísticas completas</button>
-      <div style="width:100%;max-width:420px;margin:0 auto;background:#1e293b;border:1px solid #334155;border-radius:18px;padding:20px;text-align:left">
-        <h2 style="font-size:14px;font-weight:900;color:#cbd5e1;text-transform:uppercase;letter-spacing:.02em;margin-bottom:10px">¿Qué es Robos MDP?</h2>
-        <p style="font-size:12px;color:#64748b;line-height:1.7;font-weight:500">Robos MDP es el mapa colaborativo de seguridad vecinal de <strong style="color:#94a3b8">Mar del Plata</strong>. Los vecinos reportan robos, hurtos y entraderas en tiempo real para visibilizar la inseguridad y ayudar a las víctimas a recuperar sus pertenencias.</p>
-        <p style="font-size:12px;color:#64748b;line-height:1.7;font-weight:500;margin-top:8px">También podés reportar <strong style="color:#4ade80">basura acumulada</strong> y <strong style="color:#fbbf24">pozos en la calzada</strong> de tu barrio. Cada reporte suma para construir un mapa real de los problemas de la ciudad.</p>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(148,163,184,.12)">
+      <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:18px;border:1px solid rgba(148,163,184,.18);background:rgba(30,41,59,.6);color:#cbd5e1;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.borderColor='rgba(148,163,184,.4)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(148,163,184,.18)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
+      <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+          <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="info" style="width:16px;height:16px;color:#ef4444"></i></div>
+          <h2 style="font-size:14px;font-weight:900;color:#e2e8f0;text-transform:uppercase;letter-spacing:.02em">¿Qué es Robos MDP?</h2>
+        </div>
+        <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500">Robos MDP es el mapa colaborativo de seguridad vecinal de <strong style="color:#cbd5e1">Mar del Plata</strong>. Los vecinos reportan robos, hurtos y entraderas en tiempo real para visibilizar la inseguridad y ayudar a las víctimas a recuperar sus pertenencias.</p>
+        <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500;margin-top:10px">También podés reportar <strong style="color:#4ade80">basura acumulada</strong> y <strong style="color:#fbbf24">pozos en la calzada</strong> de tu barrio. Cada reporte suma para construir un mapa real de los problemas de la ciudad.</p>
       </div>
-      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:15px 24px;border-radius:18px;border:none;background:#25D366;color:#fff;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px">📲 Compartir con tus vecinos</button>
-      <p style="font-size:10px;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.18em">Contacto &amp; Redes</p>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:16px 24px;border-radius:18px;border:none;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 26px rgba(37,211,102,.32)"><i data-lucide="share-2" style="width:16px;height:16px"></i>Compartir con tus vecinos</button>
+      <p style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.18em;margin-top:8px">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
-        <a href="https://www.instagram.com/robos.mdp/" target="_blank" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#f472b6;text-decoration:none"><span style="font-size:13px;font-weight:900;letter-spacing:0">IG</span></a>
-        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#60a5fa;text-decoration:none"><span style="font-size:13px;font-weight:900;letter-spacing:0">FB</span></a>
-        <a href="mailto:contacto@robosmdp.com.ar" style="width:50px;height:50px;background:#1e293b;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#94a3b8;text-decoration:none"><i data-lucide="mail" style="width:21px;height:21px"></i></a>
+        <a href="https://www.instagram.com/robos.mdp/" target="_blank" class="soc" style="color:#f472b6"><span style="font-size:13px;font-weight:900">IG</span></a>
+        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" class="soc" style="color:#60a5fa"><span style="font-size:13px;font-weight:900">FB</span></a>
+        <a href="mailto:contacto@robosmdp.com.ar" class="soc" style="color:#94a3b8"><i data-lucide="mail" style="width:21px;height:21px"></i></a>
       </div>
-      <p style="font-size:9px;color:#334155;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
+      <p style="font-size:9px;color:#475569;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
     </div>
   </div>
 </div>
 <!-- APP -->
 <div id="app">
   <aside id="sidebar">
-    <div style="padding:16px 18px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+    <div style="padding:16px 18px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
       <div style="display:flex;align-items:center;gap:10px">
-        <div onclick="adminTap()" style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #f1f5f9;cursor:pointer;flex-shrink:0">
+        <div onclick="adminTap()" style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(148,163,184,.18);cursor:pointer;flex-shrink:0">
           <img id="sb-logo" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
         </div>
         <div>
-          <h1 id="sb-title" style="font-size:15px;font-weight:900;color:#0f172a;letter-spacing:-.02em;text-transform:uppercase;line-height:1">ROBOS MDP</h1>
+          <h1 id="sb-title" style="font-size:15px;font-weight:900;color:#f1f5f9;letter-spacing:-.02em;text-transform:uppercase;line-height:1">ROBOS MDP</h1>
           <p id="sb-sub" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;color:#ef4444">SISTEMA OFICIAL</p>
         </div>
       </div>
-      <button onclick="closeSB()" id="sb-x" style="padding:8px;background:#f1f5f9;border:none;border-radius:11px;cursor:pointer">
-        <i data-lucide="x" style="width:17px;height:17px;color:#64748b"></i>
+      <button onclick="closeSB()" id="sb-x" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.14);border-radius:11px;cursor:pointer">
+        <i data-lucide="x" style="width:17px;height:17px;color:#94a3b8"></i>
       </button>
     </div>
     <div style="padding:13px 16px 0;flex-shrink:0">
@@ -214,7 +253,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     <div class="ns" style="flex:1;padding:16px 16px 0">
       <!-- ROBOS -->
       <div id="ss-r">
-        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:10px"><i data-lucide="filter" style="width:10px;height:10px;color:#0f172a"></i>Filtrar</p>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:10px"><i data-lucide="filter" style="width:10px;height:10px;color:#cbd5e1"></i>Filtrar</p>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">
           <button class="fbtn on" id="fb-all" onclick="setF('all')"><i data-lucide="map" style="width:13px;height:13px"></i>Todo</button>
           <button class="fbtn" id="fb-dom" onclick="openDF()"><i data-lucide="credit-card" style="width:13px;height:13px"></i>Dominio</button>
@@ -222,15 +261,15 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
           <button class="fbtn" id="fb-week" onclick="setF('week')"><i data-lucide="history" style="width:13px;height:13px"></i>Semana</button>
           <button class="fbtn" id="fb-month" onclick="setF('month')"><i data-lucide="calendar" style="width:13px;height:13px"></i>Mes</button>
         </div>
-        <div id="df-box" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:13px;padding:13px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)">
+        <div id="df-box" style="display:none;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:13px;padding:13px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.35)">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:11px;font-weight:700;color:#0f172a">Buscar por dominio</span>
+            <span style="font-size:11px;font-weight:700;color:#e2e8f0">Buscar por dominio</span>
             <button onclick="closeDF()" style="background:none;border:none;cursor:pointer;color:#94a3b8"><i data-lucide="x" style="width:14px;height:14px"></i></button>
           </div>
-          <input id="df-input" type="text" placeholder="Ej: FSK 525" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;text-transform:uppercase;outline:none;background:#f8fafc" onkeydown="if(event.key==='Enter')setDF(this.value)">
+          <input id="df-input" type="text" placeholder="Ej: FSK 525" style="width:100%;border:1px solid rgba(148,163,184,.2);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;text-transform:uppercase;outline:none;background:rgba(15,23,42,.8);color:#e2e8f0" onkeydown="if(event.key==='Enter')setDF(this.value)">
           <div style="display:flex;justify-content:space-between;margin-top:8px">
             <button onclick="clearDF()" style="background:none;border:none;font-size:10px;font-weight:600;color:#94a3b8;cursor:pointer">Limpiar</button>
-            <span style="font-size:9px;color:#cbd5e1">Enter para aplicar</span>
+            <span style="font-size:9px;color:#475569">Enter para aplicar</span>
           </div>
         </div>
         <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
@@ -238,13 +277,13 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
-          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:20px;font-weight:900;color:#ef4444" id="sb-r-t">0</div>
-            <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase">Total</div>
+          <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:900;color:#f87171" id="sb-r-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Total</div>
           </div>
-          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:20px;font-weight:900;color:#ef4444" id="sb-r-h">0</div>
-            <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase">Hoy</div>
+          <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:900;color:#f87171" id="sb-r-h">0</div>
+            <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Hoy</div>
           </div>
         </div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#ef4444"></i>Alertas Recientes</p>
@@ -254,13 +293,13 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <div id="ss-b" style="display:none">
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Basura en la vía pública</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:20px;font-weight:900;color:#22c55e" id="sb-b-t">0</div>
-            <div style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase">Total</div>
+          <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:900;color:#4ade80" id="sb-b-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#86efac;text-transform:uppercase">Total</div>
           </div>
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:20px;font-weight:900;color:#22c55e" id="sb-b-r">0</div>
-            <div style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase">Resueltos</div>
+          <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:900;color:#4ade80" id="sb-b-r">0</div>
+            <div style="font-size:9px;font-weight:700;color:#86efac;text-transform:uppercase">Resueltos</div>
           </div>
         </div>
         <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
@@ -274,13 +313,13 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <div id="ss-p" style="display:none">
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Pozos en la calzada</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
-          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:20px;font-weight:900;color:#f59e0b" id="sb-p-t">0</div>
-            <div style="font-size:9px;font-weight:700;color:#fbbf24;text-transform:uppercase">Total</div>
+          <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:900;color:#fbbf24" id="sb-p-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#fcd34d;text-transform:uppercase">Total</div>
           </div>
-          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:20px;font-weight:900;color:#f59e0b" id="sb-p-r">0</div>
-            <div style="font-size:9px;font-weight:700;color:#fbbf24;text-transform:uppercase">Resueltos</div>
+          <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:900;color:#fbbf24" id="sb-p-r">0</div>
+            <div style="font-size:9px;font-weight:700;color:#fcd34d;text-transform:uppercase">Resueltos</div>
           </div>
         </div>
         <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
@@ -291,9 +330,9 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <div id="rl-p"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
       </div>
     </div>
-    <div style="padding:13px 16px;border-top:1px solid #f1f5f9;flex-shrink:0">
-      <button onclick="openStats()" style="width:100%;padding:12px;margin-bottom:8px;background:#0f172a;border:none;border-radius:13px;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">📊 Estadísticas</button>
-      <button onclick="goL()" style="width:100%;padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:13px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
+    <div style="padding:13px 16px;border-top:1px solid rgba(148,163,184,.1);flex-shrink:0">
+      <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:linear-gradient(135deg,#f05252,#dc2626);border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 18px rgba(239,68,68,.4)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
+      <button onclick="goL()" style="width:100%;padding:12px;background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.16);border-radius:13px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
         <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
       </button>
     </div>
@@ -301,14 +340,14 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
   <!-- MAP -->
   <main class="mapc">
     <header class="glass" style="position:absolute;top:16px;left:16px;right:16px;border-radius:17px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 7px;z-index:2000;box-shadow:0 6px 24px rgba(0,0,0,.08)">
-      <button onclick="openSB()" id="sb-open" style="padding:8px;background:#0f172a;color:#fff;border:none;border-radius:11px;cursor:pointer;display:flex" class="md:hidden">
+      <button onclick="openSB()" id="sb-open" style="padding:9px;background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border:none;border-radius:11px;cursor:pointer;display:flex;box-shadow:0 4px 12px rgba(239,68,68,.4)" class="md:hidden">
         <i data-lucide="menu" style="width:16px;height:16px"></i>
       </button>
       <div style="flex:1;margin:0 8px;position:relative;max-width:300px">
-        <input id="msearch" type="text" placeholder="Buscar dirección en MDP..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px 38px 8px 13px;font-size:12px;font-weight:600;outline:none" onfocus="this.style.borderColor='#ef4444'" onblur="this.style.borderColor='#e2e8f0'">
+        <input id="msearch" type="text" placeholder="Buscar dirección en MDP..." autocomplete="off" style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 38px 9px 13px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none" onfocus="this.style.borderColor='#ef4444'" onblur="this.style.borderColor='rgba(148,163,184,.2)'">
         <button onclick="doS('msearch')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:14px;height:14px;color:#94a3b8"></i></button>
       </div>
-      <button onclick="toggleHeat()" id="heat-btn" style="padding:8px 11px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;text-transform:uppercase;color:#94a3b8;flex-shrink:0">
+      <button onclick="toggleHeat()" id="heat-btn" style="padding:9px 11px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;text-transform:uppercase;color:#94a3b8;flex-shrink:0">
         <i data-lucide="flame" style="width:15px;height:15px"></i>
       </button>
     </header>
@@ -316,7 +355,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     <div id="map-b" class="mapel"></div>
     <div id="map-p" class="mapel"></div>
     <div style="position:absolute;bottom:26px;right:18px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
-      <button onclick="locU()" style="width:44px;height:44px;border-radius:13px;background:#fff;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.07)"><i data-lucide="navigation" style="width:19px;height:19px;color:#64748b"></i></button>
+      <button onclick="locU()" style="width:46px;height:46px;border-radius:14px;background:rgba(15,23,42,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4)"><i data-lucide="navigation" style="width:19px;height:19px;color:#cbd5e1"></i></button>
       <button onclick="openM()" id="fab" style="width:56px;height:56px;border-radius:17px;background:#ef4444;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.5);transition:all .2s"><i data-lucide="plus" style="width:24px;height:24px;color:#fff"></i></button>
     </div>
   </main>
@@ -324,109 +363,109 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <!-- MODAL ROBOS -->
 <div class="movl" id="m-robos" onclick="if(event.target===this)closeM('robos')">
   <div class="mbox">
-    <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(239,68,68,.07)">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #f1f5f9;flex-shrink:0"><img src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(239,68,68,.3);flex-shrink:0"><img src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
-          <h2 style="font-size:17px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Denuncia Vecinal</h2>
+          <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Denuncia Vecinal</h2>
           <p style="font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Robos MDP</p>
         </div>
       </div>
-      <button onclick="closeM('robos')" style="padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+      <button onclick="closeM('robos')" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
     </div>
     <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
       <div>
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">¿Qué tipo de robo fue?</label>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-robos"></div>
       </div>
-      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
-        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#0f172a"></i>¿Cuándo sucedió?</label>
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#cbd5e1"></i>¿Cuándo sucedió?</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input id="r-date" type="date" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
-          <input id="r-time" type="time" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="r-date" type="date" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="r-time" type="time" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
         </div>
       </div>
-      <div style="background:#eff6ff;padding:16px;border-radius:16px;border:1px solid #bfdbfe">
-        <label style="font-size:9px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+      <div style="background:rgba(59,130,246,.1);padding:16px;border-radius:16px;border:1px solid rgba(59,130,246,.28)">
+        <label style="font-size:9px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
         <div style="display:flex;align-items:center;gap:10px">
-          <label style="flex:1;cursor:pointer;background:#fff;border:2px dashed #93c5fd;padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#60a5fa"></i><span style="font-size:9px;font-weight:700;color:#3b82f6;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="r-photo" accept="image/*" style="display:none" onchange="prevPh(this,'robos')"></label>
+          <label style="flex:1;cursor:pointer;background:rgba(15,23,42,.5);border:2px dashed rgba(96,165,250,.55);padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#60a5fa"></i><span style="font-size:9px;font-weight:700;color:#60a5fa;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="r-photo" accept="image/*" style="display:none" onchange="prevPh(this,'robos')"></label>
           <div id="r-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="r-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('robos')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
         </div>
       </div>
-      <div id="r-veh" style="display:none;background:#fef2f2;padding:16px;border-radius:16px;border:1px solid #fecaca">
-        <label style="font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:10px">Información del Vehículo</label>
+      <div id="r-veh" style="display:none;background:rgba(239,68,68,.1);padding:16px;border-radius:16px;border:1px solid rgba(239,68,68,.28)">
+        <label style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:10px">Información del Vehículo</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input id="r-brand" type="text" placeholder="Marca / Modelo" style="background:#fff;border:1px solid #fecaca;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
-          <input id="r-plate" type="text" placeholder="Patente" style="background:#fff;border:1px solid #fecaca;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;text-transform:uppercase;outline:none;width:100%">
+          <input id="r-brand" type="text" placeholder="Marca / Modelo" style="border:1px solid #fecaca;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="r-plate" type="text" placeholder="Patente" style="border:1px solid #fecaca;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;text-transform:uppercase;outline:none;width:100%">
         </div>
       </div>
-      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#ef4444"></i>Localización</label>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:10px"><span id="r-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="r-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:rgba(15,23,42,.6);border-radius:10px;border:1px solid rgba(148,163,184,.12);margin-bottom:10px"><span id="r-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="r-lt">Buscá la dirección o tocá el mapa</span></div>
         <div style="position:relative;margin-bottom:7px">
-          <input id="r-addr" type="text" placeholder="Calle y Nro (Ej: Luro 2500)..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.04);outline:none;box-sizing:border-box">
+          <input id="r-addr" type="text" placeholder="Calle y Nro (Ej: Luro 2500)..." autocomplete="off" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.04);outline:none;box-sizing:border-box">
           <button type="button" onclick="doS('r-addr','robos')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
-          <ul id="r-sugg" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.1);max-height:180px;overflow:auto;display:none;z-index:30;padding:3px"></ul>
+          <ul id="r-sugg" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:#1e293b;border:1px solid rgba(148,163,184,.16);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.5);max-height:180px;overflow:auto;display:none;z-index:30;padding:3px"></ul>
         </div>
-        <button type="button" onclick="locM('robos')" style="width:100%;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+        <button type="button" onclick="locM('robos')" style="width:100%;padding:10px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:9px;font-weight:700;color:#cbd5e1;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
       </div>
       <div>
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción del hecho</label>
-        <textarea id="r-desc" placeholder="Relato de lo sucedido... (mínimo 10 caracteres)" oninput="chkR('robos')" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+        <textarea id="r-desc" placeholder="Relato de lo sucedido... (mínimo 10 caracteres)" oninput="chkR('robos')" style="width:100%;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
       </div>
-      <div style="background:#fefce8;padding:11px 14px;border-radius:13px;border:1px solid #fef08a;display:flex;align-items:center;gap:10px">
+      <div style="background:rgba(234,179,8,.1);padding:11px 14px;border-radius:13px;border:1px solid rgba(234,179,8,.28);display:flex;align-items:center;gap:10px">
         <div style="background:#eab308;padding:6px;border-radius:8px;display:flex;flex-shrink:0"><i data-lucide="phone" style="width:12px;height:12px;color:#fff"></i></div>
-        <input id="r-phone" type="tel" placeholder="Teléfono de contacto (Opcional)" style="flex:1;background:transparent;border:none;font-size:11px;font-weight:600;color:#713f12;outline:none">
+        <input id="r-phone" type="tel" placeholder="Teléfono de contacto (Opcional)" style="flex:1;background:transparent;border:none;font-size:11px;font-weight:600;color:#fde68a;outline:none">
       </div>
       <div id="r-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
-      <button id="r-sub" disabled onclick="subR('robos')" style="background:#0f172a;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5">PUBLICAR REPORTE</button>
+      <button id="r-sub" disabled onclick="subR('robos')" style="background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 10px 26px rgba(239,68,68,.45)">PUBLICAR REPORTE</button>
     </form>
   </div>
 </div>
 <!-- MODAL BASURA -->
 <div class="movl" id="m-basura" onclick="if(event.target===this)closeM('basura')">
   <div class="mbox">
-    <div style="padding:20px 24px;border-bottom:1px solid #f0fdf4;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#f0fdf4">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(34,197,94,.08)">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #bbf7d0;flex-shrink:0"><img src="./assets/logo-basura.png" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(34,197,94,.35);flex-shrink:0"><img src="./assets/logo-basura.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
-          <h2 style="font-size:17px;font-weight:900;color:#14532d;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Basura</h2>
+          <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Basura</h2>
           <p style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Basura MDP</p>
         </div>
       </div>
-      <button onclick="closeM('basura')" style="padding:8px;background:#fff;border:1px solid #bbf7d0;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+      <button onclick="closeM('basura')" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
     </div>
     <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
       <div>
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">Tipo de problema</label>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-basura"></div>
       </div>
-      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
-        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#0f172a"></i>¿Cuándo lo viste?</label>
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#cbd5e1"></i>¿Cuándo lo viste?</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input id="b-date" type="date" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
-          <input id="b-time" type="time" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="b-date" type="date" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="b-time" type="time" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
         </div>
       </div>
-      <div style="background:#f0fdf4;padding:16px;border-radius:16px;border:1px solid #bbf7d0">
-        <label style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+      <div style="background:rgba(34,197,94,.1);padding:16px;border-radius:16px;border:1px solid rgba(34,197,94,.28)">
+        <label style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
         <div style="display:flex;align-items:center;gap:10px">
-          <label style="flex:1;cursor:pointer;background:#fff;border:2px dashed #86efac;padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#4ade80"></i><span style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="b-photo" accept="image/*" style="display:none" onchange="prevPh(this,'basura')"></label>
+          <label style="flex:1;cursor:pointer;background:rgba(15,23,42,.5);border:2px dashed rgba(74,222,128,.55);padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#4ade80"></i><span style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="b-photo" accept="image/*" style="display:none" onchange="prevPh(this,'basura')"></label>
           <div id="b-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="b-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('basura')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
         </div>
       </div>
-      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#22c55e"></i>Localización</label>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:10px"><span id="b-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="b-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:rgba(15,23,42,.6);border-radius:10px;border:1px solid rgba(148,163,184,.12);margin-bottom:10px"><span id="b-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="b-lt">Buscá la dirección o tocá el mapa</span></div>
         <div style="position:relative;margin-bottom:7px">
-          <input id="b-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('b-addr','basura')">
+          <input id="b-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('b-addr','basura')">
           <button type="button" onclick="doS('b-addr','basura')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
         </div>
-        <button type="button" onclick="locM('basura')" style="width:100%;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+        <button type="button" onclick="locM('basura')" style="width:100%;padding:10px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:9px;font-weight:700;color:#cbd5e1;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
       </div>
       <div>
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción</label>
-        <textarea id="b-desc" placeholder="Describí el problema..." oninput="chkR('basura')" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+        <textarea id="b-desc" placeholder="Describí el problema..." oninput="chkR('basura')" style="width:100%;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
       </div>
       <div id="b-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
       <button id="b-sub" disabled onclick="subR('basura')" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(34,197,94,.4)">PUBLICAR REPORTE</button>
@@ -436,47 +475,47 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <!-- MODAL POZOS -->
 <div class="movl" id="m-pozos" onclick="if(event.target===this)closeM('pozos')">
   <div class="mbox">
-    <div style="padding:20px 24px;border-bottom:1px solid #fffbeb;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fffbeb">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(245,158,11,.08)">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid #fde68a;flex-shrink:0"><img src="./assets/logo-pozos.png" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(245,158,11,.35);flex-shrink:0"><img src="./assets/logo-pozos.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
-          <h2 style="font-size:17px;font-weight:900;color:#451a03;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Pozo</h2>
+          <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Pozo</h2>
           <p style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Pozos MDP</p>
         </div>
       </div>
-      <button onclick="closeM('pozos')" style="padding:8px;background:#fff;border:1px solid #fde68a;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+      <button onclick="closeM('pozos')" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
     </div>
     <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
       <div>
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">Tipo de problema vial</label>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-pozos"></div>
       </div>
-      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
-        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#0f172a"></i>¿Cuándo lo viste?</label>
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#cbd5e1"></i>¿Cuándo lo viste?</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input id="p-date" type="date" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
-          <input id="p-time" type="time" style="background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="p-date" type="date" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="p-time" type="time" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
         </div>
       </div>
-      <div style="background:#fffbeb;padding:16px;border-radius:16px;border:1px solid #fde68a">
-        <label style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+      <div style="background:rgba(245,158,11,.1);padding:16px;border-radius:16px;border:1px solid rgba(245,158,11,.28)">
+        <label style="font-size:9px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
         <div style="display:flex;align-items:center;gap:10px">
-          <label style="flex:1;cursor:pointer;background:#fff;border:2px dashed #fcd34d;padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#fbbf24"></i><span style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="p-photo" accept="image/*" style="display:none" onchange="prevPh(this,'pozos')"></label>
+          <label style="flex:1;cursor:pointer;background:rgba(15,23,42,.5);border:2px dashed rgba(251,191,36,.55);padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#fbbf24"></i><span style="font-size:9px;font-weight:700;color:#fbbf24;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="p-photo" accept="image/*" style="display:none" onchange="prevPh(this,'pozos')"></label>
           <div id="p-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="p-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('pozos')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
         </div>
       </div>
-      <div style="background:#f8fafc;padding:16px;border-radius:16px;border:1px solid #e2e8f0">
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#f59e0b"></i>Localización</label>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:10px"><span id="p-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="p-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:rgba(15,23,42,.6);border-radius:10px;border:1px solid rgba(148,163,184,.12);margin-bottom:10px"><span id="p-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="p-lt">Buscá la dirección o tocá el mapa</span></div>
         <div style="position:relative;margin-bottom:7px">
-          <input id="p-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('p-addr','pozos')">
+          <input id="p-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('p-addr','pozos')">
           <button type="button" onclick="doS('p-addr','pozos')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
         </div>
-        <button type="button" onclick="locM('pozos')" style="width:100%;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+        <button type="button" onclick="locM('pozos')" style="width:100%;padding:10px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:9px;font-weight:700;color:#cbd5e1;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
       </div>
       <div>
         <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción</label>
-        <textarea id="p-desc" placeholder="Describí el problema..." oninput="chkR('pozos')" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+        <textarea id="p-desc" placeholder="Describí el problema..." oninput="chkR('pozos')" style="width:100%;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
       </div>
       <div id="p-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
       <button id="p-sub" disabled onclick="subR('pozos')" style="background:#f59e0b;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(245,158,11,.4)">PUBLICAR REPORTE</button>
@@ -485,27 +524,27 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 </div>
 <!-- ADMIN PANEL -->
 <div id="admin-p">
-  <header style="padding:16px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#fff;flex-shrink:0">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:42px;height:42px;background:#0f172a;border-radius:13px;display:flex;align-items:center;justify-content:center"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
+      <div style="width:42px;height:42px;background:linear-gradient(135deg,#f05252,#dc2626);border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(239,68,68,.4)"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
       <div>
-        <h2 style="font-size:16px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
+        <h2 style="font-size:16px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Administrador activo • MDP</p>
       </div>
     </div>
     <div style="display:flex;gap:8px">
-      <button onclick="closeAP()" style="padding:8px 16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#64748b">Cerrar</button>
-      <button onclick="doLogout()" style="padding:8px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;cursor:pointer;display:flex"><i data-lucide="log-out" style="width:16px;height:16px;color:#ef4444"></i></button>
+      <button onclick="closeAP()" style="padding:8px 16px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
+      <button onclick="doLogout()" style="padding:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:12px;cursor:pointer;display:flex"><i data-lucide="log-out" style="width:16px;height:16px;color:#ef4444"></i></button>
     </div>
   </header>
   <div class="ns" style="padding:20px 22px">
     <div style="max-width:900px;margin:0 auto">
       <div id="adm-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px"></div>
-      <div style="background:#fff;padding:16px 20px;border-radius:20px;border:1px solid #e2e8f0;margin-bottom:18px">
+      <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));padding:16px 20px;border-radius:20px;border:1px solid rgba(148,163,184,.14);margin-bottom:18px">
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Filtrar reportes</p>
-        <input id="adm-q" type="text" oninput="renderAdm()" placeholder="Buscar por patente o texto..." style="width:100%;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;font-size:12px;font-weight:600;outline:none">
+        <input id="adm-q" type="text" oninput="renderAdm()" placeholder="Buscar por patente o texto..." style="width:100%;padding:10px 14px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none">
       </div>
-      <div style="background:#fff;padding:4px;border-radius:14px;border:1px solid #e2e8f0;display:flex;gap:2px;margin-bottom:14px">
+      <div style="background:rgba(15,23,42,.6);padding:5px;border-radius:14px;border:1px solid rgba(148,163,184,.12);display:flex;gap:3px;margin-bottom:14px">
         <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔴 Robos</button>
         <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟢 Basura</button>
         <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟡 Pozos</button>
@@ -514,18 +553,18 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     </div>
   </div>
   <div id="adm-detail" style="position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);padding:16px">
-    <div style="background:#fff;width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column">
-      <div style="padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;background:#f8fafc">
+    <div style="background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.55)">
+      <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.6)">
         <div style="display:flex;align-items:center;gap:10px">
-          <div style="padding:8px;background:#fff;border-radius:11px;border:1px solid #e2e8f0"><i data-lucide="file-search" style="width:17px;height:17px;color:#0f172a"></i></div>
-          <div><h3 style="font-size:14px;font-weight:900;color:#0f172a;text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
+          <div style="padding:8px;background:rgba(30,41,59,.7);border-radius:11px;border:1px solid rgba(148,163,184,.16)"><i data-lucide="file-search" style="width:17px;height:17px;color:#cbd5e1"></i></div>
+          <div><h3 style="font-size:14px;font-weight:900;color:#f1f5f9;text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
         </div>
-        <button onclick="closeAD()" style="padding:8px;background:#fff;border:1px solid #e2e8f0;border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#64748b"></i></button>
+        <button onclick="closeAD()" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
       </div>
       <div id="adm-detail-body" class="ns" style="padding:20px 24px"></div>
-      <div style="padding:16px 24px;border-top:1px solid #f1f5f9;background:#f8fafc;display:flex;justify-content:space-between;align-items:center">
-        <p style="font-size:9px;font-weight:700;color:#cbd5e1">ID: <span id="adm-did"></span></p>
-        <button onclick="delR()" style="padding:10px 16px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Eliminar</button>
+      <div style="padding:16px 24px;border-top:1px solid rgba(148,163,184,.1);background:rgba(15,23,42,.6);display:flex;justify-content:space-between;align-items:center">
+        <p style="font-size:9px;font-weight:700;color:#475569">ID: <span id="adm-did"></span></p>
+        <button onclick="delR()" style="padding:10px 16px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Eliminar</button>
       </div>
     </div>
   </div>
@@ -533,16 +572,16 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 
 <!-- LOGIN -->
 <div id="login-m" onclick="if(event.target===this)closeLM()">
-  <div style="background:#fff;width:100%;max-width:320px;border-radius:24px;overflow:hidden;animation:sup .38s cubic-bezier(.16,1,.3,1)">
-    <div style="padding:24px;border-bottom:1px solid #f1f5f9;text-align:center">
-      <div style="width:48px;height:48px;background:#0f172a;border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px"><i data-lucide="shield" style="width:22px;height:22px;color:#fff"></i></div>
-      <h2 style="font-size:17px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em">Acceso Admin</h2>
+  <div style="background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:320px;border-radius:24px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55);animation:sup .38s cubic-bezier(.16,1,.3,1)">
+    <div style="padding:24px;border-bottom:1px solid rgba(148,163,184,.1);text-align:center">
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,#f05252,#dc2626);border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px;box-shadow:0 6px 18px rgba(239,68,68,.4)"><i data-lucide="shield" style="width:22px;height:22px;color:#fff"></i></div>
+      <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Acceso Admin</h2>
     </div>
     <div style="padding:24px;display:flex;flex-direction:column;gap:12px">
       <input id="adm-email" type="email" value="admin@robosmdp.com.ar" style="display:none">
-      <input id="adm-pass" type="password" placeholder="Clave de administrador" style="width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:12px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doLogin()">
+      <input id="adm-pass" type="password" placeholder="Clave de administrador" style="width:100%;padding:12px 14px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doLogin()">
       <div id="adm-err" style="font-size:10px;font-weight:700;color:#ef4444;text-align:center;display:none"></div>
-      <button onclick="doLogin()" style="background:#0f172a;color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer">Ingresar</button>
+      <button onclick="doLogin()" style="background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.4)">Ingresar</button>
       <button onclick="closeLM()" style="background:none;border:none;font-size:11px;font-weight:600;color:#94a3b8;cursor:pointer">Cancelar</button>
     </div>
   </div>
@@ -550,40 +589,40 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 
 <!-- IMAGE VIEWER -->
 <!-- ===== ESTADISTICAS ===== -->
-<div id="stats-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:#f8fafc">
-  <header style="padding:16px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#fff;flex-shrink:0">
+<div id="stats-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:#0a0e1a;background-image:radial-gradient(900px circle at 50% -8%,rgba(239,68,68,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(59,130,246,.06),transparent 50%)">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:42px;height:42px;background:#0f172a;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px">📊</div>
+      <div style="width:42px;height:42px;background:linear-gradient(135deg,#f05252,#dc2626);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 6px 18px rgba(239,68,68,.4)">📊</div>
       <div>
-        <h2 style="font-size:16px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:-.02em">Estadísticas MDP</h2>
+        <h2 style="font-size:16px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Estadísticas MDP</h2>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Datos en tiempo real • Mar del Plata</p>
       </div>
     </div>
-    <button onclick="closeStats()" style="padding:9px 18px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#64748b">Cerrar</button>
+    <button onclick="closeStats()" style="padding:9px 18px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
   </header>
   <div class="ns" style="flex:1;padding:20px 22px">
     <div style="max-width:900px;margin:0 auto">
-      <div style="background:#fff;padding:4px;border-radius:14px;border:1px solid #e2e8f0;display:flex;gap:2px;margin-bottom:16px">
+      <div style="background:rgba(15,23,42,.6);padding:5px;border-radius:14px;border:1px solid rgba(148,163,184,.12);display:flex;gap:3px;margin-bottom:16px">
         <button id="st-tab-robos" onclick="switchStatsTab('robos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔴 Robos</button>
         <button id="st-tab-basura" onclick="switchStatsTab('basura')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟢 Basura</button>
         <button id="st-tab-pozos" onclick="switchStatsTab('pozos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟡 Pozos</button>
       </div>
       <div id="st-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px 20px;margin-bottom:14px">
+      <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px;margin-bottom:14px">
         <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">📈 Evolución últimos 6 meses</p>
         <div style="position:relative;height:220px"><canvas id="ch-meses"></canvas></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px" id="st-grid2">
-        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px 20px">
+        <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px">
           <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">🎯 Por categoría</p>
           <div style="position:relative;height:220px"><canvas id="ch-cats"></canvas></div>
         </div>
-        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px 20px">
+        <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px">
           <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">📅 Por día de la semana</p>
           <div style="position:relative;height:220px"><canvas id="ch-dias"></canvas></div>
         </div>
       </div>
-      <p style="text-align:center;font-size:9px;color:#cbd5e1;font-weight:600;padding-bottom:20px">Datos generados en tiempo real desde los reportes vecinales · robosmdp.com.ar</p>
+      <p style="text-align:center;font-size:9px;color:#475569;font-weight:600;padding-bottom:20px">Datos generados en tiempo real desde los reportes vecinales · robosmdp.com.ar</p>
     </div>
   </div>
 </div>
@@ -692,7 +731,7 @@ function selC(mod,id,color){
     const b=document.getElementById('cb-'+mod+'-'+c.id);
     if(!b) return;
     if(c.id===id){b.style.borderColor=color;b.style.background=color+'18';b.style.color=color;b.style.transform='scale(1.05)';}
-    else{b.style.borderColor='#e2e8f0';b.style.background='#f8fafc';b.style.color='#64748b';b.style.transform='scale(1)';}
+    else{b.style.borderColor='rgba(148,163,184,.18)';b.style.background='rgba(30,41,59,.5)';b.style.color='#94a3b8';b.style.transform='scale(1)';}
   });
   if(mod==='robos'){const vf=document.getElementById('r-veh');if(vf)vf.style.display=['auto','moto','bicicleta'].includes(id)?'block':'none';}
   chkR(mod);
@@ -774,7 +813,7 @@ function initMap(tab){
   const key=tab[0];
   if(G.maps[tab]){G.maps[tab].invalidateSize();renderMk(tab);return;}
   const m=L.map('map-'+key,{zoomControl:false}).setView([-38.0055,-57.5426],13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO'}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO'}).addTo(m);
   G.maps[tab]=m;
   m.on('click',e=>{
     const modal=document.getElementById('m-'+tab);
@@ -919,14 +958,14 @@ function mkPopup(r,cat,tab){
   const ts=getReportDate(r);
   const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
   const hora=ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-  const res=tab!=='robos'&&r.resolved?'<span style="font-size:9px;font-weight:700;background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:999px">✓ Resuelto</span>':'';
-  const resAction=tab!=='robos'?'<button onclick="publicToggleResolved(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:8px 10px;border:none;border-radius:10px;background:'+(r.resolved?'#f1f5f9':'#dcfce7')+';color:'+(r.resolved?'#64748b':'#15803d')+';font-size:10px;font-weight:900;text-transform:uppercase;cursor:pointer">'+(r.resolved?'Marcar pendiente':'Marcar resuelto')+'</button>':'';
+  const res=tab!=='robos'&&r.resolved?'<span style="font-size:9px;font-weight:700;background:rgba(34,197,94,.18);color:#4ade80;padding:2px 7px;border-radius:999px">✓ Resuelto</span>':'';
+  const resAction=tab!=='robos'?'<button onclick="publicToggleResolved(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:8px 10px;border:none;border-radius:10px;background:'+(r.resolved?'rgba(148,163,184,.15)':'rgba(34,197,94,.18)')+';color:'+(r.resolved?'#94a3b8':'#4ade80')+';font-size:10px;font-weight:900;text-transform:uppercase;cursor:pointer">'+(r.resolved?'Marcar pendiente':'Marcar resuelto')+'</button>':'';
   return '<div style="font-family:Inter,sans-serif;min-width:180px;max-width:240px">'+
     '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">'+
     '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+'</div>'+
-    '<p style="font-size:12px;font-weight:600;color:#0f172a;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
+    '<p style="font-size:12px;font-weight:600;color:#e2e8f0;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
     '<p style="font-size:9px;color:#94a3b8;font-weight:600">'+fecha+' · '+hora+'</p>'+
-    (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#0f172a;background:#f1f5f9;padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
+    (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#e2e8f0;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
     (r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;border-radius:8px;margin-top:6px;max-height:100px;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'')+resAction+
     '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
 }
@@ -935,14 +974,14 @@ function mkPopup(r,cat,tab){
 function renderRL(tab){
   const el=document.getElementById('rl-'+tab[0]); if(!el) return;
   const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,10);
-  if(!list.length){el.innerHTML='<div style="text-align:center;padding:20px 0;color:#cbd5e1;font-size:9px;font-weight:700;text-transform:uppercase">Sin reportes</div>';return;}
+  if(!list.length){el.innerHTML='<div style="text-align:center;padding:20px 0;color:#475569;font-size:9px;font-weight:700;text-transform:uppercase">Sin reportes</div>';return;}
   el.innerHTML=list.map(r=>{
     const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
     const ts=getReportDate(r);
     return '<div class="arow" onclick="flyTo(\''+tab+'\',\''+r.id+'\')">'+
       '<div style="width:7px;height:7px;border-radius:50%;background:'+cat.color+';flex-shrink:0;margin-top:3px"></div>'+
       '<div style="flex:1;min-width:0">'+
-      '<p style="font-size:11px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||cat.label)+'</p>'+
+      '<p style="font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||cat.label)+'</p>'+
       '<p style="font-size:9px;color:#94a3b8;font-weight:600;margin-top:1px">'+cat.label+' · '+tAgo(ts)+'</p></div></div>';
   }).join('');
 }
@@ -1077,7 +1116,7 @@ async function doS(inputId,mod){
         const suggId=inputId.split('-')[0]+'-sugg';
         const sugg=document.getElementById(suggId);
         if(sugg){
-sugg.innerHTML=data.slice(0,4).map(d=>'<li class="sugg-item" style="padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:1px solid #f1f5f9;list-style:none" onclick="pickSugg('+d.lat+','+d.lon+',\''+targetMod+'\',\''+suggId+'\')">'+d.display_name.split(',').slice(0,2).join(',')+'</li>').join('');
+sugg.innerHTML=data.slice(0,4).map(d=>'<li class="sugg-item" style="padding:9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;cursor:pointer;border-bottom:1px solid rgba(148,163,184,.12);list-style:none" onclick="pickSugg('+d.lat+','+d.lon+',\''+targetMod+'\',\''+suggId+'\')">'+d.display_name.split(',').slice(0,2).join(',')+'</li>').join('');
           sugg.style.display='block';
         }
       }
@@ -1234,23 +1273,23 @@ function renderAdm(){
   data.forEach(r=>{counts[r.type]=(counts[r.type]||0)+1;});
   grid.innerHTML=cats.map(c=>{
     const on=G.admCatF===c.id;
-    return '<div onclick="togAdmC(\''+c.id+'\')" style="background:#fff;padding:14px;border-radius:18px;border:'+(on?'2px solid '+c.color:'1px solid #e2e8f0')+';text-align:center;cursor:pointer;'+(on?'transform:scale(1.04)':'')+'">'+
-      '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:'+c.color+'18;color:'+c.color+'"><i data-lucide="'+c.icon+'" style="width:16px;height:16px"></i></div>'+
+    return '<div onclick="togAdmC(\''+c.id+'\')" style="background:linear-gradient(160deg,rgba(30,41,59,.78),rgba(15,23,42,.78));padding:14px;border-radius:18px;border:'+(on?'2px solid '+c.color:'1px solid rgba(148,163,184,.14)')+';text-align:center;cursor:pointer;'+(on?'transform:scale(1.04)':'')+'">'+
+      '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:'+c.color+'22;color:'+c.color+'"><i data-lucide="'+c.icon+'" style="width:16px;height:16px"></i></div>'+
       '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">'+c.label+'</p>'+
-      '<p style="font-size:22px;font-weight:900;color:#0f172a">'+(counts[c.id]||0)+'</p></div>';
+      '<p style="font-size:22px;font-weight:900;color:#f1f5f9">'+(counts[c.id]||0)+'</p></div>';
   }).join('');
   const filtered=data.filter(r=>(!G.admCatF||r.type===G.admCatF)&&(!q||r.description?.toLowerCase().includes(q)||(r.vehiclePlate||'').toLowerCase().includes(q))).sort((a,b)=>getReportDate(b)-getReportDate(a));
   list.innerHTML=filtered.map(r=>{
     const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
     const ts=getReportDate(r);
     const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' '+ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-    const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:4px 10px;background:'+(r.resolved?'#dcfce7':'#f1f5f9')+';color:'+(r.resolved?'#16a34a':'#94a3b8')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'<i data-lucide="chevron-right" style="width:16px;height:16px;color:#cbd5e1;flex-shrink:0"></i>';
-    return '<div onclick="openAD(\''+r.id+'\')" style="background:#fff;border-radius:18px;border:1px solid #e2e8f0;padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:11px">'+
+    const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:4px 10px;background:'+(r.resolved?'rgba(34,197,94,.18)':'rgba(148,163,184,.15)')+';color:'+(r.resolved?'#4ade80':'#94a3b8')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'<i data-lucide="chevron-right" style="width:16px;height:16px;color:#475569;flex-shrink:0"></i>';
+    return '<div onclick="openAD(\''+r.id+'\')" style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border-radius:18px;border:1px solid rgba(148,163,184,.14);padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:11px">'+
       '<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">'+
       '<div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:18px;height:18px;color:#fff"></i></div>'+
       '<div style="min-width:0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">'+cat.label+' · '+fecha+'</p>'+
-      '<p style="font-size:12px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||'')+'</p></div></div>'+resBtn+'</div>';
-  }).join('')||'<div style="text-align:center;padding:32px 0;color:#cbd5e1;font-size:11px;font-weight:700">Sin reportes</div>';
+      '<p style="font-size:12px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||'')+'</p></div></div>'+resBtn+'</div>';
+  }).join('')||'<div style="text-align:center;padding:32px 0;color:#475569;font-size:11px;font-weight:700">Sin reportes</div>';
   safeIcons();
 }
 
@@ -1315,16 +1354,16 @@ function openAD(id){
   document.getElementById('adm-detail-body').innerHTML=
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
     +'<div><span style="background:'+cat.color+';color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'
-    +'<p style="font-size:20px;font-weight:900;color:#0f172a;margin-top:12px;line-height:1.2">'+(r.description?.substring(0,60)||'')+(r.description?.length>60?'...':'')+'</p>'
-    +'<div style="background:#f8fafc;padding:14px;border-radius:14px;margin-top:12px;border:1px solid #e2e8f0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Fecha y hora</p><p style="font-size:12px;font-weight:700;color:#0f172a">'+fecha+'</p></div>'
-    +(r.vehiclePlate?'<div style="background:#f8fafc;padding:14px;border-radius:14px;margin-top:9px;border:1px solid #e2e8f0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Patente</p><p style="font-size:15px;font-weight:900;color:#0f172a">'+r.vehiclePlate.toUpperCase()+'</p></div>':'')
-    +(r.phone?'<div style="background:#fefce8;padding:13px;border-radius:14px;margin-top:9px;border:1px solid #fef08a"><p style="font-size:9px;font-weight:700;color:#ca8a04;text-transform:uppercase;margin-bottom:3px">Contacto</p><p style="font-size:12px;font-weight:700;color:#0f172a">'+r.phone+'</p></div>':'')
+    +'<p style="font-size:20px;font-weight:900;color:#f1f5f9;margin-top:12px;line-height:1.2">'+(r.description?.substring(0,60)||'')+(r.description?.length>60?'...':'')+'</p>'
+    +'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:12px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Fecha y hora</p><p style="font-size:12px;font-weight:700;color:#e2e8f0">'+fecha+'</p></div>'
+    +(r.vehiclePlate?'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:9px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Patente</p><p style="font-size:15px;font-weight:900;color:#e2e8f0">'+r.vehiclePlate.toUpperCase()+'</p></div>':'')
+    +(r.phone?'<div style="background:rgba(234,179,8,.1);padding:13px;border-radius:14px;margin-top:9px;border:1px solid rgba(234,179,8,.28)"><p style="font-size:9px;font-weight:700;color:#eab308;text-transform:uppercase;margin-bottom:3px">Contacto</p><p style="font-size:12px;font-weight:700;color:#fde68a">'+r.phone+'</p></div>':'')
     +'</div><div>'
-    +'<div style="aspect-ratio:16/9;background:#f1f5f9;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center">'
-    +(r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'<i data-lucide="image-off" style="width:36px;height:36px;color:#cbd5e1"></i>')
-    +'</div><div style="background:#f8fafc;padding:14px;border-radius:14px;margin-top:10px;border:1px solid #e2e8f0;max-height:130px;overflow:auto">'
+    +'<div style="aspect-ratio:16/9;background:rgba(15,23,42,.6);border-radius:14px;overflow:hidden;border:1px solid rgba(148,163,184,.14);display:flex;align-items:center;justify-content:center">'
+    +(r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'<i data-lucide="image-off" style="width:36px;height:36px;color:#475569"></i>')
+    +'</div><div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:10px;border:1px solid rgba(148,163,184,.14);max-height:130px;overflow:auto">'
     +'<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Relato completo</p>'
-    +'<p style="font-size:12px;font-weight:500;color:#475569;line-height:1.6">'+(r.description||'')+'</p></div></div></div>';
+    +'<p style="font-size:12px;font-weight:500;color:#cbd5e1;line-height:1.6">'+(r.description||'')+'</p></div></div></div>';
   document.getElementById('adm-detail').style.display='flex';
   safeIcons();
 }
@@ -1385,7 +1424,7 @@ function renderStats(){
     :{n:data.filter(r=>r.resolved).length,l:'Resueltos'};
   const cards=[{n:tot,l:'Total histórico'},{n:mes,l:'Este mes'},{n:sem,l:'Últimos 7 días'},extra];
   document.getElementById('st-cards').innerHTML=cards.map(c=>
-    '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px 12px;text-align:center">'+
+    '<div style="background:linear-gradient(160deg,rgba(30,41,59,.78),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.14);border-radius:16px;padding:16px 12px;text-align:center">'+
     '<div style="font-size:26px;font-weight:900;color:'+color+'">'+c.n+'</div>'+
     '<div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">'+c.l+'</div></div>'
   ).join('');
@@ -1403,7 +1442,7 @@ function renderStats(){
     type:'bar',
     data:{labels:mesesLbl,datasets:[{data:mesesVal,backgroundColor:color+'cc',borderRadius:8,maxBarThickness:48}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'#f1f5f9'}},
+      scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'rgba(148,163,184,.12)'}},
       x:{ticks:{font:{family:'Inter',size:10,weight:'700'},color:'#64748b'},grid:{display:false}}}}
   });
 
@@ -1413,7 +1452,7 @@ function renderStats(){
   if(STCH.cats)STCH.cats.destroy();
   STCH.cats=new Chart(document.getElementById('ch-cats'),{
     type:'doughnut',
-    data:{labels:cats.map(c=>c.label),datasets:[{data:catCounts,backgroundColor:cats.map(c=>c.color),borderWidth:3,borderColor:'#fff'}]},
+    data:{labels:cats.map(c=>c.label),datasets:[{data:catCounts,backgroundColor:cats.map(c=>c.color),borderWidth:3,borderColor:'#0f172a'}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
       plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:10,weight:'600'},color:'#64748b',padding:10,usePointStyle:true,pointStyleWidth:8}}}}
   });
@@ -1427,7 +1466,7 @@ function renderStats(){
     type:'bar',
     data:{labels:diasLbl,datasets:[{data:diasVal,backgroundColor:color+'99',borderRadius:6,maxBarThickness:34}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'#f1f5f9'}},
+      scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'rgba(148,163,184,.12)'}},
       x:{ticks:{font:{family:'Inter',size:9,weight:'700'},color:'#64748b'},grid:{display:false}}}}
   });
 }
