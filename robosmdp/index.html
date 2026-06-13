@@ -72,6 +72,16 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 .feat{display:flex;align-items:center;gap:8px;padding:11px 12px;background:rgba(30,41,59,.45);border:1px solid rgba(148,163,184,.12);border-radius:13px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.02em}
 .soc{width:50px;height:50px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.14);border-radius:15px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .2s,border-color .2s}
 .soc:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.35)}
+.ltitle{font-size:11px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:7px}
+.hscroll{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:2px 2px 8px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.rcard{scroll-snap-align:start;flex:0 0 198px;background:linear-gradient(160deg,rgba(30,41,59,.72),rgba(15,23,42,.8));border:1px solid rgba(148,163,184,.14);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s}
+.rcard:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.32)}
+.rcard-ph{height:96px;width:100%;object-fit:cover;display:block}
+.rcard-noph{height:96px;display:flex;align-items:center;justify-content:center}
+.step{flex:1;min-width:0;background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:18px;padding:18px 11px;text-align:center}
+.step-ic{width:46px;height:46px;border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+#land-minimap{height:200px;width:100%;border-radius:18px;overflow:hidden;border:1px solid rgba(148,163,184,.14);background:#0a0e1a}
 #app{position:fixed;inset:0;display:flex;flex-direction:row;opacity:0;pointer-events:none;transition:opacity .45s;background:#0a0e1a}
 .atabs{display:flex;gap:3px;padding:5px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.12);border-radius:14px}
 .atab{flex:1;padding:10px 4px;border-radius:10px;border:none;background:transparent;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#64748b;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
@@ -204,6 +214,46 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93c5fd"></i>
       Denuncia policial online
     </a>
+    <!-- ===== ÚLTIMOS REPORTES (carrusel) ===== -->
+    <div style="margin-top:32px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <p class="ltitle"><i data-lucide="radio" style="width:14px;height:14px;color:#ef4444"></i>Últimos reportes</p>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:pulse 1.5s infinite"></span>En vivo</span>
+      </div>
+      <div id="land-feed" class="hscroll">
+        <div style="flex:0 0 100%;text-align:center;padding:26px 0;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Cargando reportes…</div>
+      </div>
+    </div>
+    <!-- ===== MINI MAPA DECORATIVO ===== -->
+    <div style="margin-top:26px">
+      <p class="ltitle" style="margin-bottom:12px"><i data-lucide="map-pin" style="width:14px;height:14px;color:#ef4444"></i>Mar del Plata en tiempo real</p>
+      <div style="position:relative">
+        <div id="land-minimap"></div>
+        <div style="position:absolute;inset:0;z-index:500;pointer-events:none;border-radius:18px;box-shadow:inset 0 0 70px rgba(10,14,26,.75)"></div>
+        <div style="position:absolute;left:12px;bottom:12px;z-index:600;pointer-events:none;background:rgba(15,23,42,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(148,163,184,.16);border-radius:10px;padding:6px 11px;font-size:9px;font-weight:700;color:#cbd5e1;text-transform:uppercase;letter-spacing:.05em"><span id="land-minimap-count" style="color:#ef4444">0</span> puntos recientes</div>
+      </div>
+    </div>
+    <!-- ===== CÓMO FUNCIONA ===== -->
+    <div style="margin-top:32px">
+      <p class="ltitle" style="justify-content:center;margin-bottom:14px">Cómo funciona</p>
+      <div style="display:flex;gap:9px">
+        <div class="step">
+          <div class="step-ic" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)"><i data-lucide="map-pin" style="width:20px;height:20px;color:#ef4444"></i></div>
+          <p style="font-size:12px;font-weight:800;color:#e2e8f0;margin-bottom:5px">Reportá</p>
+          <p style="font-size:10px;color:#64748b;font-weight:500;line-height:1.5">Marcá el lugar y sumá una foto en segundos.</p>
+        </div>
+        <div class="step">
+          <div class="step-ic" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)"><i data-lucide="share-2" style="width:20px;height:20px;color:#22c55e"></i></div>
+          <p style="font-size:12px;font-weight:800;color:#e2e8f0;margin-bottom:5px">Compartí</p>
+          <p style="font-size:10px;color:#64748b;font-weight:500;line-height:1.5">Avisá a tus vecinos por WhatsApp y redes.</p>
+        </div>
+        <div class="step">
+          <div class="step-ic" style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3)"><i data-lucide="bell" style="width:20px;height:20px;color:#f59e0b"></i></div>
+          <p style="font-size:12px;font-weight:800;color:#e2e8f0;margin-bottom:5px">Mantenete informado</p>
+          <p style="font-size:10px;color:#64748b;font-weight:500;line-height:1.5">Seguí el mapa y las estadísticas de tu barrio.</p>
+        </div>
+      </div>
+    </div>
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(148,163,184,.12)">
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:18px;border:1px solid rgba(148,163,184,.18);background:rgba(30,41,59,.6);color:#cbd5e1;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.borderColor='rgba(148,163,184,.4)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(148,163,184,.18)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
@@ -707,6 +757,7 @@ window.onload=()=>{
   safeIcons();
   buildCats();
   setDates();
+  setTimeout(initLandMiniMap,300);
   if(auth) auth.signOut().catch(()=>{});
   const ms=document.getElementById('msearch');
   if(ms) ms.addEventListener('keydown',e=>{if(e.key==='Enter')doS('msearch');});
@@ -842,7 +893,7 @@ function loadReports(tab){
     loadReportsREST(tab);
     return;
   }
-  G.unsub[tab]=db.collection(cfg.col).limit(180).onSnapshot(snap=>{
+  G.unsub[tab]=db.collection(cfg.col).limit(2000).onSnapshot(snap=>{
     G.loaded[tab]=true;
     G.data[tab]=snap.docs
       .map(d=>normalizeReport({id:d.id,...d.data()}))
@@ -898,12 +949,19 @@ async function loadReportsREST(tab){
 
 async function fetchCollectionREST(col,tab){
   const all=[];
-  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
-    '/databases/(default)/documents/'+col+'?pageSize=180&key='+FB_CONFIG.apiKey;
-  const res=await fetch(url);
-  const json=await res.json();
-  if(!res.ok) throw new Error(json.error?.message||'No se pudo leer Firestore');
-  all.push(...(json.documents||[]));
+  const base='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
+    '/databases/(default)/documents/'+col+'?pageSize=300&key='+FB_CONFIG.apiKey;
+  // Paginación: Firestore puede recortar la página por tamaño de respuesta
+  // (los reportes con foto son pesados), así que seguimos nextPageToken hasta agotar.
+  let pageToken=null,guard=0;
+  do{
+    const url=base+(pageToken?'&pageToken='+encodeURIComponent(pageToken):'');
+    const res=await fetch(url);
+    const json=await res.json();
+    if(!res.ok) throw new Error(json.error?.message||'No se pudo leer Firestore');
+    all.push(...(json.documents||[]));
+    pageToken=json.nextPageToken||null;
+  }while(pageToken&&++guard<500);
   if(tab&&all.length){
     G.loaded[tab]=true;
     G.data[tab]=all.map(doc=>{
@@ -923,7 +981,7 @@ function renderMk(tab){
   if(G.cluster[tab]){map.removeLayer(G.cluster[tab]);G.cluster[tab]=null;}
   G.markers[tab].forEach(m=>map.removeLayer(m));
   G.markers[tab]=[];
-  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,500);
+  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,2000);
   const cfgColor=MOD_CFG[tab].color;
   const useCluster=window.L&&L.markerClusterGroup;
   const group=useCluster?L.markerClusterGroup({
@@ -1028,6 +1086,73 @@ function updLandingStats(tab){
     if(t==='robos') setT('ls-r-h',G.loaded[t]?all.filter(r=>getReportDate(r)>=hs).length:'-');
     else setT('ls-'+p+'-r',G.loaded[t]?all.filter(r=>r.resolved).length:'-');
   });
+  updLandingVisuals();
+}
+
+// ===== LANDING VISUALS (carrusel + mini-mapa) =====
+let _landVizT=null;
+function updLandingVisuals(){
+  clearTimeout(_landVizT);
+  _landVizT=setTimeout(()=>{ renderLandingFeed(); renderLandMiniMap(); },120);
+}
+
+function combinedRecent(n){
+  const out=[];
+  ['robos','basura','pozos'].forEach(tab=>{
+    (G.data[tab]||[]).forEach(r=>{
+      const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
+      out.push({tab,r,cat,ts:getReportDate(r)});
+    });
+  });
+  return out.sort((a,b)=>b.ts-a.ts).slice(0,n);
+}
+
+function renderLandingFeed(){
+  const el=document.getElementById('land-feed'); if(!el) return;
+  const items=combinedRecent(10);
+  if(!items.length){
+    const anyLoaded=G.loaded.robos||G.loaded.basura||G.loaded.pozos;
+    el.innerHTML='<div style="flex:0 0 100%;text-align:center;padding:26px 0;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">'+(anyLoaded?'Sin reportes todavía':'Cargando reportes…')+'</div>';
+    return;
+  }
+  el.innerHTML=items.map(it=>{
+    const desc=it.r.description||it.cat.label;
+    const short=desc.length>64?desc.slice(0,64)+'…':desc;
+    const thumb=it.r.photoBase64
+      ? '<img class="rcard-ph" src="'+it.r.photoBase64+'" alt="">'
+      : '<div class="rcard-noph" style="background:linear-gradient(135deg,'+it.cat.color+'26,'+it.cat.color+'08)"><i data-lucide="'+it.cat.icon+'" style="width:28px;height:28px;color:'+it.cat.color+'"></i></div>';
+    return '<div class="rcard" onclick="enterApp(\''+it.tab+'\')">'+thumb+
+      '<div style="padding:11px 12px 13px">'+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:7px;height:7px;border-radius:50%;background:'+it.cat.color+';flex-shrink:0"></span>'+
+      '<span style="font-size:9px;font-weight:800;color:'+it.cat.color+';text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.cat.label+'</span></div>'+
+      '<p style="font-size:11px;font-weight:600;color:#cbd5e1;line-height:1.4;height:31px;overflow:hidden">'+short+'</p>'+
+      '<p style="font-size:9px;font-weight:700;color:#64748b;margin-top:7px">'+tAgo(it.ts)+'</p>'+
+      '</div></div>';
+  }).join('');
+  safeIcons();
+}
+
+function initLandMiniMap(){
+  if(G.miniMap||!window.L) return;
+  const el=document.getElementById('land-minimap'); if(!el) return;
+  const m=L.map('land-minimap',{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false,inertia:false}).setView([-38.0055,-57.5426],12);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
+  G.miniMap=m; G.miniLayer=L.layerGroup().addTo(m);
+  setTimeout(()=>{try{m.invalidateSize();}catch(e){}},200);
+}
+
+function renderLandMiniMap(){
+  initLandMiniMap();
+  if(!G.miniMap||!G.miniLayer) return;
+  G.miniLayer.clearLayers();
+  let plotted=0;
+  combinedRecent(60).forEach(it=>{
+    const c=getCoords(it.r); if(!c) return;
+    L.circleMarker(c,{radius:5,color:'#fff',weight:1.5,opacity:.9,fillColor:it.cat.color,fillOpacity:.85}).addTo(G.miniLayer);
+    plotted++;
+  });
+  const cnt=document.getElementById('land-minimap-count'); if(cnt) cnt.textContent=plotted;
+  try{G.miniMap.invalidateSize();}catch(e){}
 }
 
 // ===== FILTERS =====
