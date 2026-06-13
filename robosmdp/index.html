@@ -104,6 +104,9 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 .arow{display:flex;align-items:flex-start;gap:10px;padding:11px 8px;margin:0 -8px;border-bottom:1px solid rgba(148,163,184,.1);cursor:pointer;border-radius:10px;transition:background .15s}
 .arow:hover{background:rgba(148,163,184,.07)}
 .arow:last-child{border-bottom:none}
+.arow-desc{font-size:11px;font-weight:600;color:#cbd5e1;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@keyframes landFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.land-show{animation:landFade .5s cubic-bezier(.16,1,.3,1) both}
 .movl{position:fixed;inset:0;z-index:6000;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);padding:16px}
 @media(min-width:640px){.movl{align-items:center}}
 .mbox{background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:480px;border-radius:28px;box-shadow:0 32px 80px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;animation:sup .38s cubic-bezier(.16,1,.3,1)}
@@ -210,12 +213,23 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
       <button class="ebtn a" onclick="enterApp('pozos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
     </div>
+    <!-- Contador de visitas -->
+    <div id="ls-visit-card" class="scard" style="display:none;align-items:center;justify-content:space-between;text-align:left;padding:15px 18px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:44px;height:44px;border-radius:13px;background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.32);display:flex;align-items:center;justify-content:center;font-size:21px">👥</div>
+        <div>
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8">Visitas</div>
+          <div style="font-size:9px;font-weight:700;color:#64748b;margin-top:3px"><span id="ls-visit-today" style="color:#a5b4fc">0</span> hoy</div>
+        </div>
+      </div>
+      <div class="n" id="ls-visit-total" style="color:#a5b4fc;font-size:26px">0</div>
+    </div>
     <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:14px auto 0;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#0f3b7a,#1d4ed8);border:1px solid rgba(96,165,250,.55);color:#eff6ff;text-decoration:none;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;box-shadow:0 12px 28px rgba(37,99,235,.32)">
       <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93c5fd"></i>
       Denuncia policial online
     </a>
     <!-- ===== ÚLTIMOS REPORTES (carrusel) ===== -->
-    <div style="margin-top:32px">
+    <div id="land-feed-sec" style="margin-top:32px;display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <p class="ltitle"><i data-lucide="radio" style="width:14px;height:14px;color:#ef4444"></i>Últimos reportes</p>
         <span style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:pulse 1.5s infinite"></span>En vivo</span>
@@ -225,7 +239,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
     </div>
     <!-- ===== MINI MAPA DECORATIVO ===== -->
-    <div style="margin-top:26px">
+    <div id="land-map-sec" style="margin-top:26px;display:none">
       <p class="ltitle" style="margin-bottom:12px"><i data-lucide="map-pin" style="width:14px;height:14px;color:#ef4444"></i>Mar del Plata en tiempo real</p>
       <div style="position:relative">
         <div id="land-minimap"></div>
@@ -336,7 +350,8 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
             <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Hoy</div>
           </div>
         </div>
-        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#ef4444"></i>Alertas Recientes</p>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#ef4444"></i>Todos los reportes</p>
+        <div style="position:relative;margin-bottom:10px"><input id="q-r" type="text" oninput="onRLSearch('robos')" placeholder="Buscar por tipo, texto o patente..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-r"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
       </div>
       <!-- BASURA -->
@@ -356,7 +371,8 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
-        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#22c55e"></i>Reportes Recientes</p>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#22c55e"></i>Todos los reportes</p>
+        <div style="position:relative;margin-bottom:10px"><input id="q-b" type="text" oninput="onRLSearch('basura')" placeholder="Buscar por tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-b"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
       </div>
       <!-- POZOS -->
@@ -376,7 +392,8 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
-        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="clock" style="width:10px;height:10px;color:#f59e0b"></i>Reportes Recientes</p>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#f59e0b"></i>Todos los reportes</p>
+        <div style="position:relative;margin-bottom:10px"><input id="q-p" type="text" oninput="onRLSearch('pozos')" placeholder="Buscar por tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-p"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
       </div>
     </div>
@@ -757,7 +774,7 @@ window.onload=()=>{
   safeIcons();
   buildCats();
   setDates();
-  setTimeout(initLandMiniMap,300);
+  initVisitCounter();
   if(auth) auth.signOut().catch(()=>{});
   const ms=document.getElementById('msearch');
   if(ms) ms.addEventListener('keydown',e=>{if(e.key==='Enter')doS('msearch');});
@@ -981,6 +998,8 @@ function renderMk(tab){
   if(G.cluster[tab]){map.removeLayer(G.cluster[tab]);G.cluster[tab]=null;}
   G.markers[tab].forEach(m=>map.removeLayer(m));
   G.markers[tab]=[];
+  if(!G.mkById)G.mkById={robos:{},basura:{},pozos:{}};
+  G.mkById[tab]={};
   const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,2000);
   const cfgColor=MOD_CFG[tab].color;
   const useCluster=window.L&&L.markerClusterGroup;
@@ -1007,6 +1026,7 @@ function renderMk(tab){
     if(useCluster) group.addLayer(mk);
     else mk.addTo(map);
     G.markers[tab].push(mk);
+    if(r.id) G.mkById[tab][r.id]=mk;
   });
   if(useCluster){map.addLayer(group);G.cluster[tab]=group;}
   safeIcons();
@@ -1028,28 +1048,78 @@ function mkPopup(r,cat,tab){
     '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
 }
 
-// ===== RECENT LIST =====
+// ===== LISTA DE REPORTES (paginada + buscador) =====
+const RL_PAGE=20;
+function rlState(){ if(!G.rlShown)G.rlShown={robos:RL_PAGE,basura:RL_PAGE,pozos:RL_PAGE}; if(!G.rlQuery)G.rlQuery={robos:'',basura:'',pozos:''}; }
+function rlBase(tab){
+  rlState();
+  let list=(tab==='robos'?applyF(G.data[tab]):(G.data[tab]||[])).slice();
+  const q=G.rlQuery[tab];
+  if(q){
+    list=list.filter(r=>{
+      const cat=CATS[tab].find(c=>c.id===r.type);
+      const hay=((r.description||'')+' '+(cat?cat.label:'')+' '+(r.vehiclePlate||'')).toLowerCase();
+      return hay.includes(q);
+    });
+  }
+  return list;
+}
+function onRLSearch(tab){
+  rlState();
+  const i=document.getElementById('q-'+tab[0]);
+  G.rlQuery[tab]=(i?i.value:'').toLowerCase().trim();
+  G.rlShown[tab]=RL_PAGE;
+  renderRL(tab);
+}
+function moreRL(tab){ rlState(); G.rlShown[tab]=(G.rlShown[tab]||RL_PAGE)+RL_PAGE; renderRL(tab); }
 function renderRL(tab){
   const el=document.getElementById('rl-'+tab[0]); if(!el) return;
-  const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,10);
-  if(!list.length){el.innerHTML='<div style="text-align:center;padding:20px 0;color:#475569;font-size:9px;font-weight:700;text-transform:uppercase">Sin reportes</div>';return;}
-  el.innerHTML=list.map(r=>{
+  rlState();
+  const full=rlBase(tab);
+  if(!full.length){
+    const msg=G.rlQuery[tab]?'Sin resultados':(G.loaded[tab]?'Sin reportes':'Sincronizando...');
+    el.innerHTML='<div style="text-align:center;padding:22px 0;color:#475569;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">'+msg+'</div>';
+    return;
+  }
+  const shown=Math.min(G.rlShown[tab]||RL_PAGE,full.length);
+  let html=full.slice(0,shown).map(r=>{
     const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
     const ts=getReportDate(r);
     return '<div class="arow" onclick="flyTo(\''+tab+'\',\''+r.id+'\')">'+
-      '<div style="width:7px;height:7px;border-radius:50%;background:'+cat.color+';flex-shrink:0;margin-top:3px"></div>'+
+      '<div style="width:8px;height:8px;border-radius:50%;background:'+cat.color+';flex-shrink:0;margin-top:4px"></div>'+
       '<div style="flex:1;min-width:0">'+
-      '<p style="font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||cat.label)+'</p>'+
-      '<p style="font-size:9px;color:#94a3b8;font-weight:600;margin-top:1px">'+cat.label+' · '+tAgo(ts)+'</p></div></div>';
+        '<div style="display:flex;align-items:center;gap:6px">'+
+          '<span style="font-size:10px;font-weight:800;color:'+cat.color+';text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+cat.label+'</span>'+
+          (r.photoBase64?'<span style="font-size:11px;flex-shrink:0">📷</span>':'')+
+        '</div>'+
+        '<p class="arow-desc">'+(r.description||cat.label)+'</p>'+
+        '<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:3px">'+tAgo(ts)+'</p>'+
+      '</div></div>';
   }).join('');
+  if(full.length>shown){
+    html+='<button onclick="moreRL(\''+tab+'\')" style="width:100%;margin:10px 0 6px;padding:11px;background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.16);border-radius:12px;color:#cbd5e1;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="chevron-down" style="width:13px;height:13px"></i>Ver más ('+(full.length-shown)+')</button>';
+  }else if(shown>RL_PAGE){
+    html+='<div style="text-align:center;padding:8px 0 4px;color:#475569;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">'+full.length+' reportes</div>';
+  }
+  el.innerHTML=html;
+  safeIcons();
 }
 
 function flyTo(tab,id){
   const r=G.data[tab].find(x=>x.id===id);
   const coords=getCoords(r);
   if(!r||!coords) return;
-  const map=G.maps[tab]; if(!map) return;
-  map.setView(coords,17); closeSB();
+  const map=G.maps[tab]; if(!map){closeSB();return;}
+  closeSB();
+  map.setView(coords,17);
+  const mk=G.mkById&&G.mkById[tab]?G.mkById[tab][id]:null;
+  if(!mk) return;
+  const open=()=>{try{mk.openPopup();}catch(e){}};
+  if(G.cluster[tab]&&G.cluster[tab].zoomToShowLayer){
+    try{G.cluster[tab].zoomToShowLayer(mk,open);}catch(e){setTimeout(open,450);}
+  }else{
+    setTimeout(open,450);
+  }
 }
 
 // ===== STATS =====
@@ -1107,14 +1177,15 @@ function combinedRecent(n){
   return out.sort((a,b)=>b.ts-a.ts).slice(0,n);
 }
 
+function showLandSection(sec){
+  if(!sec) return;
+  if(sec.style.display==='none'){ sec.style.display='block'; sec.classList.add('land-show'); }
+}
 function renderLandingFeed(){
-  const el=document.getElementById('land-feed'); if(!el) return;
+  const el=document.getElementById('land-feed'),sec=document.getElementById('land-feed-sec'); if(!el) return;
   const items=combinedRecent(10);
-  if(!items.length){
-    const anyLoaded=G.loaded.robos||G.loaded.basura||G.loaded.pozos;
-    el.innerHTML='<div style="flex:0 0 100%;text-align:center;padding:26px 0;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">'+(anyLoaded?'Sin reportes todavía':'Cargando reportes…')+'</div>';
-    return;
-  }
+  if(!items.length){ if(sec) sec.style.display='none'; return; }
+  showLandSection(sec);
   el.innerHTML=items.map(it=>{
     const desc=it.r.description||it.cat.label;
     const short=desc.length>64?desc.slice(0,64)+'…':desc;
@@ -1142,17 +1213,72 @@ function initLandMiniMap(){
 }
 
 function renderLandMiniMap(){
+  const sec=document.getElementById('land-map-sec');
+  const pts=[];
+  combinedRecent(60).forEach(it=>{const c=getCoords(it.r); if(c) pts.push({c,color:it.cat.color});});
+  if(!pts.length){ if(sec) sec.style.display='none'; return; }
+  showLandSection(sec);               // mostrar antes de crear el mapa (Leaflet necesita tamaño)
   initLandMiniMap();
   if(!G.miniMap||!G.miniLayer) return;
   G.miniLayer.clearLayers();
-  let plotted=0;
-  combinedRecent(60).forEach(it=>{
-    const c=getCoords(it.r); if(!c) return;
-    L.circleMarker(c,{radius:5,color:'#fff',weight:1.5,opacity:.9,fillColor:it.cat.color,fillOpacity:.85}).addTo(G.miniLayer);
-    plotted++;
-  });
-  const cnt=document.getElementById('land-minimap-count'); if(cnt) cnt.textContent=plotted;
-  try{G.miniMap.invalidateSize();}catch(e){}
+  pts.forEach(p=>L.circleMarker(p.c,{radius:5,color:'#fff',weight:1.5,opacity:.9,fillColor:p.color,fillOpacity:.85}).addTo(G.miniLayer));
+  const cnt=document.getElementById('land-minimap-count'); if(cnt) cnt.textContent=pts.length;
+  setTimeout(()=>{try{G.miniMap.invalidateSize();}catch(e){}},80);
+}
+
+// ===== CONTADOR DE VISITAS =====
+let _visTotal=0,_visToday=0;
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function renderVisits(total,today){
+  _visTotal=total; _visToday=today;
+  setT('ls-visit-total',total);
+  const lt=document.getElementById('ls-visit-today'); if(lt) lt.textContent=today;
+  const at=document.getElementById('adm-visit-total'); if(at) at.textContent=(total||0).toLocaleString('es-AR');
+  const ah=document.getElementById('adm-visit-today'); if(ah) ah.textContent=today;
+  const card=document.getElementById('ls-visit-card'); if(card&&card.style.display==='none'){card.style.display='flex';card.classList.add('land-show');}
+}
+function visitsAdminCard(){
+  return '<div style="background:linear-gradient(160deg,rgba(99,102,241,.18),rgba(15,23,42,.78));border:1px solid rgba(99,102,241,.32);border-radius:18px;padding:14px;text-align:center">'+
+    '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,.22);font-size:18px">👥</div>'+
+    '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">Visitas</p>'+
+    '<p style="font-size:22px;font-weight:900;color:#a5b4fc"><span id="adm-visit-total">'+(_visTotal||0).toLocaleString('es-AR')+'</span></p>'+
+    '<p style="font-size:9px;font-weight:700;color:#64748b;margin-top:2px"><span id="adm-visit-today">'+(_visToday||0)+'</span> hoy</p></div>';
+}
+function initVisitCounter(){
+  const counted=sessionStorage.getItem('visitCounted');
+  if(db&&firebase&&firebase.firestore){
+    const ref=db.collection('stats').doc('visitas');
+    if(!counted){
+      const today=todayStr();
+      db.runTransaction(tx=>tx.get(ref).then(snap=>{
+        const d=snap.exists?snap.data():{};
+        const total=(d.total||0)+1;
+        const total_hoy=(d.fecha_ultima===today)?((d.total_hoy||0)+1):1;
+        tx.set(ref,{total,total_hoy,fecha_ultima:today},{merge:true});
+      })).then(()=>sessionStorage.setItem('visitCounted','1')).catch(e=>console.warn('visitas tx',e));
+    }
+    ref.onSnapshot(snap=>{const d=snap.data()||{};renderVisits(d.total||0,d.total_hoy||0);},
+      e=>{console.warn('visitas onSnapshot',e);restVisits(counted);});
+  }else{
+    restVisits(counted);
+  }
+}
+async function restVisits(counted){
+  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+'/databases/(default)/documents/stats/visitas?key='+FB_CONFIG.apiKey;
+  try{
+    const r=await fetch(url); const j=await r.json(); const f=j.fields||{};
+    let total=parseInt(f.total?.integerValue||f.total?.doubleValue||0)||0;
+    let total_hoy=parseInt(f.total_hoy?.integerValue||f.total_hoy?.doubleValue||0)||0;
+    const fecha=f.fecha_ultima?.stringValue||''; const today=todayStr();
+    if(!counted){
+      total+=1; total_hoy=(fecha===today)?total_hoy+1:1;
+      const mask='updateMask.fieldPaths=total&updateMask.fieldPaths=total_hoy&updateMask.fieldPaths=fecha_ultima';
+      await fetch(url+'&'+mask,{method:'PATCH',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({fields:{total:{integerValue:String(total)},total_hoy:{integerValue:String(total_hoy)},fecha_ultima:{stringValue:today}}})});
+      sessionStorage.setItem('visitCounted','1');
+    }
+    renderVisits(total,total_hoy);
+  }catch(e){console.warn('visitas REST',e);}
 }
 
 // ===== FILTERS =====
@@ -1402,7 +1528,7 @@ function renderAdm(){
       '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:'+c.color+'22;color:'+c.color+'"><i data-lucide="'+c.icon+'" style="width:16px;height:16px"></i></div>'+
       '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">'+c.label+'</p>'+
       '<p style="font-size:22px;font-weight:900;color:#f1f5f9">'+(counts[c.id]||0)+'</p></div>';
-  }).join('');
+  }).join('')+visitsAdminCard();
   const filtered=data.filter(r=>(!G.admCatF||r.type===G.admCatF)&&(!q||r.description?.toLowerCase().includes(q)||(r.vehiclePlate||'').toLowerCase().includes(q))).sort((a,b)=>getReportDate(b)-getReportDate(a));
   list.innerHTML=filtered.map(r=>{
     const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
