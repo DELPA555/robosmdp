@@ -138,6 +138,8 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .leaflet-popup-close-button:hover{color:#fff!important;background:transparent!important}
 .leaflet-control-attribution{background:rgba(15,23,42,.72)!important;color:#64748b!important;border-radius:6px 0 0 0;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .leaflet-control-attribution a{color:#94a3b8!important}
+.ph-spin{width:13px;height:13px;border:2px solid rgba(148,163,184,.3);border-top-color:#94a3b8;border-radius:50%;display:inline-block;animation:phspin .7s linear infinite}
+@keyframes phspin{to{transform:rotate(360deg)}}
 </style>
 
   <!-- PWA Manifest -->
@@ -739,6 +741,8 @@ const G={
   photo:{robos:null,basura:null,pozos:null},
   unsub:{robos:null,basura:null,pozos:null},
   loaded:{robos:false,basura:false,pozos:false},
+  photoCache:{},
+  mkById:{robos:{},basura:{},pozos:{}},
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
 };
@@ -906,100 +910,141 @@ function loadAllReports(){
   ['robos','basura','pozos'].forEach(loadReports);
 }
 
+// Carga liviana: NUNCA trae photoBase64 (las fotos se piden on-demand al abrir un
+// reporte). Esto evita descargar ~100MB de imágenes solo para pintar contadores,
+// marcadores y la lista. Las fotos se resuelven en hydratePhoto().
 function loadReports(tab){
   if(G.unsub[tab]) return;
-  const cfg=MOD_CFG[tab];
-  if(cfg.cols){
-    G.unsub[tab]=true;
-    loadReportsMulti(tab);
-    return;
-  }
-  if(!db){
-    G.unsub[tab]=true;
-    loadReportsREST(tab);
-    return;
-  }
-  G.unsub[tab]=db.collection(cfg.col).limit(2000).onSnapshot(snap=>{
+  G.unsub[tab]=true;
+  // 1) Cache local: si hay datos de <5 min, mostrarlos YA (carga instantánea percibida)
+  const cached=readCache(tab);
+  if(cached){
+    G.data[tab]=cached;
     G.loaded[tab]=true;
-    G.data[tab]=snap.docs
-      .map(d=>normalizeReport({id:d.id,...d.data()}))
-      .sort((a,b)=>getReportDate(b)-getReportDate(a));
-    if(!G.data[tab].length&&tab==='robos') loadReportsREST(tab);
     renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
-  }, err=>{
-    console.error('Error cargando '+tab+':',err);
-    loadReportsREST(tab);
-  });
-}
-
-async function loadReportsMulti(tab){
-  const cfg=MOD_CFG[tab];
-  const tried=[];
-  for(const col of cfg.cols){
-    try{
-      const data=await fetchCollectionREST(col,tab);
-      tried.push(col+': '+data.length);
-      if(data.length){
-        cfg.col=col;
-        G.loaded[tab]=true;
-        G.data[tab]=data.map(normalizeReport).sort((a,b)=>getReportDate(b)-getReportDate(a));
-        renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
-        return;
-      }
-    }catch(err){
-      tried.push(col+': '+(err.message||'error'));
-    }
   }
-  console.warn('No se encontraron reportes. Rutas probadas:',tried);
-  G.loaded[tab]=true;
-  G.data[tab]=[];
-  renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
-  showToast('No se leyeron reportes: '+tried.join(' | '),'r');
+  // 2) Siempre refrescar en background con la carga liviana
+  loadReportsLight(tab);
 }
 
-async function loadReportsREST(tab){
+async function loadReportsLight(tab){
   const cfg=MOD_CFG[tab];
   try{
+    const data=await fetchCollectionLight(cfg.col);
     G.loaded[tab]=true;
-    G.data[tab]=(await fetchCollectionREST(cfg.col,tab)).map(normalizeReport).sort((a,b)=>getReportDate(b)-getReportDate(a));
+    G.data[tab]=data.map(normalizeReport).sort((a,b)=>getReportDate(b)-getReportDate(a));
+    writeCache(tab,G.data[tab]);
     renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
-    if(tab==='robos'&&!G.data[tab].length) showToast('No se encontraron reportes en Firebase','r');
   }catch(err){
-    console.error('Error REST '+tab+':',err);
+    console.error('Error carga liviana '+tab+':',err);
     G.loaded[tab]=true;
-    G.data[tab]=[];
-    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
-    showToast('Firebase no devolvió reportes','r');
+    if(!G.data[tab].length){
+      renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+      if(tab==='robos') showToast('No se pudieron leer reportes','r');
+    }
   }
 }
 
-async function fetchCollectionREST(col,tab){
-  const all=[];
-  const base='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
-    '/databases/(default)/documents/'+col+'?pageSize=300&key='+FB_CONFIG.apiKey;
-  // Paginación: Firestore puede recortar la página por tamaño de respuesta
-  // (los reportes con foto son pesados), así que seguimos nextPageToken hasta agotar.
-  let pageToken=null,guard=0;
-  do{
-    const url=base+(pageToken?'&pageToken='+encodeURIComponent(pageToken):'');
-    const res=await fetch(url);
-    const json=await res.json();
-    if(!res.ok) throw new Error(json.error?.message||'No se pudo leer Firestore');
-    all.push(...(json.documents||[]));
-    pageToken=json.nextPageToken||null;
-  }while(pageToken&&++guard<500);
-  if(tab&&all.length){
-    G.loaded[tab]=true;
-    G.data[tab]=all.map(doc=>{
-      const id=(doc.name||'').split('/').pop();
-      return normalizeReport({id,...decodeFirestoreFields(doc.fields||{})});
-    }).sort((a,b)=>getReportDate(b)-getReportDate(a));
-    renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
-  }
-  return all.map(doc=>{
-      const id=(doc.name||'').split('/').pop();
-      return {id,...decodeFirestoreFields(doc.fields||{})};
+// Todos los campos que la UI necesita EXCEPTO photoBase64 (y demás campos pesados).
+// Incluye nombres alternativos por compatibilidad con datos heterogéneos (coords en
+// "location", fechas en "createdAt", etc.). Los que no existan se omiten sin error.
+const LIGHT_FIELDS=['type','description','lat','lng','timestamp','vehiclePlate','vehicleBrand',
+  'resolved','incidentDate','incidentTime','phone','location','ubicacion','coordinates',
+  'coordenadas','coords','position','posicion','geo','geopoint','geoPoint','latitude','longitude',
+  'latitud','longitud','createdAt','created_at','fecha','date','tipo','category','categoria','kind',
+  'descripcion','desc','relato','detalle','details','text','title','address','direccion',
+  'patente','dominio','plate'];
+
+// Separa una ruta de colección (posiblemente anidada) en documento padre + collectionId.
+// "a/b/c/d/reports" -> {parent:"a/b/c/d", collectionId:"reports"}; "basura" -> {parent:"", collectionId:"basura"}
+function restCollPaths(col){
+  const parts=col.split('/').filter(Boolean);
+  const collectionId=parts.pop();
+  return {parent:parts.join('/'),collectionId};
+}
+
+// runQuery con select.fields = única forma de excluir photoBase64 en la query.
+async function fetchCollectionLight(col){
+  const {parent,collectionId}=restCollPaths(col);
+  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
+    '/databases/(default)/documents'+(parent?'/'+parent:'')+':runQuery?key='+FB_CONFIG.apiKey;
+  const body={structuredQuery:{
+    from:[{collectionId}],
+    select:{fields:LIGHT_FIELDS.map(f=>({fieldPath:f}))},
+    limit:5000
+  }};
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const json=await res.json();
+  if(!res.ok) throw new Error(json.error?.message||(Array.isArray(json)&&json[0]?.error?.message)||'runQuery falló');
+  if(Array.isArray(json)&&json[0]&&json[0].error) throw new Error(json[0].error.message);
+  const out=[];
+  (Array.isArray(json)?json:[]).forEach(row=>{
+    if(!row.document) return;
+    const id=(row.document.name||'').split('/').pop();
+    out.push({id,...decodeFirestoreFields(row.document.fields||{})});
   });
+  return out;
+}
+
+// ===== CACHE LOCAL (carga liviana, sin fotos) =====
+const CACHE_TTL=5*60*1000;
+function cacheKey(tab){return 'rmdp_light_'+tab;}
+function writeCache(tab,data){
+  try{ localStorage.setItem(cacheKey(tab),JSON.stringify({t:Date.now(),d:data})); }
+  catch(e){ /* quota excedida u otro: ignorar, la app sigue con datos en memoria */ }
+}
+function readCache(tab){
+  try{
+    const raw=localStorage.getItem(cacheKey(tab));
+    if(!raw) return null;
+    const obj=JSON.parse(raw);
+    if(!obj||!Array.isArray(obj.d)||(Date.now()-obj.t)>CACHE_TTL) return null;
+    return obj.d;
+  }catch(e){ return null; }
+}
+
+// ===== FOTOS ON-DEMAND =====
+// GET individual con field mask: trae SOLO photoBase64 del documento puntual.
+function fetchPhoto(col,id){
+  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+
+    '/databases/(default)/documents/'+col+'/'+id+'?mask.fieldPaths=photoBase64&key='+FB_CONFIG.apiKey;
+  return fetch(url).then(r=>r.json()).then(j=>{
+    const v=j.fields&&j.fields.photoBase64;
+    return v?decodeFirestoreValue(v):'';
+  }).catch(e=>{ console.warn('fetchPhoto',e); return ''; });
+}
+
+function photoLoaderHTML(variant){
+  return variant==='adm'
+    ? '<div style="font-size:11px;color:#94a3b8;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px"><span class="ph-spin"></span>Cargando foto...</div>'
+    : '<div style="margin-top:6px;padding:12px;text-align:center;font-size:10px;color:#94a3b8;font-weight:700;background:rgba(148,163,184,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;gap:7px"><span class="ph-spin"></span>Cargando foto...</div>';
+}
+function renderPhotoSlot(slot,p,variant){
+  if(p){
+    const st=variant==='adm'
+      ? 'width:100%;height:100%;object-fit:cover;cursor:pointer'
+      : 'width:100%;border-radius:8px;margin-top:6px;max-height:100px;object-fit:cover;cursor:pointer';
+    slot.innerHTML='<img src="'+p+'" style="'+st+'" onclick="openIV(this.src)">';
+  }else{
+    slot.innerHTML = variant==='adm'
+      ? '<i data-lucide="image-off" style="width:36px;height:36px;color:#475569"></i>'
+      : '';
+    if(variant==='adm') safeIcons();
+  }
+}
+// Hidrata el slot de foto de un reporte (popup de mapa o detalle admin).
+// Cachea el resultado (string o '') en G.photoCache para no re-pedir la misma foto.
+async function hydratePhoto(tab,id,variant){
+  variant=variant||'pop';
+  const slot=document.getElementById('ph-'+variant+'-'+id);
+  if(!slot) return;
+  const cached=G.photoCache[id];
+  if(cached!==undefined){ renderPhotoSlot(slot,cached,variant); return; }
+  slot.innerHTML=photoLoaderHTML(variant);
+  const p=await fetchPhoto(MOD_CFG[tab].col,id);
+  G.photoCache[id]=p;
+  const s2=document.getElementById('ph-'+variant+'-'+id); // el slot pudo cerrarse
+  if(s2) renderPhotoSlot(s2,p,variant);
 }
 
 function renderMk(tab){
@@ -1031,7 +1076,7 @@ function renderMk(tab){
     });
     const mk=L.marker(coords,{icon});
     mk.bindPopup(mkPopup(r,cat,tab));
-    mk.on('popupopen',()=>safeIcons());
+    mk.on('popupopen',()=>{safeIcons();hydratePhoto(tab,r.id,'pop');});
     if(useCluster) group.addLayer(mk);
     else mk.addTo(map);
     G.markers[tab].push(mk);
@@ -1053,7 +1098,7 @@ function mkPopup(r,cat,tab){
     '<p style="font-size:12px;font-weight:600;color:#e2e8f0;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
     '<p style="font-size:9px;color:#94a3b8;font-weight:600">'+fecha+' · '+hora+'</p>'+
     (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#e2e8f0;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
-    (r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;border-radius:8px;margin-top:6px;max-height:100px;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'')+resAction+
+    '<div id="ph-pop-'+r.id+'"></div>'+resAction+
     '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
 }
 
@@ -1620,12 +1665,13 @@ function openAD(id){
     +(r.phone?'<div style="background:rgba(234,179,8,.1);padding:13px;border-radius:14px;margin-top:9px;border:1px solid rgba(234,179,8,.28)"><p style="font-size:9px;font-weight:700;color:#eab308;text-transform:uppercase;margin-bottom:3px">Contacto</p><p style="font-size:12px;font-weight:700;color:#fde68a">'+r.phone+'</p></div>':'')
     +'</div><div>'
     +'<div style="aspect-ratio:16/9;background:rgba(15,23,42,.6);border-radius:14px;overflow:hidden;border:1px solid rgba(148,163,184,.14);display:flex;align-items:center;justify-content:center">'
-    +(r.photoBase64?'<img src="'+r.photoBase64+'" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openIV(\''+r.photoBase64+'\')">':'<i data-lucide="image-off" style="width:36px;height:36px;color:#475569"></i>')
+    +'<div id="ph-adm-'+r.id+'" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"></div>'
     +'</div><div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:10px;border:1px solid rgba(148,163,184,.14);max-height:130px;overflow:auto">'
     +'<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Relato completo</p>'
     +'<p style="font-size:12px;font-weight:500;color:#cbd5e1;line-height:1.6">'+(r.description||'')+'</p></div></div></div>';
   document.getElementById('adm-detail').style.display='flex';
   safeIcons();
+  hydratePhoto(admTab,r.id,'adm');
 }
 
 function closeAD(){document.getElementById('adm-detail').style.display='none';}
