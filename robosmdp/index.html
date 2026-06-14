@@ -152,6 +152,11 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 @keyframes phspin{to{transform:rotate(360deg)}}
 .donate-btn{padding:13px 6px;border-radius:12px;border:1px solid rgba(234,179,8,.3);background:rgba(234,179,8,.1);color:#fbbf24;font-size:13px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;transition:transform .18s,background .18s}
 .donate-btn:hover{background:rgba(234,179,8,.18);transform:translateY(-2px)}
+.hotzone{position:relative;width:46px;height:46px;display:flex;align-items:center;justify-content:center}
+.hotzone::before,.hotzone::after{content:'';position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--hz);opacity:.55;animation:hzpulse 1.9s ease-out infinite}
+.hotzone::after{animation-delay:.95s}
+.hotzone-core{position:relative;width:34px;height:34px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 14px rgba(0,0,0,.45);z-index:1}
+@keyframes hzpulse{0%{transform:scale(.7);opacity:.6}100%{transform:scale(2.4);opacity:0}}
 </style>
 
   <!-- PWA Manifest -->
@@ -1026,7 +1031,7 @@ async function loadReportsLight(tab){
 // Incluye nombres alternativos por compatibilidad con datos heterogéneos (coords en
 // "location", fechas en "createdAt", etc.). Los que no existan se omiten sin error.
 const LIGHT_FIELDS=['type','description','lat','lng','timestamp','vehiclePlate','vehicleBrand',
-  'resolved','incidentDate','incidentTime','phone','location','ubicacion','coordinates',
+  'resolved','concerns','incidentDate','incidentTime','phone','location','ubicacion','coordinates',
   'coordenadas','coords','position','posicion','geo','geopoint','geoPoint','latitude','longitude',
   'latitud','longitud','createdAt','created_at','fecha','date','tipo','category','categoria','kind',
   'descripcion','desc','relato','detalle','details','text','title','address','direccion',
@@ -1160,7 +1165,60 @@ function renderMk(tab){
     if(r.id) G.mkById[tab][r.id]=mk;
   });
   if(useCluster){map.addLayer(group);G.cluster[tab]=group;}
+  // Zonas calientes: concentración reciente (>=3 reportes del mismo tipo, <~120m, <7 días).
+  // Marcador ADICIONAL (no reemplaza el clustering por cantidad), siempre visible sobre el mapa.
+  detectHotZones(tab,list).forEach(zone=>{
+    const hzIcon=L.divIcon({className:'',html:'<div class="hotzone" style="--hz:'+cfgColor+'"><div class="hotzone-core" style="background:'+cfgColor+'">🔥</div></div>',iconSize:[46,46],iconAnchor:[23,23]});
+    const hz=L.marker(zone.center,{icon:hzIcon,zIndexOffset:1000});
+    hz.bindPopup(hotZonePopup(zone,tab,cfgColor));
+    hz.on('popupopen',()=>safeIcons());
+    hz.addTo(map);
+    G.markers[tab].push(hz); // se limpia en el próximo renderMk
+  });
   safeIcons();
+}
+
+// Distancia aproximada en metros entre dos [lat,lng] (haversine)
+function distMeters(a,b){
+  const R=6371000,toR=Math.PI/180;
+  const dLat=(b[0]-a[0])*toR,dLng=(b[1]-a[1])*toR;
+  const x=Math.sin(dLat/2)**2+Math.cos(a[0]*toR)*Math.cos(b[0]*toR)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));
+}
+function detectHotZones(tab,list){
+  const now=Date.now(),week=7*864e5,RADIO=120;
+  const pts=[];
+  list.forEach(r=>{
+    const c=getCoords(r); if(!c) return;
+    const d=getReportDate(r); if(!d||d.getTime()<=0||(now-d.getTime())>week) return;
+    pts.push({r,c});
+  });
+  const used=new Array(pts.length).fill(false),zones=[];
+  for(let i=0;i<pts.length;i++){
+    if(used[i]) continue;
+    const members=[i];
+    for(let j=0;j<pts.length;j++){
+      if(j===i||used[j]) continue;
+      if(distMeters(pts[i].c,pts[j].c)<=RADIO) members.push(j);
+    }
+    if(members.length>=3){
+      let lat=0,lng=0; members.forEach(m=>{used[m]=true;lat+=pts[m].c[0];lng+=pts[m].c[1];});
+      zones.push({center:[lat/members.length,lng/members.length],reports:members.map(m=>pts[m].r)});
+    }
+  }
+  return zones;
+}
+function hotZonePopup(zone,tab,color){
+  const items=zone.reports.slice().sort((a,b)=>getReportDate(b)-getReportDate(a)).slice(0,8).map(r=>{
+    const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
+    const d=getReportDate(r);
+    return '<div style="padding:6px 0;border-top:1px solid rgba(148,163,184,.14)">'+
+      '<p style="font-size:11px;font-weight:600;color:#e2e8f0;line-height:1.35">'+(r.description||cat.label)+'</p>'+
+      '<p style="font-size:9px;color:#94a3b8;font-weight:600;margin-top:2px">'+d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' · '+tAgo(d)+'</p></div>';
+  }).join('');
+  return '<div style="font-family:Inter,sans-serif;min-width:210px;max-width:250px">'+
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:16px">🔥</span><span style="font-size:12px;font-weight:800;color:'+color+';text-transform:uppercase">Zona caliente</span></div>'+
+    '<p style="font-size:10px;color:#94a3b8;font-weight:600;margin-bottom:2px">'+zone.reports.length+' reportes cerca en los últimos 7 días</p>'+items+'</div>';
 }
 
 function mkPopup(r,cat,tab){
@@ -1177,8 +1235,42 @@ function mkPopup(r,cat,tab){
     '<p style="font-size:12px;font-weight:600;color:#e2e8f0;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
     '<p style="font-size:9px;color:#94a3b8;font-weight:600">'+fecha+' · '+hora+'</p>'+
     (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#e2e8f0;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
-    '<div id="ph-pop-'+r.id+'"></div>'+resAction+
+    '<div id="ph-pop-'+r.id+'"></div>'+resAction+concernBlock(tab,r)+
     '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
+}
+
+// ===== "ME PREOCUPA ESTO TAMBIÉN" =====
+const CONCERN_LS='rmdp_concerned';
+function getConcerned(){ try{return JSON.parse(localStorage.getItem(CONCERN_LS)||'[]');}catch(e){return [];} }
+function hasConcerned(id){ return getConcerned().indexOf(id)>=0; }
+function addConcerned(id){ try{const a=getConcerned(); if(a.indexOf(id)<0){a.push(id);localStorage.setItem(CONCERN_LS,JSON.stringify(a));}}catch(e){} }
+function concernText(n){
+  if(!n) return 'Marcá si a vos también te preocupa';
+  return n===1?'A 1 vecino también le preocupa esto':'A '+n+' vecinos también les preocupa esto';
+}
+function concernBlock(tab,r){
+  const c=r.concerns||0, voted=hasConcerned(r.id);
+  return '<button id="cn-btn-'+r.id+'" onclick="markConcern(\''+tab+'\',\''+r.id+'\')"'+(voted?' disabled':'')+
+    ' style="width:100%;margin-top:8px;padding:9px 10px;border:1px solid rgba(245,158,11,'+(voted?'.5':'.3')+');border-radius:10px;background:rgba(245,158,11,'+(voted?'.22':'.12')+');color:#fbbf24;font-size:10px;font-weight:700;text-transform:uppercase;cursor:'+(voted?'default':'pointer')+';font-family:Inter,sans-serif">⚠️ '+(voted?'Ya lo marcaste':'Me preocupa esto también')+'</button>'+
+    '<p id="cn-txt-'+r.id+'" style="font-size:9px;color:#94a3b8;font-weight:600;text-align:center;margin-top:5px">'+concernText(c)+'</p>';
+}
+function updateConcernUI(id,c){
+  const b=document.getElementById('cn-btn-'+id);
+  if(b){b.disabled=true;b.style.cursor='default';b.style.background='rgba(245,158,11,.22)';b.style.borderColor='rgba(245,158,11,.5)';b.innerHTML='⚠️ Ya lo marcaste';}
+  const t=document.getElementById('cn-txt-'+id);
+  if(t) t.textContent=concernText(c);
+}
+async function markConcern(tab,id){
+  if(hasConcerned(id)) return;
+  addConcerned(id);
+  const r=(G.data[tab]||[]).find(x=>x.id===id);
+  const newC=((r&&r.concerns)||0)+1;
+  if(r) r.concerns=newC;
+  updateConcernUI(id,newC);     // popup (optimista)
+  renderRL(tab);                // contador en el sidebar
+  try{
+    await db.collection(MOD_CFG[tab].col).doc(id).update({concerns:firebase.firestore.FieldValue.increment(1)});
+  }catch(e){ console.warn('markConcern',e); }
 }
 
 // ===== LISTA DE REPORTES (paginada + buscador) =====
@@ -1224,6 +1316,7 @@ function renderRL(tab){
         '<div style="display:flex;align-items:center;gap:6px">'+
           '<span style="font-size:10px;font-weight:800;color:'+cat.color+';text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+cat.label+'</span>'+
           (r.photoBase64?'<span style="font-size:11px;flex-shrink:0">📷</span>':'')+
+          ((r.concerns||0)>0?'<span style="font-size:10px;flex-shrink:0;color:#fbbf24;font-weight:800">⚠️'+(r.concerns||0)+'</span>':'')+
         '</div>'+
         '<p class="arow-desc">'+(r.description||cat.label)+'</p>'+
         '<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:3px">'+tAgo(ts)+'</p>'+
