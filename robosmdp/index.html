@@ -157,6 +157,9 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .hotzone::after{animation-delay:.95s}
 .hotzone-core{position:relative;width:34px;height:34px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 14px rgba(0,0,0,.45);z-index:1}
 @keyframes hzpulse{0%{transform:scale(.7);opacity:.6}100%{transform:scale(2.4);opacity:0}}
+.mpin-zone{width:50px;height:50px;margin:-25px 0 0 -25px;border-width:3px}
+#zone-btn.on{background:#6366f1;border-color:transparent}
+#zone-btn.on i{color:#fff}
 </style>
 
   <!-- PWA Manifest -->
@@ -484,8 +487,25 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     <div id="map-b" class="mapel"></div>
     <div id="map-p" class="mapel"></div>
     <div style="position:absolute;bottom:26px;right:18px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+      <button onclick="toggleZonePanel()" id="zone-btn" title="Mi zona" style="width:46px;height:46px;border-radius:14px;background:rgba(15,23,42,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4)"><i data-lucide="map-pin" style="width:19px;height:19px;color:#cbd5e1"></i></button>
       <button onclick="locU()" style="width:46px;height:46px;border-radius:14px;background:rgba(15,23,42,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4)"><i data-lucide="navigation" style="width:19px;height:19px;color:#cbd5e1"></i></button>
       <button onclick="openM()" id="fab" style="width:56px;height:56px;border-radius:17px;background:#ef4444;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.32);transition:all .2s"><i data-lucide="plus" style="width:24px;height:24px;color:#fff"></i></button>
+    </div>
+    <!-- PANEL MI ZONA -->
+    <div id="zone-panel" class="glass" style="display:none;position:absolute;bottom:26px;left:18px;z-index:2001;width:236px;max-width:calc(100% - 90px);border-radius:16px;padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:800;color:#e2e8f0;text-transform:uppercase;letter-spacing:.04em">📍 Mi zona</span>
+        <button onclick="closeZonePanel()" style="background:none;border:none;cursor:pointer;display:flex;padding:2px"><i data-lucide="x" style="width:15px;height:15px;color:#94a3b8"></i></button>
+      </div>
+      <p id="zone-hint" style="font-size:10px;color:#94a3b8;font-weight:600;line-height:1.5;margin-bottom:10px">Tocá el mapa para marcar el centro de tu zona.</p>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase">Radio</span><span id="zone-radius-val" style="font-size:10px;font-weight:800;color:#a5b4fc">400 m</span></div>
+        <input id="zone-radius" type="range" min="200" max="1000" step="100" value="400" oninput="setZoneRadius(this.value)" style="width:100%;accent-color:#6366f1">
+      </div>
+      <div style="display:flex;gap:6px">
+        <button id="zone-save" onclick="saveZone()" disabled style="flex:1;padding:10px;border:none;border-radius:11px;background:#6366f1;color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer;opacity:.5">Guardar zona</button>
+        <button id="zone-remove" onclick="removeZone()" style="display:none;padding:10px 12px;border:1px solid rgba(239,68,68,.3);border-radius:11px;background:rgba(239,68,68,.12);color:#ef4444;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">Quitar</button>
+      </div>
     </div>
   </main>
 </div>
@@ -824,6 +844,7 @@ const G={
   photoCache:{},
   mkById:{robos:{},basura:{},pozos:{}},
   avisos:[],resNotif:null,
+  zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null},
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
 };
@@ -868,6 +889,7 @@ window.onload=()=>{
   safeIcons();
   buildCats();
   setDates();
+  G.zone=loadZone(); syncZoneBtn();
   initVisitCounter();
   if(auth) auth.signOut().catch(()=>{});
   const ms=document.getElementById('msearch');
@@ -974,18 +996,19 @@ function closeSB(){if(window.innerWidth<768)document.getElementById('sidebar').c
 // ===== MAPS =====
 function initMap(tab){
   const key=tab[0];
-  if(G.maps[tab]){G.maps[tab].invalidateSize();renderMk(tab);return;}
+  if(G.maps[tab]){G.maps[tab].invalidateSize();renderMk(tab);drawZone(tab);return;}
   const m=L.map('map-'+key,{zoomControl:false}).setView([-38.0055,-57.5426],13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO'}).addTo(m);
   G.maps[tab]=m;
   m.on('click',e=>{
+    if(G.zoneMode){ setZoneCenter(e.latlng.lat,e.latlng.lng); return; }
     const modal=document.getElementById('m-'+tab);
     if(!modal||modal.style.display==='none') return;
     G.loc[tab]=[e.latlng.lat,e.latlng.lng];
     setLS(tab,'ok'); showToast('Ubicación marcada ✅','g'); chkR(tab);
   });
   loadReports(tab);
-  renderMk(tab); renderRL(tab); updSBStats(tab);
+  renderMk(tab); renderRL(tab); updSBStats(tab); drawZone(tab);
 }
 
 function loadAllReports(){
@@ -1151,7 +1174,12 @@ function renderMk(tab){
     const coords=getCoords(r);
     if(!coords) return;
     const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
-    const icon=L.divIcon({
+    const inz=inZone(r);
+    const icon=inz?L.divIcon({
+      className:'',
+      html:'<div class="mpin mpin-zone" style="background:'+cat.color+';box-shadow:0 0 0 4px '+cat.color+'66,0 5px 16px rgba(0,0,0,.5)"><i data-lucide="'+cat.icon+'" style="width:20px;height:20px;color:#fff;transform:rotate(45deg)"></i></div>',
+      iconSize:[50,50],iconAnchor:[25,50]
+    }):L.divIcon({
       className:'',
       html:'<div class="mpin" style="background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:16px;height:16px;color:#fff;transform:rotate(45deg)"></i></div>',
       iconSize:[40,40],iconAnchor:[20,40]
@@ -1226,12 +1254,13 @@ function mkPopup(r,cat,tab){
   const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
   const hora=ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
   const res=tab!=='robos'&&r.resolved?'<span style="font-size:9px;font-weight:700;background:rgba(34,197,94,.18);color:#4ade80;padding:2px 7px;border-radius:999px">✓ Resuelto</span>':'';
+  const zoneBadge=inZone(r)?'<span style="font-size:9px;font-weight:700;background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 7px;border-radius:999px">📍 En tu zona</span>':'';
   // Público (basura/pozos): NO puede resolver directo; solo avisa al admin con foto.
   // Si ya está resuelto, no se muestra nada (el badge "✓ Resuelto" ya aparece arriba).
   const resAction=(tab!=='robos'&&!r.resolved)?'<button onclick="openResolveNotif(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:9px 10px;border:none;border-radius:10px;background:rgba(34,197,94,.18);color:#4ade80;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">📸 Avisar que se resolvió</button>':'';
   return '<div style="font-family:Inter,sans-serif;min-width:180px;max-width:240px">'+
     '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">'+
-    '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+'</div>'+
+    '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+zoneBadge+'</div>'+
     '<p style="font-size:12px;font-weight:600;color:#e2e8f0;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
     '<p style="font-size:9px;color:#94a3b8;font-weight:600">'+fecha+' · '+hora+'</p>'+
     (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#e2e8f0;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
@@ -1307,7 +1336,12 @@ function renderRL(tab){
     return;
   }
   const shown=Math.min(G.rlShown[tab]||RL_PAGE,full.length);
-  let html=full.slice(0,shown).map(r=>{
+  let html='';
+  if(G.zone){
+    const zc=(G.data[tab]||[]).filter(inZone).length;
+    html+='<div style="display:flex;align-items:center;gap:7px;padding:9px 11px;margin-bottom:8px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:12px;color:#a5b4fc;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.03em">📍 '+zc+' reporte'+(zc===1?'':'s')+' en tu zona</div>';
+  }
+  html+=full.slice(0,shown).map(r=>{
     const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
     const ts=getReportDate(r);
     return '<div class="arow" onclick="flyTo(\''+tab+'\',\''+r.id+'\')">'+
@@ -1558,6 +1592,74 @@ function toggleHeat(){
   const colors={robos:{0.2:'#3b82f6',0.5:'#f59e0b',1:'#ef4444'},basura:{0.2:'#bbf7d0',0.5:'#4ade80',1:'#16a34a'},pozos:{0.2:'#fef08a',0.5:'#fbbf24',1:'#d97706'}};
   G.heat=L.heatLayer(pts,{radius:25,blur:20,maxZoom:17,gradient:colors[G.tab]}).addTo(map);
   G.heatOn=true; document.getElementById('heat-btn').style.color=MOD_CFG[G.tab].color;
+}
+
+// ===== MI ZONA (zona global guardada en localStorage) =====
+const ZONE_LS='rmdp_zone';
+function loadZone(){ try{const z=JSON.parse(localStorage.getItem(ZONE_LS)||'null'); if(z&&isFinite(z.lat)&&isFinite(z.lng)&&isFinite(z.radius)) return z;}catch(e){} return null; }
+function syncZoneBtn(){ const b=document.getElementById('zone-btn'); if(b) b.className=G.zone?'on':''; }
+function zoneActive(){ return G.zoneDraft||G.zone; }
+function inZone(r){
+  if(!G.zone) return false;
+  const c=getCoords(r); if(!c) return false;
+  return distMeters(c,[G.zone.lat,G.zone.lng])<=G.zone.radius;
+}
+function drawZone(tab){
+  const map=G.maps[tab]; if(!map) return;
+  if(G.zoneCircle[tab]){ map.removeLayer(G.zoneCircle[tab]); G.zoneCircle[tab]=null; }
+  const z=zoneActive(); if(!z) return;
+  const color=MOD_CFG[tab].color;
+  G.zoneCircle[tab]=L.circle([z.lat,z.lng],{radius:z.radius,color:color,weight:2,fillColor:color,fillOpacity:.08,dashArray:'6 6'}).addTo(map);
+}
+function toggleZonePanel(){
+  if(document.getElementById('zone-panel').style.display==='block') closeZonePanel();
+  else openZonePanel();
+}
+function openZonePanel(){
+  G.zoneDraft=G.zone?{...G.zone}:null;
+  G.zoneMode=true;
+  const z=zoneActive(), r=z?z.radius:400;
+  const slider=document.getElementById('zone-radius'); if(slider) slider.value=r;
+  document.getElementById('zone-radius-val').textContent=r+' m';
+  document.getElementById('zone-hint').textContent=z?'Tocá el mapa para mover el centro, o ajustá el radio.':'Tocá el mapa para marcar el centro de tu zona.';
+  const sv=document.getElementById('zone-save'); if(sv){sv.disabled=!G.zoneDraft;sv.style.opacity=G.zoneDraft?'1':'.5';}
+  document.getElementById('zone-remove').style.display=G.zone?'block':'none';
+  document.getElementById('zone-panel').style.display='block';
+  safeIcons();
+}
+function closeZonePanel(){
+  G.zoneMode=false; G.zoneDraft=null;
+  document.getElementById('zone-panel').style.display='none';
+  drawZone(G.tab); // descarta el draft, vuelve a la zona guardada
+}
+function setZoneCenter(lat,lng){
+  const r=G.zoneDraft?G.zoneDraft.radius:(parseInt(document.getElementById('zone-radius').value)||400);
+  G.zoneDraft={lat,lng,radius:r};
+  drawZone(G.tab);
+  const sv=document.getElementById('zone-save'); if(sv){sv.disabled=false;sv.style.opacity='1';}
+}
+function setZoneRadius(v){
+  v=parseInt(v)||400;
+  document.getElementById('zone-radius-val').textContent=v+' m';
+  if(G.zoneDraft){ G.zoneDraft.radius=v; drawZone(G.tab); }
+}
+function saveZone(){
+  if(!G.zoneDraft){ showToast('Tocá el mapa para marcar el centro','r'); return; }
+  G.zone={...G.zoneDraft}; try{localStorage.setItem(ZONE_LS,JSON.stringify(G.zone));}catch(e){}
+  G.zoneMode=false; G.zoneDraft=null;
+  document.getElementById('zone-panel').style.display='none';
+  drawZone(G.tab); syncZoneBtn();
+  renderMk(G.tab); renderRL(G.tab);
+  showToast('Zona guardada 📍','g');
+}
+function removeZone(){
+  G.zone=null; G.zoneDraft=null; G.zoneMode=false;
+  try{localStorage.removeItem(ZONE_LS);}catch(e){}
+  ['robos','basura','pozos'].forEach(t=>{ if(G.zoneCircle[t]&&G.maps[t]){G.maps[t].removeLayer(G.zoneCircle[t]);G.zoneCircle[t]=null;} });
+  document.getElementById('zone-panel').style.display='none';
+  syncZoneBtn();
+  renderMk(G.tab); renderRL(G.tab);
+  showToast('Zona quitada','g');
 }
 
 // ===== MODALS =====
