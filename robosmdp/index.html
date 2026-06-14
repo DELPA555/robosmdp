@@ -1685,7 +1685,7 @@ function openAD(id){
   G.curAdmId=id;
   const r=G.data[admTab].find(x=>x.id===id); if(!r) return;
   const cat=CATS[admTab].find(c=>c.id===r.type)||CATS[admTab][CATS[admTab].length-1];
-  const ts=r.timestamp?.toDate?r.timestamp.toDate():new Date();
+  const ts=getReportDate(r);
   const fecha=ts.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('adm-did').textContent=r.id;
   document.getElementById('adm-detail-body').innerHTML=
@@ -1913,8 +1913,36 @@ function cleanCoords(a,b){
   return [lat,lng];
 }
 
+// Fecha "real" del reporte = la del HECHO (incidentDate/incidentTime que eligió el
+// usuario), NO la de publicación (timestamp = serverTimestamp). Se usa para ordenar,
+// "hace X tiempo", popups y estadísticas. Fallback a timestamp para reportes viejos
+// sin incidentDate.
 function getReportDate(r){
-  const v=r?.timestamp||r?.createdAt||r?.created_at||r?.date||r?.fecha||r?.incidentDate;
+  if(!r) return new Date(0);
+  const inc=r.incidentDate;
+  if(inc){
+    // Caso normal: string "YYYY-MM-DD" (+ incidentTime "HH:MM" opcional)
+    if(typeof inc==='string'){
+      const m=inc.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(m){
+        let hh=0,mm=0;
+        if(typeof r.incidentTime==='string'){
+          const tm=r.incidentTime.trim().match(/^(\d{1,2}):(\d{2})/);
+          if(tm){hh=+tm[1];mm=+tm[2];}
+        }
+        const d=new Date(+m[1],+m[2]-1,+m[3],hh,mm);
+        if(!Number.isNaN(d.getTime())) return d;
+      }
+      const ds=new Date(inc);
+      if(!Number.isNaN(ds.getTime())) return ds;
+    }
+    // incidentDate guardado como Timestamp/Date (datos heterogéneos)
+    else if(inc instanceof Date){ if(!Number.isNaN(inc.getTime())) return inc; }
+    else if(inc.toDate) return inc.toDate();
+    else if(typeof inc.seconds==='number') return new Date(inc.seconds*1000);
+  }
+  // Fallback: fecha de publicación
+  const v=r.timestamp||r.createdAt||r.created_at||r.date||r.fecha;
   if(!v) return new Date(0);
   if(v.toDate) return v.toDate();
   if(typeof v.seconds==='number') return new Date(v.seconds*1000);
