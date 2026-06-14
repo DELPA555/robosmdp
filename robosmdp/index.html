@@ -33,6 +33,16 @@
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1368822578971413"
      crossorigin="anonymous"></script>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VE5BH0Q8CC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VE5BH0Q8CC');
+  // Helper seguro: no rompe si un bloqueador de anuncios impide cargar gtag.js
+  function gaEvent(name,params){ try{ if(typeof gtag==='function') gtag('event',name,params||{}); }catch(e){} }
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -290,7 +300,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500">Robos MDP es el mapa colaborativo de seguridad vecinal de <strong style="color:#cbd5e1">Mar del Plata</strong>. Los vecinos reportan robos, hurtos y entraderas en tiempo real para visibilizar la inseguridad y ayudar a las víctimas a recuperar sus pertenencias.</p>
         <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500;margin-top:10px">También podés reportar <strong style="color:#4ade80">basura acumulada</strong> y <strong style="color:#fbbf24">pozos en la calzada</strong> de tu barrio. Cada reporte suma para construir un mapa real de los problemas de la ciudad.</p>
       </div>
-      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:16px 24px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 26px rgba(37,211,102,.3)"><i data-lucide="share-2" style="width:16px;height:16px"></i>Compartir con tus vecinos</button>
+      <button onclick="gaEvent('share_whatsapp',{content_type:'site'});window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:16px 24px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 26px rgba(37,211,102,.3)"><i data-lucide="share-2" style="width:16px;height:16px"></i>Compartir con tus vecinos</button>
       <p style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.18em;margin-top:8px">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
         <a href="https://www.instagram.com/robos.mdp/" target="_blank" class="soc" style="color:#f472b6"><span style="font-size:13px;font-weight:700">IG</span></a>
@@ -844,6 +854,7 @@ function switchLT(tab){
 
 function enterApp(tab){
   G.tab=tab;
+  gaEvent('enter_map',{map_type:tab});
   document.getElementById('landing').style.transform='translateY(-100%)';
   const app=document.getElementById('app');
   app.style.opacity='1';app.style.pointerEvents='auto';
@@ -1526,6 +1537,7 @@ async function subR(mod){
   }
   try{
     await db.collection(MOD_CFG[mod].col).add(data);
+    gaEvent('submit_report',{report_type:mod});
     showToast('¡Reporte publicado! 🎉','g');
     closeM(mod); resetF(mod);
   }catch(e){showToast('Error al publicar. Intentá de nuevo.','r');sub.disabled=false;sub.textContent='PUBLICAR REPORTE';}
@@ -1712,6 +1724,7 @@ let statsTab='robos';
 const STCH={meses:null,cats:null,dias:null};
 
 function openStats(){
+  gaEvent('view_stats');
   document.getElementById('stats-p').style.display='flex';
   ['robos','basura','pozos'].forEach(t=>loadReports(t));
   statsTab=['robos','basura','pozos'].includes(G.tab)?G.tab:'robos';
@@ -1799,6 +1812,7 @@ function renderStats(){
 
 function shareWA(tab,id){
   const r=G.data[tab].find(x=>x.id===id); if(!r) return;
+  gaEvent('share_whatsapp',{content_type:'report'});
   const cats=CATS[tab];
   const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
   const names={robos:'🔴 ALERTA ROBO',basura:'🟢 REPORTE BASURA',pozos:'🟡 REPORTE POZO'};
