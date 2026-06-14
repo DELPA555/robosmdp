@@ -150,6 +150,8 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .leaflet-control-attribution a{color:#94a3b8!important}
 .ph-spin{width:13px;height:13px;border:2px solid rgba(148,163,184,.3);border-top-color:#94a3b8;border-radius:50%;display:inline-block;animation:phspin .7s linear infinite}
 @keyframes phspin{to{transform:rotate(360deg)}}
+.donate-btn{padding:13px 6px;border-radius:12px;border:1px solid rgba(234,179,8,.3);background:rgba(234,179,8,.1);color:#fbbf24;font-size:13px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;transition:transform .18s,background .18s}
+.donate-btn:hover{background:rgba(234,179,8,.18);transform:translateY(-2px)}
 </style>
 
   <!-- PWA Manifest -->
@@ -301,6 +303,40 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500;margin-top:10px">También podés reportar <strong style="color:#4ade80">basura acumulada</strong> y <strong style="color:#fbbf24">pozos en la calzada</strong> de tu barrio. Cada reporte suma para construir un mapa real de los problemas de la ciudad.</p>
       </div>
       <button onclick="gaEvent('share_whatsapp',{content_type:'site'});window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:16px 24px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 26px rgba(37,211,102,.3)"><i data-lucide="share-2" style="width:16px;height:16px"></i>Compartir con tus vecinos</button>
+      <!-- COLABORACION -->
+      <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+          <div style="width:34px;height:34px;border-radius:10px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px">💛</div>
+          <h2 style="font-size:16px;font-weight:700;color:#e8edf5;letter-spacing:-.01em">Ayudanos a mantener este servicio</h2>
+        </div>
+        <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500">Robos MDP es <strong style="color:#cbd5e1">gratis para toda la comunidad</strong> y queremos que siga así. Tenerlo online tiene costos reales —base de datos, hosting, dominio y desarrollo— que crecen a medida que más vecinos lo usan. Con tu aporte nos ayudás a sostenerlo y a seguir mejorándolo. Cada colaboración, por chica que sea, suma. 🙌</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px">
+          <a href="https://mpago.la/2Du938j" target="_blank" class="donate-btn">$1.000</a>
+          <a href="https://mpago.la/1BdhoR8" target="_blank" class="donate-btn">$5.000</a>
+          <a href="https://mpago.la/15Toxq8" target="_blank" class="donate-btn">$10.000</a>
+        </div>
+        <a href="https://link.mercadopago.com.ar/petalorosa" target="_blank" class="donate-btn" style="margin-top:8px;width:100%">Monto a elección</a>
+        <a href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=98a5d3e7fb884bbc8881d13b96ae00f3" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:13px;font-weight:800;text-decoration:none;box-shadow:0 10px 26px rgba(34,197,94,.32);text-transform:uppercase;letter-spacing:.01em">💚 Colaborá mensualmente</a>
+        <p style="font-size:9px;color:#64748b;font-weight:600;text-align:center;margin-top:7px">La suscripción mensual es la que más ayuda a sostener el servicio</p>
+        <div style="margin-top:16px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.14);border-radius:14px;padding:14px">
+          <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Transferencia bancaria</p>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:#cbd5e1;font-weight:600">
+            <div style="display:flex;justify-content:space-between;gap:10px"><span style="color:#64748b">Titular</span><span style="text-align:right">PINK PETAL SAS</span></div>
+            <div style="display:flex;justify-content:space-between;gap:10px"><span style="color:#64748b">CUIT</span><span style="text-align:right">30-71712991-8</span></div>
+            <div style="display:flex;justify-content:space-between;gap:10px"><span style="color:#64748b">CVU</span><span id="cbu-val" style="text-align:right;word-break:break-all">0000003100085130774685</span></div>
+            <div style="display:flex;justify-content:space-between;gap:10px"><span style="color:#64748b">Alias</span><span style="text-align:right">pinkpetal</span></div>
+          </div>
+          <button onclick="copyCBU()" id="copy-cbu-btn" style="width:100%;margin-top:12px;padding:11px;border-radius:11px;border:1px solid rgba(148,163,184,.2);background:rgba(30,41,59,.6);color:#cbd5e1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="copy" style="width:13px;height:13px"></i>Copiar CVU</button>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(148,163,184,.1)">
+          <p style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">¿En qué se usan los aportes?</p>
+          <ul style="list-style:none;padding:0;margin:0;font-size:10px;color:#64748b;line-height:1.8;font-weight:500">
+            <li>• Hosting y base de datos (Firebase / Netlify)</li>
+            <li>• Dominio robosmdp.com.ar</li>
+            <li>• Desarrollo y mantenimiento continuo</li>
+          </ul>
+        </div>
+      </div>
       <p style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.18em;margin-top:8px">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
         <a href="https://www.instagram.com/robos.mdp/" target="_blank" class="soc" style="color:#f472b6"><span style="font-size:13px;font-weight:700">IG</span></a>
@@ -1654,12 +1690,14 @@ function renderAdm(){
     const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
     const ts=getReportDate(r);
     const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' '+ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-    const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:4px 10px;background:'+(r.resolved?'rgba(34,197,94,.18)':'rgba(148,163,184,.15)')+';color:'+(r.resolved?'#4ade80':'#94a3b8')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'<i data-lucide="chevron-right" style="width:16px;height:16px;color:#475569;flex-shrink:0"></i>';
+    const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:5px 10px;background:'+(r.resolved?'rgba(34,197,94,.18)':'rgba(148,163,184,.15)')+';color:'+(r.resolved?'#4ade80':'#94a3b8')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'';
+    const delBtn='<button onclick="event.stopPropagation();delReport(\''+r.id+'\')" title="Eliminar" style="padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;line-height:1">🗑️</button>';
+    const actions='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+resBtn+delBtn+'</div>';
     return '<div onclick="openAD(\''+r.id+'\')" style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border-radius:18px;border:1px solid rgba(148,163,184,.14);padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:11px">'+
       '<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">'+
       '<div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:18px;height:18px;color:#fff"></i></div>'+
       '<div style="min-width:0"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:2px">'+cat.label+' · '+fecha+'</p>'+
-      '<p style="font-size:12px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||'')+'</p></div></div>'+resBtn+'</div>';
+      '<p style="font-size:12px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.description||'')+'</p></div></div>'+actions+'</div>';
   }).join('')||'<div style="text-align:center;padding:32px 0;color:#475569;font-size:11px;font-weight:700">Sin reportes</div>';
   safeIcons();
 }
@@ -1881,10 +1919,47 @@ function openAD(id){
 
 function closeAD(){document.getElementById('adm-detail').style.display='none';}
 
+// Quita el reporte del estado local y refresca admin + mapa + landing.
+// (Ya no hay onSnapshot tras la optimización de performance, así que se actualiza a mano.)
+function removeReportLocal(tab,id){
+  G.data[tab]=(G.data[tab]||[]).filter(x=>x.id!==id);
+  try{ writeCache(tab,G.data[tab]); }catch(e){}
+  if(admTab===tab||admTab!=='avisos') renderAdm();
+  renderMk(tab); renderRL(tab); updSBStats(tab); updLandingStats(tab);
+}
+
+// Eliminar reporte (resuelto o no, sin límite de antigüedad) desde cada item de la lista admin.
+async function delReport(id){
+  if(!confirm('¿Eliminar este reporte permanentemente? Esta acción no se puede deshacer')) return;
+  const tab=admTab;
+  try{
+    await db.collection(MOD_CFG[tab].col).doc(id).delete();
+    removeReportLocal(tab,id);
+    showToast('Reporte eliminado','r');
+  }catch(e){ console.error('delReport',e); showToast('Error al eliminar','r'); }
+}
+
 async function delR(){
-  if(!G.curAdmId||!confirm('¿Eliminar este reporte definitivamente?')) return;
-  try{await db.collection(MOD_CFG[admTab].col).doc(G.curAdmId).delete();closeAD();showToast('Reporte eliminado','r');renderAdm();}
-  catch(e){showToast('Error al eliminar','r');}
+  if(!G.curAdmId||!confirm('¿Eliminar este reporte permanentemente? Esta acción no se puede deshacer')) return;
+  const id=G.curAdmId,tab=admTab;
+  try{
+    await db.collection(MOD_CFG[tab].col).doc(id).delete();
+    closeAD();
+    removeReportLocal(tab,id);
+    showToast('Reporte eliminado','r');
+  }catch(e){ console.error('delR',e); showToast('Error al eliminar','r'); }
+}
+
+function copyCBU(){
+  const cvu='0000003100085130774685';
+  const done=()=>{const b=document.getElementById('copy-cbu-btn');if(!b)return;const o=b.innerHTML;b.innerHTML='<i data-lucide="check" style="width:13px;height:13px"></i>¡Copiado!';safeIcons();setTimeout(()=>{b.innerHTML=o;safeIcons();},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cvu).then(done).catch(()=>copyFallback(cvu,done));
+  }else copyFallback(cvu,done);
+}
+function copyFallback(text,cb){
+  try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);cb&&cb();}
+  catch(e){showToast('No se pudo copiar','r');}
 }
 
 // ===== IMAGE VIEWER =====
