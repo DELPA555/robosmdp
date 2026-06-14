@@ -1243,9 +1243,8 @@ function renderLandingFeed(){
   el.innerHTML=items.map(it=>{
     const desc=it.r.description||it.cat.label;
     const short=desc.length>64?desc.slice(0,64)+'…':desc;
-    const thumb=it.r.photoBase64
-      ? '<img class="rcard-ph" src="'+it.r.photoBase64+'" alt="">'
-      : '<div class="rcard-noph" style="background:linear-gradient(135deg,'+it.cat.color+'26,'+it.cat.color+'08)"><i data-lucide="'+it.cat.icon+'" style="width:28px;height:28px;color:'+it.cat.color+'"></i></div>';
+    // Placeholder con ícono; si el reporte tiene foto, se hidrata on-demand (cf-...)
+    const thumb='<div class="rcard-noph" id="cf-'+it.tab+'-'+it.r.id+'" style="background:linear-gradient(135deg,'+it.cat.color+'26,'+it.cat.color+'08)"><i data-lucide="'+it.cat.icon+'" style="width:28px;height:28px;color:'+it.cat.color+'"></i></div>';
     return '<div class="rcard" onclick="enterApp(\''+it.tab+'\')">'+thumb+
       '<div style="padding:11px 12px 13px">'+
       '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:7px;height:7px;border-radius:50%;background:'+it.cat.color+';flex-shrink:0"></span>'+
@@ -1255,6 +1254,27 @@ function renderLandingFeed(){
       '</div></div>';
   }).join('');
   safeIcons();
+  hydrateFeedPhotos(items);
+}
+
+// Carga on-demand de las miniaturas del carrusel (~10 visibles), reutilizando
+// G.photoCache (compartido con los popups). No bloquea el render: el carrusel ya
+// se ve con íconos y la foto reemplaza el placeholder cuando llega. Si el reporte
+// no tiene foto, queda el ícono. Peso máx ~10 imágenes, no los ~93MB del problema.
+function hydrateFeedPhotos(items){
+  items.forEach(it=>{
+    const id=it.r&&it.r.id; if(!id) return;
+    const cached=G.photoCache[id];
+    if(cached!==undefined){ if(cached) setFeedThumb(it.tab,id,cached); return; }
+    fetchPhoto(MOD_CFG[it.tab].col,id).then(p=>{
+      G.photoCache[id]=p;
+      if(p) setFeedThumb(it.tab,id,p);
+    });
+  });
+}
+function setFeedThumb(tab,id,p){
+  const slot=document.getElementById('cf-'+tab+'-'+id);
+  if(slot) slot.outerHTML='<img class="rcard-ph" src="'+p+'" alt="">';
 }
 
 function initLandMiniMap(){
