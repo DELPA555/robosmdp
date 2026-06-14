@@ -20,7 +20,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Robos MDP">
 <link rel="icon" href="./assets/logo-robos.png">
-<link rel="preload" as="image" href="./assets/banner-robos.jpg">
+<link rel="preload" as="image" href="./assets/banner-robos-map.png">
 <link rel="preload" as="image" href="./assets/logo-robos.png">
 <link rel="apple-touch-icon" href="./assets/logo-robos.png">
 <script defer src="https://cdn.tailwindcss.com"></script>
@@ -33,63 +33,72 @@
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1368822578971413"
      crossorigin="anonymous"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
+:root{
+  --bg:#0a0f1c;--bg-2:#0d1424;
+  --surface:#141d30;--surface-2:#1a2438;--surface-hi:#202c44;
+  --line:rgba(148,163,184,.10);--line-2:rgba(148,163,184,.16);
+  --ink:#eef2f8;--ink-2:#a4b1c4;--ink-3:#67748a;
+  --red:#ef4444;--green:#22c55e;--amber:#f59e0b;--blue:#5b8def;
+  --disp:'Space Grotesk','Inter',sans-serif;
+}
+body{font-family:'Inter',sans-serif;overflow:hidden;background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
-#landing{position:fixed;inset:0;z-index:5000;background:#0a0e1a;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
-#landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(900px circle at 50% -8%,rgba(239,68,68,.20),transparent 55%),radial-gradient(700px circle at 88% 12%,rgba(239,68,68,.10),transparent 50%),radial-gradient(600px circle at 8% 60%,rgba(59,130,246,.06),transparent 50%)}
+#landing{position:fixed;inset:0;z-index:5000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+#landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px circle at 50% -12%,rgba(239,68,68,.10),transparent 60%),radial-gradient(800px circle at 92% 8%,rgba(91,141,239,.05),transparent 55%)}
 .land-wrap{position:relative;z-index:10}
-.hero{position:relative;width:100%;height:300px;overflow:hidden}
-.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.34) saturate(1.15);transform:scale(1.06);animation:heroZoom 20s ease-in-out infinite alternate}
-@keyframes heroZoom{from{transform:scale(1.06)}to{transform:scale(1.18)}}
-.hero-g{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,14,26,.4) 0%,rgba(10,14,26,.05) 28%,rgba(10,14,26,.8) 76%,#0a0e1a 100%)}
-.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(239,68,68,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,.10) 1px,transparent 1px);background-size:36px 36px;-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 80%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 80%)}
+.hero{position:relative;width:100%;height:288px;overflow:hidden;background:#0d1424}
+.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.95) saturate(1.05);transform:scale(1.04);animation:heroZoom 34s ease-in-out infinite alternate}
+@keyframes heroZoom{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+.hero-g{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,15,28,.2) 0%,rgba(10,15,28,.04) 38%,rgba(10,15,28,.68) 80%,var(--bg) 100%)}
+.hero-grid{display:none}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .fu{animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both}
-.ltabs{display:flex;background:rgba(30,41,59,.5);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.12);border-radius:18px;padding:5px;gap:4px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
-.ltab{flex:1;padding:12px 4px;border-radius:13px;border:none;background:transparent;color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;align-items:center;gap:6px}
-.ltab:hover{color:#cbd5e1}
-.ltab.r{background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;box-shadow:0 6px 20px rgba(239,68,68,.5)}
-.ltab.g{background:linear-gradient(135deg,#34d058,#16a34a);color:#fff;box-shadow:0 6px 20px rgba(34,197,94,.5)}
-.ltab.a{background:linear-gradient(135deg,#fbb024,#d97706);color:#fff;box-shadow:0 6px 20px rgba(245,158,11,.5)}
-.scard{position:relative;background:linear-gradient(160deg,rgba(30,41,59,.78),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.14);border-radius:18px;padding:16px 10px;text-align:center;overflow:hidden;transition:transform .25s,border-color .25s}
-.scard:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.32)}
-.scard .n{font-size:27px;font-weight:900;line-height:1;letter-spacing:-.03em}
-.scard .l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-top:6px}
-.ebtn{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:380px;margin:0 auto;padding:20px 24px;border-radius:20px;border:none;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;cursor:pointer;transition:transform .25s,box-shadow .25s;overflow:hidden;isolation:isolate}
-.ebtn::before{content:'';position:absolute;inset:0 auto 0 -120%;width:60%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s;z-index:-1}
-.ebtn:hover::before{left:160%}
-.ebtn:hover{transform:translateY(-3px)}.ebtn:active{transform:scale(.98)}
-.ebtn.r{background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;box-shadow:0 14px 34px rgba(239,68,68,.5)}
-.ebtn.g{background:linear-gradient(135deg,#4ade80,#16a34a);color:#fff;box-shadow:0 14px 34px rgba(34,197,94,.5)}
-.ebtn.a{background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;box-shadow:0 14px 34px rgba(245,158,11,.5)}
-.gcard{background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.14);border-radius:20px}
-.feat{display:flex;align-items:center;gap:8px;padding:11px 12px;background:rgba(30,41,59,.45);border:1px solid rgba(148,163,184,.12);border-radius:13px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.02em}
-.soc{width:50px;height:50px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.14);border-radius:15px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .2s,border-color .2s}
-.soc:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.35)}
-.ltitle{font-size:11px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:7px}
+.scard{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:17px 10px;text-align:center;overflow:hidden;transition:transform .25s,border-color .25s,background .25s}
+.scard:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--surface-2)}
+.scard .n{font-family:var(--disp);font-size:28px;font-weight:600;line-height:1;letter-spacing:-.03em}
+.scard .l{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin-top:7px}
+.ad-slot{width:100%;margin-top:20px;overflow:hidden;border-radius:12px;min-height:0}
+.ad-slot:has(ins[data-ad-status="unfilled"]){display:none;margin:0}
+.ltabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:5px;gap:4px}
+.ltab{flex:1;padding:12px 4px;border-radius:11px;border:none;background:transparent;color:var(--ink-3);font-size:11px;font-weight:600;letter-spacing:.01em;cursor:pointer;transition:all .22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;align-items:center;gap:6px}
+.ltab:hover{color:var(--ink-2);background:rgba(148,163,184,.06)}
+.ltab.r{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.28)}
+.ltab.g{background:var(--green);color:#06210f;box-shadow:0 4px 14px rgba(34,197,94,.26)}
+.ltab.a{background:var(--amber);color:#2a1a02;box-shadow:0 4px 14px rgba(245,158,11,.26)}
+.ebtn{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:380px;margin:0 auto;padding:19px 24px;border-radius:16px;border:none;font-family:var(--disp);font-size:16px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:transform .2s,box-shadow .2s,filter .2s}
+.ebtn:hover{transform:translateY(-2px);filter:brightness(1.06)}.ebtn:active{transform:scale(.99)}
+.ebtn.r{background:var(--red);color:#fff;box-shadow:0 10px 26px rgba(239,68,68,.34)}
+.ebtn.g{background:var(--green);color:#06210f;box-shadow:0 10px 26px rgba(34,197,94,.30)}
+.ebtn.a{background:var(--amber);color:#2a1a02;box-shadow:0 10px 26px rgba(245,158,11,.30)}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.feat{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px;font-size:11px;font-weight:600;color:var(--ink-2);letter-spacing:0}
+.soc{width:50px;height:50px;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .2s,border-color .2s,background .2s}
+.soc:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--surface-2)}
+.ltitle{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.09em;display:flex;align-items:center;gap:7px}
 .hscroll{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:2px 2px 8px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
-.rcard{scroll-snap-align:start;flex:0 0 198px;background:linear-gradient(160deg,rgba(30,41,59,.72),rgba(15,23,42,.8));border:1px solid rgba(148,163,184,.14);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s}
-.rcard:hover{transform:translateY(-3px);border-color:rgba(148,163,184,.32)}
+.rcard{scroll-snap-align:start;flex:0 0 198px;background:var(--surface);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
+.rcard:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--surface-2)}
 .rcard-ph{height:96px;width:100%;object-fit:cover;display:block}
 .rcard-noph{height:96px;display:flex;align-items:center;justify-content:center}
-.step{flex:1;min-width:0;background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:18px;padding:18px 11px;text-align:center}
+.step{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 11px;text-align:center}
 .step-ic{width:46px;height:46px;border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
-#land-minimap{height:200px;width:100%;border-radius:18px;overflow:hidden;border:1px solid rgba(148,163,184,.14);background:#0a0e1a}
-#app{position:fixed;inset:0;display:flex;flex-direction:row;opacity:0;pointer-events:none;transition:opacity .45s;background:#0a0e1a}
-.atabs{display:flex;gap:3px;padding:5px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.12);border-radius:14px}
-.atab{flex:1;padding:10px 4px;border-radius:10px;border:none;background:transparent;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#64748b;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
-.atab:hover{color:#cbd5e1}
-.atab.r{background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.45)}
-.atab.g{background:linear-gradient(135deg,#34d058,#16a34a);color:#fff;box-shadow:0 4px 14px rgba(34,197,94,.45)}
-.atab.a{background:linear-gradient(135deg,#fbb024,#d97706);color:#fff;box-shadow:0 4px 14px rgba(245,158,11,.45)}
-#sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:linear-gradient(180deg,#0f172a,#0a0e1a);border-right:1px solid rgba(148,163,184,.1);transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,.45)}
+#land-minimap{height:200px;width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--bg-2)}
+#app{position:fixed;inset:0;display:flex;flex-direction:row;opacity:0;pointer-events:none;transition:opacity .45s;background:var(--bg)}
+.atabs{display:flex;gap:3px;padding:5px;background:var(--surface);border:1px solid var(--line);border-radius:13px}
+.atab{flex:1;padding:10px 4px;border-radius:9px;border:none;background:transparent;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--ink-3);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+.atab:hover{color:var(--ink-2);background:rgba(148,163,184,.06)}
+.atab.r{background:var(--red);color:#fff;box-shadow:0 3px 12px rgba(239,68,68,.3)}
+.atab.g{background:var(--green);color:#06210f;box-shadow:0 3px 12px rgba(34,197,94,.28)}
+.atab.a{background:var(--amber);color:#2a1a02;box-shadow:0 3px 12px rgba(245,158,11,.28)}
+#sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:var(--bg-2);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,.45)}
 @media(min-width:768px){#sidebar{position:relative;width:360px;transform:translateX(0);box-shadow:none}}
 #sidebar.open{transform:translateX(0)}
 .mapc{flex:1;position:relative;height:100%}
@@ -99,7 +108,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 .mpin{width:40px;height:40px;border-radius:50% 50% 50% 0;position:absolute;transform:rotate(-45deg);left:50%;top:50%;margin:-20px 0 0 -20px;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;border:2.5px solid #fff}
 .fbtn{padding:10px 5px;border-radius:13px;border:1px solid rgba(148,163,184,.14);background:rgba(30,41,59,.55);color:#94a3b8;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px}
 .fbtn:hover{border-color:rgba(148,163,184,.32);color:#cbd5e1}
-.fbtn.on{background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(239,68,68,.4)}
+.fbtn.on{background:#ef4444;color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(239,68,68,.4)}
 .cbtn{padding:11px 5px;border-radius:15px;border:2px solid rgba(148,163,184,.18);background:rgba(30,41,59,.5);color:#94a3b8;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px}
 .arow{display:flex;align-items:flex-start;gap:10px;padding:11px 8px;margin:0 -8px;border-bottom:1px solid rgba(148,163,184,.1);cursor:pointer;border-radius:10px;transition:background .15s}
 .arow:hover{background:rgba(148,163,184,.07)}
@@ -109,13 +118,13 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 .land-show{animation:landFade .5s cubic-bezier(.16,1,.3,1) both}
 .movl{position:fixed;inset:0;z-index:6000;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);padding:16px}
 @media(min-width:640px){.movl{align-items:center}}
-.mbox{background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:480px;border-radius:28px;box-shadow:0 32px 80px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;animation:sup .38s cubic-bezier(.16,1,.3,1)}
+.mbox{background:var(--bg-2);border:1px solid var(--line-2);width:100%;max-width:480px;border-radius:24px;box-shadow:0 32px 80px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;max-height:92vh;animation:sup .38s cubic-bezier(.16,1,.3,1)}
 .mbox input,.mbox textarea{background:rgba(15,23,42,.65)!important;border-color:rgba(148,163,184,.2)!important;color:#e2e8f0!important;color-scheme:dark}
 .mbox input::placeholder,.mbox textarea::placeholder{color:#64748b}
 .mbox input#r-phone{background:transparent!important;border:none!important;color:#fde68a!important}
 @keyframes sup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
 #toast-c{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-.toast{background:linear-gradient(160deg,#1e293b,#0f172a);color:#e2e8f0;border:1px solid rgba(148,163,184,.16);padding:12px 16px;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:700;border-left:4px solid}
+.toast{background:var(--surface-2);color:var(--ink);border:1px solid var(--line-2);padding:12px 16px;border-radius:13px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:600;border-left:4px solid}
 @keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 #admin-p{position:fixed;inset:0;z-index:6500;display:none;flex-direction:column;background:#0a0e1a;background-image:radial-gradient(900px circle at 50% -8%,rgba(239,68,68,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(59,130,246,.06),transparent 50%)}
 #login-m{position:fixed;inset:0;z-index:8000;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);padding:16px}
@@ -139,22 +148,22 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <!-- LANDING -->
 <div id="landing">
   <div class="hero">
-    <img src="./assets/banner-robos.jpg" id="hero-img" alt="Banner">
+    <img src="./assets/banner-robos-map.png" id="hero-img" alt="Banner">
     <div class="hero-grid"></div>
     <div class="hero-g"></div>
   </div>
   <div class="land-wrap" style="padding:0 18px 60px;margin-top:-92px;max-width:440px;margin-left:auto;margin-right:auto">
     <div class="fu" style="display:flex;justify-content:center;margin-bottom:20px;animation-delay:.05s">
-      <div id="land-logo" style="width:112px;height:112px;border-radius:26px;overflow:hidden;border:3px solid rgba(239,68,68,.4);box-shadow:0 0 0 7px rgba(239,68,68,.07),0 0 60px rgba(239,68,68,.35),0 22px 55px rgba(0,0,0,.6)">
+      <div id="land-logo" style="width:104px;height:104px;border-radius:24px;overflow:hidden;border:1px solid rgba(148,163,184,.18);box-shadow:0 0 0 6px rgba(148,163,184,.05),0 18px 44px rgba(0,0,0,.55)">
         <img id="land-logo-img" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
       </div>
     </div>
     <div class="fu" style="text-align:center;margin-bottom:18px;animation-delay:.12s">
       <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);margin-bottom:14px">
         <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 8px #22c55e;animation:pulse 1.5s infinite"></span>
-        <span style="color:#86efac;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em">En vivo · Tiempo real</span>
+        <span style="color:#86efac;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;white-space:nowrap">En vivo · Tiempo real</span>
       </div>
-      <h1 id="land-title" style="font-size:46px;font-weight:900;color:#fff;letter-spacing:-.035em;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.5)">ROBOS <span style="color:#ef4444">MDP</span></h1>
+      <h1 id="land-title" style="font-size:48px;font-weight:700;color:#fff;letter-spacing:-.04em;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.5)">ROBOS <span style="color:#ef4444">MDP</span></h1>
       <p style="color:#94a3b8;font-size:13px;font-weight:600;margin-top:12px;line-height:1.5;max-width:330px;margin-left:auto;margin-right:auto">El mapa colaborativo de <strong style="color:#cbd5e1">Mar del Plata</strong>. Reportá y visualizá lo que pasa en tu barrio.</p>
       <style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}</style>
     </div>
@@ -176,47 +185,47 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     </div>
     <!-- Panel Robos -->
     <div id="lp-robos">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px">
         <div class="scard"><div class="n" style="color:#ef4444" id="ls-r-t">—</div><div class="l">Total</div></div>
         <div class="scard"><div class="n" style="color:#f87171" id="ls-r-m">—</div><div class="l">Este mes</div></div>
         <div class="scard"><div class="n" style="color:#fca5a5" id="ls-r-h">—</div><div class="l">Hoy</div></div>
       </div>
-      <div style="min-height:100px;width:100%;margin-bottom:18px;overflow:hidden;border-radius:12px">
+      <button class="ebtn r" onclick="enterApp('robos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+      <div class="ad-slot">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
-      <button class="ebtn r" onclick="enterApp('robos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
     </div>
     <!-- Panel Basura -->
     <div id="lp-basura" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px">
         <div class="scard"><div class="n" style="color:#22c55e" id="ls-b-t">—</div><div class="l">Total</div></div>
         <div class="scard"><div class="n" style="color:#4ade80" id="ls-b-m">—</div><div class="l">Este mes</div></div>
         <div class="scard"><div class="n" style="color:#86efac" id="ls-b-r">—</div><div class="l">Resueltos</div></div>
       </div>
-      <div style="min-height:100px;width:100%;margin-bottom:18px;overflow:hidden;border-radius:12px">
+      <button class="ebtn g" onclick="enterApp('basura')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+      <div class="ad-slot">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
-      <button class="ebtn g" onclick="enterApp('basura')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
     </div>
     <!-- Panel Pozos -->
     <div id="lp-pozos" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px">
         <div class="scard"><div class="n" style="color:#f59e0b" id="ls-p-t">—</div><div class="l">Total</div></div>
         <div class="scard"><div class="n" style="color:#fbbf24" id="ls-p-m">—</div><div class="l">Este mes</div></div>
         <div class="scard"><div class="n" style="color:#fcd34d" id="ls-p-r">—</div><div class="l">Resueltos</div></div>
       </div>
-      <div style="min-height:100px;width:100%;margin-bottom:18px;overflow:hidden;border-radius:12px">
+      <button class="ebtn a" onclick="enterApp('pozos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+      <div class="ad-slot">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
-      <button class="ebtn a" onclick="enterApp('pozos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
     </div>
     <!-- Contador de visitas -->
     <div id="ls-visit-card" class="scard" style="display:none;align-items:center;justify-content:space-between;text-align:left;padding:15px 18px;margin-bottom:18px">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:44px;height:44px;border-radius:13px;background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.32);display:flex;align-items:center;justify-content:center;font-size:21px">👥</div>
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(91,141,239,.12);border:1px solid rgba(91,141,239,.28);display:flex;align-items:center;justify-content:center"><i data-lucide="users" style="width:21px;height:21px;color:#93b4f5"></i></div>
         <div>
           <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8">Visitas</div>
           <div style="font-size:9px;font-weight:700;color:#64748b;margin-top:3px"><span id="ls-visit-today" style="color:#a5b4fc">0</span> hoy</div>
@@ -224,12 +233,12 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
       <div class="n" id="ls-visit-total" style="color:#a5b4fc;font-size:26px">0</div>
     </div>
-    <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:14px auto 0;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#0f3b7a,#1d4ed8);border:1px solid rgba(96,165,250,.55);color:#eff6ff;text-decoration:none;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;box-shadow:0 12px 28px rgba(37,99,235,.32)">
-      <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93c5fd"></i>
+    <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:14px auto 0;padding:16px 18px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line-2);color:#dbe6fb;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.01em;transition:background .2s,border-color .2s" onmouseover="this.style.background='var(--surface-hi)'" onmouseout="this.style.background='var(--surface-2)'">
+      <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93b4f5"></i>
       Denuncia policial online
     </a>
     <!-- ===== ÚLTIMOS REPORTES (carrusel) ===== -->
-    <div id="land-feed-sec" style="margin-top:32px;display:none">
+    <div id="land-feed-sec" style="margin-top:30px;display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <p class="ltitle"><i data-lucide="radio" style="width:14px;height:14px;color:#ef4444"></i>Últimos reportes</p>
         <span style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:pulse 1.5s infinite"></span>En vivo</span>
@@ -239,7 +248,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
     </div>
     <!-- ===== MINI MAPA DECORATIVO ===== -->
-    <div id="land-map-sec" style="margin-top:26px;display:none">
+    <div id="land-map-sec" style="margin-top:30px;display:none">
       <p class="ltitle" style="margin-bottom:12px"><i data-lucide="map-pin" style="width:14px;height:14px;color:#ef4444"></i>Mar del Plata en tiempo real</p>
       <div style="position:relative">
         <div id="land-minimap"></div>
@@ -253,37 +262,37 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <div style="display:flex;gap:9px">
         <div class="step">
           <div class="step-ic" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)"><i data-lucide="map-pin" style="width:20px;height:20px;color:#ef4444"></i></div>
-          <p style="font-size:12px;font-weight:800;color:#e2e8f0;margin-bottom:5px">Reportá</p>
-          <p style="font-size:10px;color:#64748b;font-weight:500;line-height:1.5">Marcá el lugar y sumá una foto en segundos.</p>
+          <p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:6px;letter-spacing:-.01em">Reportá</p>
+          <p style="font-size:11px;color:#8b98ac;font-weight:500;line-height:1.55">Marcá el lugar y sumá una foto en segundos.</p>
         </div>
         <div class="step">
           <div class="step-ic" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)"><i data-lucide="share-2" style="width:20px;height:20px;color:#22c55e"></i></div>
-          <p style="font-size:12px;font-weight:800;color:#e2e8f0;margin-bottom:5px">Compartí</p>
-          <p style="font-size:10px;color:#64748b;font-weight:500;line-height:1.5">Avisá a tus vecinos por WhatsApp y redes.</p>
+          <p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:6px;letter-spacing:-.01em">Compartí</p>
+          <p style="font-size:11px;color:#8b98ac;font-weight:500;line-height:1.55">Avisá a tus vecinos por WhatsApp y redes.</p>
         </div>
         <div class="step">
           <div class="step-ic" style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3)"><i data-lucide="bell" style="width:20px;height:20px;color:#f59e0b"></i></div>
-          <p style="font-size:12px;font-weight:800;color:#e2e8f0;margin-bottom:5px">Mantenete informado</p>
-          <p style="font-size:10px;color:#64748b;font-weight:500;line-height:1.5">Seguí el mapa y las estadísticas de tu barrio.</p>
+          <p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:6px;letter-spacing:-.01em">Mantenete informado</p>
+          <p style="font-size:11px;color:#8b98ac;font-weight:500;line-height:1.55">Seguí el mapa y las estadísticas de tu barrio.</p>
         </div>
       </div>
     </div>
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(148,163,184,.12)">
-      <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:18px;border:1px solid rgba(148,163,184,.18);background:rgba(30,41,59,.6);color:#cbd5e1;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.borderColor='rgba(148,163,184,.4)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(148,163,184,.18)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
+      <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
       <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
           <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="info" style="width:16px;height:16px;color:#ef4444"></i></div>
-          <h2 style="font-size:14px;font-weight:900;color:#e2e8f0;text-transform:uppercase;letter-spacing:.02em">¿Qué es Robos MDP?</h2>
+          <h2 style="font-size:16px;font-weight:700;color:#e8edf5;letter-spacing:-.01em">¿Qué es Robos MDP?</h2>
         </div>
         <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500">Robos MDP es el mapa colaborativo de seguridad vecinal de <strong style="color:#cbd5e1">Mar del Plata</strong>. Los vecinos reportan robos, hurtos y entraderas en tiempo real para visibilizar la inseguridad y ayudar a las víctimas a recuperar sus pertenencias.</p>
         <p style="font-size:12px;color:#94a3b8;line-height:1.75;font-weight:500;margin-top:10px">También podés reportar <strong style="color:#4ade80">basura acumulada</strong> y <strong style="color:#fbbf24">pozos en la calzada</strong> de tu barrio. Cada reporte suma para construir un mapa real de los problemas de la ciudad.</p>
       </div>
-      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:16px 24px;border-radius:18px;border:none;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 26px rgba(37,211,102,.32)"><i data-lucide="share-2" style="width:16px;height:16px"></i>Compartir con tus vecinos</button>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('🔴 Mirá el mapa de robos de Mar del Plata. Reportá y compartí alertas con tus vecinos: https://robosmdp.com.ar'),'_blank')" style="width:100%;max-width:420px;margin:0 auto;padding:16px 24px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 26px rgba(37,211,102,.3)"><i data-lucide="share-2" style="width:16px;height:16px"></i>Compartir con tus vecinos</button>
       <p style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.18em;margin-top:8px">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
-        <a href="https://www.instagram.com/robos.mdp/" target="_blank" class="soc" style="color:#f472b6"><span style="font-size:13px;font-weight:900">IG</span></a>
-        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" class="soc" style="color:#60a5fa"><span style="font-size:13px;font-weight:900">FB</span></a>
+        <a href="https://www.instagram.com/robos.mdp/" target="_blank" class="soc" style="color:#f472b6"><span style="font-size:13px;font-weight:700">IG</span></a>
+        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" class="soc" style="color:#60a5fa"><span style="font-size:13px;font-weight:700">FB</span></a>
         <a href="mailto:contacto@robosmdp.com.ar" class="soc" style="color:#94a3b8"><i data-lucide="mail" style="width:21px;height:21px"></i></a>
       </div>
       <p style="font-size:9px;color:#475569;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
@@ -299,7 +308,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
           <img id="sb-logo" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
         </div>
         <div>
-          <h1 id="sb-title" style="font-size:15px;font-weight:900;color:#f1f5f9;letter-spacing:-.02em;text-transform:uppercase;line-height:1">ROBOS MDP</h1>
+          <h1 id="sb-title" style="font-size:15px;font-weight:700;color:#f1f5f9;letter-spacing:-.02em;text-transform:uppercase;line-height:1">ROBOS MDP</h1>
           <p id="sb-sub" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;color:#ef4444">SISTEMA OFICIAL</p>
         </div>
       </div>
@@ -342,11 +351,11 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
           <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.28);border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:22px;font-weight:900;color:#f87171" id="sb-r-t">0</div>
+            <div style="font-size:22px;font-weight:700;color:#f87171" id="sb-r-t">0</div>
             <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Total</div>
           </div>
           <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.28);border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:22px;font-weight:900;color:#f87171" id="sb-r-h">0</div>
+            <div style="font-size:22px;font-weight:700;color:#f87171" id="sb-r-h">0</div>
             <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Hoy</div>
           </div>
         </div>
@@ -359,11 +368,11 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Basura en la vía pública</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
           <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.28);border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:22px;font-weight:900;color:#4ade80" id="sb-b-t">0</div>
+            <div style="font-size:22px;font-weight:700;color:#4ade80" id="sb-b-t">0</div>
             <div style="font-size:9px;font-weight:700;color:#86efac;text-transform:uppercase">Total</div>
           </div>
           <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.28);border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:22px;font-weight:900;color:#4ade80" id="sb-b-r">0</div>
+            <div style="font-size:22px;font-weight:700;color:#4ade80" id="sb-b-r">0</div>
             <div style="font-size:9px;font-weight:700;color:#86efac;text-transform:uppercase">Resueltos</div>
           </div>
         </div>
@@ -380,11 +389,11 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Pozos en la calzada</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
           <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:22px;font-weight:900;color:#fbbf24" id="sb-p-t">0</div>
+            <div style="font-size:22px;font-weight:700;color:#fbbf24" id="sb-p-t">0</div>
             <div style="font-size:9px;font-weight:700;color:#fcd34d;text-transform:uppercase">Total</div>
           </div>
           <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);border-radius:13px;padding:12px;text-align:center">
-            <div style="font-size:22px;font-weight:900;color:#fbbf24" id="sb-p-r">0</div>
+            <div style="font-size:22px;font-weight:700;color:#fbbf24" id="sb-p-r">0</div>
             <div style="font-size:9px;font-weight:700;color:#fcd34d;text-transform:uppercase">Resueltos</div>
           </div>
         </div>
@@ -398,7 +407,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       </div>
     </div>
     <div style="padding:13px 16px;border-top:1px solid rgba(148,163,184,.1);flex-shrink:0">
-      <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:linear-gradient(135deg,#f05252,#dc2626);border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 18px rgba(239,68,68,.4)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
+      <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
       <button onclick="goL()" style="width:100%;padding:12px;background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.16);border-radius:13px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
         <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
       </button>
@@ -407,7 +416,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
   <!-- MAP -->
   <main class="mapc">
     <header class="glass" style="position:absolute;top:16px;left:16px;right:16px;border-radius:17px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 7px;z-index:2000;box-shadow:0 6px 24px rgba(0,0,0,.08)">
-      <button onclick="openSB()" id="sb-open" style="padding:9px;background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border:none;border-radius:11px;cursor:pointer;display:flex;box-shadow:0 4px 12px rgba(239,68,68,.4)" class="md:hidden">
+      <button onclick="openSB()" id="sb-open" style="padding:9px;background:#ef4444;color:#fff;border:none;border-radius:11px;cursor:pointer;display:flex;box-shadow:0 4px 12px rgba(239,68,68,.26)" class="md:hidden">
         <i data-lucide="menu" style="width:16px;height:16px"></i>
       </button>
       <div style="flex:1;margin:0 8px;position:relative;max-width:300px">
@@ -423,7 +432,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
     <div id="map-p" class="mapel"></div>
     <div style="position:absolute;bottom:26px;right:18px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
       <button onclick="locU()" style="width:46px;height:46px;border-radius:14px;background:rgba(15,23,42,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4)"><i data-lucide="navigation" style="width:19px;height:19px;color:#cbd5e1"></i></button>
-      <button onclick="openM()" id="fab" style="width:56px;height:56px;border-radius:17px;background:#ef4444;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.5);transition:all .2s"><i data-lucide="plus" style="width:24px;height:24px;color:#fff"></i></button>
+      <button onclick="openM()" id="fab" style="width:56px;height:56px;border-radius:17px;background:#ef4444;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.32);transition:all .2s"><i data-lucide="plus" style="width:24px;height:24px;color:#fff"></i></button>
     </div>
   </main>
 </div>
@@ -434,7 +443,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(239,68,68,.3);flex-shrink:0"><img src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
-          <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Denuncia Vecinal</h2>
+          <h2 style="font-size:17px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Denuncia Vecinal</h2>
           <p style="font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Robos MDP</p>
         </div>
       </div>
@@ -485,7 +494,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <input id="r-phone" type="tel" placeholder="Teléfono de contacto (Opcional)" style="flex:1;background:transparent;border:none;font-size:11px;font-weight:600;color:#fde68a;outline:none">
       </div>
       <div id="r-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
-      <button id="r-sub" disabled onclick="subR('robos')" style="background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 10px 26px rgba(239,68,68,.45)">PUBLICAR REPORTE</button>
+      <button id="r-sub" disabled onclick="subR('robos')" style="background:#ef4444;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 10px 26px rgba(239,68,68,.3)">PUBLICAR REPORTE</button>
     </form>
   </div>
 </div>
@@ -496,7 +505,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(34,197,94,.35);flex-shrink:0"><img src="./assets/logo-basura.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
-          <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Basura</h2>
+          <h2 style="font-size:17px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Basura</h2>
           <p style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Basura MDP</p>
         </div>
       </div>
@@ -535,7 +544,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <textarea id="b-desc" placeholder="Describí el problema..." oninput="chkR('basura')" style="width:100%;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
       </div>
       <div id="b-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
-      <button id="b-sub" disabled onclick="subR('basura')" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(34,197,94,.4)">PUBLICAR REPORTE</button>
+      <button id="b-sub" disabled onclick="subR('basura')" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(34,197,94,.4)">PUBLICAR REPORTE</button>
     </form>
   </div>
 </div>
@@ -546,7 +555,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(245,158,11,.35);flex-shrink:0"><img src="./assets/logo-pozos.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
-          <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Pozo</h2>
+          <h2 style="font-size:17px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Reporte Pozo</h2>
           <p style="font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Sistema Pozos MDP</p>
         </div>
       </div>
@@ -585,7 +594,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
         <textarea id="p-desc" placeholder="Describí el problema..." oninput="chkR('pozos')" style="width:100%;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
       </div>
       <div id="p-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
-      <button id="p-sub" disabled onclick="subR('pozos')" style="background:#f59e0b;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(245,158,11,.4)">PUBLICAR REPORTE</button>
+      <button id="p-sub" disabled onclick="subR('pozos')" style="background:#f59e0b;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(245,158,11,.4)">PUBLICAR REPORTE</button>
     </form>
   </div>
 </div>
@@ -593,9 +602,9 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <div id="admin-p">
   <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:42px;height:42px;background:linear-gradient(135deg,#f05252,#dc2626);border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(239,68,68,.4)"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
+      <div style="width:42px;height:42px;background:#ef4444;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
       <div>
-        <h2 style="font-size:16px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
+        <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Administrador activo • MDP</p>
       </div>
     </div>
@@ -607,24 +616,24 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
   <div class="ns" style="padding:20px 22px">
     <div style="max-width:900px;margin:0 auto">
       <div id="adm-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px"></div>
-      <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));padding:16px 20px;border-radius:20px;border:1px solid rgba(148,163,184,.14);margin-bottom:18px">
+      <div style="background:var(--surface);padding:16px 20px;border-radius:20px;border:1px solid rgba(148,163,184,.14);margin-bottom:18px">
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Filtrar reportes</p>
         <input id="adm-q" type="text" oninput="renderAdm()" placeholder="Buscar por patente o texto..." style="width:100%;padding:10px 14px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none">
       </div>
       <div style="background:rgba(15,23,42,.6);padding:5px;border-radius:14px;border:1px solid rgba(148,163,184,.12);display:flex;gap:3px;margin-bottom:14px">
-        <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔴 Robos</button>
-        <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟢 Basura</button>
-        <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟡 Pozos</button>
+        <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Robos</button>
+        <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
+        <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
       </div>
       <div id="adm-list" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
   </div>
   <div id="adm-detail" style="position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);padding:16px">
-    <div style="background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.55)">
+    <div style="background:var(--bg-2);border:1px solid rgba(148,163,184,.12);width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.55)">
       <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.6)">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="padding:8px;background:rgba(30,41,59,.7);border-radius:11px;border:1px solid rgba(148,163,184,.16)"><i data-lucide="file-search" style="width:17px;height:17px;color:#cbd5e1"></i></div>
-          <div><h3 style="font-size:14px;font-weight:900;color:#f1f5f9;text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
+          <div><h3 style="font-size:14px;font-weight:700;color:#f1f5f9;text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
         </div>
         <button onclick="closeAD()" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
       </div>
@@ -639,16 +648,16 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 
 <!-- LOGIN -->
 <div id="login-m" onclick="if(event.target===this)closeLM()">
-  <div style="background:linear-gradient(180deg,#0f172a,#0a0e1a);border:1px solid rgba(148,163,184,.12);width:100%;max-width:320px;border-radius:24px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55);animation:sup .38s cubic-bezier(.16,1,.3,1)">
+  <div style="background:var(--bg-2);border:1px solid rgba(148,163,184,.12);width:100%;max-width:320px;border-radius:24px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55);animation:sup .38s cubic-bezier(.16,1,.3,1)">
     <div style="padding:24px;border-bottom:1px solid rgba(148,163,184,.1);text-align:center">
-      <div style="width:48px;height:48px;background:linear-gradient(135deg,#f05252,#dc2626);border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px;box-shadow:0 6px 18px rgba(239,68,68,.4)"><i data-lucide="shield" style="width:22px;height:22px;color:#fff"></i></div>
-      <h2 style="font-size:17px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Acceso Admin</h2>
+      <div style="width:48px;height:48px;background:#ef4444;border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="shield" style="width:22px;height:22px;color:#fff"></i></div>
+      <h2 style="font-size:17px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Acceso Admin</h2>
     </div>
     <div style="padding:24px;display:flex;flex-direction:column;gap:12px">
       <input id="adm-email" type="email" value="admin@robosmdp.com.ar" style="display:none">
       <input id="adm-pass" type="password" placeholder="Clave de administrador" style="width:100%;padding:12px 14px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doLogin()">
       <div id="adm-err" style="font-size:10px;font-weight:700;color:#ef4444;text-align:center;display:none"></div>
-      <button onclick="doLogin()" style="background:linear-gradient(135deg,#f05252,#dc2626);color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.4)">Ingresar</button>
+      <button onclick="doLogin()" style="background:#ef4444;color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.4)">Ingresar</button>
       <button onclick="closeLM()" style="background:none;border:none;font-size:11px;font-weight:600;color:#94a3b8;cursor:pointer">Cancelar</button>
     </div>
   </div>
@@ -659,9 +668,9 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <div id="stats-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:#0a0e1a;background-image:radial-gradient(900px circle at 50% -8%,rgba(239,68,68,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(59,130,246,.06),transparent 50%)">
   <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:42px;height:42px;background:linear-gradient(135deg,#f05252,#dc2626);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 6px 18px rgba(239,68,68,.4)">📊</div>
+      <div style="width:42px;height:42px;background:#ef4444;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:20px;height:20px;color:#fff"></i></div>
       <div>
-        <h2 style="font-size:16px;font-weight:900;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Estadísticas MDP</h2>
+        <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Estadísticas MDP</h2>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Datos en tiempo real • Mar del Plata</p>
       </div>
     </div>
@@ -670,22 +679,22 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
   <div class="ns" style="flex:1;padding:20px 22px">
     <div style="max-width:900px;margin:0 auto">
       <div style="background:rgba(15,23,42,.6);padding:5px;border-radius:14px;border:1px solid rgba(148,163,184,.12);display:flex;gap:3px;margin-bottom:16px">
-        <button id="st-tab-robos" onclick="switchStatsTab('robos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔴 Robos</button>
-        <button id="st-tab-basura" onclick="switchStatsTab('basura')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟢 Basura</button>
-        <button id="st-tab-pozos" onclick="switchStatsTab('pozos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🟡 Pozos</button>
+        <button id="st-tab-robos" onclick="switchStatsTab('robos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Robos</button>
+        <button id="st-tab-basura" onclick="switchStatsTab('basura')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
+        <button id="st-tab-pozos" onclick="switchStatsTab('pozos')" style="flex:1;padding:10px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
       </div>
       <div id="st-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
-      <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px;margin-bottom:14px">
-        <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">📈 Evolución últimos 6 meses</p>
+      <div style="background:var(--surface);border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px;margin-bottom:14px">
+        <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">Evolución últimos 6 meses</p>
         <div style="position:relative;height:220px"><canvas id="ch-meses"></canvas></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px" id="st-grid2">
-        <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px">
-          <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">🎯 Por categoría</p>
+        <div style="background:var(--surface);border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px">
+          <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">Por categoría</p>
           <div style="position:relative;height:220px"><canvas id="ch-cats"></canvas></div>
         </div>
-        <div style="background:linear-gradient(160deg,rgba(30,41,59,.62),rgba(15,23,42,.72));border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px">
-          <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">📅 Por día de la semana</p>
+        <div style="background:var(--surface);border:1px solid rgba(148,163,184,.14);border-radius:20px;padding:18px 20px">
+          <p style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">Por día de la semana</p>
           <div style="position:relative;height:220px"><canvas id="ch-dias"></canvas></div>
         </div>
       </div>
@@ -696,7 +705,7 @@ body{font-family:'Inter',sans-serif;overflow:hidden;background:#0f172a}
 <style>@media(max-width:640px){#st-grid2{grid-template-columns:1fr!important}#st-cards{grid-template-columns:repeat(2,1fr)!important}}</style>
 
 <div id="iv" onclick="closeIV()">
-  <img id="iv-img" src="" style="max-width:94%;max-height:90vh;object-fit:contain;border-radius:13px">
+  <img id="iv-img" alt="" style="max-width:94%;max-height:90vh;object-fit:contain;border-radius:13px">
 </div>
 
 <script>
@@ -759,9 +768,9 @@ const CATS={
 };
 
 const MOD_CFG={
-  robos:{col:'artifacts/robosmdp-d1ef3/public/data/reports',color:'#ef4444',cls:'r',logo:'./assets/logo-robos.png',banner:'./assets/banner-robos.jpg',title:'ROBOS MDP',sub:'Sistema Oficial'},
-  basura:{col:'basura',color:'#22c55e',cls:'g',logo:'./assets/logo-basura.png',banner:'./assets/banner-basura.jpg',title:'BASURA MDP',sub:'Reportes de basura'},
-  pozos:{col:'pozos',color:'#f59e0b',cls:'a',logo:'./assets/logo-pozos.png',banner:'./assets/banner-pozos.jpg',title:'POZOS MDP',sub:'Pozos en calzada'}
+  robos:{col:'artifacts/robosmdp-d1ef3/public/data/reports',color:'#ef4444',cls:'r',logo:'./assets/logo-robos.png',banner:'./assets/banner-robos-map.png',title:'ROBOS MDP',sub:'Sistema Oficial'},
+  basura:{col:'basura',color:'#22c55e',cls:'g',logo:'./assets/logo-basura.png',banner:'./assets/banner-basura-map.png',title:'BASURA MDP',sub:'Reportes de basura'},
+  pozos:{col:'pozos',color:'#f59e0b',cls:'a',logo:'./assets/logo-pozos.png',banner:'./assets/banner-pozos-map.png',title:'POZOS MDP',sub:'Pozos en calzada'}
 };
 const PRE={robos:'r',basura:'b',pozos:'p'};
 const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'rgba(245,158,11,.5)'};
@@ -769,7 +778,7 @@ const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'
 // ===== INIT =====
 window.onload=()=>{
   // Precargar banners y logos de otras secciones en background
-  setTimeout(()=>{['./assets/banner-basura.jpg','./assets/banner-pozos.jpg','./assets/logo-basura.png','./assets/logo-pozos.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
+  setTimeout(()=>{['./assets/banner-basura-map.png','./assets/banner-pozos-map.png','./assets/logo-basura.png','./assets/logo-pozos.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
   loadAllReports();
   safeIcons();
   buildCats();
@@ -1008,7 +1017,7 @@ function renderMk(tab){
     iconCreateFunction:function(cluster){
       const n=cluster.getChildCount();
       const size=n<10?38:n<50?46:54;
-      return L.divIcon({html:'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+cfgColor+';border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Inter,sans-serif;font-weight:900;font-size:'+(n<100?14:12)+'px">'+n+'</div>',className:'',iconSize:[size,size],iconAnchor:[size/2,size/2]});
+      return L.divIcon({html:'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+cfgColor+';border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:'+(n<100?14:12)+'px">'+n+'</div>',className:'',iconSize:[size,size],iconAnchor:[size/2,size/2]});
     }
   }):null;
   list.forEach(r=>{
@@ -1037,7 +1046,7 @@ function mkPopup(r,cat,tab){
   const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
   const hora=ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
   const res=tab!=='robos'&&r.resolved?'<span style="font-size:9px;font-weight:700;background:rgba(34,197,94,.18);color:#4ade80;padding:2px 7px;border-radius:999px">✓ Resuelto</span>':'';
-  const resAction=tab!=='robos'?'<button onclick="publicToggleResolved(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:8px 10px;border:none;border-radius:10px;background:'+(r.resolved?'rgba(148,163,184,.15)':'rgba(34,197,94,.18)')+';color:'+(r.resolved?'#94a3b8':'#4ade80')+';font-size:10px;font-weight:900;text-transform:uppercase;cursor:pointer">'+(r.resolved?'Marcar pendiente':'Marcar resuelto')+'</button>':'';
+  const resAction=tab!=='robos'?'<button onclick="publicToggleResolved(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:8px 10px;border:none;border-radius:10px;background:'+(r.resolved?'rgba(148,163,184,.15)':'rgba(34,197,94,.18)')+';color:'+(r.resolved?'#94a3b8':'#4ade80')+';font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">'+(r.resolved?'Marcar pendiente':'Marcar resuelto')+'</button>':'';
   return '<div style="font-family:Inter,sans-serif;min-width:180px;max-width:240px">'+
     '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">'+
     '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+'</div>'+
@@ -1241,7 +1250,7 @@ function visitsAdminCard(){
   return '<div style="background:linear-gradient(160deg,rgba(99,102,241,.18),rgba(15,23,42,.78));border:1px solid rgba(99,102,241,.32);border-radius:18px;padding:14px;text-align:center">'+
     '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,.22);font-size:18px">👥</div>'+
     '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">Visitas</p>'+
-    '<p style="font-size:22px;font-weight:900;color:#a5b4fc"><span id="adm-visit-total">'+(_visTotal||0).toLocaleString('es-AR')+'</span></p>'+
+    '<p style="font-size:22px;font-weight:700;color:#a5b4fc"><span id="adm-visit-total">'+(_visTotal||0).toLocaleString('es-AR')+'</span></p>'+
     '<p style="font-size:9px;font-weight:700;color:#64748b;margin-top:2px"><span id="adm-visit-today">'+(_visToday||0)+'</span> hoy</p></div>';
 }
 function initVisitCounter(){
@@ -1527,7 +1536,7 @@ function renderAdm(){
     return '<div onclick="togAdmC(\''+c.id+'\')" style="background:linear-gradient(160deg,rgba(30,41,59,.78),rgba(15,23,42,.78));padding:14px;border-radius:18px;border:'+(on?'2px solid '+c.color:'1px solid rgba(148,163,184,.14)')+';text-align:center;cursor:pointer;'+(on?'transform:scale(1.04)':'')+'">'+
       '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:'+c.color+'22;color:'+c.color+'"><i data-lucide="'+c.icon+'" style="width:16px;height:16px"></i></div>'+
       '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">'+c.label+'</p>'+
-      '<p style="font-size:22px;font-weight:900;color:#f1f5f9">'+(counts[c.id]||0)+'</p></div>';
+      '<p style="font-size:22px;font-weight:700;color:#f1f5f9">'+(counts[c.id]||0)+'</p></div>';
   }).join('')+visitsAdminCard();
   const filtered=data.filter(r=>(!G.admCatF||r.type===G.admCatF)&&(!q||r.description?.toLowerCase().includes(q)||(r.vehiclePlate||'').toLowerCase().includes(q))).sort((a,b)=>getReportDate(b)-getReportDate(a));
   list.innerHTML=filtered.map(r=>{
@@ -1605,9 +1614,9 @@ function openAD(id){
   document.getElementById('adm-detail-body').innerHTML=
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
     +'<div><span style="background:'+cat.color+';color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'
-    +'<p style="font-size:20px;font-weight:900;color:#f1f5f9;margin-top:12px;line-height:1.2">'+(r.description?.substring(0,60)||'')+(r.description?.length>60?'...':'')+'</p>'
+    +'<p style="font-size:20px;font-weight:700;color:#f1f5f9;margin-top:12px;line-height:1.2">'+(r.description?.substring(0,60)||'')+(r.description?.length>60?'...':'')+'</p>'
     +'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:12px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Fecha y hora</p><p style="font-size:12px;font-weight:700;color:#e2e8f0">'+fecha+'</p></div>'
-    +(r.vehiclePlate?'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:9px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Patente</p><p style="font-size:15px;font-weight:900;color:#e2e8f0">'+r.vehiclePlate.toUpperCase()+'</p></div>':'')
+    +(r.vehiclePlate?'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:9px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Patente</p><p style="font-size:15px;font-weight:700;color:#e2e8f0">'+r.vehiclePlate.toUpperCase()+'</p></div>':'')
     +(r.phone?'<div style="background:rgba(234,179,8,.1);padding:13px;border-radius:14px;margin-top:9px;border:1px solid rgba(234,179,8,.28)"><p style="font-size:9px;font-weight:700;color:#eab308;text-transform:uppercase;margin-bottom:3px">Contacto</p><p style="font-size:12px;font-weight:700;color:#fde68a">'+r.phone+'</p></div>':'')
     +'</div><div>'
     +'<div style="aspect-ratio:16/9;background:rgba(15,23,42,.6);border-radius:14px;overflow:hidden;border:1px solid rgba(148,163,184,.14);display:flex;align-items:center;justify-content:center">'
@@ -1676,7 +1685,7 @@ function renderStats(){
   const cards=[{n:tot,l:'Total histórico'},{n:mes,l:'Este mes'},{n:sem,l:'Últimos 7 días'},extra];
   document.getElementById('st-cards').innerHTML=cards.map(c=>
     '<div style="background:linear-gradient(160deg,rgba(30,41,59,.78),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.14);border-radius:16px;padding:16px 12px;text-align:center">'+
-    '<div style="font-size:26px;font-weight:900;color:'+color+'">'+c.n+'</div>'+
+    '<div style="font-size:26px;font-weight:700;color:'+color+'">'+c.n+'</div>'+
     '<div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">'+c.l+'</div></div>'
   ).join('');
 
