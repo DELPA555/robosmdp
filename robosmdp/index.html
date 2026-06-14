@@ -636,6 +636,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Robos</button>
         <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
         <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
+        <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
       </div>
       <div id="adm-list" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
@@ -654,6 +655,34 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <p style="font-size:9px;font-weight:700;color:#475569">ID: <span id="adm-did"></span></p>
         <button onclick="delR()" style="padding:10px 16px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Eliminar</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AVISO DE RESOLUCION (publico) -->
+<div class="movl" id="resnotif-m" onclick="if(event.target===this)closeResolveNotif()">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(34,197,94,.08)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,.18);border:2px solid rgba(34,197,94,.35);flex-shrink:0;font-size:22px">📸</div>
+        <div>
+          <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Avisar que se resolvió</h2>
+          <p style="font-size:9px;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.06em;margin-top:3px">El admin va a revisar tu aviso</p>
+        </div>
+      </div>
+      <button onclick="closeResolveNotif()" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
+    </div>
+    <div class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
+      <p style="font-size:12px;font-weight:600;color:#cbd5e1;line-height:1.5">Subí una foto que muestre que el problema <b style="color:#4ade80">ya no está</b>. El administrador la revisa y marca el reporte como resuelto.</p>
+      <div style="background:rgba(34,197,94,.1);padding:16px;border-radius:16px;border:1px solid rgba(34,197,94,.28)">
+        <label style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Foto de prueba (obligatoria)</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="flex:1;cursor:pointer;background:rgba(15,23,42,.5);border:2px dashed rgba(74,222,128,.55);padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#4ade80"></i><span style="font-size:9px;font-weight:700;color:#4ade80;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="rn-photo" accept="image/*" style="display:none" onchange="resNotifPhoto(this)"></label>
+          <div id="rn-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="rn-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmResNotifPhoto()" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
+        </div>
+      </div>
+      <div id="rn-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Subí una foto de prueba</div>
+      <button id="rn-sub" disabled onclick="sendResolveNotif()" style="background:#22c55e;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(34,197,94,.4)">Enviar aviso</button>
     </div>
   </div>
 </div>
@@ -753,6 +782,7 @@ const G={
   loaded:{robos:false,basura:false,pozos:false},
   photoCache:{},
   mkById:{robos:{},basura:{},pozos:{}},
+  avisos:[],resNotif:null,
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
 };
@@ -1102,7 +1132,9 @@ function mkPopup(r,cat,tab){
   const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
   const hora=ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
   const res=tab!=='robos'&&r.resolved?'<span style="font-size:9px;font-weight:700;background:rgba(34,197,94,.18);color:#4ade80;padding:2px 7px;border-radius:999px">✓ Resuelto</span>':'';
-  const resAction=tab!=='robos'?'<button onclick="publicToggleResolved(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:8px 10px;border:none;border-radius:10px;background:'+(r.resolved?'rgba(148,163,184,.15)':'rgba(34,197,94,.18)')+';color:'+(r.resolved?'#94a3b8':'#4ade80')+';font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">'+(r.resolved?'Marcar pendiente':'Marcar resuelto')+'</button>':'';
+  // Público (basura/pozos): NO puede resolver directo; solo avisa al admin con foto.
+  // Si ya está resuelto, no se muestra nada (el badge "✓ Resuelto" ya aparece arriba).
+  const resAction=(tab!=='robos'&&!r.resolved)?'<button onclick="openResolveNotif(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:9px;padding:9px 10px;border:none;border-radius:10px;background:rgba(34,197,94,.18);color:#4ade80;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">📸 Avisar que se resolvió</button>':'';
   return '<div style="font-family:Inter,sans-serif;min-width:180px;max-width:240px">'+
     '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">'+
     '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+'</div>'+
@@ -1594,12 +1626,14 @@ function openAP(){
       loadReports(tab);
     }
   });
+  loadAvisos();
   renderAdm(); safeIcons();
 }
 
 function closeAP(){document.getElementById('admin-p').style.display='none';G.isAdmin=false;}
 
 function renderAdm(){
+  if(admTab==='avisos'){ renderAvisos(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
   const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
   if(!list||!grid) return;
@@ -1634,11 +1668,12 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b'};
-  ['robos','basura','pozos'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',avisos:'#6366f1'};
+  ['robos','basura','pozos','avisos'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'#94a3b8';}
   });
+  const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=tab==='avisos'?'none':'block';
   renderAdm();
 }
 
@@ -1677,6 +1712,144 @@ async function updateResolvedField(tab,id,value){
     const json=await res.json().catch(()=>({}));
     throw new Error(json.error?.message||'No se pudo actualizar');
   }
+}
+
+// ===== AVISO DE RESOLUCION (publico sube foto -> admin confirma) =====
+const RESNOTIF_COL='notificaciones_resolucion';
+function openResolveNotif(tab,id){
+  G.resNotif={tab,id,photo:null};
+  rmResNotifPhoto();
+  const err=document.getElementById('rn-err'); if(err) err.style.display='none';
+  document.getElementById('resnotif-m').style.display='flex';
+  safeIcons();
+}
+function closeResolveNotif(){document.getElementById('resnotif-m').style.display='none';}
+function resNotifPhoto(input){
+  const file=input.files[0]; if(!file||!G.resNotif) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=800; let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      G.resNotif.photo=canvas.toDataURL('image/jpeg',0.72);
+      const prev=document.getElementById('rn-ph-prev'),imgEl=document.getElementById('rn-ph-img');
+      if(prev&&imgEl){imgEl.src=G.resNotif.photo;prev.style.display='block';}
+      const sub=document.getElementById('rn-sub'); if(sub){sub.disabled=false;sub.style.opacity='1';}
+      const err=document.getElementById('rn-err'); if(err) err.style.display='none';
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function rmResNotifPhoto(){
+  if(G.resNotif) G.resNotif.photo=null;
+  const prev=document.getElementById('rn-ph-prev'),inp=document.getElementById('rn-photo'),sub=document.getElementById('rn-sub');
+  if(prev) prev.style.display='none';
+  if(inp) inp.value='';
+  if(sub){sub.disabled=true;sub.style.opacity='.5';}
+}
+async function sendResolveNotif(){
+  if(!G.resNotif||!G.resNotif.photo){const e=document.getElementById('rn-err');if(e)e.style.display='block';return;}
+  const {tab,id,photo}=G.resNotif;
+  const sub=document.getElementById('rn-sub'); if(sub){sub.disabled=true;sub.textContent='Enviando...';sub.style.opacity='.7';}
+  const r=(G.data[tab]||[]).find(x=>x.id===id);
+  try{
+    await db.collection(RESNOTIF_COL).add({
+      reportId:id, reportType:tab,
+      reportDescription:(r&&r.description)||'',
+      photoBase64:photo,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      status:'pendiente'
+    });
+    closeResolveNotif();
+    showToast('¡Gracias! El admin va a revisar tu aviso 🙌','g');
+  }catch(e){
+    console.error('Error enviando aviso',e);
+    showToast('No se pudo enviar el aviso','r');
+  }finally{
+    if(sub){sub.textContent='Enviar aviso';}
+  }
+}
+
+// ===== ADMIN: bandeja de avisos =====
+async function loadAvisos(){
+  try{
+    const snap=await db.collection(RESNOTIF_COL).where('status','==','pendiente').get();
+    G.avisos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>getReportDate(b)-getReportDate(a));
+  }catch(e){ console.warn('loadAvisos',e); G.avisos=[]; }
+  updAvisosBadge();
+  if(admTab==='avisos') renderAvisos();
+}
+function updAvisosBadge(){
+  const b=document.getElementById('adm-avisos-badge'); if(!b) return;
+  const n=(G.avisos||[]).length;
+  b.textContent=n; b.style.display=n>0?'block':'none';
+}
+function renderAvisos(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return;
+  if(grid) grid.innerHTML='';
+  const avisos=G.avisos||[];
+  if(!avisos.length){
+    list.innerHTML='<div style="text-align:center;padding:42px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">🔔</div>No hay avisos pendientes</div>';
+    return;
+  }
+  list.innerHTML=avisos.map(a=>{
+    const cat=(CATS[a.reportType]||[]).find(c=>c.id===((G.data[a.reportType]||[]).find(x=>x.id===a.reportId)||{}).type);
+    const color=a.reportType==='basura'?'#22c55e':'#f59e0b';
+    const ts=getReportDate(a);
+    const fecha=ts.getTime()>0?ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' '+ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'—';
+    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId);
+    const desc=(r&&r.description)||a.reportDescription||'(reporte no encontrado)';
+    return '<div style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border-radius:18px;border:1px solid rgba(148,163,184,.14);padding:14px 16px">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+        '<span style="background:'+color+';color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;text-transform:uppercase">'+(a.reportType||'')+'</span>'+
+        '<span style="font-size:9px;font-weight:700;color:#94a3b8">'+fecha+'</span></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+
+        '<div><p style="font-size:8px;font-weight:700;color:#4ade80;text-transform:uppercase;margin-bottom:5px">Foto de prueba (aviso)</p>'+
+          '<div style="aspect-ratio:4/3;border-radius:11px;overflow:hidden;border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center">'+
+          (a.photoBase64?'<img src="'+a.photoBase64+'" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openIV(this.src)">':'<i data-lucide="image-off" style="width:24px;height:24px;color:#475569"></i>')+'</div></div>'+
+        '<div><p style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Reporte original</p>'+
+          '<div id="avo-'+a.id+'" style="aspect-ratio:4/3;border-radius:11px;overflow:hidden;border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center"></div></div>'+
+      '</div>'+
+      '<p style="font-size:12px;font-weight:600;color:#e2e8f0;line-height:1.4;margin-bottom:12px">'+desc+'</p>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="confirmAviso(\''+a.id+'\')" style="flex:1;padding:11px;background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.32);border-radius:12px;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">✅ Confirmar resuelto</button>'+
+        '<button onclick="discardAviso(\''+a.id+'\')" style="flex:1;padding:11px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">❌ Descartar</button>'+
+      '</div></div>';
+  }).join('');
+  safeIcons();
+  // hidratar foto del reporte original (on-demand, cacheada)
+  avisos.forEach(a=>{
+    const slot=document.getElementById('avo-'+a.id); if(!slot) return;
+    const set=p=>{const s=document.getElementById('avo-'+a.id); if(!s)return; s.innerHTML=p?'<img src="'+p+'" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openIV(this.src)">':'<i data-lucide="image-off" style="width:24px;height:24px;color:#475569"></i>'; if(!p)safeIcons();};
+    const c=G.photoCache[a.reportId];
+    if(c!==undefined){set(c);return;}
+    fetchPhoto(MOD_CFG[a.reportType].col,a.reportId).then(p=>{G.photoCache[a.reportId]=p;set(p);});
+  });
+}
+async function confirmAviso(avisoId){
+  const a=(G.avisos||[]).find(x=>x.id===avisoId); if(!a) return;
+  try{
+    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({resolved:true});
+    await db.collection(RESNOTIF_COL).doc(avisoId).update({status:'aprobado'});
+    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId); if(r) r.resolved=true;
+    renderMk(a.reportType); renderRL(a.reportType); updSBStats(a.reportType); updLandingStats(a.reportType);
+    showToast('Reporte marcado como resuelto ✅','g');
+    loadAvisos();
+  }catch(e){ console.error('confirmAviso',e); showToast('No se pudo confirmar','r'); }
+}
+async function discardAviso(avisoId){
+  try{
+    await db.collection(RESNOTIF_COL).doc(avisoId).update({status:'descartado'});
+    showToast('Aviso descartado','g');
+    loadAvisos();
+  }catch(e){ console.error('discardAviso',e); showToast('No se pudo descartar','r'); }
 }
 
 function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
