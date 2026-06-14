@@ -47,6 +47,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -502,6 +503,10 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase">Radio</span><span id="zone-radius-val" style="font-size:10px;font-weight:800;color:#a5b4fc">400 m</span></div>
         <input id="zone-radius" type="range" min="200" max="1000" step="100" value="400" oninput="setZoneRadius(this.value)" style="width:100%;accent-color:#6366f1">
       </div>
+      <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:11px;cursor:pointer;font-size:10px;font-weight:600;color:#cbd5e1;line-height:1.4">
+        <input type="checkbox" id="zone-push" onchange="togglePush(this.checked)" style="width:15px;height:15px;accent-color:#6366f1;flex-shrink:0;margin-top:1px">
+        <span>🔔 Avisarme cuando haya algo nuevo en mi zona</span>
+      </label>
       <div style="display:flex;gap:6px">
         <button id="zone-save" onclick="saveZone()" disabled style="flex:1;padding:10px;border:none;border-radius:11px;background:#6366f1;color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer;opacity:.5">Guardar zona</button>
         <button id="zone-remove" onclick="removeZone()" style="display:none;padding:10px 12px;border:1px solid rgba(239,68,68,.3);border-radius:11px;background:rgba(239,68,68,.12);color:#ef4444;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">Quitar</button>
@@ -1624,6 +1629,7 @@ function openZonePanel(){
   document.getElementById('zone-hint').textContent=z?'Tocá el mapa para mover el centro, o ajustá el radio.':'Tocá el mapa para marcar el centro de tu zona.';
   const sv=document.getElementById('zone-save'); if(sv){sv.disabled=!G.zoneDraft;sv.style.opacity=G.zoneDraft?'1':'.5';}
   document.getElementById('zone-remove').style.display=G.zone?'block':'none';
+  syncPushToggle();
   document.getElementById('zone-panel').style.display='block';
   safeIcons();
 }
@@ -1650,9 +1656,11 @@ function saveZone(){
   document.getElementById('zone-panel').style.display='none';
   drawZone(G.tab); syncZoneBtn();
   renderMk(G.tab); renderRL(G.tab);
+  if(localStorage.getItem(PUSH_DOC_LS)) updatePushZone(); // si tenía push activo, mover la zona
   showToast('Zona guardada 📍','g');
 }
 function removeZone(){
+  if(localStorage.getItem(PUSH_DOC_LS)) disablePush(); // sin zona no tiene sentido la suscripción
   G.zone=null; G.zoneDraft=null; G.zoneMode=false;
   try{localStorage.removeItem(ZONE_LS);}catch(e){}
   ['robos','basura','pozos'].forEach(t=>{ if(G.zoneCircle[t]&&G.maps[t]){G.maps[t].removeLayer(G.zoneCircle[t]);G.zoneCircle[t]=null;} });
@@ -1660,6 +1668,41 @@ function removeZone(){
   syncZoneBtn();
   renderMk(G.tab); renderRL(G.tab);
   showToast('Zona quitada','g');
+}
+
+// ===== NOTIFICACIONES PUSH (opt-in) para "Mi zona" =====
+const PUSH_DOC_LS='rmdp_push_doc';
+const VAPID_KEY='BFPBiqqRaMEsxPOE1vYMAOSEOXFm7fumHb0y7-m9CEsn2r374isYgv0UYeZzFRx0HdXeiYmA4Jr5moNGd6E0erY';
+function getMessaging(){ try{ if(window.firebase&&firebase.messaging) return firebase.messaging(); }catch(e){ console.warn('messaging no disponible',e); } return null; }
+function syncPushToggle(){ const cb=document.getElementById('zone-push'); if(cb) cb.checked=!!localStorage.getItem(PUSH_DOC_LS); }
+async function togglePush(on){ if(on) await enablePush(); else await disablePush(); }
+async function enablePush(){
+  const cb=document.getElementById('zone-push');
+  if(!G.zone){ showToast('Primero marcá y guardá tu zona','r'); if(cb)cb.checked=false; return; }
+  const m=getMessaging();
+  if(!m||!('Notification'in window)){ showToast('Tu navegador no soporta notificaciones','r'); if(cb)cb.checked=false; return; }
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){ showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return; }
+    const token=await m.getToken({vapidKey:VAPID_KEY});
+    if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
+    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    let docId=localStorage.getItem(PUSH_DOC_LS);
+    if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
+    else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
+    showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
+  }catch(e){ console.error('enablePush',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
+}
+async function disablePush(){
+  const docId=localStorage.getItem(PUSH_DOC_LS);
+  localStorage.removeItem(PUSH_DOC_LS);
+  const cb=document.getElementById('zone-push'); if(cb) cb.checked=false;
+  if(docId){ try{ await db.collection('subscripciones_push').doc(docId).delete(); }catch(e){ console.warn('disablePush',e); } }
+}
+// Si el usuario re-define su zona y tiene push activo, actualizar la suscripción.
+async function updatePushZone(){
+  const docId=localStorage.getItem(PUSH_DOC_LS); if(!docId||!G.zone) return;
+  try{ await db.collection('subscripciones_push').doc(docId).set({lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){ console.warn('updatePushZone',e); }
 }
 
 // ===== MODALS =====
