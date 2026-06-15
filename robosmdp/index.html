@@ -31,6 +31,9 @@
 <script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script defer src="https://unpkg.com/lucide@latest"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1368822578971413"
      crossorigin="anonymous"></script>
 <!-- Google Analytics 4 -->
@@ -704,6 +707,10 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
         <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
       </div>
+      <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
+        <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(148,163,184,.2);border-radius:11px;background:rgba(30,41,59,.6);color:#cbd5e1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
+        <button onclick="exportPDF()" style="flex:1;padding:10px;border:1px solid rgba(148,163,184,.2);border-radius:11px;background:rgba(30,41,59,.6);color:#cbd5e1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-text" style="width:14px;height:14px"></i>Exportar PDF</button>
+      </div>
       <div id="adm-list" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
   </div>
@@ -781,7 +788,10 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Datos en tiempo real • Mar del Plata</p>
       </div>
     </div>
-    <button onclick="closeStats()" style="padding:9px 18px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="st-share-btn" onclick="shareStatsImage()" style="padding:9px 14px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#fff;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(99,102,241,.35)"><i data-lucide="image" style="width:14px;height:14px"></i><span class="md:inline" style="white-space:nowrap">Compartir imagen</span></button>
+      <button onclick="closeStats()" style="padding:9px 18px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
+    </div>
   </header>
   <div class="ns" style="flex:1;padding:20px 22px">
     <div style="max-width:900px;margin:0 auto">
@@ -810,6 +820,19 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
   </div>
 </div>
 <style>@media(max-width:640px){#st-grid2{grid-template-columns:1fr!important}#st-cards{grid-template-columns:repeat(2,1fr)!important}}</style>
+
+<!-- Contenedor OCULTO para renderizar la imagen story (1080x1920) -->
+<div id="story-stage" style="position:fixed;left:-99999px;top:0;width:1080px;height:1920px;background:#0a0e1a;overflow:hidden;font-family:Inter,sans-serif"></div>
+
+<!-- Modal con la imagen generada -->
+<div id="story-modal" onclick="if(event.target===this)closeStoryModal()" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,14,26,.92);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:18px;flex-direction:column;gap:14px">
+  <img id="story-img" style="max-width:min(92vw,360px);max-height:72vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6)">
+  <div style="display:flex;gap:10px">
+    <a id="story-download" download="estadisticas-robosmdp.png" style="padding:13px 20px;border-radius:13px;background:#6366f1;color:#fff;font-size:12px;font-weight:800;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:7px"><i data-lucide="download" style="width:15px;height:15px"></i>Descargar</a>
+    <button id="story-share" onclick="shareStoryFile()" style="display:none;padding:13px 20px;border-radius:13px;background:#22c55e;color:#fff;border:none;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer;align-items:center;gap:7px"><i data-lucide="share-2" style="width:15px;height:15px"></i>Compartir</button>
+    <button onclick="closeStoryModal()" style="padding:13px 18px;border-radius:13px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);color:#cbd5e1;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Cerrar</button>
+  </div>
+</div>
 
 <div id="iv" onclick="closeIV()">
   <img id="iv-img" alt="" style="max-width:94%;max-height:90vh;object-fit:contain;border-radius:13px">
@@ -1923,7 +1946,7 @@ function renderAdm(){
       '<p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase">'+c.label+'</p>'+
       '<p style="font-size:22px;font-weight:700;color:#f1f5f9">'+(counts[c.id]||0)+'</p></div>';
   }).join('')+visitsAdminCard();
-  const filtered=data.filter(r=>(!G.admCatF||r.type===G.admCatF)&&(!q||r.description?.toLowerCase().includes(q)||(r.vehiclePlate||'').toLowerCase().includes(q))).sort((a,b)=>getReportDate(b)-getReportDate(a));
+  const filtered=admFilteredData();
   list.innerHTML=filtered.map(r=>{
     const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
     const ts=getReportDate(r);
@@ -1950,7 +1973,81 @@ function switchAdmTab(tab){
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'#94a3b8';}
   });
   const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=tab==='avisos'?'none':'block';
+  const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=tab==='avisos'?'none':'flex';
   renderAdm();
+}
+
+// ===== EXPORTAR (CSV / PDF) =====
+function admFilteredData(){
+  const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
+  const data=G.data[admTab]||[];
+  return data.filter(r=>(!G.admCatF||r.type===G.admCatF)&&(!q||r.description?.toLowerCase().includes(q)||(r.vehiclePlate||'').toLowerCase().includes(q))).sort((a,b)=>getReportDate(b)-getReportDate(a));
+}
+function expFmtDate(d){ return d&&d.getTime()>0 ? d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) : ''; }
+function downloadBlob(blob,name){ const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500); }
+function csvCell(v){ v=String(v==null?'':v); return /[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function hexToRgb(h){ const m=/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(h||''); return m?[parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)]:[100,116,139]; }
+
+function exportCSV(){
+  if(admTab==='avisos') return;
+  const tab=admTab, rows=admFilteredData();
+  if(!rows.length){ showToast('No hay reportes para exportar','r'); return; }
+  const header=['Fecha del hecho','Tipo','Descripcion','Lat','Lng','Patente','Resuelto','Me preocupa'];
+  const lines=[header.join(',')];
+  rows.forEach(r=>{
+    const cat=CATS[tab].find(c=>c.id===r.type), co=getCoords(r)||['',''];
+    lines.push([
+      expFmtDate(getReportDate(r)),
+      cat?cat.label:(r.type||''),
+      r.description||'',
+      co[0], co[1],
+      tab==='robos'?(r.vehiclePlate||''):'',
+      tab!=='robos'?(r.resolved?'Si':'No'):'',
+      r.concerns||0
+    ].map(csvCell).join(','));
+  });
+  downloadBlob(new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'}), tab+'_mdp_'+todayStr()+'.csv');
+  showToast('CSV exportado ('+rows.length+' reportes)','g');
+}
+
+function exportPDF(){
+  if(admTab==='avisos') return;
+  if(!window.jspdf||!window.jspdf.jsPDF){ showToast('PDF no disponible, reintentá','r'); return; }
+  const tab=admTab, cfg=MOD_CFG[tab], rows=admFilteredData();
+  if(!rows.length){ showToast('No hay reportes para exportar','r'); return; }
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const W=doc.internal.pageSize.getWidth();
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(30,41,59);
+  doc.text('Reporte '+cfg.title+' - '+todayStr(),40,42);
+  // resumen por categoria
+  const counts={}; CATS[tab].forEach(c=>counts[c.id]=0); rows.forEach(r=>{counts[r.type]=(counts[r.type]||0)+1;});
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(100,116,139);
+  const resumen='Total: '+rows.length+'   |   '+CATS[tab].map(c=>c.label+': '+(counts[c.id]||0)).join('   ');
+  doc.text(resumen,40,62,{maxWidth:W-80});
+  // tabla
+  const head=[['Fecha','Tipo','Descripcion','Ubicacion',(tab==='robos'?'Patente':'Resuelto'),'Preoc.']];
+  const body=rows.map(r=>{
+    const cat=CATS[tab].find(c=>c.id===r.type), co=getCoords(r);
+    return [
+      expFmtDate(getReportDate(r)),
+      cat?cat.label:(r.type||''),
+      r.description||'',
+      co?co[0].toFixed(5)+', '+co[1].toFixed(5):'',
+      tab==='robos'?(r.vehiclePlate||''):(r.resolved?'Si':'No'),
+      String(r.concerns||0)
+    ];
+  });
+  doc.autoTable({
+    startY:78, head, body,
+    styles:{fontSize:8,cellPadding:3,overflow:'linebreak',textColor:[30,41,59]},
+    headStyles:{fillColor:hexToRgb(cfg.color),textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[245,247,250]},
+    columnStyles:{0:{cellWidth:78},1:{cellWidth:62},2:{cellWidth:170},3:{cellWidth:95},5:{cellWidth:38,halign:'center'}},
+    margin:{left:40,right:40}
+  });
+  doc.save(tab+'_mdp_'+todayStr()+'.pdf');
+  showToast('PDF exportado ('+rows.length+' reportes)','g');
 }
 
 async function toggleRes(id){
@@ -2294,6 +2391,75 @@ function renderStats(){
       scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:10,weight:'600'},color:'#94a3b8'},grid:{color:'rgba(148,163,184,.12)'}},
       x:{ticks:{font:{family:'Inter',size:9,weight:'700'},color:'#64748b'},grid:{display:false}}}}
   });
+}
+
+// ===== COMPARTIR ESTADÍSTICAS COMO IMAGEN (story 1080x1920) =====
+let _storyBlob=null;
+async function shareStatsImage(){
+  if(!window.html2canvas||!window.Chart){ showToast('Generador no disponible, reintentá','r'); return; }
+  const tab=statsTab, cfg=MOD_CFG[tab], color=cfg.color, data=G.data[tab]||[];
+  const btn=document.getElementById('st-share-btn'), orig=btn?btn.innerHTML:'';
+  if(btn){ btn.disabled=true; btn.style.opacity='.7'; btn.innerHTML='<i data-lucide="loader-2" class="spin" style="width:14px;height:14px"></i>Generando...'; safeIcons(); }
+  let sc=null;
+  try{
+    const now=new Date();
+    const mesStart=new Date(now.getFullYear(),now.getMonth(),1);
+    const hoyStart=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const semStart=new Date(now-7*864e5);
+    const extra=tab==='robos'?{n:data.filter(r=>getReportDate(r)>=hoyStart).length,l:'Hoy'}:{n:data.filter(r=>r.resolved).length,l:'Resueltos'};
+    const cards=[{n:data.length,l:'Total histórico'},{n:data.filter(r=>getReportDate(r)>=mesStart).length,l:'Este mes'},{n:data.filter(r=>getReportDate(r)>=semStart).length,l:'Últimos 7 días'},extra];
+    const mesesLbl=[],mesesVal=[];
+    for(let i=5;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1),dEnd=new Date(now.getFullYear(),now.getMonth()-i+1,1); mesesLbl.push(d.toLocaleDateString('es-AR',{month:'short'}).replace('.','').toUpperCase()); mesesVal.push(data.filter(r=>{const t=getReportDate(r);return t>=d&&t<dEnd;}).length); }
+    const titles={robos:'ROBOS',basura:'BASURA',pozos:'POZOS'};
+    const stage=document.getElementById('story-stage');
+    stage.innerHTML=
+      '<div style="position:absolute;inset:0;background:radial-gradient(900px circle at 50% 0%,'+color+'33,transparent 60%),#0a0e1a"></div>'+
+      '<div style="position:relative;padding:90px 80px;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'+
+        '<div style="display:flex;align-items:center;gap:28px;margin-bottom:50px">'+
+          '<img src="'+cfg.logo+'" style="width:130px;height:130px;border-radius:32px;object-fit:cover;border:4px solid '+color+'">'+
+          '<div><div style="font-size:62px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1">'+titles[tab]+' <span style="color:'+color+'">MDP</span></div>'+
+          '<div style="font-size:27px;font-weight:700;color:#94a3b8;margin-top:10px">Mar del Plata · '+now.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'})+'</div></div>'+
+        '</div>'+
+        '<div style="font-size:30px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:3px;margin-bottom:26px">Estadísticas</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-bottom:48px">'+
+          cards.map(c=>'<div style="background:linear-gradient(160deg,rgba(30,41,59,.85),rgba(15,23,42,.85));border:2px solid rgba(148,163,184,.18);border-radius:30px;padding:40px 30px;text-align:center"><div style="font-size:92px;font-weight:900;color:'+color+';line-height:1">'+c.n+'</div><div style="font-size:27px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-top:14px">'+c.l+'</div></div>').join('')+
+        '</div>'+
+        '<div style="background:linear-gradient(160deg,rgba(30,41,59,.7),rgba(15,23,42,.7));border:2px solid rgba(148,163,184,.18);border-radius:30px;padding:40px 44px;flex:1;display:flex;flex-direction:column">'+
+          '<div style="font-size:29px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:2px;margin-bottom:28px">Evolución · últimos 6 meses</div>'+
+          '<div style="flex:1;position:relative"><canvas id="story-chart" width="860" height="520"></canvas></div>'+
+        '</div>'+
+        '<div style="text-align:center;font-size:30px;font-weight:800;color:'+color+';margin-top:44px;letter-spacing:1px">robosmdp.com.ar</div>'+
+      '</div>';
+    // precargar logo + dibujar chart de alta resolución (sin animación)
+    await new Promise(r=>{ const im=new Image(); im.onload=r; im.onerror=r; im.src=cfg.logo; });
+    sc=new Chart(document.getElementById('story-chart'),{
+      type:'bar', data:{labels:mesesLbl,datasets:[{data:mesesVal,backgroundColor:color,borderRadius:12,maxBarThickness:92}]},
+      options:{responsive:false,animation:false,plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true,ticks:{precision:0,font:{family:'Inter',size:22,weight:'700'},color:'#cbd5e1'},grid:{color:'rgba(148,163,184,.18)'}},
+        x:{ticks:{font:{family:'Inter',size:22,weight:'700'},color:'#94a3b8'},grid:{display:false}}}}
+    });
+    await new Promise(r=>setTimeout(r,300));
+    const out=await html2canvas(stage,{backgroundColor:'#0a0e1a',width:1080,height:1920,scale:1,logging:false,useCORS:true});
+    out.toBlob(blob=>{
+      _storyBlob=blob;
+      const url=URL.createObjectURL(blob);
+      document.getElementById('story-img').src=url;
+      document.getElementById('story-download').href=url;
+      const sh=document.getElementById('story-share');
+      let canShare=false; try{ canShare=navigator.canShare&&navigator.canShare({files:[new File([blob],'e.png',{type:'image/png'})]}); }catch(e){}
+      sh.style.display=canShare?'flex':'none';
+      document.getElementById('story-modal').style.display='flex';
+      safeIcons();
+    },'image/png');
+  }catch(e){ console.error('shareStatsImage',e); showToast('No se pudo generar la imagen','r'); }
+  finally{ if(sc)try{sc.destroy();}catch(e){} if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML=orig; safeIcons(); } }
+}
+function closeStoryModal(){ document.getElementById('story-modal').style.display='none'; }
+async function shareStoryFile(){
+  if(!_storyBlob) return;
+  const file=new File([_storyBlob],'estadisticas-robosmdp.png',{type:'image/png'});
+  try{ if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:'Estadísticas Robos MDP',text:'Estadísticas de '+statsTab+' en Mar del Plata · robosmdp.com.ar'}); }
+  catch(e){ /* cancelado */ }
 }
 
 function shareWA(tab,id){
