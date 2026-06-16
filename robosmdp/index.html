@@ -2049,15 +2049,28 @@ function locU(){
 // ===== SEARCH =====
 const NOM='https://nominatim.openstreetmap.org/search';
 const CTX='Mar del Plata, Buenos Aires, Argentina';
+// Caja geográfica de Mar del Plata (left,top,right,bottom) para acotar el geocoder
+// y evitar que "9 de Julio" matchee la ciudad/calles homónimas en otra parte del país.
+const MDP_VIEWBOX='-57.70,-37.90,-57.49,-38.13';
 
 async function doS(inputId,mod){
   const inp=document.getElementById(inputId); if(!inp) return;
   const q=inp.value.trim(); if(q.length<3) return;
   // Determinar el modulo activo
   const targetMod=mod||(inputId==='msearch'?G.tab:null);
+  // Limpiar "al" (ej: "9 de julio al 8000" -> "9 de julio 8000") que confunde a Nominatim
+  const qClean=q.replace(/\s+al\s+/gi,' ').trim();
+  const NUA='RobosMDP/2.0 (robosmdp.com.ar)';
   try{
-    const r=await fetch(NOM+'?'+new URLSearchParams({q:q+', '+CTX,format:'json',addressdetails:'1',limit:'5',countrycodes:'ar'}),{headers:{'User-Agent':'RobosMDP/2.0 (robosmdp.com.ar)'}});
-    const data=await r.json();
+    // 1) Búsqueda ESTRUCTURADA (street+city): respeta la altura (ej. "9 de Julio 8000")
+    //    y queda acotada a Mar del Plata, evitando matchear la calle/ciudad homónima.
+    let r=await fetch(NOM+'?'+new URLSearchParams({street:qClean,city:'Mar del Plata',state:'Buenos Aires',country:'Argentina',format:'json',addressdetails:'1',limit:'5'}),{headers:{'User-Agent':NUA}});
+    let data=await r.json();
+    // 2) Fallback libre acotado al bounding box de MDP (esquinas, lugares, plazas)
+    if(!data||!data.length){
+      r=await fetch(NOM+'?'+new URLSearchParams({q:qClean+', '+CTX,format:'json',addressdetails:'1',limit:'5',countrycodes:'ar',viewbox:MDP_VIEWBOX,bounded:'1'}),{headers:{'User-Agent':NUA}});
+      data=await r.json();
+    }
     if(data&&data.length){
       const lat=parseFloat(data[0].lat),lng=parseFloat(data[0].lon);
       const map=G.maps[targetMod||G.tab]; if(map) map.setView([lat,lng],17);
