@@ -1099,7 +1099,7 @@ const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'
 // ===== INIT =====
 window.onload=()=>{
   // Precargar banners y logos de otras secciones en background
-  setTimeout(()=>{['./assets/banner-basura-map.png','./assets/banner-pozos-map.png','./assets/logo-basura.png','./assets/logo-pozos.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
+  setTimeout(()=>{['./assets/banner-basura-map.png','./assets/banner-pozos-map.png','./assets/banner-abandonados-map.png','./assets/logo-basura.png','./assets/logo-pozos.png','./assets/logo-abandonados.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
   loadAllReports();
   safeIcons();
   buildCats();
