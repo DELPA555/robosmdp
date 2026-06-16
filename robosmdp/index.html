@@ -86,11 +86,13 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .ltab.r{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.28)}
 .ltab.g{background:var(--green);color:#06210f;box-shadow:0 4px 14px rgba(34,197,94,.26)}
 .ltab.a{background:var(--amber);color:#2a1a02;box-shadow:0 4px 14px rgba(245,158,11,.26)}
+.ltab.v{background:#06b6d4;color:#042f37;box-shadow:0 4px 14px rgba(6,182,212,.28)}
 .ebtn{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;width:100%;max-width:380px;margin:0 auto;padding:19px 24px;border-radius:16px;border:none;font-family:var(--disp);font-size:16px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:transform .2s,box-shadow .2s,filter .2s}
 .ebtn:hover{transform:translateY(-2px);filter:brightness(1.06)}.ebtn:active{transform:scale(.99)}
 .ebtn.r{background:var(--red);color:#fff;box-shadow:0 10px 26px rgba(239,68,68,.34)}
 .ebtn.g{background:var(--green);color:#06210f;box-shadow:0 10px 26px rgba(34,197,94,.30)}
 .ebtn.a{background:var(--amber);color:#2a1a02;box-shadow:0 10px 26px rgba(245,158,11,.30)}
+.ebtn.v{background:#06b6d4;color:#042f37;box-shadow:0 10px 26px rgba(6,182,212,.32)}
 .gcard{background:var(--surface);border:1px solid var(--line);border-radius:18px}
 .feat{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px;font-size:11px;font-weight:600;color:var(--ink-2);letter-spacing:0}
 .soc{width:50px;height:50px;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .2s,border-color .2s,background .2s}
@@ -112,6 +114,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .atab.r{background:var(--red);color:#fff;box-shadow:0 3px 12px rgba(239,68,68,.3)}
 .atab.g{background:var(--green);color:#06210f;box-shadow:0 3px 12px rgba(34,197,94,.28)}
 .atab.a{background:var(--amber);color:#2a1a02;box-shadow:0 3px 12px rgba(245,158,11,.28)}
+.atab.v{background:#06b6d4;color:#042f37;box-shadow:0 3px 12px rgba(6,182,212,.28)}
 #sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:var(--bg-2);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,.45)}
 @media(min-width:768px){#sidebar{position:relative;width:360px;transform:translateX(0);box-shadow:none}}
 #sidebar.open{transform:translateX(0)}
@@ -208,6 +211,9 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <button class="ltab" id="ltab-pozos" onclick="switchLT('pozos')">
         <i data-lucide="alert-triangle" style="width:16px;height:16px"></i>Pozos
       </button>
+      <button class="ltab" id="ltab-abandonados" onclick="switchLT('abandonados')">
+        <i data-lucide="car" style="width:16px;height:16px"></i>Autos
+      </button>
     </div>
     <!-- Panel Robos -->
     <div id="lp-robos">
@@ -243,6 +249,19 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <div class="scard"><div class="n" style="color:#fcd34d" id="ls-p-r">—</div><div class="l">Resueltos</div></div>
       </div>
       <button class="ebtn a" onclick="enterApp('pozos')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
+      <div class="ad-slot">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+    </div>
+    <!-- Panel Abandonados -->
+    <div id="lp-abandonados" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px">
+        <div class="scard"><div class="n" style="color:#06b6d4" id="ls-a-t">—</div><div class="l">Total</div></div>
+        <div class="scard"><div class="n" style="color:#22d3ee" id="ls-a-m">—</div><div class="l">Este mes</div></div>
+        <div class="scard"><div class="n" style="color:#67e8f9" id="ls-a-r">—</div><div class="l">Retirados</div></div>
+      </div>
+      <button class="ebtn v" onclick="enterApp('abandonados')"><i data-lucide="map" style="width:19px;height:19px"></i>Ingresar al mapa</button>
       <div class="ad-slot">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
@@ -382,6 +401,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button class="atab r" id="at-robos" onclick="switchAT('robos')"><i data-lucide="siren" style="width:12px;height:12px"></i>Robos</button>
         <button class="atab" id="at-basura" onclick="switchAT('basura')"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Basura</button>
         <button class="atab" id="at-pozos" onclick="switchAT('pozos')"><i data-lucide="alert-triangle" style="width:12px;height:12px"></i>Pozos</button>
+        <button class="atab" id="at-abandonados" onclick="switchAT('abandonados')"><i data-lucide="car" style="width:12px;height:12px"></i>Autos</button>
       </div>
     </div>
     <div class="ns" style="flex:1;padding:16px 16px 0">
@@ -466,6 +486,27 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <div style="position:relative;margin-bottom:10px"><input id="q-p" type="text" oninput="onRLSearch('pozos')" placeholder="Buscar por tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-p"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
       </div>
+      <!-- ABANDONADOS -->
+      <div id="ss-a" style="display:none">
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Vehículos abandonados en la vía pública</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
+          <div style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:700;color:#22d3ee" id="sb-a-t">0</div>
+            <div style="font-size:9px;font-weight:700;color:#67e8f9;text-transform:uppercase">Total</div>
+          </div>
+          <div style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.28);border-radius:13px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:700;color:#22d3ee" id="sb-a-r">0</div>
+            <div style="font-size:9px;font-weight:700;color:#67e8f9;text-transform:uppercase">Retirados</div>
+          </div>
+        </div>
+        <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#06b6d4"></i>Todos los reportes</p>
+        <div style="position:relative;margin-bottom:10px"><input id="q-a" type="text" oninput="onRLSearch('abandonados')" placeholder="Buscar por patente, tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
+        <div id="rl-a"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
+      </div>
     </div>
     <div style="padding:13px 16px;border-top:1px solid rgba(148,163,184,.1);flex-shrink:0">
       <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
@@ -492,6 +533,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     <div id="map-r" class="mapel on"></div>
     <div id="map-b" class="mapel"></div>
     <div id="map-p" class="mapel"></div>
+    <div id="map-a" class="mapel"></div>
     <div style="position:absolute;bottom:26px;right:18px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
       <button onclick="toggleZonePanel()" id="zone-btn" title="Mi zona" style="width:46px;height:46px;border-radius:14px;background:rgba(15,23,42,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4)"><i data-lucide="map-pin" style="width:19px;height:19px;color:#cbd5e1"></i></button>
       <button onclick="locU()" style="width:46px;height:46px;border-radius:14px;background:rgba(15,23,42,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4)"><i data-lucide="navigation" style="width:19px;height:19px;color:#cbd5e1"></i></button>
@@ -681,6 +723,60 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     </form>
   </div>
 </div>
+<!-- MODAL ABANDONADOS -->
+<div class="movl" id="m-abandonados" onclick="if(event.target===this)closeM('abandonados')">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(6,182,212,.08)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(6,182,212,.18);border:2px solid rgba(6,182,212,.35);flex-shrink:0;font-size:22px">🚗</div>
+        <div>
+          <h2 style="font-size:17px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Vehículo abandonado</h2>
+          <p style="font-size:9px;font-weight:700;color:#06b6d4;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Reporte vecinal</p>
+        </div>
+      </div>
+      <button onclick="closeM('abandonados')" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
+    </div>
+    <form onsubmit="return false" class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;padding-bottom:26px">
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:10px">Tipo de vehículo</label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="cats-abandonados"></div>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Patente (opcional)</label>
+        <input id="a-plate" maxlength="10" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')" placeholder="ABC123" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;padding:11px 14px;font-size:15px;font-weight:800;letter-spacing:2px;text-align:center;outline:none;font-family:monospace;box-sizing:border-box">
+      </div>
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#cbd5e1"></i>¿Desde cuándo está?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input id="a-date" type="date" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+          <input id="a-time" type="time" style="border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;font-size:12px;font-weight:600;outline:none;width:100%">
+        </div>
+      </div>
+      <div style="background:rgba(6,182,212,.1);padding:16px;border-radius:16px;border:1px solid rgba(6,182,212,.28)">
+        <label style="font-size:9px;font-weight:700;color:#22d3ee;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:11px"><i data-lucide="camera" style="width:12px;height:12px"></i>Adjuntar Foto</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="flex:1;cursor:pointer;background:rgba(15,23,42,.5);border:2px dashed rgba(34,211,238,.55);padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#22d3ee"></i><span style="font-size:9px;font-weight:700;color:#22d3ee;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="a-photo" accept="image/*" style="display:none" onchange="prevPh(this,'abandonados')"></label>
+          <div id="a-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="a-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmPh('abandonados')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
+        </div>
+      </div>
+      <div style="background:rgba(30,41,59,.45);padding:16px;border-radius:16px;border:1px solid rgba(148,163,184,.14)">
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:4px;margin-bottom:10px"><i data-lucide="map-pin" style="width:12px;height:12px;color:#06b6d4"></i>Localización</label>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:#94a3b8;padding:7px 10px;background:rgba(15,23,42,.6);border-radius:10px;border:1px solid rgba(148,163,184,.12);margin-bottom:10px"><span id="a-ld" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex-shrink:0"></span><span id="a-lt">Buscá la dirección o tocá el mapa</span></div>
+        <div style="position:relative;margin-bottom:7px">
+          <input id="a-addr" type="text" placeholder="Calle y Nro..." autocomplete="off" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;padding:12px 40px 12px 14px;font-size:13px;font-weight:600;outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doS('a-addr','abandonados')">
+          <button type="button" onclick="doS('a-addr','abandonados')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;padding:0"><i data-lucide="search" style="width:16px;height:16px;color:#94a3b8"></i></button>
+        </div>
+        <button type="button" onclick="locM('abandonados')" style="width:100%;padding:10px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:9px;font-weight:700;color:#cbd5e1;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="navigation" style="width:12px;height:12px"></i>Usar mi GPS actual</button>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px">Descripción</label>
+        <textarea id="a-desc" placeholder="Describí el vehículo (marca, color, estado)..." oninput="chkR('abandonados')" style="width:100%;border:1px solid #e2e8f0;border-radius:16px;padding:13px 16px;font-size:12px;font-weight:500;outline:none;height:95px;resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+      </div>
+      <div id="a-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción y la ubicación</div>
+      <button id="a-sub" disabled onclick="subR('abandonados')" style="background:#06b6d4;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;opacity:.5;box-shadow:0 8px 22px rgba(6,182,212,.4)">PUBLICAR REPORTE</button>
+    </form>
+  </div>
+</div>
 <!-- ADMIN PANEL -->
 <div id="admin-p">
   <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
@@ -707,6 +803,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Robos</button>
         <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
         <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
+        <button id="adm-tab-abandonados" onclick="switchAdmTab('abandonados')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Autos</button>
         <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
         <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
       </div>
@@ -939,22 +1036,22 @@ if(window.firebase){
 // ===== ESTADO =====
 const G={
   tab:'robos',
-  maps:{robos:null,basura:null,pozos:null},
-  data:{robos:[],basura:[],pozos:[]},
-  markers:{robos:[],basura:[],pozos:[]},
-  cluster:{robos:null,basura:null,pozos:null},
+  maps:{robos:null,basura:null,pozos:null,abandonados:null},
+  data:{robos:[],basura:[],pozos:[],abandonados:[]},
+  markers:{robos:[],basura:[],pozos:[],abandonados:[]},
+  cluster:{robos:null,basura:null,pozos:null,abandonados:null},
   heat:null,heatOn:false,
   filter:'all',domFilter:null,
-  loc:{robos:null,basura:null,pozos:null},
-  cat:{robos:null,basura:null,pozos:null},
-  photo:{robos:null,basura:null,pozos:null},
-  unsub:{robos:null,basura:null,pozos:null},
-  loaded:{robos:false,basura:false,pozos:false},
+  loc:{robos:null,basura:null,pozos:null,abandonados:null},
+  cat:{robos:null,basura:null,pozos:null,abandonados:null},
+  photo:{robos:null,basura:null,pozos:null,abandonados:null},
+  unsub:{robos:null,basura:null,pozos:null,abandonados:null},
+  loaded:{robos:false,basura:false,pozos:false,abandonados:false},
   photoCache:{},
-  mkById:{robos:{},basura:{},pozos:{}},
+  mkById:{robos:{},basura:{},pozos:{},abandonados:{}},
   avisos:[],resNotif:null,
   patentes:[],patFilter:'all',patQuery:'',patShowResolved:false,patTipo:'perdida',
-  zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null},
+  zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null,abandonados:null},
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
 };
@@ -980,16 +1077,24 @@ const CATS={
     {id:'hundimiento',label:'Hundimiento',color:'#92400e',icon:'arrow-down'},
     {id:'tape',label:'Tape roto',color:'#f59e0b',icon:'disc'},
     {id:'otro',label:'Otro',color:'#fbbf24',icon:'alert-circle'}
+  ],
+  abandonados:[
+    {id:'auto',label:'Auto',color:'#06b6d4',icon:'car'},
+    {id:'moto',label:'Moto',color:'#0ea5e9',icon:'bike'},
+    {id:'camioneta',label:'Camioneta',color:'#0891b2',icon:'truck'},
+    {id:'colectivo',label:'Micro/Bus',color:'#155e75',icon:'bus'},
+    {id:'otro',label:'Otro',color:'#22d3ee',icon:'alert-circle'}
   ]
 };
 
 const MOD_CFG={
   robos:{col:'artifacts/robosmdp-d1ef3/public/data/reports',color:'#ef4444',cls:'r',logo:'./assets/logo-robos.png',banner:'./assets/banner-robos-map.png',title:'ROBOS MDP',sub:'Sistema Oficial'},
   basura:{col:'basura',color:'#22c55e',cls:'g',logo:'./assets/logo-basura.png',banner:'./assets/banner-basura-map.png',title:'BASURA MDP',sub:'Reportes de basura'},
-  pozos:{col:'pozos',color:'#f59e0b',cls:'a',logo:'./assets/logo-pozos.png',banner:'./assets/banner-pozos-map.png',title:'POZOS MDP',sub:'Pozos en calzada'}
+  pozos:{col:'pozos',color:'#f59e0b',cls:'a',logo:'./assets/logo-pozos.png',banner:'./assets/banner-pozos-map.png',title:'POZOS MDP',sub:'Pozos en calzada'},
+  abandonados:{col:'abandonados',color:'#06b6d4',cls:'v',logo:'./assets/logo-robos.png',banner:'./assets/banner-robos-map.png',title:'ABANDONADOS MDP',sub:'Vehículos abandonados'}
 };
-const PRE={robos:'r',basura:'b',pozos:'p'};
-const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'rgba(245,158,11,.5)'};
+const PRE={robos:'r',basura:'b',pozos:'p',abandonados:'a'};
+const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'rgba(245,158,11,.5)',abandonados:'rgba(6,182,212,.5)'};
 
 // ===== INIT =====
 window.onload=()=>{
@@ -1007,7 +1112,7 @@ window.onload=()=>{
 };
 
 function buildCats(){
-  ['robos','basura','pozos'].forEach(mod=>{
+  ['robos','basura','pozos','abandonados'].forEach(mod=>{
     const el=document.getElementById('cats-'+mod);
     if(!el) return;
     el.innerHTML=CATS[mod].map(c=>`
@@ -1033,7 +1138,7 @@ function selC(mod,id,color){
 
 function setDates(){
   const now=new Date(),d=now.toISOString().split('T')[0],t=now.toTimeString().slice(0,5);
-  ['r','b','p'].forEach(p=>{
+  ['r','b','p','a'].forEach(p=>{
     const di=document.getElementById(p+'-date'),ti=document.getElementById(p+'-time');
     if(di)di.value=d; if(ti)ti.value=t;
   });
@@ -1041,7 +1146,7 @@ function setDates(){
 
 // ===== LANDING =====
 function switchLT(tab){
-  ['robos','basura','pozos'].forEach(t=>{
+  ['robos','basura','pozos','abandonados'].forEach(t=>{
     document.getElementById('ltab-'+t).className='ltab';
     document.getElementById('lp-'+t).style.display='none';
   });
@@ -1051,7 +1156,7 @@ function switchLT(tab){
   document.getElementById('hero-img').src=cfg.banner;
   document.getElementById('land-logo-img').src=cfg.logo;
   const t=document.getElementById('land-title');
-  const names={robos:'ROBOS <span style="color:#ef4444">MDP</span>',basura:'BASURA <span style="color:#22c55e">MDP</span>',pozos:'POZOS <span style="color:#f59e0b">MDP</span>'};
+  const names={robos:'ROBOS <span style="color:#ef4444">MDP</span>',basura:'BASURA <span style="color:#22c55e">MDP</span>',pozos:'POZOS <span style="color:#f59e0b">MDP</span>',abandonados:'ABANDONADOS <span style="color:#06b6d4">MDP</span>'};
   t.innerHTML=names[tab];
 }
 
@@ -1076,7 +1181,7 @@ function goL(){
 function switchAT(tab,skipMap){
   G.tab=tab;
   const cfg=MOD_CFG[tab];
-  ['robos','basura','pozos'].forEach(t=>{
+  ['robos','basura','pozos','abandonados'].forEach(t=>{
     document.getElementById('at-'+t).className='atab';
     const me=document.getElementById('map-'+t[0]);
     if(me) me.className='mapel';
@@ -1122,7 +1227,7 @@ function initMap(tab){
 }
 
 function loadAllReports(){
-  ['robos','basura','pozos'].forEach(loadReports);
+  ['robos','basura','pozos','abandonados'].forEach(loadReports);
 }
 
 // Carga liviana: NUNCA trae photoBase64 (las fotos se piden on-demand al abrir un
@@ -1267,7 +1372,7 @@ function renderMk(tab){
   if(G.cluster[tab]){map.removeLayer(G.cluster[tab]);G.cluster[tab]=null;}
   G.markers[tab].forEach(m=>map.removeLayer(m));
   G.markers[tab]=[];
-  if(!G.mkById)G.mkById={robos:{},basura:{},pozos:{}};
+  if(!G.mkById)G.mkById={robos:{},basura:{},pozos:{},abandonados:{}};
   G.mkById[tab]={};
   const list=(tab==='robos'?applyF(G.data[tab]):G.data[tab]).slice(0,2000);
   const cfgColor=MOD_CFG[tab].color;
@@ -1517,7 +1622,7 @@ function updSBStats(tab){
 }
 
 function updLandingStats(tab){
-  const tabs=tab?[tab]:['robos','basura','pozos'];
+  const tabs=tab?[tab]:['robos','basura','pozos','abandonados'];
   const now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1),hs=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   tabs.forEach(t=>{
     const p=t[0],all=G.data[t]||[];
@@ -1538,7 +1643,7 @@ function updLandingVisuals(){
 
 function combinedRecent(n){
   const out=[];
-  ['robos','basura','pozos'].forEach(tab=>{
+  ['robos','basura','pozos','abandonados'].forEach(tab=>{
     (G.data[tab]||[]).forEach(r=>{
       const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
       out.push({tab,r,cat,ts:getReportDate(r)});
@@ -1768,7 +1873,7 @@ function removeZone(){
   if(localStorage.getItem(PUSH_DOC_LS)) disablePush(); // sin zona no tiene sentido la suscripción
   G.zone=null; G.zoneDraft=null; G.zoneMode=false;
   try{localStorage.removeItem(ZONE_LS);}catch(e){}
-  ['robos','basura','pozos'].forEach(t=>{ if(G.zoneCircle[t]&&G.maps[t]){G.maps[t].removeLayer(G.zoneCircle[t]);G.zoneCircle[t]=null;} });
+  ['robos','basura','pozos','abandonados'].forEach(t=>{ if(G.zoneCircle[t]&&G.maps[t]){G.maps[t].removeLayer(G.zoneCircle[t]);G.zoneCircle[t]=null;} });
   document.getElementById('zone-panel').style.display='none';
   syncZoneBtn();
   renderMk(G.tab); renderRL(G.tab);
@@ -1946,6 +2051,9 @@ async function subR(mod){
     data.vehiclePlate=(document.getElementById('r-plate')?.value||'').toUpperCase();
     data.phone=document.getElementById('r-phone')?.value||'';
   }
+  if(mod==='abandonados'){
+    data.vehiclePlate=(document.getElementById('a-plate')?.value||'').toUpperCase();
+  }
   try{
     await db.collection(MOD_CFG[mod].col).add(data);
     gaEvent('submit_report',{report_type:mod});
@@ -1968,6 +2076,7 @@ function resetF(mod){
   }
   // Reset vehiculo fields para robos
   if(mod==='robos'){const vf=document.getElementById('r-veh');if(vf)vf.style.display='none';}
+  if(mod==='abandonados'){const pl=document.getElementById('a-plate');if(pl)pl.value='';}
   setDates();
 }
 
@@ -2000,7 +2109,7 @@ function openAP(){
   if(!G.isAdmin){openLM();return;}
   document.getElementById('admin-p').style.display='flex';
   // Cargar datos de todos los módulos para el admin
-  ['robos','basura','pozos'].forEach(tab=>{
+  ['robos','basura','pozos','abandonados'].forEach(tab=>{
     if(!G.maps[tab]&&G.data[tab].length===0){
       loadReports(tab);
     }
@@ -2051,8 +2160,8 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',avisos:'#6366f1',patentes:'#6366f1'};
-  ['robos','basura','pozos','avisos','patentes'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',avisos:'#6366f1',patentes:'#6366f1'};
+  ['robos','basura','pozos','abandonados','avisos','patentes'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'#94a3b8';}
   });
@@ -2520,8 +2629,8 @@ const STCH={meses:null,cats:null,dias:null};
 function openStats(){
   gaEvent('view_stats');
   document.getElementById('stats-p').style.display='flex';
-  ['robos','basura','pozos'].forEach(t=>loadReports(t));
-  statsTab=['robos','basura','pozos'].includes(G.tab)?G.tab:'robos';
+  ['robos','basura','pozos','abandonados'].forEach(t=>loadReports(t));
+  statsTab=['robos','basura','pozos','abandonados'].includes(G.tab)?G.tab:'robos';
   switchStatsTab(statsTab);
   // Si los datos aún no llegaron, re-render en 1.5s
   setTimeout(()=>{if(document.getElementById('stats-p').style.display==='flex')renderStats();},1500);
@@ -2532,7 +2641,7 @@ function closeStats(){document.getElementById('stats-p').style.display='none';}
 function switchStatsTab(tab){
   statsTab=tab;
   const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b'};
-  ['robos','basura','pozos'].forEach(t=>{
+  ['robos','basura','pozos','abandonados'].forEach(t=>{
     const b=document.getElementById('st-tab-'+t);
     if(b){b.style.background=t===tab?colors[t]:'transparent';b.style.color=t===tab?'#fff':'#94a3b8';}
   });
