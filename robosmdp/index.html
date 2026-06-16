@@ -3038,6 +3038,7 @@ function setT(id,v){
 }
 function tAgo(date){
   const d=Math.floor((Date.now()-date.getTime())/1000);
+  if(d<0) return 'recién';   // fecha futura (hora cargada posterior o desfase de reloj): evita "hace -N s"
   if(d<60) return 'hace '+d+'s';
   if(d<3600) return 'hace '+Math.floor(d/60)+'min';
   if(d<86400) return 'hace '+Math.floor(d/3600)+'h';
