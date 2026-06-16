@@ -306,6 +306,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(148,163,184,.12)">
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
+      <button onclick="openPatentes()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🔖</span>Patentes perdidas / encontradas</button>
       <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
           <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="info" style="width:16px;height:16px;color:#ef4444"></i></div>
@@ -468,6 +469,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     </div>
     <div style="padding:13px 16px;border-top:1px solid rgba(148,163,184,.1);flex-shrink:0">
       <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
+      <button onclick="openPatentes()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">🔖</span>Patentes</button>
       <button onclick="goL()" style="width:100%;padding:12px;background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.16);border-radius:13px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
         <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
       </button>
@@ -706,6 +708,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
         <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
         <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
+        <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
       </div>
       <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
         <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(148,163,184,.2);border-radius:11px;background:rgba(30,41,59,.6);color:#cbd5e1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
@@ -821,6 +824,84 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 </div>
 <style>@media(max-width:640px){#st-grid2{grid-template-columns:1fr!important}#st-cards{grid-template-columns:repeat(2,1fr)!important}}</style>
 
+<!-- ===== PATENTES PERDIDAS / ENCONTRADAS ===== -->
+<div id="patentes-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:#0a0e1a;background-image:radial-gradient(900px circle at 50% -8%,rgba(99,102,241,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(59,130,246,.06),transparent 50%)">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#6366f1;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(99,102,241,.3);font-size:20px">🔖</div>
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Patentes MDP</h2>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Perdidas y encontradas · vecinal</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="openPatM()" style="padding:9px 14px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#fff;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(99,102,241,.35)"><i data-lucide="plus" style="width:14px;height:14px"></i>Publicar</button>
+      <button onclick="closePatentes()" style="padding:9px 18px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
+    </div>
+  </header>
+  <div class="ns" style="flex:1;padding:18px 22px">
+    <div style="max-width:680px;margin:0 auto">
+      <div style="position:relative;margin-bottom:14px">
+        <i data-lucide="search" style="width:16px;height:16px;color:#64748b;position:absolute;left:14px;top:50%;transform:translateY(-50%)"></i>
+        <input id="pat-search" oninput="onPatSearch()" placeholder="Buscá tu patente..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:14px;padding:13px 14px 13px 40px;font-size:14px;font-weight:700;letter-spacing:1px;color:#e2e8f0;outline:none;text-transform:uppercase">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+        <div style="display:flex;gap:3px;background:rgba(15,23,42,.6);padding:4px;border-radius:12px;border:1px solid rgba(148,163,184,.12)">
+          <button id="pat-f-all" onclick="setPatFilter('all')" style="padding:8px 14px;border-radius:9px;border:none;background:#6366f1;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Todas</button>
+          <button id="pat-f-perdida" onclick="setPatFilter('perdida')" style="padding:8px 14px;border-radius:9px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Perdidas</button>
+          <button id="pat-f-encontrada" onclick="setPatFilter('encontrada')" style="padding:8px 14px;border-radius:9px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Encontradas</button>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;margin-left:auto;cursor:pointer;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase">
+          <input type="checkbox" id="pat-show-resolved" onchange="togglePatResolved(this.checked)" style="width:15px;height:15px;accent-color:#6366f1"> Mostrar resueltas
+        </label>
+      </div>
+      <div id="pat-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: publicar patente -->
+<div class="movl" id="pat-m" onclick="if(event.target===this)closePatM()">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(99,102,241,.08)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,.18);border:2px solid rgba(99,102,241,.35);flex-shrink:0;font-size:22px">🔖</div>
+        <div>
+          <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Publicar patente</h2>
+          <p style="font-size:9px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Perdida o encontrada</p>
+        </div>
+      </div>
+      <button onclick="closePatM()" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
+    </div>
+    <div class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;padding-bottom:26px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button type="button" id="pat-tipo-perdida" onclick="setPatTipo('perdida')" style="padding:13px;border-radius:13px;border:2px solid #ef4444;background:rgba(239,68,68,.16);color:#fca5a5;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Perdí mi patente</button>
+        <button type="button" id="pat-tipo-encontrada" onclick="setPatTipo('encontrada')" style="padding:13px;border-radius:13px;border:2px solid rgba(148,163,184,.2);background:rgba(30,41,59,.5);color:#94a3b8;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Encontré una</button>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Patente</label>
+        <input id="pat-plate" maxlength="10" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')" placeholder="ABC123 o AB123CD" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:14px;font-size:20px;font-weight:800;letter-spacing:3px;text-align:center;color:#fde68a;outline:none;font-family:monospace">
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">¿Dónde? (zona, calle aprox.)</label>
+        <textarea id="pat-desc" rows="2" placeholder="Ej: La encontré en Güemes y Alvarado" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;color:#e2e8f0;outline:none;resize:none;font-family:inherit"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Fecha</label>
+          <input id="pat-date" type="date" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none;color-scheme:dark">
+        </div>
+        <div>
+          <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Contacto (WhatsApp)</label>
+          <input id="pat-contact" placeholder="223 555-1234" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none">
+        </div>
+      </div>
+      <div id="pat-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la patente</div>
+      <button id="pat-sub" onclick="submitPatente()" style="background:#6366f1;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;box-shadow:0 8px 22px rgba(99,102,241,.4)">Publicar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Contenedor OCULTO para renderizar la imagen story (1080x1920) -->
 <div id="story-stage" style="position:fixed;left:-99999px;top:0;width:1080px;height:1920px;background:#0a0e1a;overflow:hidden;font-family:Inter,sans-serif"></div>
 
@@ -872,6 +953,7 @@ const G={
   photoCache:{},
   mkById:{robos:{},basura:{},pozos:{}},
   avisos:[],resNotif:null,
+  patentes:[],patFilter:'all',patQuery:'',patShowResolved:false,patTipo:'perdida',
   zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null},
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
@@ -1924,6 +2006,7 @@ function openAP(){
     }
   });
   loadAvisos();
+  loadPatentes();
   renderAdm(); safeIcons();
 }
 
@@ -1931,6 +2014,7 @@ function closeAP(){document.getElementById('admin-p').style.display='none';G.isA
 
 function renderAdm(){
   if(admTab==='avisos'){ renderAvisos(); return; }
+  if(admTab==='patentes'){ renderPatentesAdmin(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
   const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
   if(!list||!grid) return;
@@ -1967,13 +2051,15 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',avisos:'#6366f1'};
-  ['robos','basura','pozos','avisos'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',avisos:'#6366f1',patentes:'#6366f1'};
+  ['robos','basura','pozos','avisos','patentes'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'#94a3b8';}
   });
-  const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=tab==='avisos'?'none':'block';
-  const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=tab==='avisos'?'none':'flex';
+  const noGrid=(tab==='avisos'||tab==='patentes');
+  const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=noGrid?'none':'block';
+  const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=noGrid?'none':'flex';
+  if(tab==='patentes') loadPatentes();
   renderAdm();
 }
 
@@ -2223,6 +2309,131 @@ async function discardAviso(avisoId){
     showToast('Aviso descartado','g');
     loadAvisos();
   }catch(e){ console.error('discardAviso',e); showToast('No se pudo descartar','r'); }
+}
+
+// ===== PATENTES PERDIDAS / ENCONTRADAS =====
+const PAT_COL='patentes';
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function patDate(p){ const v=p.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); const d=new Date(p.fecha||0); return isNaN(d.getTime())?new Date(0):d; }
+function openPatentes(){ document.getElementById('patentes-p').style.display='flex'; loadPatentes(); safeIcons(); }
+function closePatentes(){ document.getElementById('patentes-p').style.display='none'; }
+async function loadPatentes(){
+  try{
+    const snap=await db.collection(PAT_COL).limit(500).get();
+    G.patentes=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>patDate(b)-patDate(a));
+  }catch(e){ console.warn('loadPatentes',e); G.patentes=[]; }
+  renderPatentes();
+  if(admTab==='patentes') renderPatentesAdmin();
+}
+function setPatFilter(f){
+  G.patFilter=f;
+  ['all','perdida','encontrada'].forEach(x=>{const b=document.getElementById('pat-f-'+x);if(b){b.style.background=x===f?'#6366f1':'transparent';b.style.color=x===f?'#fff':'#94a3b8';}});
+  renderPatentes();
+}
+function onPatSearch(){ G.patQuery=(document.getElementById('pat-search')?.value||'').toUpperCase().replace(/[^A-Z0-9]/g,''); renderPatentes(); }
+function togglePatResolved(v){ G.patShowResolved=!!v; renderPatentes(); }
+function patWaLink(p){
+  const digits=String(p.contacto||'').replace(/\D/g,'');
+  if(digits.length<8) return null;
+  const wp=digits.startsWith('54')?digits:'54'+(digits.startsWith('0')?digits.slice(1):digits);
+  return 'https://wa.me/'+wp+'?text='+encodeURIComponent('Hola! Vi tu publicación sobre la patente '+(p.patente||'')+' en Robos MDP');
+}
+function renderPatentes(){
+  const el=document.getElementById('pat-list'); if(!el) return;
+  let list=(G.patentes||[]).slice();
+  if(G.patFilter!=='all') list=list.filter(p=>p.tipo===G.patFilter);
+  if(!G.patShowResolved) list=list.filter(p=>!p.resuelto);
+  if(G.patQuery) list=list.filter(p=>String(p.patente||'').toUpperCase().replace(/[^A-Z0-9]/g,'').includes(G.patQuery));
+  if(!list.length){ el.innerHTML='<div style="text-align:center;padding:46px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">🔖</div>'+(G.patQuery?'Sin resultados para "'+esc(G.patQuery)+'"':'No hay publicaciones todavía')+'</div>'; return; }
+  el.innerHTML=list.map(p=>{
+    const lost=p.tipo==='perdida', color=lost?'#ef4444':'#22c55e', label=lost?'Perdida':'Encontrada';
+    const d=patDate(p), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const wa=patWaLink(p);
+    return '<div style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border:1px solid rgba(148,163,184,.14);border-left:4px solid '+color+';border-radius:16px;padding:14px 16px;margin-bottom:10px;'+(p.resuelto?'opacity:.62':'')+'">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">'+
+        '<div style="font-family:monospace;font-size:24px;font-weight:800;letter-spacing:3px;color:#fde68a;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.2);border-radius:8px;padding:4px 12px">'+esc(p.patente||'—')+'</div>'+
+        (p.resuelto?'<span style="font-size:9px;font-weight:800;background:rgba(34,197,94,.2);color:#4ade80;padding:4px 10px;border-radius:999px">✅ Recuperada</span>':'<span style="font-size:9px;font-weight:800;background:'+color+'22;color:'+color+';padding:4px 10px;border-radius:999px;text-transform:uppercase">'+label+'</span>')+
+      '</div>'+
+      (p.descripcion?'<p style="font-size:12px;color:#cbd5e1;line-height:1.45;margin-top:9px">'+esc(p.descripcion)+'</p>':'')+
+      (fecha?'<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:7px;text-transform:uppercase;letter-spacing:.04em">'+fecha+'</p>':'')+
+      '<div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap">'+
+        (wa?'<a href="'+wa+'" target="_blank" style="flex:1;min-width:130px;text-align:center;padding:10px;background:#25D366;color:#fff;border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;text-decoration:none">📲 Contactar</a>':'')+
+        (!p.resuelto?'<button onclick="markPatenteResolved(\''+p.id+'\')" style="flex:1;min-width:130px;padding:10px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">✅ Marcar recuperada</button>':'')+
+      '</div></div>';
+  }).join('');
+  safeIcons();
+}
+async function markPatenteResolved(id){
+  if(!confirm('¿Marcar esta patente como recuperada/resuelta?')) return;
+  try{
+    await db.collection(PAT_COL).doc(id).update({resuelto:true});
+    const p=(G.patentes||[]).find(x=>x.id===id); if(p) p.resuelto=true;
+    renderPatentes();
+    showToast('Marcada como recuperada ✅','g');
+  }catch(e){ console.error('markPatenteResolved',e); showToast('No se pudo actualizar','r'); }
+}
+function openPatM(){
+  setPatTipo('perdida');
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+  set('pat-plate',''); set('pat-desc',''); set('pat-contact','');
+  set('pat-date',new Date().toISOString().split('T')[0]);
+  const err=document.getElementById('pat-err'); if(err) err.style.display='none';
+  document.getElementById('pat-m').style.display='flex';
+  safeIcons();
+}
+function closePatM(){ document.getElementById('pat-m').style.display='none'; }
+function setPatTipo(t){
+  G.patTipo=t;
+  const a=document.getElementById('pat-tipo-perdida'), b=document.getElementById('pat-tipo-encontrada');
+  if(a){ a.style.border='2px solid '+(t==='perdida'?'#ef4444':'rgba(148,163,184,.2)'); a.style.background=t==='perdida'?'rgba(239,68,68,.16)':'rgba(30,41,59,.5)'; a.style.color=t==='perdida'?'#fca5a5':'#94a3b8'; }
+  if(b){ b.style.border='2px solid '+(t==='encontrada'?'#22c55e':'rgba(148,163,184,.2)'); b.style.background=t==='encontrada'?'rgba(34,197,94,.16)':'rgba(30,41,59,.5)'; b.style.color=t==='encontrada'?'#86efac':'#94a3b8'; }
+}
+async function submitPatente(){
+  const plate=(document.getElementById('pat-plate')?.value||'').trim();
+  if(plate.length<5){ const e=document.getElementById('pat-err'); if(e) e.style.display='block'; return; }
+  const sub=document.getElementById('pat-sub'); if(sub){ sub.disabled=true; sub.textContent='Publicando...'; sub.style.opacity='.7'; }
+  try{
+    await db.collection(PAT_COL).add({
+      tipo:G.patTipo||'perdida', patente:plate,
+      descripcion:(document.getElementById('pat-desc')?.value||'').trim(),
+      fecha:document.getElementById('pat-date')?.value||new Date().toISOString().split('T')[0],
+      contacto:(document.getElementById('pat-contact')?.value||'').trim(),
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      resuelto:false,
+    });
+    closePatM(); showToast('¡Patente publicada! 🔖','g'); loadPatentes();
+  }catch(e){ console.error('submitPatente',e); showToast('No se pudo publicar (¿reglas Firestore?)','r'); }
+  finally{ if(sub){ sub.disabled=false; sub.textContent='Publicar'; sub.style.opacity='1'; } }
+}
+function renderPatentesAdmin(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return;
+  if(grid) grid.innerHTML='';
+  const pats=G.patentes||[];
+  if(!pats.length){ list.innerHTML='<div style="text-align:center;padding:42px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">🔖</div>Sin publicaciones</div>'; return; }
+  list.innerHTML=pats.map(p=>{
+    const lost=p.tipo==='perdida', color=lost?'#ef4444':'#22c55e';
+    const d=patDate(p), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):'';
+    return '<div style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border-radius:16px;border:1px solid rgba(148,163,184,.14);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px">'+
+      '<div style="min-width:0">'+
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-family:monospace;font-size:16px;font-weight:800;letter-spacing:2px;color:#fde68a">'+esc(p.patente||'—')+'</span>'+
+        '<span style="font-size:8px;font-weight:800;background:'+color+'22;color:'+color+';padding:2px 8px;border-radius:999px;text-transform:uppercase">'+(lost?'Perdida':'Encontrada')+'</span>'+
+        (p.resuelto?'<span style="font-size:9px">✅</span>':'')+'</div>'+
+        '<p style="font-size:11px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.descripcion||'')+' · '+fecha+(p.contacto?' · '+esc(p.contacto):'')+'</p>'+
+      '</div>'+
+      '<button onclick="delPatente(\''+p.id+'\')" title="Eliminar" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer;flex-shrink:0">🗑️</button>'+
+    '</div>';
+  }).join('');
+  safeIcons();
+}
+async function delPatente(id){
+  if(!confirm('¿Eliminar esta publicación de patente permanentemente?')) return;
+  try{
+    await db.collection(PAT_COL).doc(id).delete();
+    G.patentes=(G.patentes||[]).filter(x=>x.id!==id);
+    renderPatentesAdmin(); renderPatentes();
+    showToast('Publicación eliminada','r');
+  }catch(e){ console.error('delPatente',e); showToast('Error al eliminar','r'); }
 }
 
 function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
