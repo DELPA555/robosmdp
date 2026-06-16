@@ -824,7 +824,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
   <div class="mbox">
     <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(59,130,246,.08)">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.18);border:2px solid rgba(59,130,246,.35);flex-shrink:0;font-size:22px">💡</div>
+        <div style="width:46px;height:46px;border-radius:13px;overflow:hidden;border:2px solid rgba(59,130,246,.35);flex-shrink:0"><img src="./assets/logo-luminarias.png" style="width:100%;height:100%;object-fit:cover"></div>
         <div>
           <h2 style="font-size:17px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Problema de alumbrado</h2>
           <p style="font-size:9px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Luminarias MDP</p>
@@ -1192,8 +1192,7 @@ const MOD_CFG={
   basura:{col:'basura',color:'#22c55e',cls:'g',logo:'./assets/logo-basura.png',banner:'./assets/banner-basura-map.png',title:'BASURA MDP',sub:'Reportes de basura'},
   pozos:{col:'pozos',color:'#f59e0b',cls:'a',logo:'./assets/logo-pozos.png',banner:'./assets/banner-pozos-map.png',title:'POZOS MDP',sub:'Pozos en calzada'},
   abandonados:{col:'abandonados',color:'#06b6d4',cls:'v',logo:'./assets/logo-abandonados.png',banner:'./assets/banner-abandonados-map.png',title:'ABANDONADOS MDP',sub:'Vehículos abandonados'},
-  luminarias:{col:'luminarias',color:'#3b82f6',cls:'l',logo:'./assets/logo-robos.png',banner:'./assets/banner-robos-map.png',title:'LUMINARIAS MDP',sub:'Alumbrado público'}
-  /* TODO assets propios: cambiar logo->./assets/logo-luminarias.png y banner->./assets/banner-luminarias-map.png cuando se suban */
+  luminarias:{col:'luminarias',color:'#3b82f6',cls:'l',logo:'./assets/logo-luminarias.png',banner:'./assets/banner-luminarias-map.png',title:'LUMINARIAS MDP',sub:'Alumbrado público'}
 };
 const PRE={robos:'r',basura:'b',pozos:'p',abandonados:'a',luminarias:'l'};
 const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'rgba(245,158,11,.5)',abandonados:'rgba(6,182,212,.5)',luminarias:'rgba(59,130,246,.5)'};
@@ -1201,7 +1200,7 @@ const FAB_SHADOW={robos:'rgba(239,68,68,.5)',basura:'rgba(34,197,94,.5)',pozos:'
 // ===== INIT =====
 window.onload=()=>{
   // Precargar banners y logos de otras secciones en background
-  setTimeout(()=>{['./assets/banner-basura-map.png','./assets/banner-pozos-map.png','./assets/banner-abandonados-map.png','./assets/logo-basura.png','./assets/logo-pozos.png','./assets/logo-abandonados.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
+  setTimeout(()=>{['./assets/banner-basura-map.png','./assets/banner-pozos-map.png','./assets/banner-abandonados-map.png','./assets/banner-luminarias-map.png','./assets/logo-basura.png','./assets/logo-pozos.png','./assets/logo-abandonados.png','./assets/logo-luminarias.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
   loadAllReports();
   safeIcons();
   buildCats();
