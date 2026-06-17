@@ -1747,10 +1747,11 @@ function combinedRecent(n){
   ['robos','basura','pozos','abandonados','luminarias'].forEach(tab=>{
     (G.data[tab]||[]).forEach(r=>{
       const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
-      out.push({tab,r,cat,ts:getReportDate(r)});
+      out.push({tab,r,cat,ts:getReportDate(r),post:getPostDate(r)});
     });
   });
-  return out.sort((a,b)=>b.ts-a.ts).slice(0,n);
+  // ordenar por fecha de PUBLICACIÓN (recientes = recién cargados)
+  return out.sort((a,b)=>b.post-a.post).slice(0,n);
 }
 
 function showLandSection(sec){
@@ -3034,6 +3035,18 @@ function getReportDate(r){
   if(typeof v.seconds==='number') return new Date(v.seconds*1000);
   const d=new Date(v);
   return Number.isNaN(d.getTime())?new Date(0):d;
+}
+// Fecha de PUBLICACIÓN (cuándo se cargó el reporte) — para ordenar "Reportes recientes".
+// Distinta de getReportDate (fecha del hecho). Evita que un hecho viejo recién cargado
+// quede al fondo o que una fecha futura del hecho salte al tope del feed.
+function getPostDate(r){
+  const v=r&&(r.timestamp||r.createdAt||r.created_at);
+  if(v){
+    if(v.toDate) return v.toDate();
+    if(typeof v.seconds==='number') return new Date(v.seconds*1000);
+    const d=new Date(v); if(!Number.isNaN(d.getTime())) return d;
+  }
+  return getReportDate(r);
 }
 function setT(id,v){
   const el=document.getElementById(id); if(!el) return;
