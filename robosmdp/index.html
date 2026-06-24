@@ -63,7 +63,7 @@
 }
 body{font-family:'Inter',sans-serif;overflow:hidden;background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
-.ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
 #landing{position:fixed;inset:0;z-index:5000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
 #landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px circle at 50% -12%,rgba(239,68,68,.10),transparent 60%),radial-gradient(800px circle at 92% 8%,rgba(91,141,239,.05),transparent 55%)}
 .land-wrap{position:relative;z-index:10}
@@ -345,6 +345,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(148,163,184,.12)">
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
       <button onclick="openPatentes()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🔖</span>Patentes perdidas / encontradas</button>
+      <button onclick="openObjetos()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">📦</span>Objetos perdidos / encontrados</button>
       <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
           <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="info" style="width:16px;height:16px;color:#ef4444"></i></div>
@@ -552,6 +553,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
     <div style="padding:13px 16px;border-top:1px solid rgba(148,163,184,.1);flex-shrink:0">
       <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
       <button onclick="openPatentes()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">🔖</span>Patentes</button>
+      <button onclick="openObjetos()" style="width:100%;padding:13px;margin-bottom:8px;background:#f97316;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(249,115,22,.26)"><span style="font-size:13px">📦</span>Objetos</button>
       <button onclick="goL()" style="width:100%;padding:12px;background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.16);border-radius:13px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
         <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
       </button>
@@ -899,6 +901,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-luminarias" onclick="switchAdmTab('luminarias')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💡</button>
         <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
         <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
+        <button id="adm-tab-objetos" onclick="switchAdmTab('objetos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">📦 Objetos</button>
       </div>
       <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
         <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(148,163,184,.2);border-radius:11px;background:rgba(30,41,59,.6);color:#cbd5e1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
@@ -1092,6 +1095,96 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
   </div>
 </div>
 
+<!-- ===== OBJETOS PERDIDOS / ENCONTRADOS ===== -->
+<div id="objetos-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:#0a0e1a;background-image:radial-gradient(900px circle at 50% -8%,rgba(249,115,22,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(249,115,22,.06),transparent 50%)">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#f97316;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(249,115,22,.3);font-size:20px">📦</div>
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Objetos MDP</h2>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Perdidos y encontrados · vecinal</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="openObjM()" style="padding:9px 14px;background:linear-gradient(135deg,#f97316,#ea580c);border:none;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#fff;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(249,115,22,.35)"><i data-lucide="plus" style="width:14px;height:14px"></i>Publicar</button>
+      <button onclick="closeObjetos()" style="padding:9px 18px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
+    </div>
+  </header>
+  <div class="ns" style="flex:1;padding:18px 22px">
+    <div style="max-width:680px;margin:0 auto">
+      <div style="position:relative;margin-bottom:14px">
+        <i data-lucide="search" style="width:16px;height:16px;color:#64748b;position:absolute;left:14px;top:50%;transform:translateY(-50%)"></i>
+        <input id="obj-search" oninput="onObjSearch()" placeholder="Buscá por descripción o categoría..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:14px;padding:13px 14px 13px 40px;font-size:14px;font-weight:600;color:#e2e8f0;outline:none">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+        <div style="display:flex;gap:3px;background:rgba(15,23,42,.6);padding:4px;border-radius:12px;border:1px solid rgba(148,163,184,.12)">
+          <button id="obj-f-all" onclick="setObjFilter('all')" style="padding:8px 14px;border-radius:9px;border:none;background:#f97316;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Todos</button>
+          <button id="obj-f-perdido" onclick="setObjFilter('perdido')" style="padding:8px 14px;border-radius:9px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Perdidos</button>
+          <button id="obj-f-encontrado" onclick="setObjFilter('encontrado')" style="padding:8px 14px;border-radius:9px;border:none;background:transparent;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Encontrados</button>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;margin-left:auto;cursor:pointer;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase">
+          <input type="checkbox" id="obj-show-resolved" onchange="toggleObjResolved(this.checked)" style="width:15px;height:15px;accent-color:#f97316"> Mostrar recuperados
+        </label>
+      </div>
+      <div id="obj-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: publicar objeto -->
+<div class="movl" id="obj-m" style="z-index:7200" onclick="if(event.target===this)closeObjM()">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(249,115,22,.08)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(249,115,22,.18);border:2px solid rgba(249,115,22,.35);flex-shrink:0;font-size:22px">📦</div>
+        <div>
+          <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em;line-height:1">Publicar objeto</h2>
+          <p style="font-size:9px;font-weight:700;color:#fdba74;text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Perdido o encontrado</p>
+        </div>
+      </div>
+      <button onclick="closeObjM()" style="padding:8px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:#94a3b8"></i></button>
+    </div>
+    <div class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;padding-bottom:26px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button type="button" id="obj-tipo-perdido" onclick="setObjTipo('perdido')" style="padding:13px;border-radius:13px;border:2px solid #ef4444;background:rgba(239,68,68,.16);color:#fca5a5;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Perdí un objeto</button>
+        <button type="button" id="obj-tipo-encontrado" onclick="setObjTipo('encontrado')" style="padding:13px;border-radius:13px;border:2px solid rgba(148,163,184,.2);background:rgba(30,41,59,.5);color:#94a3b8;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Encontré un objeto</button>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Categoría</label>
+        <select id="obj-cat" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:13px 14px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none;color-scheme:dark">
+          <option value="documento">Documento de identidad</option>
+          <option value="tarjeta">Tarjeta de crédito/débito</option>
+          <option value="llaves">Llaves</option>
+          <option value="billetera">Billetera</option>
+          <option value="celular">Celular</option>
+          <option value="mochila">Mochila/Bolso</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Descripción (color, marca, detalles)</label>
+        <textarea id="obj-desc" rows="2" placeholder="Ej: Billetera de cuero marrón, con tarjetas a nombre de Juan P." style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;color:#e2e8f0;outline:none;resize:none;font-family:inherit"></textarea>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Zona / lugar</label>
+        <input id="obj-zona" placeholder="Ej: Plaza Mitre, cerca de la fuente" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;color:#e2e8f0;outline:none">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Fecha</label>
+          <input id="obj-date" type="date" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none;color-scheme:dark">
+        </div>
+        <div>
+          <label style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Contacto (WhatsApp)</label>
+          <input id="obj-contact" placeholder="223 555-1234" style="width:100%;background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:#e2e8f0;outline:none">
+        </div>
+      </div>
+      <div id="obj-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción del objeto</div>
+      <button id="obj-sub" onclick="submitObjeto()" style="background:#f97316;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;box-shadow:0 8px 22px rgba(249,115,22,.4)">Publicar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Contenedor OCULTO para renderizar la imagen story (1080x1920) -->
 <div id="story-stage" style="position:fixed;left:-99999px;top:0;width:1080px;height:1920px;background:#0a0e1a;overflow:hidden;font-family:Inter,sans-serif"></div>
 
@@ -1144,6 +1237,7 @@ const G={
   mkById:{robos:{},basura:{},pozos:{},abandonados:{},luminarias:{}},
   avisos:[],resNotif:null,
   patentes:[],patFilter:'all',patQuery:'',patShowResolved:false,patTipo:'perdida',
+  objetos:[],objFilter:'all',objQuery:'',objShowResolved:false,objTipo:'perdido',
   zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null,abandonados:null,luminarias:null},
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
@@ -1314,7 +1408,10 @@ function initMap(tab){
   const key=tab[0];
   if(G.maps[tab]){G.maps[tab].invalidateSize();renderMk(tab);drawZone(tab);return;}
   const m=L.map('map-'+key,{zoomControl:false}).setView([-38.0055,-57.5426],13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO'}).addTo(m);
+  // Basemap oscuro en 2 capas para mejor legibilidad de calles/nombres:
+  // base sin labels + capa de labels encima (paths válidos de CARTO; dark_matter_* no existen).
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:20}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',{maxZoom:20}).addTo(m);
   G.maps[tab]=m;
   m.on('click',e=>{
     if(G.zoneMode){ setZoneCenter(e.latlng.lat,e.latlng.lng); return; }
@@ -1804,7 +1901,8 @@ function initLandMiniMap(){
   if(G.miniMap||!window.L) return;
   const el=document.getElementById('land-minimap'); if(!el) return;
   const m=L.map('land-minimap',{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false,inertia:false}).setView([-38.0055,-57.5426],12);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
   G.miniMap=m; G.miniLayer=L.layerGroup().addTo(m);
   setTimeout(()=>{try{m.invalidateSize();}catch(e){}},200);
 }
@@ -2231,6 +2329,7 @@ function openAP(){
   });
   loadAvisos();
   loadPatentes();
+  loadObjetos();
   renderAdm(); safeIcons();
 }
 
@@ -2239,6 +2338,7 @@ function closeAP(){document.getElementById('admin-p').style.display='none';G.isA
 function renderAdm(){
   if(admTab==='avisos'){ renderAvisos(); return; }
   if(admTab==='patentes'){ renderPatentesAdmin(); return; }
+  if(admTab==='objetos'){ renderObjetosAdmin(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
   const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
   if(!list||!grid) return;
@@ -2275,15 +2375,16 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1'};
-  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316'};
+  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'#94a3b8';}
   });
-  const noGrid=(tab==='avisos'||tab==='patentes');
+  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos');
   const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=noGrid?'none':'block';
   const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=noGrid?'none':'flex';
   if(tab==='patentes') loadPatentes();
+  if(tab==='objetos') loadObjetos();
   renderAdm();
 }
 
@@ -2658,6 +2759,150 @@ async function delPatente(id){
     renderPatentesAdmin(); renderPatentes();
     showToast('Publicación eliminada','r');
   }catch(e){ console.error('delPatente',e); showToast('Error al eliminar','r'); }
+}
+
+// ===== OBJETOS PERDIDOS / ENCONTRADOS =====
+const OBJ_COL='objetos_perdidos';
+const OBJ_CATS=[
+  {id:'documento',label:'Documento',icon:'id-card'},
+  {id:'tarjeta',label:'Tarjeta',icon:'credit-card'},
+  {id:'llaves',label:'Llaves',icon:'key'},
+  {id:'billetera',label:'Billetera',icon:'wallet'},
+  {id:'celular',label:'Celular',icon:'smartphone'},
+  {id:'mochila',label:'Mochila/Bolso',icon:'backpack'},
+  {id:'otro',label:'Otro',icon:'package'},
+];
+function objCat(id){ return OBJ_CATS.find(c=>c.id===id)||OBJ_CATS[OBJ_CATS.length-1]; }
+function objDate(o){ const v=o.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); const d=new Date(o.fecha||0); return isNaN(d.getTime())?new Date(0):d; }
+function openObjetos(){ document.getElementById('objetos-p').style.display='flex'; loadObjetos(); safeIcons(); }
+function closeObjetos(){ document.getElementById('objetos-p').style.display='none'; }
+async function loadObjetos(){
+  try{
+    const snap=await db.collection(OBJ_COL).limit(500).get();
+    G.objetos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>objDate(b)-objDate(a));
+  }catch(e){ console.warn('loadObjetos',e); G.objetos=[]; }
+  renderObjetos();
+  if(admTab==='objetos') renderObjetosAdmin();
+}
+function setObjFilter(f){
+  G.objFilter=f;
+  ['all','perdido','encontrado'].forEach(x=>{const b=document.getElementById('obj-f-'+x);if(b){b.style.background=x===f?'#f97316':'transparent';b.style.color=x===f?'#fff':'#94a3b8';}});
+  renderObjetos();
+}
+function onObjSearch(){ G.objQuery=(document.getElementById('obj-search')?.value||'').toLowerCase().trim(); renderObjetos(); }
+function toggleObjResolved(v){ G.objShowResolved=!!v; renderObjetos(); }
+function objWaLink(o){
+  const digits=String(o.contacto||'').replace(/\D/g,'');
+  if(digits.length<8) return null;
+  const wp=digits.startsWith('54')?digits:'54'+(digits.startsWith('0')?digits.slice(1):digits);
+  return 'https://wa.me/'+wp+'?text='+encodeURIComponent('Hola! Vi tu publicación sobre '+objCat(o.categoria).label.toLowerCase()+' en Robos MDP');
+}
+function renderObjetos(){
+  const el=document.getElementById('obj-list'); if(!el) return;
+  let list=(G.objetos||[]).slice();
+  if(G.objFilter!=='all') list=list.filter(o=>o.tipo===G.objFilter);
+  if(!G.objShowResolved) list=list.filter(o=>!o.resuelto);
+  if(G.objQuery){ const q=G.objQuery; list=list.filter(o=>String(o.descripcion||'').toLowerCase().includes(q)||objCat(o.categoria).label.toLowerCase().includes(q)||String(o.zona||'').toLowerCase().includes(q)); }
+  if(!list.length){ el.innerHTML='<div style="text-align:center;padding:46px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">📦</div>'+(G.objQuery?'Sin resultados para "'+esc(G.objQuery)+'"':'No hay publicaciones todavía')+'</div>'; return; }
+  el.innerHTML=list.map(o=>{
+    const lost=o.tipo==='perdido', color=lost?'#ef4444':'#22c55e', label=lost?'Perdido':'Encontrado';
+    const cat=objCat(o.categoria);
+    const d=objDate(o), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const wa=objWaLink(o);
+    return '<div style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border:1px solid rgba(148,163,184,.14);border-left:4px solid '+color+';border-radius:16px;padding:14px 16px;margin-bottom:10px;'+(o.resuelto?'opacity:.62':'')+'">'+
+      '<div style="display:flex;align-items:center;gap:11px">'+
+        '<div style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.3);color:#fb923c"><i data-lucide="'+cat.icon+'" style="width:20px;height:20px"></i></div>'+
+        '<div style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
+          '<span style="font-size:14px;font-weight:800;color:#f1f5f9">'+esc(cat.label)+'</span>'+
+          (o.resuelto?'<span style="font-size:9px;font-weight:800;background:rgba(34,197,94,.2);color:#4ade80;padding:3px 9px;border-radius:999px">✅ Recuperado</span>':'<span style="font-size:9px;font-weight:800;background:'+color+'22;color:'+color+';padding:3px 9px;border-radius:999px;text-transform:uppercase">'+label+'</span>')+
+        '</div>'+
+      '</div>'+
+      (o.descripcion?'<p style="font-size:12px;color:#cbd5e1;line-height:1.45;margin-top:10px">'+esc(o.descripcion)+'</p>':'')+
+      (o.zona?'<p style="font-size:11px;color:#94a3b8;font-weight:600;margin-top:6px">📍 '+esc(o.zona)+'</p>':'')+
+      (fecha?'<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:5px;text-transform:uppercase;letter-spacing:.04em">'+fecha+'</p>':'')+
+      '<div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap">'+
+        (wa?'<a href="'+wa+'" target="_blank" style="flex:1;min-width:130px;text-align:center;padding:10px;background:#25D366;color:#fff;border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;text-decoration:none">📲 Contactar</a>':'')+
+        (!o.resuelto?'<button onclick="markObjetoResolved(\''+o.id+'\')" style="flex:1;min-width:130px;padding:10px;background:rgba(249,115,22,.15);color:#fdba74;border:1px solid rgba(249,115,22,.3);border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">✅ Marcar recuperado</button>':'')+
+      '</div></div>';
+  }).join('');
+  safeIcons();
+}
+async function markObjetoResolved(id){
+  if(!confirm('¿Marcar este objeto como recuperado/devuelto?')) return;
+  try{
+    await db.collection(OBJ_COL).doc(id).update({resuelto:true});
+    const o=(G.objetos||[]).find(x=>x.id===id); if(o) o.resuelto=true;
+    renderObjetos();
+    showToast('Marcado como recuperado ✅','g');
+  }catch(e){ console.error('markObjetoResolved',e); showToast('No se pudo actualizar','r'); }
+}
+function openObjM(){
+  setObjTipo('perdido');
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+  set('obj-cat','documento'); set('obj-desc',''); set('obj-zona',''); set('obj-contact','');
+  set('obj-date',new Date().toISOString().split('T')[0]);
+  const err=document.getElementById('obj-err'); if(err) err.style.display='none';
+  document.getElementById('obj-m').style.display='flex';
+  safeIcons();
+}
+function closeObjM(){ document.getElementById('obj-m').style.display='none'; }
+function setObjTipo(t){
+  G.objTipo=t;
+  const a=document.getElementById('obj-tipo-perdido'), b=document.getElementById('obj-tipo-encontrado');
+  if(a){ a.style.border='2px solid '+(t==='perdido'?'#ef4444':'rgba(148,163,184,.2)'); a.style.background=t==='perdido'?'rgba(239,68,68,.16)':'rgba(30,41,59,.5)'; a.style.color=t==='perdido'?'#fca5a5':'#94a3b8'; }
+  if(b){ b.style.border='2px solid '+(t==='encontrado'?'#22c55e':'rgba(148,163,184,.2)'); b.style.background=t==='encontrado'?'rgba(34,197,94,.16)':'rgba(30,41,59,.5)'; b.style.color=t==='encontrado'?'#86efac':'#94a3b8'; }
+}
+async function submitObjeto(){
+  const desc=(document.getElementById('obj-desc')?.value||'').trim();
+  if(desc.length<3){ const e=document.getElementById('obj-err'); if(e) e.style.display='block'; return; }
+  const sub=document.getElementById('obj-sub'); if(sub){ sub.disabled=true; sub.textContent='Publicando...'; sub.style.opacity='.7'; }
+  try{
+    await db.collection(OBJ_COL).add({
+      tipo:G.objTipo||'perdido',
+      categoria:document.getElementById('obj-cat')?.value||'otro',
+      descripcion:desc,
+      zona:(document.getElementById('obj-zona')?.value||'').trim(),
+      fecha:document.getElementById('obj-date')?.value||new Date().toISOString().split('T')[0],
+      contacto:(document.getElementById('obj-contact')?.value||'').trim(),
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      resuelto:false,
+    });
+    closeObjM(); showToast('¡Objeto publicado! 📦','g'); loadObjetos();
+  }catch(e){ console.error('submitObjeto',e); showToast('No se pudo publicar (¿reglas Firestore?)','r'); }
+  finally{ if(sub){ sub.disabled=false; sub.textContent='Publicar'; sub.style.opacity='1'; } }
+}
+function renderObjetosAdmin(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return;
+  if(grid) grid.innerHTML='';
+  const objs=G.objetos||[];
+  if(!objs.length){ list.innerHTML='<div style="text-align:center;padding:42px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">📦</div>Sin publicaciones</div>'; return; }
+  list.innerHTML=objs.map(o=>{
+    const lost=o.tipo==='perdido', color=lost?'#ef4444':'#22c55e', cat=objCat(o.categoria);
+    const d=objDate(o), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):'';
+    return '<div style="background:linear-gradient(160deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border-radius:16px;border:1px solid rgba(148,163,184,.14);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px">'+
+      '<div style="min-width:0;display:flex;align-items:center;gap:10px">'+
+        '<div style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(249,115,22,.16);color:#fb923c"><i data-lucide="'+cat.icon+'" style="width:16px;height:16px"></i></div>'+
+        '<div style="min-width:0">'+
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:13px;font-weight:800;color:#f1f5f9">'+esc(cat.label)+'</span>'+
+          '<span style="font-size:8px;font-weight:800;background:'+color+'22;color:'+color+';padding:2px 8px;border-radius:999px;text-transform:uppercase">'+(lost?'Perdido':'Encontrado')+'</span>'+
+          (o.resuelto?'<span style="font-size:9px">✅</span>':'')+'</div>'+
+          '<p style="font-size:11px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(o.descripcion||'')+(o.zona?' · '+esc(o.zona):'')+' · '+fecha+(o.contacto?' · '+esc(o.contacto):'')+'</p>'+
+        '</div>'+
+      '</div>'+
+      '<button onclick="delObjeto(\''+o.id+'\')" title="Eliminar" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer;flex-shrink:0">🗑️</button>'+
+    '</div>';
+  }).join('');
+  safeIcons();
+}
+async function delObjeto(id){
+  if(!confirm('¿Eliminar esta publicación de objeto permanentemente?')) return;
+  try{
+    await db.collection(OBJ_COL).doc(id).delete();
+    G.objetos=(G.objetos||[]).filter(x=>x.id!==id);
+    renderObjetosAdmin(); renderObjetos();
+    showToast('Publicación eliminada','r');
+  }catch(e){ console.error('delObjeto',e); showToast('Error al eliminar','r'); }
 }
 
 function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
