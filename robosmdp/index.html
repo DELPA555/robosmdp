@@ -1794,6 +1794,7 @@ function mkPopup(r,cat,tab){
     '<span style="background:'+cat.color+';color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'+res+zoneBadge+'</div>'+
     '<p style="font-size:12px;font-weight:600;color:#e2e8f0;line-height:1.4;margin-bottom:4px">'+(r.description||'')+'</p>'+
     '<p style="font-size:9px;color:#94a3b8;font-weight:600">'+fecha+' · '+hora+'</p>'+
+    (r.barrio?'<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:2px">📍 '+esc(r.barrio)+'</p>':'')+
     (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:#e2e8f0;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
     '<div id="ph-pop-'+r.id+'"></div>'+resAction+concernBlock(tab,r)+
     '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
@@ -1884,7 +1885,7 @@ function renderRL(tab){
           ((r.concerns||0)>0?'<span style="font-size:10px;flex-shrink:0;color:#fbbf24;font-weight:800">⚠️'+(r.concerns||0)+'</span>':'')+
         '</div>'+
         '<p class="arow-desc">'+(r.description||cat.label)+'</p>'+
-        '<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:3px">'+tAgo(ts)+'</p>'+
+        '<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:3px">'+tAgo(ts)+(r.barrio?' · 📍 '+esc(r.barrio):'')+'</p>'+
       '</div></div>';
   }).join('');
   if(full.length>shown){
@@ -3137,6 +3138,7 @@ function openAD(id){
     +'<div><span style="background:'+cat.color+';color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:999px;text-transform:uppercase">'+cat.label+'</span>'
     +'<p style="font-size:20px;font-weight:700;color:#f1f5f9;margin-top:12px;line-height:1.2">'+(r.description?.substring(0,60)||'')+(r.description?.length>60?'...':'')+'</p>'
     +'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:12px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Fecha y hora</p><p style="font-size:12px;font-weight:700;color:#e2e8f0">'+fecha+'</p></div>'
+    +(r.barrio?'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:9px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Barrio</p><p style="font-size:13px;font-weight:700;color:#e2e8f0">📍 '+esc(r.barrio)+'</p></div>':'')
     +(r.vehiclePlate?'<div style="background:rgba(30,41,59,.5);padding:14px;border-radius:14px;margin-top:9px;border:1px solid rgba(148,163,184,.14)"><p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:5px">Patente</p><p style="font-size:15px;font-weight:700;color:#e2e8f0">'+r.vehiclePlate.toUpperCase()+'</p></div>':'')
     +(r.phone?'<div style="background:rgba(234,179,8,.1);padding:13px;border-radius:14px;margin-top:9px;border:1px solid rgba(234,179,8,.28)"><p style="font-size:9px;font-weight:700;color:#eab308;text-transform:uppercase;margin-bottom:3px">Contacto</p><p style="font-size:12px;font-weight:700;color:#fde68a">'+r.phone+'</p></div>':'')
     +'</div><div>'
