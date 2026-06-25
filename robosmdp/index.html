@@ -64,6 +64,13 @@
 body{font-family:'Inter',sans-serif;overflow:hidden;background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .ns::-webkit-scrollbar{display:none}.ns{-ms-overflow-style:none;scrollbar-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
+.pub-slot{background:rgba(15,23,42,.45);border:1.5px dashed rgba(148,163,184,.32);border-radius:14px;padding:18px 16px;text-align:center;margin-bottom:14px}
+.rfooter{margin-top:34px;padding-top:22px;border-top:1px solid rgba(148,163,184,.12);text-align:center}
+.rfooter a{color:#94a3b8;text-decoration:none;font-size:11px;font-weight:600;transition:color .2s}
+.rfooter a:hover{color:#e2e8f0}
+.rstep{display:flex;gap:13px;align-items:flex-start;margin-bottom:12px}
+.rstep-n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.34);color:#f87171;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1}
+.rcard{background:var(--surface);border:1px solid var(--line-2);border-radius:16px;padding:22px;text-align:left;max-width:440px;margin:0 auto}
 #landing{position:fixed;inset:0;z-index:5000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
 #landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px circle at 50% -12%,rgba(239,68,68,.10),transparent 60%),radial-gradient(800px circle at 92% 8%,rgba(91,141,239,.05),transparent 55%)}
 .land-wrap{position:relative;z-index:10}
@@ -301,6 +308,10 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93b4f5"></i>
       Denuncia policial online
     </a>
+    <!-- ===== ESTADÍSTICAS EN TEXTO (contenido dinámico indexable) ===== -->
+    <div style="margin-top:18px;background:rgba(15,23,42,.5);border:1px solid rgba(148,163,184,.14);border-radius:14px;padding:15px 18px">
+      <p id="land-stats-text" style="font-size:12px;color:#94a3b8;line-height:1.7;font-weight:500;text-align:center">En Mar del Plata, los vecinos reportan en tiempo real robos, basura en la vía pública, pozos en la calzada y problemas de alumbrado. Ingresá a un mapa para ver las estadísticas actualizadas de tu barrio.</p>
+    </div>
     <!-- ===== ÚLTIMOS REPORTES (carrusel) ===== -->
     <div id="land-feed-sec" style="margin-top:30px;display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -341,6 +352,31 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         </div>
       </div>
     </div>
+    <!-- ===== CÓMO REPORTAR (guía paso a paso) ===== -->
+    <div id="como-reportar" style="margin-top:34px">
+      <p class="ltitle" style="justify-content:center;margin-bottom:16px"><i data-lucide="list-checks" style="width:14px;height:14px;color:#ef4444"></i>Cómo reportar en 5 pasos</p>
+      <div class="rcard">
+        <div class="rstep"><div class="rstep-n">1</div><div><p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:3px">Elegí la categoría</p><p style="font-size:11.5px;color:#8b98ac;line-height:1.55;font-weight:500">Seleccioná el tipo de problema: robo, basura, pozo, luminaria o vehículo abandonado.</p></div></div>
+        <div class="rstep"><div class="rstep-n">2</div><div><p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:3px">Marcá la ubicación</p><p style="font-size:11.5px;color:#8b98ac;line-height:1.55;font-weight:500">Tocá el lugar exacto en el mapa o escribí la dirección y el sistema la ubica por vos.</p></div></div>
+        <div class="rstep"><div class="rstep-n">3</div><div><p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:3px">Describí lo que viste</p><p style="font-size:11.5px;color:#8b98ac;line-height:1.55;font-weight:500">Contá con el mayor detalle posible qué pasó: ayuda a otros vecinos a entender la situación.</p></div></div>
+        <div class="rstep"><div class="rstep-n">4</div><div><p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:3px">Agregá una foto (opcional)</p><p style="font-size:11.5px;color:#8b98ac;line-height:1.55;font-weight:500">Si tenés una imagen, sumala. En la mayoría de los módulos la foto es opcional.</p></div></div>
+        <div class="rstep" style="margin-bottom:0"><div class="rstep-n">5</div><div><p style="font-size:13px;font-weight:700;color:#e8edf5;margin-bottom:3px">Publicá y compartí</p><p style="font-size:11.5px;color:#8b98ac;line-height:1.55;font-weight:500">Tu reporte aparece al instante en el mapa. Compartilo con tus vecinos por WhatsApp y redes.</p></div></div>
+      </div>
+    </div>
+
+    <!-- ===== ACERCA DE ===== -->
+    <div id="acerca" style="margin-top:34px">
+      <p class="ltitle" style="justify-content:center;margin-bottom:16px"><i data-lucide="info" style="width:14px;height:14px;color:#ef4444"></i>Acerca de Robos MDP</p>
+      <div class="rcard" style="text-align:left">
+        <p style="font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500">Robos MDP es el mapa colaborativo de seguridad y problemas urbanos de <strong style="color:#cbd5e1">Mar del Plata</strong>. Nació en 2025 como una iniciativa vecinal e independiente, ante la necesidad de tener un lugar donde los propios habitantes de la ciudad pudieran visibilizar, en tiempo real, lo que ocurre en sus barrios. La inseguridad, la basura acumulada, los pozos en la calzada o las luminarias apagadas muchas veces quedan sin registro: Robos MDP existe para cambiar eso.</p>
+        <p style="font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500;margin-top:12px">Nuestra <strong style="color:#cbd5e1">misión</strong> es darle voz a la comunidad. Creemos que la información, cuando es pública y se actualiza al instante, ayuda a prevenir, a organizarse entre vecinos y a exigir respuestas a las autoridades. Cada reporte que se publica suma a un mapa real, construido por y para los marplatenses, que muestra de manera transparente los problemas de la ciudad.</p>
+        <p style="font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500;margin-top:12px"><strong style="color:#cbd5e1">¿Cómo funciona?</strong> Es muy simple: un vecino detecta un problema, lo reporta indicando la ubicación y una breve descripción, y el mapa se actualiza automáticamente para que todos lo vean. No hace falta registrarse y los reportes son anónimos.</p>
+        <p style="font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500;margin-top:12px">La plataforma reúne varios <strong style="color:#cbd5e1">módulos</strong>: Robos y hurtos, Basura en la vía pública, Pozos en la calzada, Luminarias y alumbrado público, Vehículos abandonados, Patentes perdidas y encontradas, y Objetos perdidos y encontrados. Cada uno funciona como un mapa o listado independiente, pero todos comparten el mismo objetivo: una ciudad más informada y más cuidada.</p>
+        <p style="font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500;margin-top:12px">El <strong style="color:#cbd5e1">impacto</strong> es concreto: ya se registraron <strong style="color:#cbd5e1"><span id="acerca-total">cientos de</span></strong> reportes en toda la ciudad, que ayudan a otros vecinos a estar atentos, a recuperar pertenencias y a reclamar mejoras a los organismos correspondientes.</p>
+        <p style="font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500;margin-top:12px"><strong style="color:#cbd5e1">¿Quiénes somos?</strong> Somos una plataforma independiente, sin fines de lucro, sostenida por la propia comunidad a través de aportes voluntarios y de los espacios publicitarios. No dependemos de ningún partido político ni organismo del Estado: solo de los vecinos que quieren una Mar del Plata mejor.</p>
+      </div>
+    </div>
+
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(148,163,184,.12)">
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:#cbd5e1;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
@@ -397,6 +433,20 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       </div>
       <p style="font-size:9px;color:#475569;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
     </div>
+    <!-- ===== PUBLICIDAD DIRECTA (banner landing) ===== -->
+    <div class="pub-slot" id="pub-landing-1" style="margin-top:30px"></div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="rfooter">
+      <div style="display:flex;flex-wrap:wrap;gap:12px 18px;justify-content:center;margin-bottom:14px">
+        <a href="#acerca">Acerca de</a>
+        <a href="#como-reportar">Cómo reportar</a>
+        <a href="#" onclick="openTerminos();return false">Términos y privacidad</a>
+        <a href="https://wa.me/542235994909" target="_blank" rel="noopener">Contacto</a>
+        <a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" rel="noopener">Facebook</a>
+      </div>
+      <p style="font-size:10px;color:#475569;font-weight:600;line-height:1.7">Robos MDP · Mapa colaborativo de Mar del Plata · Plataforma independiente sin fines de lucro<br>Contacto: WhatsApp +54 223 599-4909</p>
+    </footer>
   </div>
 </div>
 <!-- APP -->
@@ -461,6 +511,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
             <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Hoy</div>
           </div>
         </div>
+        <div class="pub-slot" id="pub-sidebar-robos"></div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#ef4444"></i>Todos los reportes</p>
         <div style="position:relative;margin-bottom:10px"><input id="q-r" type="text" oninput="onRLSearch('robos')" placeholder="Buscar por tipo, texto o patente..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-r"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
@@ -482,6 +533,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
+        <div class="pub-slot" id="pub-sidebar-basura"></div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#22c55e"></i>Todos los reportes</p>
         <div style="position:relative;margin-bottom:10px"><input id="q-b" type="text" oninput="onRLSearch('basura')" placeholder="Buscar por tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-b"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
@@ -503,6 +555,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
+        <div class="pub-slot" id="pub-sidebar-pozos"></div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#f59e0b"></i>Todos los reportes</p>
         <div style="position:relative;margin-bottom:10px"><input id="q-p" type="text" oninput="onRLSearch('pozos')" placeholder="Buscar por tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-p"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
@@ -524,6 +577,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
+        <div class="pub-slot" id="pub-sidebar-abandonados"></div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#06b6d4"></i>Todos los reportes</p>
         <div style="position:relative;margin-bottom:10px"><input id="q-a" type="text" oninput="onRLSearch('abandonados')" placeholder="Buscar por patente, tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-a"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
@@ -545,6 +599,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
+        <div class="pub-slot" id="pub-sidebar-luminarias"></div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#3b82f6"></i>Todos los reportes</p>
         <div style="position:relative;margin-bottom:10px"><input id="q-l" type="text" oninput="onRLSearch('luminarias')" placeholder="Buscar por tipo o texto..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
         <div id="rl-l"><div style="display:flex;flex-direction:column;align-items:center;padding:24px 0;color:#cbd5e1"><i data-lucide="loader-2" style="width:24px;height:24px" class="spin"></i><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:8px">Sincronizando...</span></div></div>
@@ -554,6 +609,12 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
       <button onclick="openPatentes()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">🔖</span>Patentes</button>
       <button onclick="openObjetos()" style="width:100%;padding:13px;margin-bottom:8px;background:#f97316;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(249,115,22,.26)"><span style="font-size:13px">📦</span>Objetos</button>
+      <div style="display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;margin-bottom:9px">
+        <a href="#" onclick="goLandingTo('acerca');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Acerca de</a>
+        <a href="#" onclick="goLandingTo('como-reportar');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Cómo reportar</a>
+        <a href="#" onclick="openTerminos();return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Términos</a>
+        <a href="https://wa.me/542235994909" target="_blank" rel="noopener" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Contacto</a>
+      </div>
       <button onclick="goL()" style="width:100%;padding:12px;background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.16);border-radius:13px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
         <i data-lucide="arrow-left" style="width:12px;height:12px"></i>Volver al inicio
       </button>
@@ -1185,6 +1246,39 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
   </div>
 </div>
 
+<!-- ===== TÉRMINOS DE USO Y PRIVACIDAD ===== -->
+<div id="terminos-p" style="position:fixed;inset:0;z-index:6900;display:none;flex-direction:column;background:#0a0e1a">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(148,163,184,.1);display:flex;justify-content:space-between;align-items:center;background:rgba(15,23,42,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:rgba(148,163,184,.14);border:1px solid rgba(148,163,184,.24);border-radius:13px;display:flex;align-items:center;justify-content:center"><i data-lucide="shield-check" style="width:20px;height:20px;color:#cbd5e1"></i></div>
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:#f1f5f9;text-transform:uppercase;letter-spacing:-.02em">Términos y privacidad</h2>
+        <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Robos MDP</p>
+      </div>
+    </div>
+    <button onclick="closeTerminos()" style="padding:9px 18px;background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#cbd5e1">Cerrar</button>
+  </header>
+  <div class="ns" style="flex:1;padding:22px">
+    <div style="max-width:640px;margin:0 auto;font-size:12.5px;color:#94a3b8;line-height:1.85;font-weight:500">
+      <h3 style="font-size:14px;font-weight:700;color:#e8edf5;margin-bottom:8px">Términos de uso</h3>
+      <p>Robos MDP es una plataforma vecinal y colaborativa de información ciudadana. Al usarla, aceptás estos términos.</p>
+      <p style="margin-top:10px"><strong style="color:#cbd5e1">Los reportes no constituyen una denuncia policial.</strong> Publicar en Robos MDP no reemplaza ningún trámite oficial. Para realizar una denuncia formal debés acudir a la Policía, Fiscalía o al canal oficial correspondiente.</p>
+      <p style="margin-top:10px">La plataforma <strong style="color:#cbd5e1">no se responsabiliza por la veracidad, exactitud ni vigencia de los reportes</strong>, que son cargados libremente por los usuarios. La información se ofrece "tal cual", a título informativo y comunitario, sin garantías de ningún tipo.</p>
+      <p style="margin-top:10px">Está prohibido publicar contenido falso, difamatorio, discriminatorio, datos personales de terceros sin su consentimiento, o cualquier material que infrinja la ley. Nos reservamos el derecho de eliminar publicaciones que incumplan estas condiciones.</p>
+
+      <h3 style="font-size:14px;font-weight:700;color:#e8edf5;margin:22px 0 8px">Política de privacidad</h3>
+      <p><strong style="color:#cbd5e1">Qué datos recopilamos:</strong> al crear un reporte se guarda la ubicación geográfica que indicás, una descripción del hecho y, opcionalmente, una foto. No solicitamos ni almacenamos tu nombre, correo, teléfono ni datos identificatorios para reportar: los reportes son anónimos.</p>
+      <p style="margin-top:10px"><strong style="color:#cbd5e1">Cómo usamos los datos:</strong> la información de los reportes se muestra públicamente en el mapa y en los listados de la plataforma, ya que ese es justamente su propósito comunitario. También usamos métricas de uso agregadas y anónimas para mejorar el servicio.</p>
+      <p style="margin-top:10px"><strong style="color:#cbd5e1">No vendemos tus datos.</strong> No comercializamos ni cedemos información a terceros con fines de lucro. La plataforma puede mostrar publicidad (propia o de Google AdSense), pero eso no implica compartir datos personales identificatorios.</p>
+      <p style="margin-top:10px">Si publicaste un reporte y querés que lo eliminemos, escribinos y lo resolvemos a la brevedad.</p>
+
+      <h3 style="font-size:14px;font-weight:700;color:#e8edf5;margin:22px 0 8px">Contacto</h3>
+      <p>Por consultas, reclamos o pedidos de baja de contenido: <strong style="color:#cbd5e1">WhatsApp +54 223 599-4909</strong>.</p>
+      <a href="https://wa.me/542235994909" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:12px 18px;border-radius:12px;background:#25D366;color:#fff;font-size:12px;font-weight:800;text-decoration:none">📲 Escribinos por WhatsApp</a>
+    </div>
+  </div>
+</div>
+
 <!-- Contenedor OCULTO para renderizar la imagen story (1080x1920) -->
 <div id="story-stage" style="position:fixed;left:-99999px;top:0;width:1080px;height:1920px;background:#0a0e1a;overflow:hidden;font-family:Inter,sans-serif"></div>
 
@@ -1297,6 +1391,7 @@ window.onload=()=>{
   setTimeout(()=>{['./assets/banner-basura-map.png','./assets/banner-pozos-map.png','./assets/banner-abandonados-map.png','./assets/banner-luminarias-map.png','./assets/logo-basura.png','./assets/logo-pozos.png','./assets/logo-abandonados.png','./assets/logo-luminarias.png'].forEach(s=>{const i=new Image();i.src=s;});},2000);
   loadAllReports();
   safeIcons();
+  renderAds();
   buildCats();
   setDates();
   G.zone=loadZone(); syncZoneBtn();
@@ -1829,6 +1924,7 @@ function updLandingStats(tab){
     if(t==='robos') setT('ls-r-h',G.loaded[t]?all.filter(r=>getReportDate(r)>=hs).length:'-');
     else setT('ls-'+p+'-r',G.loaded[t]?all.filter(r=>r.resolved).length:'-');
   });
+  updLandingStatsText();
   updLandingVisuals();
 }
 
@@ -2903,6 +2999,93 @@ async function delObjeto(id){
     renderObjetosAdmin(); renderObjetos();
     showToast('Publicación eliminada','r');
   }catch(e){ console.error('delObjeto',e); showToast('Error al eliminar','r'); }
+}
+
+// ===== TÉRMINOS Y PRIVACIDAD =====
+function openTerminos(){ document.getElementById('terminos-p').style.display='flex'; safeIcons(); }
+function closeTerminos(){ document.getElementById('terminos-p').style.display='none'; }
+
+// Vuelve a la landing y hace scroll a una sección (para los links del footer del mapa)
+function goLandingTo(id){
+  goL();
+  setTimeout(()=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },650);
+}
+
+// ===========================================================================
+// PUBLICIDAD DIRECTA (espacios propios, NO AdSense).
+// Para VENDER un espacio: reemplazá el null del slot por un objeto con los datos
+// del anunciante, p. ej.:
+//   'pub-landing-1': { imagen:'https://misitio.com/banner.jpg',
+//                      link:'https://elcomercio.com', titulo:'Tu Comercio' },
+//   imagen = URL del banner (se muestra a todo el ancho)
+//   link   = a dónde lleva al hacer clic (se abre en pestaña nueva)
+//   titulo = texto opcional debajo del banner
+// Para volver a mostrar el placeholder "Publicite aquí", poné el valor en null.
+// ===========================================================================
+const ADS = {
+  'pub-landing-1': null,
+  'pub-sidebar-robos': null,
+  'pub-sidebar-basura': null,
+  'pub-sidebar-pozos': null,
+  'pub-sidebar-abandonados': null,
+  'pub-sidebar-luminarias': null,
+};
+// WhatsApp para consultar por publicidad (link provisto, ya URL-encodeado)
+const PUB_WA = 'https://wa.me/542235994909?text=Hola!%20Me%20interesa%20publicitar%20en%20Robos%20MDP.%20%C2%BFPueden%20darme%20informaci%C3%B3n%20sobre%20espacios%20disponibles%20y%20precios%3F';
+
+function renderAd(slotId){
+  const el=document.getElementById(slotId); if(!el) return;
+  const ad=ADS[slotId];
+  if(ad&&ad.imagen){
+    // Banner real vendido
+    el.style.borderStyle='solid';
+    el.style.padding='0';
+    el.style.background='transparent';
+    el.innerHTML='<a href="'+esc(ad.link||'#')+'" target="_blank" rel="noopener" style="display:block;text-decoration:none">'+
+      '<img src="'+esc(ad.imagen)+'" alt="'+esc(ad.titulo||'Publicidad')+'" style="width:100%;border-radius:13px;display:block">'+
+      (ad.titulo?'<p style="font-size:11px;color:#cbd5e1;font-weight:600;margin-top:8px;text-align:center">'+esc(ad.titulo)+'</p>':'')+
+      '</a>';
+  } else {
+    // Placeholder "Publicite aquí"
+    el.style.borderStyle='dashed';
+    el.innerHTML='<div style="font-size:22px;margin-bottom:4px">📢</div>'+
+      '<p style="font-size:13px;font-weight:800;color:#cbd5e1;letter-spacing:.01em">Publicite aquí</p>'+
+      '<p style="font-size:10px;color:#64748b;font-weight:600;margin-top:4px;line-height:1.5">Llegá a miles de vecinos de Mar del Plata</p>'+
+      '<a href="'+PUB_WA+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:11px;padding:9px 16px;border-radius:10px;background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.4);color:#fdba74;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;text-decoration:none">Consultar disponibilidad</a>';
+  }
+}
+function renderAds(){ Object.keys(ADS).forEach(renderAd); }
+
+// ===== ESTADÍSTICAS EN TEXTO (contenido dinámico indexable) =====
+// Extrae una "zona/calle" legible del reporte a partir de su dirección/descripción.
+function reportZone(r){
+  let s=String(r.address||r.direccion||r.description||'').trim();
+  if(!s||s==='Reporte ciudadano') return null;
+  s=s.split(/,| - | en | esq/i)[0];            // primera parte (calle / intersección)
+  s=s.replace(/\b\d{1,6}\b.*$/,'').trim();      // quitar altura y lo que sigue
+  s=s.replace(/\s{2,}/g,' ').replace(/[.\-]+$/,'').trim();
+  if(s.length<4||s.length>34) return null;
+  if(!/[a-záéíóúñ]{3}/i.test(s)) return null;   // que tenga letras de verdad
+  return s.replace(/\b[a-záéíóúñ]/gi,c=>c.toUpperCase());
+}
+function updLandingStatsText(){
+  const now=Date.now(), d30=now-30*864e5, d7=now-7*864e5;
+  const cnt=(tab,since)=>(G.data[tab]||[]).filter(r=>getReportDate(r).getTime()>=since).length;
+  const r30=cnt('robos',d30), b30=cnt('basura',d30), p30=cnt('pozos',d30);
+  // Top 3 zonas (todos los módulos) de la última semana
+  const zc={};
+  ['robos','basura','pozos','abandonados','luminarias'].forEach(tab=>{
+    (G.data[tab]||[]).forEach(r=>{ if(getReportDate(r).getTime()>=d7){ const z=reportZone(r); if(z) zc[z]=(zc[z]||0)+1; } });
+  });
+  const top=Object.entries(zc).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
+  // Total general → "Acerca de"
+  const total=['robos','basura','pozos','abandonados','luminarias'].reduce((s,t)=>s+((G.data[t]||[]).length),0);
+  const at=document.getElementById('acerca-total'); if(at&&total>0) at.textContent=total.toLocaleString('es-AR');
+  const el=document.getElementById('land-stats-text'); if(!el) return;
+  if(r30+b30+p30===0&&total===0) return; // todavía sin datos: dejar el texto estático
+  let html='En los últimos 30 días se registraron <strong style="color:#f87171">'+r30+'</strong> robos, <strong style="color:#4ade80">'+b30+'</strong> problemas de basura y <strong style="color:#fbbf24">'+p30+'</strong> pozos en la vía pública en Mar del Plata.';
+  if(top.length) html+=' Las zonas con más reportes esta semana son: <strong style="color:#cbd5e1">'+top.map(esc).join(', ')+'</strong>.';
+  el.innerHTML=html;
 }
 
 function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
