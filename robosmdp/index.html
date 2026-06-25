@@ -3082,35 +3082,18 @@ function renderAd(slotId){
 function renderAds(){ Object.keys(ADS).forEach(renderAd); }
 
 // ===== ESTADÍSTICAS EN TEXTO (contenido dinámico indexable) =====
-// Extrae una "zona/calle" legible del reporte a partir de su dirección/descripción.
-function reportZone(r){
-  let s=String(r.address||r.direccion||r.description||'').trim();
-  if(!s||s==='Reporte ciudadano') return null;
-  s=s.split(/,| - | en | esq/i)[0];            // primera parte (calle / intersección)
-  s=s.replace(/\b\d{1,6}\b.*$/,'').trim();      // quitar altura y lo que sigue
-  s=s.replace(/\s{2,}/g,' ').replace(/[.\-]+$/,'').trim();
-  if(s.length<4||s.length>34) return null;
-  if(!/[a-záéíóúñ]{3}/i.test(s)) return null;   // que tenga letras de verdad
-  return s.replace(/\b[a-záéíóúñ]/gi,c=>c.toUpperCase());
-}
+// Solo datos exactos (conteos). NO se calculan "zonas/calles" porque los reportes
+// no tienen un campo de dirección estructurado y confiable; extraerlas de la
+// descripción libre produce nombres inventados.
 function updLandingStatsText(){
-  const now=Date.now(), d30=now-30*864e5, d7=now-7*864e5;
+  const now=Date.now(), d30=now-30*864e5;
   const cnt=(tab,since)=>(G.data[tab]||[]).filter(r=>getReportDate(r).getTime()>=since).length;
   const r30=cnt('robos',d30), b30=cnt('basura',d30), p30=cnt('pozos',d30);
-  // Top 3 zonas (todos los módulos) de la última semana
-  const zc={};
-  ['robos','basura','pozos','abandonados','luminarias'].forEach(tab=>{
-    (G.data[tab]||[]).forEach(r=>{ if(getReportDate(r).getTime()>=d7){ const z=reportZone(r); if(z) zc[z]=(zc[z]||0)+1; } });
-  });
-  const top=Object.entries(zc).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
-  // Total general → "Acerca de"
   const total=['robos','basura','pozos','abandonados','luminarias'].reduce((s,t)=>s+((G.data[t]||[]).length),0);
   const at=document.getElementById('acerca-total'); if(at&&total>0) at.textContent=total.toLocaleString('es-AR');
   const el=document.getElementById('land-stats-text'); if(!el) return;
   if(r30+b30+p30===0&&total===0) return; // todavía sin datos: dejar el texto estático
-  let html='En los últimos 30 días se registraron <strong style="color:#f87171">'+r30+'</strong> robos, <strong style="color:#4ade80">'+b30+'</strong> problemas de basura y <strong style="color:#fbbf24">'+p30+'</strong> pozos en la vía pública en Mar del Plata.';
-  if(top.length) html+=' Las zonas con más reportes esta semana son: <strong style="color:#cbd5e1">'+top.map(esc).join(', ')+'</strong>.';
-  el.innerHTML=html;
+  el.innerHTML='En los últimos 30 días se registraron <strong style="color:#f87171">'+r30+'</strong> robos, <strong style="color:#4ade80">'+b30+'</strong> problemas de basura y <strong style="color:#fbbf24">'+p30+'</strong> pozos en la vía pública en Mar del Plata. En total, los vecinos ya publicaron <strong style="color:#cbd5e1">'+total.toLocaleString('es-AR')+'</strong> reportes ciudadanos en la ciudad.';
 }
 
 function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
