@@ -504,10 +504,6 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
             <span style="font-size:9px;color:#475569">Enter para aplicar</span>
           </div>
         </div>
-        <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-      </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px">
           <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.28);border-radius:13px;padding:12px;text-align:center">
             <div style="font-size:22px;font-weight:700;color:#f87171" id="sb-r-t">0</div>
@@ -518,6 +514,10 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
             <div style="font-size:9px;font-weight:700;color:#fca5a5;text-transform:uppercase">Hoy</div>
           </div>
         </div>
+        <div style="min-height:90px;width:100%;margin-bottom:14px;overflow:hidden;border-radius:12px">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </div>
         <div class="pub-slot" id="pub-sidebar-robos"></div>
         <p style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:9px"><i data-lucide="list" style="width:10px;height:10px;color:#ef4444"></i>Todos los reportes</p>
         <div style="position:relative;margin-bottom:10px"><input id="q-r" type="text" oninput="onRLSearch('robos')" placeholder="Buscar por tipo, texto o patente..." style="width:100%;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:9px 34px 9px 12px;font-size:12px;font-weight:600;color:#e2e8f0;outline:none"><i data-lucide="search" style="width:14px;height:14px;color:#64748b;position:absolute;right:11px;top:50%;transform:translateY(-50%)"></i></div>
@@ -1339,6 +1339,7 @@ const G={
   avisos:[],resNotif:null,
   patentes:[],patFilter:'all',patQuery:'',patShowResolved:false,patTipo:'perdida',
   objetos:[],objFilter:'all',objQuery:'',objShowResolved:false,objTipo:'perdido',
+  ltab:'robos',
   zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null,abandonados:null,luminarias:null},
   adminTaps:0,adminTimer:null,
   isAdmin:false,curAdmId:null,admCatF:null
@@ -1443,6 +1444,7 @@ function setDates(){
 
 // ===== LANDING =====
 function switchLT(tab){
+  G.ltab=tab;
   ['robos','basura','pozos','abandonados','luminarias'].forEach(t=>{
     document.getElementById('ltab-'+t).className='ltab';
     document.getElementById('lp-'+t).style.display='none';
@@ -1455,6 +1457,8 @@ function switchLT(tab){
   const t=document.getElementById('land-title');
   const names={robos:'ROBOS <span style="color:#ef4444">MDP</span>',basura:'BASURA <span style="color:#22c55e">MDP</span>',pozos:'POZOS <span style="color:#f59e0b">MDP</span>',abandonados:'ABANDONADOS <span style="color:#06b6d4">MDP</span>',luminarias:'LUMINARIAS <span style="color:#3b82f6">MDP</span>'};
   t.innerHTML=names[tab];
+  // El feed "Últimos reportes" y el minimapa muestran SOLO el módulo elegido.
+  updLandingVisuals();
 }
 
 // Fix iOS/Safari: setea la altura del sidebar a la altura VISIBLE real (window.innerHeight,
@@ -1954,9 +1958,11 @@ function updLandingVisuals(){
   _landVizT=setTimeout(()=>{ renderLandingFeed(); renderLandMiniMap(); },120);
 }
 
-function combinedRecent(n){
+function combinedRecent(n,only){
   const out=[];
-  ['robos','basura','pozos','abandonados','luminarias'].forEach(tab=>{
+  // Si `only` viene seteado, mostrar reportes SOLO de ese módulo (feed por-tab del landing).
+  const tabs=only?[only]:['robos','basura','pozos','abandonados','luminarias'];
+  tabs.forEach(tab=>{
     (G.data[tab]||[]).forEach(r=>{
       const cat=CATS[tab].find(c=>c.id===r.type)||CATS[tab][CATS[tab].length-1];
       out.push({tab,r,cat,ts:getReportDate(r),post:getPostDate(r)});
@@ -1972,7 +1978,7 @@ function showLandSection(sec){
 }
 function renderLandingFeed(){
   const el=document.getElementById('land-feed'),sec=document.getElementById('land-feed-sec'); if(!el) return;
-  const items=combinedRecent(10);
+  const items=combinedRecent(10,G.ltab||'robos');
   if(!items.length){ if(sec) sec.style.display='none'; return; }
   showLandSection(sec);
   el.innerHTML=items.map(it=>{
@@ -2025,7 +2031,7 @@ function initLandMiniMap(){
 function renderLandMiniMap(){
   const sec=document.getElementById('land-map-sec');
   const pts=[];
-  combinedRecent(60).forEach(it=>{const c=getCoords(it.r); if(c) pts.push({c,color:it.cat.color});});
+  combinedRecent(60,G.ltab||'robos').forEach(it=>{const c=getCoords(it.r); if(c) pts.push({c,color:it.cat.color});});
   if(!pts.length){ if(sec) sec.style.display='none'; return; }
   showLandSection(sec);               // mostrar antes de crear el mapa (Leaflet necesita tamaño)
   initLandMiniMap();
