@@ -3836,19 +3836,41 @@ function setT(id,v){
 }
 // ===== APODO (identidad sin registro, compartido entre comentarios y foro) =====
 const APODO_LS='rmdp_apodo';
+const ADMIN_NAME='AdminRobos';   // nombre verificado del admin (reservado para todos los demás)
+// ¿el usuario actual está autenticado como el admin de Firebase?
+function isAdminUser(){ return !!(auth && auth.currentUser && auth.currentUser.email===ADMIN_EMAIL); }
+// Nombres reservados (anti-suplantación): nadie puede llamarse así salvo el admin.
+function isReservedName(s){
+  const n=String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  return !!n && (n.indexOf('admin')>=0||n.indexOf('robosmdp')>=0||n.indexOf('verificad')>=0||n.indexOf('oficial')>=0);
+}
+// Tilde de verificado (azul) que acompaña al nombre del admin.
+function verifiedBadge(){ return '<span title="Cuenta verificada · Robos MDP" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;background:#3b82f6;color:#fff;border-radius:50%;font-size:9px;font-weight:900;line-height:1;margin-left:4px;vertical-align:middle;flex-shrink:0">✓</span>'; }
+function vbadge(o){ return (o&&o.admin)?verifiedBadge():''; }
+// Autor a guardar: el admin publica SIEMPRE como AdminRobos + verificado; el resto, su apodo.
+function authorFields(){ return isAdminUser()?{apodo:ADMIN_NAME,admin:true}:{apodo:ensureApodo(),admin:false}; }
 function getApodo(){ try{ return (localStorage.getItem(APODO_LS)||'').trim(); }catch(e){ return ''; } }
-function setApodo(n){ try{ localStorage.setItem(APODO_LS,String(n||'').trim().slice(0,40)); }catch(e){} }
-// Pide apodo (primer comentario / "Cambiar"). Devuelve '' si cancela o vacío.
-function promptApodo(initial){ const a=(window.prompt('¿Cómo querés que te llamen?',initial||'')||'').trim().slice(0,40); return a; }
+function setApodo(n){ n=String(n||'').trim().slice(0,40); if(!isAdminUser()&&isReservedName(n)) return; try{ localStorage.setItem(APODO_LS,n); }catch(e){} }
+// Pide apodo (primer comentario / "Cambiar"). Reintenta si elige un nombre reservado. '' si cancela.
+function promptApodo(initial){
+  for(let i=0;i<4;i++){
+    const a=(window.prompt(i===0?'¿Cómo querés que te llamen?':'Ese nombre está reservado. Elegí otro:',initial||'')||'').trim().slice(0,40);
+    if(!a) return '';
+    if(!isAdminUser()&&isReservedName(a)){ if(typeof showToast==='function') showToast('Ese nombre está reservado','r'); initial=''; continue; }
+    return a;
+  }
+  return '';
+}
 // Garantiza apodo antes de publicar; fallback "Vecino anónimo" si no quiere poner.
-function ensureApodo(){ let a=getApodo(); if(!a){ a=promptApodo(''); if(a){ setApodo(a); refreshApodoLabels(); } } return a||'Vecino anónimo'; }
+function ensureApodo(){ if(isAdminUser()) return ADMIN_NAME; let a=getApodo(); if(!a){ a=promptApodo(''); if(a){ setApodo(a); refreshApodoLabels(); } } return a||'Vecino anónimo'; }
 function apodoWhoHTML(){
+  if(isAdminUser()) return 'Publicás como <strong style="color:var(--t2)">'+esc(ADMIN_NAME)+'</strong>'+verifiedBadge();
   const a=getApodo();
   return (a?'Como <strong style="color:var(--t2)">'+esc(a)+'</strong> · ':'')+
     '<a onclick="changeApodo()" style="color:#818cf8;cursor:pointer;text-decoration:underline">'+(a?'Cambiar':'Elegí un apodo')+'</a>';
 }
 function refreshApodoLabels(){ document.querySelectorAll('.apodo-who').forEach(el=>{ el.innerHTML=apodoWhoHTML(); }); }
-function changeApodo(){ const a=promptApodo(getApodo()); if(a) setApodo(a); refreshApodoLabels(); }
+function changeApodo(){ if(isAdminUser()) return; const a=promptApodo(getApodo()); if(a) setApodo(a); refreshApodoLabels(); }
 
 // ===== COMENTARIOS EN REPORTES =====
 function commentsRef(tab,id){ return db.collection(MOD_CFG[tab].col).doc(id).collection('comentarios'); }
@@ -3864,7 +3886,7 @@ function cmTime(c){ const v=c.timestamp; return (v&&v.toDate)?v.toDate():null; }
 function cmItemHTML(c){
   const t=cmTime(c);
   return '<div style="background:rgba(var(--rgb-slate),.5);border-radius:9px;padding:6px 9px">'+
-    '<p style="font-size:11px;line-height:1.4;color:var(--t2)"><strong style="color:var(--t1)">'+esc(c.apodo||'Vecino anónimo')+'</strong> '+esc(c.texto||'')+'</p>'+
+    '<p style="font-size:11px;line-height:1.4;color:var(--t2)"><strong style="color:var(--t1)">'+esc(c.apodo||'Vecino anónimo')+'</strong>'+vbadge(c)+' '+esc(c.texto||'')+'</p>'+
     (t?'<p style="font-size:8px;color:var(--t3);margin-top:2px">'+tAgo(t)+'</p>':'')+'</div>';
 }
 function openComments(tab,id){
@@ -3884,10 +3906,10 @@ function closeComments(id){ if(G.comUnsub[id]){ try{G.comUnsub[id]();}catch(e){}
 async function postComment(tab,id){
   const ta=document.getElementById('cm-in-'+id); if(!ta) return;
   const txt=ta.value.trim(); if(!txt) return;
-  const apodo=ensureApodo();
+  const a=authorFields();
   ta.disabled=true;
   try{
-    await commentsRef(tab,id).add({apodo:apodo,texto:txt.slice(0,280),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    await commentsRef(tab,id).add({apodo:a.apodo,admin:a.admin,texto:txt.slice(0,280),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     ta.value='';
   }catch(e){ console.error('postComment',e); showToast('No se pudo comentar (¿reglas Firestore?)','r'); }
   finally{ ta.disabled=false; }
@@ -3903,7 +3925,7 @@ function openAdminComments(tab,id){
       if(snap.empty){ list.innerHTML='<p style="font-size:11px;color:var(--t3);font-style:italic">Sin comentarios</p>'; return; }
       list.innerHTML=snap.docs.map(d=>{ const c=d.data(), t=cmTime(c);
         return '<div style="display:flex;justify-content:space-between;gap:10px;background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.14);border-radius:11px;padding:9px 12px">'+
-          '<div style="min-width:0"><p style="font-size:12px;color:var(--t2);line-height:1.4"><strong style="color:var(--t1)">'+esc(c.apodo||'Vecino anónimo')+'</strong> '+esc(c.texto||'')+'</p>'+
+          '<div style="min-width:0"><p style="font-size:12px;color:var(--t2);line-height:1.4"><strong style="color:var(--t1)">'+esc(c.apodo||'Vecino anónimo')+'</strong>'+vbadge(c)+' '+esc(c.texto||'')+'</p>'+
           (t?'<p style="font-size:9px;color:var(--t3);margin-top:3px">'+tAgo(t)+'</p>':'')+'</div>'+
           '<button onclick="delComment(\''+tab+'\',\''+id+'\',\''+d.id+'\')" title="Eliminar" style="flex-shrink:0;align-self:flex-start;padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer">🗑️</button></div>';
       }).join('');
@@ -3949,7 +3971,7 @@ function renderForo(){
       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px">'+
         (nuevo?'<span style="font-size:8px;font-weight:800;background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 8px;border-radius:999px;text-transform:uppercase">Nuevo</span>':'')+
         '<span style="font-size:14px;font-weight:800;color:var(--t0);line-height:1.3">'+esc(t.titulo||'(sin título)')+'</span></div>'+
-      '<p style="font-size:9px;color:var(--t3);font-weight:600;margin-bottom:7px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
+      '<p style="font-size:9px;color:var(--t3);font-weight:600;margin-bottom:7px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+vbadge(t)+''+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
       (preview?'<p style="font-size:12px;color:var(--t2);line-height:1.5">'+esc(preview)+(t.cuerpo&&t.cuerpo.length>140?'…':'')+'</p>':'')+
       '<p style="font-size:10px;color:#818cf8;font-weight:700;margin-top:9px">💬 '+rc+' '+(rc===1?'respuesta':'respuestas')+'</p></div>';
   }).join('');
@@ -3967,11 +3989,11 @@ async function submitThread(){
   const titulo=(document.getElementById('foro-title')?.value||'').trim();
   const cuerpo=(document.getElementById('foro-body')?.value||'').trim();
   if(titulo.length<3||!cuerpo){ const e=document.getElementById('foro-err'); if(e) e.style.display='block'; return; }
-  const apodo=ensureApodo();
+  const a=authorFields();
   const sub=document.getElementById('foro-sub'); if(sub){ sub.disabled=true; sub.textContent='Publicando...'; sub.style.opacity='.7'; }
   try{
     await db.collection(FORO_COL).add({
-      titulo:titulo.slice(0,100), cuerpo:cuerpo.slice(0,1000), apodo:apodo,
+      titulo:titulo.slice(0,100), cuerpo:cuerpo.slice(0,1000), apodo:a.apodo, admin:a.admin,
       timestamp:firebase.firestore.FieldValue.serverTimestamp(), respuestas_count:0,
     });
     closeForoM(); showToast('¡Tema publicado! 💬','g'); loadForo();
@@ -3985,7 +4007,7 @@ function openThread(id,admin){
   document.getElementById('foro-thread-body').innerHTML=
     '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-radius:16px;padding:18px 20px">'+
     '<h3 style="font-size:18px;font-weight:800;color:var(--t0);line-height:1.25;margin-bottom:7px">'+esc(t.titulo||'(sin título)')+'</h3>'+
-    '<p style="font-size:10px;color:var(--t3);font-weight:600;margin-bottom:12px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
+    '<p style="font-size:10px;color:var(--t3);font-weight:600;margin-bottom:12px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+vbadge(t)+''+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
     '<p style="font-size:13px;color:var(--t1);line-height:1.6;white-space:pre-wrap">'+esc(t.cuerpo||'')+'</p></div>';
   const delBtn=document.getElementById('foro-thread-del'); if(delBtn) delBtn.style.display=admin?'block':'none';
   const box=document.getElementById('foro-reply-box'); if(box) box.style.display=admin?'none':'block';
@@ -4011,7 +4033,7 @@ function openReplies(tid){
       if(snap.empty){ list.innerHTML='<p style="font-size:11px;color:var(--t3);font-style:italic">Todavía no hay respuestas. '+(admin?'':'¡Sé el primero!')+'</p>'; return; }
       list.innerHTML=snap.docs.map(d=>{ const c=d.data(), t=cmTime(c);
         return '<div style="display:flex;justify-content:space-between;gap:10px;background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.14);border-radius:12px;padding:11px 14px">'+
-          '<div style="min-width:0"><p style="font-size:9px;color:var(--t3);font-weight:700;margin-bottom:3px"><strong style="color:var(--t2)">'+esc(c.apodo||'Vecino anónimo')+'</strong>'+(t?' · '+tAgo(t):'')+'</p>'+
+          '<div style="min-width:0"><p style="font-size:9px;color:var(--t3);font-weight:700;margin-bottom:3px"><strong style="color:var(--t2)">'+esc(c.apodo||'Vecino anónimo')+'</strong>'+vbadge(c)+''+(t?' · '+tAgo(t):'')+'</p>'+
           '<p style="font-size:13px;color:var(--t1);line-height:1.5;white-space:pre-wrap">'+esc(c.texto||'')+'</p></div>'+
           (admin?'<button onclick="delReply(\''+tid+'\',\''+d.id+'\')" title="Eliminar" style="flex-shrink:0;align-self:flex-start;padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer">🗑️</button>':'')+'</div>';
       }).join('');
@@ -4022,10 +4044,10 @@ async function submitReply(){
   const tid=G.curThread&&G.curThread.id; if(!tid) return;
   const ta=document.getElementById('foro-reply-in'); if(!ta) return;
   const txt=ta.value.trim(); if(!txt) return;
-  const apodo=ensureApodo();
+  const a=authorFields();
   ta.disabled=true;
   try{
-    await repliesRef(tid).add({apodo:apodo,texto:txt.slice(0,1000),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    await repliesRef(tid).add({apodo:a.apodo,admin:a.admin,texto:txt.slice(0,1000),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     await db.collection(FORO_COL).doc(tid).update({respuestas_count:firebase.firestore.FieldValue.increment(1)});
     const t=(G.foro||[]).find(x=>x.id===tid); if(t) t.respuestas_count=(t.respuestas_count||0)+1;
     ta.value=''; renderForo();
@@ -4046,7 +4068,7 @@ function renderForoAdmin(){
     return '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border-radius:16px;border:1px solid rgba(var(--rgb-line),.14);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px">'+
       '<div onclick="openThread(\''+t.id+'\',true)" style="min-width:0;flex:1;cursor:pointer">'+
         '<p style="font-size:13px;font-weight:800;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(t.titulo||'(sin título)')+'</p>'+
-        '<p style="font-size:10px;color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong> · 💬 '+rc+' · '+fecha+'</p>'+
+        '<p style="font-size:10px;color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+vbadge(t)+' · 💬 '+rc+' · '+fecha+'</p>'+
       '</div>'+
       '<button onclick="delThread(\''+t.id+'\')" title="Eliminar hilo" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer;flex-shrink:0">🗑️</button>'+
     '</div>';
