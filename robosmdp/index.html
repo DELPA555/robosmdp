@@ -422,6 +422,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
       <button onclick="openPatentes()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🔖</span>Patentes perdidas / encontradas</button>
       <button onclick="openObjetos()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">📦</span>Objetos perdidos / encontrados</button>
+      <button onclick="openForo()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">💬</span>Foro vecinal</button>
       <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
           <div style="width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="info" style="width:16px;height:16px;color:#ef4444"></i></div>
@@ -652,6 +653,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
       <button onclick="openPatentes()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">🔖</span>Patentes</button>
       <button onclick="openObjetos()" style="width:100%;padding:13px;margin-bottom:8px;background:#f97316;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(249,115,22,.26)"><span style="font-size:13px">📦</span>Objetos</button>
+      <button onclick="openForo()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">💬</span>Foro vecinal</button>
       <div style="display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;margin-bottom:9px">
         <a href="#" onclick="goLandingTo('acerca');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Acerca de</a>
         <a href="#" onclick="goLandingTo('como-reportar');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Cómo reportar</a>
@@ -1006,6 +1008,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
         <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
         <button id="adm-tab-objetos" onclick="switchAdmTab('objetos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">📦 Objetos</button>
+        <button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
       </div>
       <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
         <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
@@ -1289,6 +1292,85 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
   </div>
 </div>
 
+<!-- ===== FORO VECINAL ===== -->
+<div id="foro-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:var(--bg-overlay);background-image:radial-gradient(900px circle at 50% -8%,rgba(99,102,241,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(79,70,229,.06),transparent 50%)">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#6366f1;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(99,102,241,.3);font-size:20px">💬</div>
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em">Foro vecinal</h2>
+        <p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Seguridad y problemas urbanos · MDP</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="openForoM()" style="padding:9px 14px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#fff;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(99,102,241,.35)">✏️ Nuevo tema</button>
+      <button onclick="closeForo()" style="padding:9px 18px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2)">Cerrar</button>
+    </div>
+  </header>
+  <div class="ns" style="flex:1;padding:18px 22px">
+    <div style="max-width:680px;margin:0 auto">
+      <p style="font-size:11px;color:var(--t3);font-weight:600;line-height:1.5;margin-bottom:14px;text-align:center;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:11px 14px">Espacio vecinal para hablar de seguridad y problemas urbanos de Mar del Plata.</p>
+      <div style="position:relative;margin-bottom:14px">
+        <i data-lucide="search" style="width:16px;height:16px;color:#64748b;position:absolute;left:14px;top:50%;transform:translateY(-50%)"></i>
+        <input id="foro-search" oninput="onForoSearch()" placeholder="Buscá por título o contenido..." style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:14px;padding:13px 14px 13px 40px;font-size:14px;font-weight:600;color:var(--t1);outline:none">
+      </div>
+      <div id="foro-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORO: vista de un hilo -->
+<div id="foro-thread-p" style="position:fixed;inset:0;z-index:6850;display:none;flex-direction:column;background:var(--bg-overlay);background-image:radial-gradient(900px circle at 50% -8%,rgba(99,102,241,.16),transparent 55%)">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button onclick="closeThread()" style="padding:8px 12px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:11px;font-size:11px;font-weight:700;cursor:pointer;color:var(--t2)">← Volver</button>
+      <h2 style="font-size:14px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em">Hilo</h2>
+    </div>
+    <button id="foro-thread-del" onclick="delThread(G.curThread&&G.curThread.id)" style="display:none;padding:8px 14px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:11px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">🗑️ Eliminar hilo</button>
+  </header>
+  <div class="ns" style="flex:1;padding:18px 22px">
+    <div style="max-width:680px;margin:0 auto">
+      <div id="foro-thread-body"></div>
+      <p style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:20px 0 10px">Respuestas (<span id="foro-reply-cnt">0</span>)</p>
+      <div id="foro-reply-list" style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px"></div>
+      <div id="foro-reply-box" style="background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.16);border-radius:14px;padding:13px 15px">
+        <div class="apodo-who" id="foro-reply-who" style="font-size:9px;color:var(--t3);margin-bottom:7px"></div>
+        <textarea id="foro-reply-in" maxlength="1000" rows="3" placeholder="Escribí tu respuesta..." style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;padding:11px 13px;font-size:13px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit"></textarea>
+        <button onclick="submitReply()" style="margin-top:9px;background:#6366f1;color:#fff;border:none;border-radius:12px;padding:12px 20px;font-size:12px;font-weight:700;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 16px rgba(99,102,241,.35)">Responder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: nuevo tema del foro -->
+<div class="movl" id="foro-m" style="z-index:7200" onclick="if(event.target===this)closeForoM()">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(99,102,241,.08)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,.18);border:2px solid rgba(99,102,241,.35);flex-shrink:0;font-size:22px">💬</div>
+        <div>
+          <h2 style="font-size:16px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em;line-height:1">Nuevo tema</h2>
+          <p style="font-size:9px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Seguridad y problemas urbanos</p>
+        </div>
+      </div>
+      <button onclick="closeForoM()" style="padding:8px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:var(--t3)"></i></button>
+    </div>
+    <div class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;padding-bottom:26px">
+      <div>
+        <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Título</label>
+        <input id="foro-title" maxlength="100" placeholder="Ej: Robos en la zona de Güemes" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:13px 14px;font-size:14px;font-weight:600;color:var(--t1);outline:none">
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Mensaje</label>
+        <textarea id="foro-body" maxlength="1000" rows="5" placeholder="Contá lo que querés compartir o preguntar a tus vecinos..." style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit"></textarea>
+      </div>
+      <div class="apodo-who" id="foro-new-who" style="font-size:10px;color:var(--t3)"></div>
+      <div id="foro-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá el título y el mensaje</div>
+      <button id="foro-sub" onclick="submitThread()" style="background:#6366f1;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;box-shadow:0 8px 22px rgba(99,102,241,.4)">Publicar tema</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== TÉRMINOS DE USO Y PRIVACIDAD ===== -->
 <div id="terminos-p" style="position:fixed;inset:0;z-index:6900;display:none;flex-direction:column;background:var(--bg-overlay)">
   <header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
@@ -1378,6 +1460,8 @@ const G={
   ltab:'robos',
   zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null,abandonados:null,luminarias:null},
   adminTaps:0,adminTimer:null,
+  comUnsub:{},
+  foro:[],foroQuery:'',foroReplyUnsub:null,curThread:null,foroAdminMode:false,
   isAdmin:false,curAdmId:null,admCatF:null
 };
 
@@ -1923,8 +2007,9 @@ function renderMk(tab){
       iconSize:[40,40],iconAnchor:[20,40]
     });
     const mk=L.marker(coords,{icon});
-    mk.bindPopup(mkPopup(r,cat,tab));
-    mk.on('popupopen',()=>{safeIcons();hydratePhoto(tab,r.id,'pop');});
+    mk.bindPopup(mkPopup(r,cat,tab),{maxWidth:300,minWidth:250});
+    mk.on('popupopen',()=>{safeIcons();hydratePhoto(tab,r.id,'pop');openComments(tab,r.id);});
+    mk.on('popupclose',()=>closeComments(r.id));
     if(useCluster) group.addLayer(mk);
     else mk.addTo(map);
     G.markers[tab].push(mk);
@@ -2004,7 +2089,7 @@ function mkPopup(r,cat,tab){
     (r.barrio?'<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:2px">📍 '+esc(r.barrio)+'</p>':'')+
     (r.vehiclePlate?'<p style="font-size:10px;font-weight:700;color:var(--t1);background:rgba(var(--rgb-line),.15);padding:2px 8px;border-radius:7px;margin-top:4px;display:inline-block">🚗 '+r.vehiclePlate.toUpperCase()+'</p>':'')+
     '<div id="ph-pop-'+r.id+'"></div>'+resAction+concernBlock(tab,r)+
-    '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+'</div>';
+    '<button onclick="shareWA(\''+tab+'\',\''+r.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">📲 Compartir alerta</button>'+commentsSkeleton(tab,r.id)+'</div>';
 }
 
 // ===== "ME PREOCUPA ESTO TAMBIÉN" =====
@@ -2687,6 +2772,7 @@ function renderAdm(){
   if(admTab==='avisos'){ renderAvisos(); return; }
   if(admTab==='patentes'){ renderPatentesAdmin(); return; }
   if(admTab==='objetos'){ renderObjetosAdmin(); return; }
+  if(admTab==='foro'){ renderForoAdmin(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
   const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
   if(!list||!grid) return;
@@ -2723,16 +2809,17 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316'};
-  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',foro:'#6366f1'};
+  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','foro'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'var(--t3)';}
   });
-  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos');
+  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='foro');
   const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=noGrid?'none':'block';
   const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=noGrid?'none':'flex';
   if(tab==='patentes') loadPatentes();
   if(tab==='objetos') loadObjetos();
+  if(tab==='foro') loadForoAdmin();
   renderAdm();
 }
 
@@ -3353,13 +3440,17 @@ function openAD(id){
     +'<div id="ph-adm-'+r.id+'" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"></div>'
     +'</div><div style="background:rgba(var(--rgb-slate),.5);padding:14px;border-radius:14px;margin-top:10px;border:1px solid rgba(var(--rgb-line),.14);max-height:130px;overflow:auto">'
     +'<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;margin-bottom:7px">Relato completo</p>'
-    +'<p style="font-size:12px;font-weight:500;color:var(--t2);line-height:1.6">'+(r.description||'')+'</p></div></div></div>';
+    +'<p style="font-size:12px;font-weight:500;color:var(--t2);line-height:1.6">'+(r.description||'')+'</p></div></div></div>'
+    +'<div style="margin-top:16px;border-top:1px solid rgba(var(--rgb-line),.14);padding-top:14px">'
+    +'<p style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px">💬 Comentarios (<span id="adm-cm-cnt">0</span>)</p>'
+    +'<div id="adm-cm-list" style="display:flex;flex-direction:column;gap:8px"><p style="font-size:11px;color:var(--t3)">Cargando…</p></div></div>';
   document.getElementById('adm-detail').style.display='flex';
   safeIcons();
   hydratePhoto(admTab,r.id,'adm');
+  openAdminComments(admTab,r.id);
 }
 
-function closeAD(){document.getElementById('adm-detail').style.display='none';}
+function closeAD(){document.getElementById('adm-detail').style.display='none';closeComments('adm');}
 
 // Quita el reporte del estado local y refresca admin + mapa + landing.
 // (Ya no hay onSnapshot tras la optimización de performance, así que se actualiza a mano.)
@@ -3734,6 +3825,244 @@ function setT(id,v){
   };
   requestAnimationFrame(step);
 }
+// ===== APODO (identidad sin registro, compartido entre comentarios y foro) =====
+const APODO_LS='rmdp_apodo';
+function getApodo(){ try{ return (localStorage.getItem(APODO_LS)||'').trim(); }catch(e){ return ''; } }
+function setApodo(n){ try{ localStorage.setItem(APODO_LS,String(n||'').trim().slice(0,40)); }catch(e){} }
+// Pide apodo (primer comentario / "Cambiar"). Devuelve '' si cancela o vacío.
+function promptApodo(initial){ const a=(window.prompt('¿Cómo querés que te llamen?',initial||'')||'').trim().slice(0,40); return a; }
+// Garantiza apodo antes de publicar; fallback "Vecino anónimo" si no quiere poner.
+function ensureApodo(){ let a=getApodo(); if(!a){ a=promptApodo(''); if(a){ setApodo(a); refreshApodoLabels(); } } return a||'Vecino anónimo'; }
+function apodoWhoHTML(){
+  const a=getApodo();
+  return (a?'Como <strong style="color:var(--t2)">'+esc(a)+'</strong> · ':'')+
+    '<a onclick="changeApodo()" style="color:#818cf8;cursor:pointer;text-decoration:underline">'+(a?'Cambiar':'Elegí un apodo')+'</a>';
+}
+function refreshApodoLabels(){ document.querySelectorAll('.apodo-who').forEach(el=>{ el.innerHTML=apodoWhoHTML(); }); }
+function changeApodo(){ const a=promptApodo(getApodo()); if(a) setApodo(a); refreshApodoLabels(); }
+
+// ===== COMENTARIOS EN REPORTES =====
+function commentsRef(tab,id){ return db.collection(MOD_CFG[tab].col).doc(id).collection('comentarios'); }
+function commentsSkeleton(tab,id){
+  return '<div style="margin-top:10px;border-top:1px solid rgba(var(--rgb-line),.18);padding-top:9px">'+
+    '<p style="font-size:11px;font-weight:800;color:var(--t2);margin-bottom:6px">💬 Comentarios (<span id="cm-cnt-'+id+'">0</span>)</p>'+
+    '<div id="cm-list-'+id+'" style="max-height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:7px"><p style="font-size:10px;color:var(--t3)">Cargando…</p></div>'+
+    '<div class="apodo-who" id="cm-who-'+id+'" style="font-size:9px;color:var(--t3);margin-bottom:5px"></div>'+
+    '<textarea id="cm-in-'+id+'" maxlength="280" rows="2" placeholder="Escribí un comentario…" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:9px;padding:8px 10px;font-size:11px;color:var(--t1);outline:none;resize:none;font-family:Inter,sans-serif"></textarea>'+
+    '<button onclick="postComment(\''+tab+'\',\''+id+'\')" style="width:100%;margin-top:6px;padding:8px;background:#6366f1;color:#fff;border:none;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Comentar</button></div>';
+}
+function cmTime(c){ const v=c.timestamp; return (v&&v.toDate)?v.toDate():null; }
+function cmItemHTML(c){
+  const t=cmTime(c);
+  return '<div style="background:rgba(var(--rgb-slate),.5);border-radius:9px;padding:6px 9px">'+
+    '<p style="font-size:11px;line-height:1.4;color:var(--t2)"><strong style="color:var(--t1)">'+esc(c.apodo||'Vecino anónimo')+'</strong> '+esc(c.texto||'')+'</p>'+
+    (t?'<p style="font-size:8px;color:var(--t3);margin-top:2px">'+tAgo(t)+'</p>':'')+'</div>';
+}
+function openComments(tab,id){
+  closeComments(id);
+  refreshApodoLabels();
+  try{
+    G.comUnsub[id]=commentsRef(tab,id).orderBy('timestamp','asc').onSnapshot(snap=>{
+      const list=document.getElementById('cm-list-'+id), cnt=document.getElementById('cm-cnt-'+id);
+      if(cnt) cnt.textContent=snap.size;
+      if(!list) return;
+      if(snap.empty){ list.innerHTML='<p style="font-size:10px;color:var(--t3);font-style:italic">Sé el primero en comentar</p>'; return; }
+      list.innerHTML=snap.docs.map(d=>cmItemHTML(d.data())).join('');
+    },err=>{ console.warn('comentarios',err); });
+  }catch(e){ console.warn('openComments',e); }
+}
+function closeComments(id){ if(G.comUnsub[id]){ try{G.comUnsub[id]();}catch(e){} G.comUnsub[id]=null; } }
+async function postComment(tab,id){
+  const ta=document.getElementById('cm-in-'+id); if(!ta) return;
+  const txt=ta.value.trim(); if(!txt) return;
+  const apodo=ensureApodo();
+  ta.disabled=true;
+  try{
+    await commentsRef(tab,id).add({apodo:apodo,texto:txt.slice(0,280),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    ta.value='';
+  }catch(e){ console.error('postComment',e); showToast('No se pudo comentar (¿reglas Firestore?)','r'); }
+  finally{ ta.disabled=false; }
+}
+// Moderación de comentarios en el panel admin (detalle del reporte)
+function openAdminComments(tab,id){
+  closeComments('adm');
+  try{
+    G.comUnsub['adm']=commentsRef(tab,id).orderBy('timestamp','asc').onSnapshot(snap=>{
+      const list=document.getElementById('adm-cm-list'), cnt=document.getElementById('adm-cm-cnt');
+      if(cnt) cnt.textContent=snap.size;
+      if(!list) return;
+      if(snap.empty){ list.innerHTML='<p style="font-size:11px;color:var(--t3);font-style:italic">Sin comentarios</p>'; return; }
+      list.innerHTML=snap.docs.map(d=>{ const c=d.data(), t=cmTime(c);
+        return '<div style="display:flex;justify-content:space-between;gap:10px;background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.14);border-radius:11px;padding:9px 12px">'+
+          '<div style="min-width:0"><p style="font-size:12px;color:var(--t2);line-height:1.4"><strong style="color:var(--t1)">'+esc(c.apodo||'Vecino anónimo')+'</strong> '+esc(c.texto||'')+'</p>'+
+          (t?'<p style="font-size:9px;color:var(--t3);margin-top:3px">'+tAgo(t)+'</p>':'')+'</div>'+
+          '<button onclick="delComment(\''+tab+'\',\''+id+'\',\''+d.id+'\')" title="Eliminar" style="flex-shrink:0;align-self:flex-start;padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer">🗑️</button></div>';
+      }).join('');
+    },err=>{ console.warn('admin comentarios',err); });
+  }catch(e){ console.warn('openAdminComments',e); }
+}
+async function delComment(tab,rid,cid){
+  if(!confirm('¿Eliminar este comentario?')) return;
+  try{ await commentsRef(tab,rid).doc(cid).delete(); }
+  catch(e){ console.error('delComment',e); showToast('Error al eliminar','r'); }
+}
+
+// ===== FORO VECINAL =====
+const FORO_COL='foro';
+function foroDate(x){ const v=x&&x.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); return new Date(0); }
+function openForo(){ document.getElementById('foro-p').style.display='flex'; loadForo(); refreshApodoLabels(); safeIcons(); }
+function closeForo(){ document.getElementById('foro-p').style.display='none'; }
+async function loadForo(){
+  try{
+    const snap=await db.collection(FORO_COL).limit(300).get();
+    G.foro=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>foroDate(b)-foroDate(a));
+  }catch(e){ console.warn('loadForo',e); G.foro=[]; }
+  renderForo();
+  if(admTab==='foro') renderForoAdmin();
+}
+function onForoSearch(){ G.foroQuery=(document.getElementById('foro-search')?.value||'').toLowerCase().trim(); renderForo(); }
+function foroFiltered(){
+  let list=(G.foro||[]).slice();
+  const q=G.foroQuery;
+  if(q) list=list.filter(t=>String(t.titulo||'').toLowerCase().includes(q)||String(t.cuerpo||'').toLowerCase().includes(q));
+  return list;
+}
+function renderForo(){
+  const el=document.getElementById('foro-list'); if(!el) return;
+  const list=foroFiltered();
+  if(!list.length){ el.innerHTML='<div style="text-align:center;padding:46px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">💬</div>'+(G.foroQuery?'Sin resultados para "'+esc(G.foroQuery)+'"':'No hay temas todavía. ¡Creá el primero!')+'</div>'; return; }
+  const now=Date.now();
+  el.innerHTML=list.map(t=>{
+    const d=foroDate(t), nuevo=(now-d.getTime())<864e5 && d.getTime()>0;
+    const preview=String(t.cuerpo||'').slice(0,140);
+    const rc=t.respuestas_count||0;
+    return '<div onclick="openThread(\''+t.id+'\')" style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-left:4px solid #6366f1;border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer">'+
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px">'+
+        (nuevo?'<span style="font-size:8px;font-weight:800;background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 8px;border-radius:999px;text-transform:uppercase">Nuevo</span>':'')+
+        '<span style="font-size:14px;font-weight:800;color:var(--t0);line-height:1.3">'+esc(t.titulo||'(sin título)')+'</span></div>'+
+      '<p style="font-size:9px;color:var(--t3);font-weight:600;margin-bottom:7px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
+      (preview?'<p style="font-size:12px;color:var(--t2);line-height:1.5">'+esc(preview)+(t.cuerpo&&t.cuerpo.length>140?'…':'')+'</p>':'')+
+      '<p style="font-size:10px;color:#818cf8;font-weight:700;margin-top:9px">💬 '+rc+' '+(rc===1?'respuesta':'respuestas')+'</p></div>';
+  }).join('');
+}
+function openForoM(){
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+  set('foro-title',''); set('foro-body','');
+  const err=document.getElementById('foro-err'); if(err) err.style.display='none';
+  refreshApodoLabels();
+  document.getElementById('foro-m').style.display='flex';
+  safeIcons();
+}
+function closeForoM(){ document.getElementById('foro-m').style.display='none'; }
+async function submitThread(){
+  const titulo=(document.getElementById('foro-title')?.value||'').trim();
+  const cuerpo=(document.getElementById('foro-body')?.value||'').trim();
+  if(titulo.length<3||!cuerpo){ const e=document.getElementById('foro-err'); if(e) e.style.display='block'; return; }
+  const apodo=ensureApodo();
+  const sub=document.getElementById('foro-sub'); if(sub){ sub.disabled=true; sub.textContent='Publicando...'; sub.style.opacity='.7'; }
+  try{
+    await db.collection(FORO_COL).add({
+      titulo:titulo.slice(0,100), cuerpo:cuerpo.slice(0,1000), apodo:apodo,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(), respuestas_count:0,
+    });
+    closeForoM(); showToast('¡Tema publicado! 💬','g'); loadForo();
+  }catch(e){ console.error('submitThread',e); showToast('No se pudo publicar (¿reglas Firestore?)','r'); }
+  finally{ if(sub){ sub.disabled=false; sub.textContent='Publicar tema'; sub.style.opacity='1'; } }
+}
+function openThread(id,admin){
+  const t=(G.foro||[]).find(x=>x.id===id); if(!t) return;
+  G.curThread=t; G.foroAdminMode=!!admin;
+  const d=foroDate(t);
+  document.getElementById('foro-thread-body').innerHTML=
+    '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-radius:16px;padding:18px 20px">'+
+    '<h3 style="font-size:18px;font-weight:800;color:var(--t0);line-height:1.25;margin-bottom:7px">'+esc(t.titulo||'(sin título)')+'</h3>'+
+    '<p style="font-size:10px;color:var(--t3);font-weight:600;margin-bottom:12px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
+    '<p style="font-size:13px;color:var(--t1);line-height:1.6;white-space:pre-wrap">'+esc(t.cuerpo||'')+'</p></div>';
+  const delBtn=document.getElementById('foro-thread-del'); if(delBtn) delBtn.style.display=admin?'block':'none';
+  const box=document.getElementById('foro-reply-box'); if(box) box.style.display=admin?'none':'block';
+  refreshApodoLabels();
+  document.getElementById('foro-thread-p').style.display='flex';
+  openReplies(id);
+  safeIcons();
+}
+function closeThread(){
+  document.getElementById('foro-thread-p').style.display='none';
+  if(G.foroReplyUnsub){ try{G.foroReplyUnsub();}catch(e){} G.foroReplyUnsub=null; }
+  G.curThread=null;
+}
+function repliesRef(tid){ return db.collection(FORO_COL).doc(tid).collection('respuestas'); }
+function openReplies(tid){
+  if(G.foroReplyUnsub){ try{G.foroReplyUnsub();}catch(e){} G.foroReplyUnsub=null; }
+  const admin=G.foroAdminMode;
+  try{
+    G.foroReplyUnsub=repliesRef(tid).orderBy('timestamp','asc').onSnapshot(snap=>{
+      const list=document.getElementById('foro-reply-list'), cnt=document.getElementById('foro-reply-cnt');
+      if(cnt) cnt.textContent=snap.size;
+      if(!list) return;
+      if(snap.empty){ list.innerHTML='<p style="font-size:11px;color:var(--t3);font-style:italic">Todavía no hay respuestas. '+(admin?'':'¡Sé el primero!')+'</p>'; return; }
+      list.innerHTML=snap.docs.map(d=>{ const c=d.data(), t=cmTime(c);
+        return '<div style="display:flex;justify-content:space-between;gap:10px;background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.14);border-radius:12px;padding:11px 14px">'+
+          '<div style="min-width:0"><p style="font-size:9px;color:var(--t3);font-weight:700;margin-bottom:3px"><strong style="color:var(--t2)">'+esc(c.apodo||'Vecino anónimo')+'</strong>'+(t?' · '+tAgo(t):'')+'</p>'+
+          '<p style="font-size:13px;color:var(--t1);line-height:1.5;white-space:pre-wrap">'+esc(c.texto||'')+'</p></div>'+
+          (admin?'<button onclick="delReply(\''+tid+'\',\''+d.id+'\')" title="Eliminar" style="flex-shrink:0;align-self:flex-start;padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer">🗑️</button>':'')+'</div>';
+      }).join('');
+    },err=>{ console.warn('respuestas',err); });
+  }catch(e){ console.warn('openReplies',e); }
+}
+async function submitReply(){
+  const tid=G.curThread&&G.curThread.id; if(!tid) return;
+  const ta=document.getElementById('foro-reply-in'); if(!ta) return;
+  const txt=ta.value.trim(); if(!txt) return;
+  const apodo=ensureApodo();
+  ta.disabled=true;
+  try{
+    await repliesRef(tid).add({apodo:apodo,texto:txt.slice(0,1000),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection(FORO_COL).doc(tid).update({respuestas_count:firebase.firestore.FieldValue.increment(1)});
+    const t=(G.foro||[]).find(x=>x.id===tid); if(t) t.respuestas_count=(t.respuestas_count||0)+1;
+    ta.value=''; renderForo();
+  }catch(e){ console.error('submitReply',e); showToast('No se pudo responder (¿reglas Firestore?)','r'); }
+  finally{ ta.disabled=false; }
+}
+// Admin del foro
+function loadForoAdmin(){ loadForo(); }
+function renderForoAdmin(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return;
+  if(grid) grid.innerHTML='';
+  const threads=G.foro||[];
+  if(!threads.length){ list.innerHTML='<div style="text-align:center;padding:42px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">💬</div>Sin temas en el foro</div>'; return; }
+  list.innerHTML=threads.map(t=>{
+    const d=foroDate(t), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):'';
+    const rc=t.respuestas_count||0;
+    return '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border-radius:16px;border:1px solid rgba(var(--rgb-line),.14);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px">'+
+      '<div onclick="openThread(\''+t.id+'\',true)" style="min-width:0;flex:1;cursor:pointer">'+
+        '<p style="font-size:13px;font-weight:800;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(t.titulo||'(sin título)')+'</p>'+
+        '<p style="font-size:10px;color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong> · 💬 '+rc+' · '+fecha+'</p>'+
+      '</div>'+
+      '<button onclick="delThread(\''+t.id+'\')" title="Eliminar hilo" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer;flex-shrink:0">🗑️</button>'+
+    '</div>';
+  }).join('');
+}
+async function delThread(id){
+  if(!id||!confirm('¿Eliminar este hilo y todas sus respuestas permanentemente?')) return;
+  try{
+    const rs=await repliesRef(id).get();
+    if(!rs.empty){ const batch=db.batch(); rs.forEach(d=>batch.delete(d.ref)); await batch.commit(); }
+    await db.collection(FORO_COL).doc(id).delete();
+    G.foro=(G.foro||[]).filter(x=>x.id!==id);
+    closeThread(); renderForoAdmin(); renderForo();
+    showToast('Hilo eliminado','r');
+  }catch(e){ console.error('delThread',e); showToast('Error al eliminar','r'); }
+}
+async function delReply(tid,rid){
+  if(!confirm('¿Eliminar esta respuesta?')) return;
+  try{
+    await repliesRef(tid).doc(rid).delete();
+    await db.collection(FORO_COL).doc(tid).update({respuestas_count:firebase.firestore.FieldValue.increment(-1)});
+    const t=(G.foro||[]).find(x=>x.id===tid); if(t&&t.respuestas_count) t.respuestas_count--;
+  }catch(e){ console.error('delReply',e); showToast('Error al eliminar','r'); }
+}
+
 function tAgo(date){
   const d=Math.floor((Date.now()-date.getTime())/1000);
   if(d<0) return 'recién';   // fecha futura (hora cargada posterior o desfase de reloj): evita "hace -N s"
