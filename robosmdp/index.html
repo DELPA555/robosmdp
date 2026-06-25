@@ -1589,7 +1589,7 @@ const LIGHT_FIELDS=['type','description','lat','lng','timestamp','vehiclePlate',
   'coordenadas','coords','position','posicion','geo','geopoint','geoPoint','latitude','longitude',
   'latitud','longitud','createdAt','created_at','fecha','date','tipo','category','categoria','kind',
   'descripcion','desc','relato','detalle','details','text','title','address','direccion',
-  'patente','dominio','plate'];
+  'patente','dominio','plate','barrio'];
 
 // Separa una ruta de colección (posiblemente anidada) en documento padre + collectionId.
 // "a/b/c/d/reports" -> {parent:"a/b/c/d", collectionId:"reports"}; "basura" -> {parent:"", collectionId:"basura"}
@@ -2273,6 +2273,23 @@ const CTX='Mar del Plata, Buenos Aires, Argentina';
 // y evitar que "9 de Julio" matchee la ciudad/calles homónimas en otra parte del país.
 const MDP_VIEWBOX='-57.70,-37.90,-57.49,-38.13';
 
+// Geocoding INVERSO: coords -> barrio de Mar del Plata (Nominatim reverse).
+// Best-effort: si falla o tarda, devuelve null y el reporte se publica igual.
+async function reverseBarrio(lat,lng){
+  try{
+    const url='https://nominatim.openstreetmap.org/reverse?'+new URLSearchParams({format:'json',lat:lat,lon:lng,addressdetails:'1',zoom:'14'});
+    const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),4500);
+    const r=await fetch(url,{headers:{'User-Agent':'RobosMDP/2.0 (robosmdp.com.ar)'},signal:ctrl.signal});
+    clearTimeout(to);
+    const d=await r.json();
+    const a=(d&&d.address)||{};
+    let b=a.suburb||a.neighbourhood||a.quarter||a.city_district||a.residential||a.town||a.village||'';
+    b=String(b).trim();
+    if(!b||/^mar del plata$/i.test(b)) return null;
+    return b;
+  }catch(e){ return null; }
+}
+
 async function doS(inputId,mod){
   const inp=document.getElementById(inputId); if(!inp) return;
   const q=inp.value.trim(); if(q.length<3) return;
@@ -2388,6 +2405,8 @@ async function subR(mod){
   if(mod==='abandonados'){
     data.vehiclePlate=(document.getElementById('a-plate')?.value||'').toUpperCase();
   }
+  // Geocoding inverso: guardar el barrio (no bloquea si falla/tarda)
+  try{ const b=await reverseBarrio(data.lat,data.lng); if(b) data.barrio=b; }catch(e){}
   try{
     await db.collection(MOD_CFG[mod].col).add(data);
     gaEvent('submit_report',{report_type:mod});
@@ -3082,18 +3101,26 @@ function renderAd(slotId){
 function renderAds(){ Object.keys(ADS).forEach(renderAd); }
 
 // ===== ESTADÍSTICAS EN TEXTO (contenido dinámico indexable) =====
-// Solo datos exactos (conteos). NO se calculan "zonas/calles" porque los reportes
-// no tienen un campo de dirección estructurado y confiable; extraerlas de la
-// descripción libre produce nombres inventados.
+// Conteos exactos + top de barrios. El barrio se guarda al crear el reporte
+// (geocoding inverso → campo `barrio`), así que las zonas son nombres reales.
+// Los reportes viejos sin `barrio` simplemente no se cuentan para el top.
 function updLandingStatsText(){
   const now=Date.now(), d30=now-30*864e5;
   const cnt=(tab,since)=>(G.data[tab]||[]).filter(r=>getReportDate(r).getTime()>=since).length;
   const r30=cnt('robos',d30), b30=cnt('basura',d30), p30=cnt('pozos',d30);
   const total=['robos','basura','pozos','abandonados','luminarias'].reduce((s,t)=>s+((G.data[t]||[]).length),0);
   const at=document.getElementById('acerca-total'); if(at&&total>0) at.textContent=total.toLocaleString('es-AR');
+  // Top 3 barrios (todos los módulos) de los últimos 30 días, solo con barrio real
+  const bc={};
+  ['robos','basura','pozos','abandonados','luminarias'].forEach(tab=>{
+    (G.data[tab]||[]).forEach(r=>{ const b=(r.barrio||'').trim(); if(b&&getReportDate(r).getTime()>=d30) bc[b]=(bc[b]||0)+1; });
+  });
+  const top=Object.entries(bc).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
   const el=document.getElementById('land-stats-text'); if(!el) return;
   if(r30+b30+p30===0&&total===0) return; // todavía sin datos: dejar el texto estático
-  el.innerHTML='En los últimos 30 días se registraron <strong style="color:#f87171">'+r30+'</strong> robos, <strong style="color:#4ade80">'+b30+'</strong> problemas de basura y <strong style="color:#fbbf24">'+p30+'</strong> pozos en la vía pública en Mar del Plata. En total, los vecinos ya publicaron <strong style="color:#cbd5e1">'+total.toLocaleString('es-AR')+'</strong> reportes ciudadanos en la ciudad.';
+  let html='En los últimos 30 días se registraron <strong style="color:#f87171">'+r30+'</strong> robos, <strong style="color:#4ade80">'+b30+'</strong> problemas de basura y <strong style="color:#fbbf24">'+p30+'</strong> pozos en la vía pública en Mar del Plata. En total, los vecinos ya publicaron <strong style="color:#cbd5e1">'+total.toLocaleString('es-AR')+'</strong> reportes ciudadanos en la ciudad.';
+  if(top.length) html+=' Los barrios con más reportes son: <strong style="color:#cbd5e1">'+top.map(esc).join(', ')+'</strong>.';
+  el.innerHTML=html;
 }
 
 function togAdmC(id){G.admCatF=G.admCatF===id?null:id;renderAdm();}
