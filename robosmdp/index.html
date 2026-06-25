@@ -128,6 +128,13 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 #sidebar{position:absolute;z-index:3000;width:100%;height:100%;background:var(--bg-2);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,.45)}
 @media(min-width:768px){#sidebar{position:relative;width:360px;transform:translateX(0);box-shadow:none}}
 #sidebar.open{transform:translateX(0)}
+/* Fix scroll iOS/Safari: en mobile el sidebar debe acotarse al viewport VISIBLE
+   (no al layout viewport, que es más alto). Con 100dvh + altura explícita en px
+   (window.innerHeight, seteada por fixSidebarH) el área .ns hace overflow y scrollea. */
+@media(max-width:767px){
+  #sidebar{height:100dvh}
+  #sidebar>.ns{overflow-y:scroll;-webkit-overflow-scrolling:touch;min-height:0}
+}
 .mapc{flex:1;position:relative;height:100%}
 .mapel{position:absolute;inset:0;z-index:0;display:none}
 .mapel.on{display:block}
@@ -1450,12 +1457,24 @@ function switchLT(tab){
   t.innerHTML=names[tab];
 }
 
+// Fix iOS/Safari: setea la altura del sidebar a la altura VISIBLE real (window.innerHeight,
+// que en iOS es el viewport visual). Sin esto, height:100% toma el layout viewport (más alto)
+// y la lista/banner quedan abajo del fold sin poder scrollear.
+function fixSidebarH(){
+  const sb=document.getElementById('sidebar'); if(!sb) return;
+  if(window.innerWidth<768) sb.style.height=window.innerHeight+'px';
+  else sb.style.height='';
+}
+window.addEventListener('resize',fixSidebarH);
+window.addEventListener('orientationchange',()=>setTimeout(fixSidebarH,250));
+
 function enterApp(tab){
   G.tab=tab;
   gaEvent('enter_map',{map_type:tab});
   document.getElementById('landing').style.transform='translateY(-100%)';
   const app=document.getElementById('app');
   app.style.opacity='1';app.style.pointerEvents='auto';
+  fixSidebarH();
   switchAT(tab,true);
   setTimeout(()=>initMap(tab),300);
 }
@@ -1495,7 +1514,7 @@ function switchAT(tab,skipMap){
 }
 
 // ===== SIDEBAR =====
-function openSB(){document.getElementById('sidebar').classList.add('open');}
+function openSB(){fixSidebarH();document.getElementById('sidebar').classList.add('open');}
 function closeSB(){if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');}
 
 // ===== MAPS =====
