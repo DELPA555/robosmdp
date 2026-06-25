@@ -1074,7 +1074,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <input id="adm-email" type="email" value="admin@robosmdp.com.ar" style="display:none">
       <input id="adm-pass" type="password" placeholder="Clave de administrador" style="width:100%;padding:12px 14px;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;font-size:13px;font-weight:600;color:var(--t1);outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')doLogin()">
       <div id="adm-err" style="font-size:10px;font-weight:700;color:#ef4444;text-align:center;display:none"></div>
-      <button onclick="doLogin()" style="background:#ef4444;color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.4)">Ingresar</button>
+      <button id="adm-login-btn" onclick="doLogin()" style="background:#ef4444;color:#fff;border:none;border-radius:13px;padding:14px;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(239,68,68,.4)">Ingresar</button>
       <button onclick="closeLM()" style="background:none;border:none;font-size:11px;font-weight:600;color:var(--t3);cursor:pointer">Cancelar</button>
     </div>
   </div>
@@ -1431,6 +1431,9 @@ const FB_CONFIG={
   messagingSenderId:"329992862097",
   appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
+// Cuenta de administrador en Firebase Auth (email/password). La clave NO vive en el
+// código: se valida contra Firebase. Las reglas de Firestore reconocen este email.
+const ADMIN_EMAIL='admin@robosmdp.com.ar';
 let db=null,auth=null;
 if(window.firebase){
   firebase.initializeApp(FB_CONFIG);
@@ -2738,14 +2741,20 @@ function openLM(){document.getElementById('login-m').style.display='flex';}
 function closeLM(){document.getElementById('login-m').style.display='none';}
 
 async function doLogin(){
-  const pass=document.getElementById('adm-pass').value,err=document.getElementById('adm-err');
-  if(pass==='delpa555'){
+  const passEl=document.getElementById('adm-pass'), pass=passEl.value, err=document.getElementById('adm-err');
+  if(err) err.style.display='none';
+  if(!auth){ if(err){err.textContent='Auth no disponible';err.style.display='block';} return; }
+  const btn=document.getElementById('adm-login-btn'); if(btn){ btn.disabled=true; btn.style.opacity='.7'; }
+  try{
+    // Autenticación real contra Firebase Auth: las reglas verifican este admin para moderar/borrar.
+    await auth.signInWithEmailAndPassword(ADMIN_EMAIL, pass);
     G.isAdmin=true;
     closeLM(); openAP();
-    document.getElementById('adm-pass').value='';
-  }else if(err){
-    err.textContent='Clave incorrecta';
-    err.style.display='block';
+    passEl.value='';
+  }catch(e){
+    if(err){ err.textContent='Clave incorrecta'; err.style.display='block'; }
+  }finally{
+    if(btn){ btn.disabled=false; btn.style.opacity='1'; }
   }
 }
 
