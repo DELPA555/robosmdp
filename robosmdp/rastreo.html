@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robos MDP Rastreo — Sistema de Recuperación Vehicular · Mar del Plata</title>
+<meta name="description" content="El primer sistema de rastreo y recuperación vehicular respaldado por la red vecinal más grande de Mar del Plata. Registrate y sé de los primeros.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<style>
+:root {
+  --black:   #07090D;
+  --deep:    #0C0F16;
+  --surface: #12161F;
+  --card:    #181D28;
+  --border:  rgba(255,255,255,.06);
+  --border2: rgba(255,255,255,.1);
+  --red:     #E8192C;
+  --red2:    #FF2D42;
+  --red-dim: rgba(232,25,44,.12);
+  --white:   #EDF0F7;
+  --muted:   #5A6478;
+  --muted2:  #8A97B0;
+  --mono:    'Space Mono', monospace;
+  --sans:    'Space Grotesk', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--black);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--red);color:#fff}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--deep)}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:0 32px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,9,13,.8);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:border-color .3s;
+}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.05em;
+}
+.nav-logo .r{color:var(--red)}
+.nav-badge{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;
+  color:var(--muted2);border:1px solid var(--border2);
+  border-radius:4px;padding:3px 8px;text-transform:uppercase;
+}
+.nav-pill{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;
+  color:var(--red);background:var(--red-dim);
+  border:1px solid rgba(232,25,44,.2);border-radius:999px;padding:6px 14px;
+}
+.nav-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* HERO */
+.hero{
+  min-height:100vh;padding-top:64px;
+  display:flex;align-items:center;
+  position:relative;overflow:hidden;
+}
+/* Animated background */
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(232,25,44,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(232,25,44,.04) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+.hero-glow{
+  position:absolute;
+  width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,25,44,.08) 0%,transparent 70%);
+  top:50%;left:60%;transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.hero-glow2{
+  position:absolute;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,25,44,.05) 0%,transparent 70%);
+  top:20%;left:15%;
+  pointer-events:none;animation:float 8s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+
+.hero-inner{
+  position:relative;z-index:1;
+  max-width:1200px;margin:0 auto;padding:80px 32px;
+  display:grid;grid-template-columns:1fr 480px;gap:80px;align-items:center;
+}
+
+/* HERO LEFT */
+.hero-eyebrow{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.15em;
+  color:var(--muted2);text-transform:uppercase;margin-bottom:28px;
+}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--red)}
+.hero-h1{
+  font-size:clamp(48px,5.5vw,76px);font-weight:700;line-height:1.05;
+  letter-spacing:-.02em;margin-bottom:24px;
+}
+.hero-h1 .line2{color:var(--red)}
+.hero-h1 .line3{
+  font-family:var(--mono);font-size:clamp(16px,2vw,24px);font-weight:400;
+  color:var(--muted2);letter-spacing:.08em;display:block;margin-top:8px;
+}
+.hero-desc{
+  font-size:17px;line-height:1.7;color:var(--muted2);
+  max-width:520px;margin-bottom:36px;
+}
+.hero-desc strong{color:var(--white);font-weight:600}
+
+/* Counter strip */
+.hero-counters{
+  display:flex;gap:0;margin-bottom:40px;
+  border:1px solid var(--border2);border-radius:12px;overflow:hidden;
+}
+.hcount{
+  flex:1;padding:16px 20px;border-right:1px solid var(--border);
+  background:var(--surface);
+}
+.hcount:last-child{border-right:none}
+.hcount-n{
+  font-family:var(--mono);font-size:24px;font-weight:700;color:var(--red);
+}
+.hcount-l{font-size:11px;color:var(--muted);font-weight:500;margin-top:3px}
+
+.hero-cta-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn-red{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--red);color:#fff;
+  padding:14px 26px;border-radius:8px;
+  font-size:14px;font-weight:700;letter-spacing:.01em;
+  border:none;cursor:pointer;transition:all .2s;
+  font-family:var(--sans);
+}
+.btn-red:hover{background:var(--red2);box-shadow:0 8px 24px rgba(232,25,44,.3);transform:translateY(-1px)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--muted2);
+  padding:14px 26px;border-radius:8px;
+  font-size:14px;font-weight:600;
+  border:1px solid var(--border2);cursor:pointer;transition:all .2s;
+  font-family:var(--sans);
+}
+.btn-ghost:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
+
+/* HERO RIGHT — FORM CARD */
+.form-card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.5),0 0 0 1px rgba(232,25,44,.08);
+}
+.form-card-header{
+  background:linear-gradient(135deg,var(--card),rgba(232,25,44,.06));
+  padding:28px 28px 24px;
+  border-bottom:1px solid var(--border);
+}
+.form-card-title{
+  font-size:18px;font-weight:700;margin-bottom:6px;
+}
+.form-card-sub{
+  font-size:13px;color:var(--muted2);line-height:1.5;
+}
+.form-card-sub strong{color:var(--red);font-weight:600}
+.form-body{padding:28px}
+.form-row{margin-bottom:16px}
+.form-label{
+  display:block;font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:.1em;color:var(--muted2);text-transform:uppercase;margin-bottom:8px;
+}
+.form-input{
+  width:100%;background:var(--card);border:1px solid var(--border2);
+  border-radius:8px;padding:12px 14px;
+  font-size:14px;font-weight:500;color:var(--white);
+  font-family:var(--sans);outline:none;transition:border-color .2s;
+}
+.form-input:focus{border-color:var(--red)}
+.form-input::placeholder{color:var(--muted)}
+select.form-input option{background:var(--card)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-submit{
+  width:100%;padding:15px;margin-top:8px;
+  background:var(--red);color:#fff;
+  border:none;border-radius:8px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  font-family:var(--sans);transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.form-submit:hover{background:var(--red2);box-shadow:0 8px 24px rgba(232,25,44,.35)}
+.form-submit:disabled{opacity:.5;cursor:not-allowed}
+.form-note{
+  font-size:11px;color:var(--muted);text-align:center;
+  margin-top:12px;line-height:1.5;
+}
+.form-success{
+  display:none;flex-direction:column;align-items:center;
+  text-align:center;padding:40px 28px;gap:16px;
+}
+.form-success .icon{font-size:48px}
+.form-success h3{font-size:20px;font-weight:700}
+.form-success p{font-size:14px;color:var(--muted2);line-height:1.6}
+.form-counter{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--mono);font-size:12px;color:var(--muted2);
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:10px 16px;margin-top:16px;
+}
+.form-counter-n{color:var(--red);font-weight:700;font-size:16px}
+
+/* SECTION TITLES */
+.s-eyebrow{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.15em;
+  color:var(--red);text-transform:uppercase;margin-bottom:12px;
+}
+.s-title{font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:16px}
+.s-sub{font-size:16px;color:var(--muted2);line-height:1.7;max-width:520px}
+
+/* HOW */
+.how{padding:100px 0;background:var(--deep)}
+.how-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.how-header{margin-bottom:64px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.step{
+  background:var(--deep);padding:36px 28px;
+  position:relative;overflow:hidden;
+  transition:background .2s;
+}
+.step:hover{background:var(--surface)}
+.step-line{
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--red),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.step:hover .step-line{opacity:1}
+.step-num{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;
+  color:var(--red);margin-bottom:20px;
+}
+.step-icon{font-size:32px;margin-bottom:16px}
+.step-title{font-size:16px;font-weight:700;margin-bottom:10px}
+.step-desc{font-size:13px;color:var(--muted2);line-height:1.65}
+
+/* DIFERENCIAL */
+.diff{padding:100px 0}
+.diff-inner{max-width:1200px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.diff-visual{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;padding:40px;position:relative;overflow:hidden;
+}
+.diff-visual::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,25,44,.12) 0%,transparent 70%);
+}
+.diff-stat-row{display:flex;flex-direction:column;gap:20px}
+.dstat{
+  display:flex;align-items:center;gap:20px;
+  padding:18px 20px;background:var(--card);
+  border:1px solid var(--border);border-radius:12px;
+  transition:border-color .2s;
+}
+.dstat:hover{border-color:rgba(232,25,44,.25)}
+.dstat-icon{font-size:28px;flex-shrink:0}
+.dstat-n{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--red)}
+.dstat-l{font-size:12px;color:var(--muted2);margin-top:2px}
+.diff-list{list-style:none;display:flex;flex-direction:column;gap:16px;margin-top:28px}
+.diff-list li{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:15px;color:var(--muted2);line-height:1.55;
+}
+.diff-list li::before{
+  content:'→';color:var(--red);font-family:var(--mono);
+  font-weight:700;flex-shrink:0;margin-top:1px;
+}
+
+/* VEHICLES */
+.vehicles{padding:80px 0;background:var(--deep)}
+.vehicles-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.vehicles-header{text-align:center;margin-bottom:56px}
+.vehicles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.vcard{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:32px 24px;text-align:center;
+  transition:all .2s;cursor:default;
+}
+.vcard:hover{border-color:rgba(232,25,44,.3);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.vcard-icon{font-size:48px;margin-bottom:16px}
+.vcard-name{font-size:16px;font-weight:700;margin-bottom:8px}
+.vcard-desc{font-size:12px;color:var(--muted2)}
+
+/* URGENCY STRIP */
+.urgency{
+  background:linear-gradient(135deg,#1A0508,#0C0F16,#1A0508);
+  border-top:1px solid rgba(232,25,44,.2);
+  border-bottom:1px solid rgba(232,25,44,.2);
+  padding:32px;text-align:center;
+}
+.urgency-inner{max-width:800px;margin:0 auto}
+.urgency-title{
+  font-family:var(--mono);font-size:clamp(16px,2.5vw,22px);
+  font-weight:700;letter-spacing:.04em;margin-bottom:12px;
+}
+.urgency-title span{color:var(--red)}
+.urgency-sub{font-size:14px;color:var(--muted2);margin-bottom:24px;line-height:1.6}
+.urgency-list{
+  display:flex;justify-content:center;gap:32px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:12px;color:var(--muted2);letter-spacing:.06em;
+}
+.urgency-list li{list-style:none;display:flex;align-items:center;gap:6px}
+.urgency-list li::before{content:'✓';color:var(--red)}
+
+/* FAQ */
+.faq{padding:80px 0;background:var(--black)}
+.faq-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.faq-header{text-align:center;margin-bottom:48px}
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:2px}
+.faq-item{background:var(--surface);border:1px solid var(--border)}
+.faq-item:first-child{border-radius:12px 12px 0 0}
+.faq-item:last-child{border-radius:0 0 12px 12px}
+.faq-q{
+  width:100%;text-align:left;background:none;border:none;cursor:pointer;
+  padding:20px 24px;color:var(--white);font-size:15px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  font-family:var(--sans);transition:color .2s;
+}
+.faq-q:hover{color:var(--red)}
+.faq-icon{
+  font-family:var(--mono);font-size:18px;color:var(--red);
+  flex-shrink:0;transition:transform .2s;
+}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  font-size:14px;color:var(--muted2);line-height:1.7;
+  transition:max-height .3s ease,padding .3s;
+  padding:0 24px;
+}
+.faq-item.open .faq-a{max-height:200px;padding:0 24px 20px}
+
+/* CTA FINAL */
+.cta-final{
+  padding:120px 32px;text-align:center;
+  background:var(--deep);position:relative;overflow:hidden;
+}
+.cta-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(232,25,44,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-inner{max-width:700px;margin:0 auto;position:relative}
+.cta-mono{
+  font-family:var(--mono);font-size:12px;letter-spacing:.15em;
+  color:var(--red);margin-bottom:20px;text-transform:uppercase;
+}
+.cta-title{font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:20px}
+.cta-sub{font-size:17px;color:var(--muted2);line-height:1.65;margin-bottom:40px}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.wa-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#25D366;color:#fff;
+  padding:15px 28px;border-radius:8px;
+  font-size:15px;font-weight:700;transition:all .2s;
+}
+.wa-btn:hover{background:#1da851;box-shadow:0 8px 24px rgba(37,211,102,.3);transform:translateY(-1px)}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);
+  padding:24px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+  background:var(--black);
+}
+.footer-logo{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--muted2)}
+.footer-logo span{color:var(--red)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--muted);transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-legal{font-size:11px;color:var(--muted)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--surface);border:1px solid rgba(34,197,94,.3);
+  border-radius:12px;padding:14px 22px;
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:600;z-index:9999;
+  box-shadow:0 16px 40px rgba(0,0,0,.4);
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .hero-inner{grid-template-columns:1fr;gap:48px}
+  .diff-inner{grid-template-columns:1fr;gap:40px}
+  .steps{grid-template-columns:1fr 1fr}
+  .vehicles-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .nav{padding:0 18px}
+  .hero-inner{padding:48px 18px}
+  .steps{grid-template-columns:1fr}
+  .vehicles-grid{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+  .how-inner,.diff-inner,.vehicles-inner,.faq-inner{padding:0 18px}
+  .cta-final{padding:80px 18px}
+  footer{padding:20px 18px;flex-direction:column;align-items:flex-start}
+  .hero-counters{flex-direction:column}
+  .hcount{border-right:none;border-bottom:1px solid var(--border)}
+  .hcount:last-child{border-bottom:none}
+  .urgency-list{gap:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🛡️ ROBOS MDP <span class="r">RASTREO</span></div>
+    <div class="nav-badge">Beta · MDP</div>
+  </div>
+  <div class="nav-pill">● Sistema activo</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+  </div>
+  <div class="hero-inner">
+    <!-- LEFT -->
+    <div>
+      <div class="hero-eyebrow">Robos MDP · Sistema de Rastreo Vehicular</div>
+      <h1 class="hero-h1">
+        RECUPERÁ<br>
+        <span class="line2">LO QUE ES TUYO</span>
+        <span class="line3">// GPS · MONITOREO 24HS · RED VECINAL</span>
+      </h1>
+      <p class="hero-desc">
+        El primer sistema de rastreo vehicular respaldado por <strong>la red vecinal más grande de Mar del Plata</strong>. Dispositivo GPS instalado, monitoreo continuo y +40.000 vecinos activos trabajando para recuperar tu vehículo.
+      </p>
+      <div class="hero-counters">
+        <div class="hcount">
+          <div class="hcount-n" id="cnt-reportes">627</div>
+          <div class="hcount-l">Reportes activos</div>
+        </div>
+        <div class="hcount">
+          <div class="hcount-n">+40K</div>
+          <div class="hcount-l">Vecinos en red</div>
+        </div>
+        <div class="hcount">
+          <div class="hcount-n" id="cnt-registros">0</div>
+          <div class="hcount-l">Pre-registros</div>
+        </div>
+      </div>
+      <div class="hero-cta-row">
+        <a href="#registro" class="btn-red">📋 Quiero registrarme</a>
+        <a href="#como-funciona" class="btn-ghost">Cómo funciona →</a>
+      </div>
+    </div>
+    <!-- RIGHT — FORM -->
+    <div id="registro">
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-title">Pre-registro gratuito</div>
+          <div class="form-card-sub">Anotate ahora. Cuando el sistema esté disponible, <strong>te avisamos primero</strong> y tenés acceso prioritario al precio de lanzamiento.</div>
+        </div>
+        <div class="form-body" id="form-body">
+          <div class="form-row">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" id="f-nombre" class="form-input" placeholder="Juan García" autocomplete="name">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Teléfono / WhatsApp</label>
+            <input type="tel" id="f-tel" class="form-input" placeholder="223 000-0000" autocomplete="tel">
+          </div>
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-label">Tipo de vehículo</label>
+              <select id="f-vehiculo" class="form-input">
+                <option value="" disabled selected>Seleccioná</option>
+                <option value="auto">🚗 Auto / SUV</option>
+                <option value="moto">🏍️ Moto</option>
+                <option value="camioneta">🚛 Camioneta</option>
+                <option value="bicicleta">🚲 Bicicleta</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Barrio</label>
+              <input type="text" id="f-barrio" class="form-input" placeholder="Centro, Güemes..." autocomplete="off">
+            </div>
+          </div>
+          <div id="form-error" style="font-size:12px;color:var(--red);margin-bottom:12px;display:none"></div>
+          <button class="form-submit" id="f-submit" onclick="submitForm()">
+            <span id="f-submit-txt">Registrarme gratis</span>
+          </button>
+          <div class="form-note">Sin costo. Sin compromiso. Te avisamos cuando esté disponible.</div>
+          <div class="form-counter">
+            <span class="form-counter-n" id="cnt-form">—</span>
+            <span>personas ya se registraron</span>
+          </div>
+        </div>
+        <div class="form-success" id="form-success">
+          <div class="icon">✅</div>
+          <h3>¡Listo, estás anotado!</h3>
+          <p>Te vamos a avisar por WhatsApp cuando el servicio esté disponible. Sos parte de los primeros en Mar del Plata.</p>
+          <a href="https://wa.me/542235994909?text=Hola!%20Me%20registr%C3%A9%20para%20Robos%20MDP%20Rastreo.%20%C2%BFCu%C3%A1ndo%20est%C3%A1%20disponible%3F" target="_blank" class="btn-red" style="width:100%;justify-content:center;margin-top:8px">
+            💬 Escribirnos por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="como-funciona">
+  <div class="how-inner">
+    <div class="how-header">
+      <div class="s-eyebrow">// Proceso</div>
+      <h2 class="s-title">CÓMO FUNCIONA</h2>
+      <p class="s-sub">De la instalación a la recuperación en 4 pasos claros.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-num">— 01</div>
+        <div class="step-icon">🔧</div>
+        <div class="step-title">Instalación en tu domicilio</div>
+        <div class="step-desc">Nuestro técnico instala el dispositivo GPS en un punto estratégico y no visible de tu vehículo. Sin taller, sin complicaciones. Tarda menos de una hora.</div>
+      </div>
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-num">— 02</div>
+        <div class="step-icon">📡</div>
+        <div class="step-title">Monitoreo 24hs desde el cel</div>
+        <div class="step-desc">Accedés a la ubicación exacta de tu vehículo en tiempo real desde cualquier dispositivo. Si algo se mueve sin autorización, te avisamos antes de que lo notes.</div>
+      </div>
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-num">— 03</div>
+        <div class="step-icon">🚨</div>
+        <div class="step-title">Alerta inmediata</div>
+        <div class="step-desc">Ante cualquier movimiento sospechoso, el sistema dispara una alerta. Nuestro equipo y la red vecinal de Robos MDP se activan de inmediato en toda la ciudad.</div>
+      </div>
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-num">— 04</div>
+        <div class="step-icon">🎯</div>
+        <div class="step-title">Recuperación coordinada</div>
+        <div class="step-desc">Coordinamos con las autoridades la localización exacta. +40.000 vecinos en nuestra red colaboran con avistamientos en tiempo real en todo Mar del Plata.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAL -->
+<section class="diff">
+  <div class="diff-inner">
+    <div>
+      <div class="s-eyebrow">// Por qué Robos MDP Rastreo</div>
+      <h2 class="s-title">UNA RED<br>QUE YA EXISTE</h2>
+      <p class="s-sub">No somos un servicio de rastreo más. Somos la plataforma de seguridad vecinal de Mar del Plata, con años de presencia activa en la ciudad.</p>
+      <ul class="diff-list">
+        <li>Más de 600 reportes reales cargados por los propios vecinos</li>
+        <li>40.000 seguidores en Instagram 100% locales de MDP</li>
+        <li>Comunidad activa que ya reporta, ya colabora, ya recupera</li>
+        <li>Sistema conocido y confiado por miles de marplatenses</li>
+        <li>Cuando activás una alerta, toda esa red trabaja para vos</li>
+      </ul>
+    </div>
+    <div class="diff-visual">
+      <div class="diff-stat-row">
+        <div class="dstat">
+          <div class="dstat-icon">📍</div>
+          <div>
+            <div class="dstat-n">+627</div>
+            <div class="dstat-l">Vehículos reportados en el mapa</div>
+          </div>
+        </div>
+        <div class="dstat">
+          <div class="dstat-icon">👥</div>
+          <div>
+            <div class="dstat-n">+40K</div>
+            <div class="dstat-l">Vecinos activos en la red</div>
+          </div>
+        </div>
+        <div class="dstat">
+          <div class="dstat-icon">⚡</div>
+          <div>
+            <div class="dstat-n">24hs</div>
+            <div class="dstat-l">Monitoreo ininterrumpido</div>
+          </div>
+        </div>
+        <div class="dstat">
+          <div class="dstat-icon">🗺️</div>
+          <div>
+            <div class="dstat-n">100%</div>
+            <div class="dstat-l">Cobertura Mar del Plata</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VEHICLES -->
+<section class="vehicles">
+  <div class="vehicles-inner">
+    <div class="vehicles-header">
+      <div class="s-eyebrow" style="justify-content:center;display:flex">// Vehículos cubiertos</div>
+      <h2 class="s-title" style="text-align:center">TODO TIPO DE<br><span style="color:var(--red)">VEHÍCULO</span></h2>
+    </div>
+    <div class="vehicles-grid">
+      <div class="vcard">
+        <div class="vcard-icon">🚗</div>
+        <div class="vcard-name">Autos y SUVs</div>
+        <div class="vcard-desc">Sedán, hatchback, crossover, SUV</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-icon">🏍️</div>
+        <div class="vcard-name">Motos</div>
+        <div class="vcard-desc">Todas las cilindradas y marcas</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-icon">🚛</div>
+        <div class="vcard-name">Camionetas</div>
+        <div class="vcard-desc">Pickup, furgón, utilitarios</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-icon">🚲</div>
+        <div class="vcard-name">Bicicletas</div>
+        <div class="vcard-desc">Urbanas, eléctricas, de montaña</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- URGENCY STRIP -->
+<div class="urgency">
+  <div class="urgency-inner">
+    <div class="urgency-title">Registrate ahora y accedé al <span>precio de lanzamiento</span></div>
+    <div class="urgency-sub">Los primeros registrados tienen acceso prioritario y condiciones especiales. El servicio arranca próximamente en Mar del Plata.</div>
+    <ul class="urgency-list">
+      <li>Pre-registro gratuito</li>
+      <li>Sin compromiso de compra</li>
+      <li>Precio especial de lanzamiento</li>
+      <li>Acceso prioritario</li>
+    </ul>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div class="s-eyebrow" style="justify-content:center;display:flex">// Dudas frecuentes</div>
+      <h2 class="s-title" style="text-align:center">PREGUNTAS</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">¿El GPS se puede detectar o desactivar?<span class="faq-icon">+</span></button>
+        <div class="faq-a">El dispositivo se instala en ubicaciones ocultas del vehículo y cuenta con batería de respaldo independiente. Sigue funcionando incluso si cortan la corriente del auto.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">¿Cómo veo la ubicación en tiempo real?<span class="faq-icon">+</span></button>
+        <div class="faq-a">A través de una app y panel web que te entregamos con el servicio. Desde el celular o la computadora podés ver la ubicación exacta, historial de recorridos y gestionar alertas.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">¿Cuándo va a estar disponible el servicio?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Estamos en la etapa final de desarrollo. Los pre-registrados van a ser los primeros en enterarse y van a tener acceso a precios de lanzamiento exclusivos.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si me roban el vehículo?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Activás el modo pánico desde la app. Nuestro equipo se activa de inmediato, coordinamos con las autoridades y activamos la red vecinal de Robos MDP para localizar el vehículo.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">¿Tiene permanencia mínima?<span class="faq-icon">+</span></button>
+        <div class="faq-a">No. El modelo es pago único de instalación + abono mensual sin permanencia mínima. Podés discontinuar cuando quieras.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="cta-mono">// Protegé tu vehículo</div>
+    <h2 class="cta-title">SÉ EL PRIMERO<br><span style="color:var(--red)">EN MAR DEL PLATA</span></h2>
+    <p class="cta-sub">Registrate gratis y te avisamos cuando el sistema esté disponible. Sin compromiso, sin costo.</p>
+    <div class="cta-btns">
+      <a href="#registro" class="btn-red">📋 Registrarme ahora</a>
+      <a href="https://wa.me/542235994909?text=Hola!%20Vi%20Robos%20MDP%20Rastreo%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" class="wa-btn">💬 Escribirnos</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🛡️ ROBOS MDP <span>RASTREO</span></div>
+  <div class="footer-links">
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="https://robosmdp.com.ar" target="_blank">Robos MDP</a>
+    <a href="https://wa.me/542235994909" target="_blank">Contacto</a>
+    <a href="https://www.instagram.com/robos.mdp/" target="_blank">Instagram</a>
+  </div>
+  <div class="footer-legal">© 2025 Robos MDP Rastreo · Mar del Plata</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toast-txt"></span>
+</div>
+
+<script>
+// Firebase
+firebase.initializeApp({
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
+});
+const db = firebase.firestore();
+
+// Cargar contador de pre-registros en tiempo real
+db.collection('rastreo_registros').onSnapshot(snap => {
+  const n = snap.size;
+  animCount('cnt-registros', n);
+  animCount('cnt-form', n);
+  document.getElementById('cnt-form').nextSibling && (document.getElementById('cnt-form').parentNode.querySelector('span:last-child').textContent = ' personas ya se registraron');
+});
+
+function animCount(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = parseInt(el.textContent) || 0;
+  if (start === target) { el.textContent = target; return; }
+  const dur = 600, t0 = performance.now();
+  const step = t => {
+    const p = Math.min((t - t0) / dur, 1);
+    el.textContent = Math.round(start + (target - start) * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// FORM
+async function submitForm() {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  const vehiculo = document.getElementById('f-vehiculo').value;
+  const barrio = document.getElementById('f-barrio').value.trim();
+  const errEl = document.getElementById('form-error');
+  const btn = document.getElementById('f-submit');
+  const btnTxt = document.getElementById('f-submit-txt');
+
+  errEl.style.display = 'none';
+
+  if (!nombre) { errEl.textContent = 'Ingresá tu nombre'; errEl.style.display = 'block'; return; }
+  if (!tel) { errEl.textContent = 'Ingresá tu teléfono'; errEl.style.display = 'block'; return; }
+  if (!vehiculo) { errEl.textContent = 'Seleccioná el tipo de vehículo'; errEl.style.display = 'block'; return; }
+  if (!barrio) { errEl.textContent = 'Ingresá tu barrio'; errEl.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btnTxt.textContent = 'Registrando...';
+
+  try {
+    await db.collection('rastreo_registros').add({
+      nombre, tel, vehiculo, barrio,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      fuente: 'landing_rastreo'
+    });
+    document.getElementById('form-body').style.display = 'none';
+    document.getElementById('form-success').style.display = 'flex';
+    showToast('¡Registro exitoso! Te avisamos cuando esté disponible 🎉');
+  } catch(e) {
+    errEl.textContent = 'Error al registrar. Intentá de nuevo.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btnTxt.textContent = 'Registrarme gratis';
+  }
+}
+
+// FAQ
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-txt').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').style.borderBottomColor =
+    window.scrollY > 40 ? 'rgba(232,25,44,.15)' : 'rgba(255,255,255,.06)';
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>
