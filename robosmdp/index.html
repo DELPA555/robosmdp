@@ -1009,6 +1009,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
         <button id="adm-tab-objetos" onclick="switchAdmTab('objetos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">📦 Objetos</button>
         <button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
+        <button id="adm-tab-rastreo" onclick="switchAdmTab('rastreo')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🛡️ Rastreo</button>
       </div>
       <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
         <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
@@ -1465,6 +1466,7 @@ const G={
   adminTaps:0,adminTimer:null,
   comUnsub:{},
   foro:[],foroQuery:'',foroReplyUnsub:null,curThread:null,foroAdminMode:false,
+  rastreo:[],rastreoQuery:'',
   isAdmin:false,curAdmId:null,admCatF:null
 };
 
@@ -2782,6 +2784,7 @@ function renderAdm(){
   if(admTab==='patentes'){ renderPatentesAdmin(); return; }
   if(admTab==='objetos'){ renderObjetosAdmin(); return; }
   if(admTab==='foro'){ renderForoAdmin(); return; }
+  if(admTab==='rastreo'){ renderRastreoAdmin(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
   const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
   if(!list||!grid) return;
@@ -2818,17 +2821,18 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',foro:'#6366f1'};
-  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','foro'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',foro:'#6366f1',rastreo:'#0ea5e9'};
+  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','foro','rastreo'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'var(--t3)';}
   });
-  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='foro');
+  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='foro'||tab==='rastreo');
   const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=noGrid?'none':'block';
   const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=noGrid?'none':'flex';
   if(tab==='patentes') loadPatentes();
   if(tab==='objetos') loadObjetos();
   if(tab==='foro') loadForoAdmin();
+  if(tab==='rastreo') loadRastreoAdmin();
   renderAdm();
 }
 
@@ -4092,6 +4096,105 @@ async function delReply(tid,rid){
     await db.collection(FORO_COL).doc(tid).update({respuestas_count:firebase.firestore.FieldValue.increment(-1)});
     const t=(G.foro||[]).find(x=>x.id===tid); if(t&&t.respuestas_count) t.respuestas_count--;
   }catch(e){ console.error('delReply',e); showToast('Error al eliminar','r'); }
+}
+
+// ===== RASTREO MDP — pre-registros (panel admin) =====
+const RASTREO_COL='rastreo_registros';
+// Getters tolerantes a distintos nombres de campo del formulario.
+function rastGet(r,keys){ for(const k of keys){ if(r[k]!=null&&r[k]!=='') return r[k]; } return ''; }
+function rastNombre(r){ return rastGet(r,['nombre','nombreCompleto','nombre_completo','name','fullName','apodo']); }
+function rastTel(r){ return rastGet(r,['telefono','tel','phone','whatsapp','celular','cel']); }
+function rastVehiculo(r){ return rastGet(r,['vehiculo','tipoVehiculo','tipo_vehiculo','tipo','vehicle']); }
+function rastBarrio(r){ return rastGet(r,['barrio','neighborhood','zona']); }
+function rastDate(x){ const v=x.timestamp||x.createdAt||x.created_at||x.fecha||x.date; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); if(typeof v==='string'){ const d=new Date(v); if(!isNaN(d)) return d; } return new Date(0); }
+function vehEmoji(v){ const n=String(v||'').toLowerCase();
+  if(n.indexOf('moto')>=0) return '🏍️';
+  if(n.indexOf('camioneta')>=0||n.indexOf('pickup')>=0||n.indexOf('utilitario')>=0) return '🚛';
+  if(n.indexOf('bici')>=0) return '🚲';
+  return '🚗';
+}
+function rastWa(nombre,tel){
+  const digits=String(tel||'').replace(/\D/g,'');
+  if(digits.length<8) return null;
+  const wp=digits.startsWith('54')?digits:'54'+(digits.startsWith('0')?digits.slice(1):digits);
+  const msg='Hola '+(nombre||'')+'! Te escribimos de Robos MDP Rastreo. ¿Seguís interesado en el servicio de rastreo vehicular?';
+  return 'https://wa.me/'+wp+'?text='+encodeURIComponent(msg);
+}
+function waRastreo(id){
+  const r=(G.rastreo||[]).find(x=>x.id===id); if(!r) return;
+  const link=rastWa(rastNombre(r),rastTel(r));
+  if(link) window.open(link,'_blank'); else showToast('Teléfono inválido','r');
+}
+async function loadRastreoAdmin(){
+  try{
+    const snap=await db.collection(RASTREO_COL).limit(1000).get();
+    G.rastreo=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>rastDate(b)-rastDate(a));
+  }catch(e){ console.warn('loadRastreo',e); G.rastreo=[]; }
+  if(admTab==='rastreo') renderRastreoAdmin();
+}
+function onRastreoSearch(){ G.rastreoQuery=(document.getElementById('rast-search')?.value||'').toLowerCase().trim(); renderRastreoList(); }
+function renderRastreoAdmin(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return;
+  if(grid) grid.innerHTML='';
+  const total=(G.rastreo||[]).length;
+  list.innerHTML=
+    '<div style="background:linear-gradient(135deg,rgba(14,165,233,.16),rgba(14,165,233,.05));border:1px solid rgba(14,165,233,.3);border-radius:16px;padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:13px">'+
+      '<span style="font-size:26px">🛡️</span>'+
+      '<div><p style="font-size:20px;font-weight:800;color:var(--t0);line-height:1.1"><span id="rast-count">'+total+'</span> personas interesadas</p>'+
+      '<p style="font-size:11px;color:var(--t3);font-weight:600;margin-top:3px">en Rastreo MDP</p></div></div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
+      '<div style="position:relative;flex:1;min-width:180px"><i data-lucide="search" style="width:15px;height:15px;color:#64748b;position:absolute;left:12px;top:50%;transform:translateY(-50%)"></i>'+
+        '<input id="rast-search" oninput="onRastreoSearch()" placeholder="Buscar por nombre, teléfono o barrio..." value="'+esc(G.rastreoQuery||'')+'" style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;padding:10px 12px 10px 34px;font-size:12px;font-weight:600;color:var(--t1);outline:none">'+
+      '</div>'+
+      '<button onclick="exportRastreoCSV()" style="padding:10px 16px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>'+
+    '</div>'+
+    '<div id="rast-list"></div>';
+  renderRastreoList();
+  safeIcons();
+}
+function renderRastreoList(){
+  const el=document.getElementById('rast-list'); if(!el) return;
+  const cnt=document.getElementById('rast-count'); if(cnt) cnt.textContent=(G.rastreo||[]).length;
+  const q=G.rastreoQuery||'';
+  let list=(G.rastreo||[]).slice();
+  if(q) list=list.filter(r=>(rastNombre(r)+' '+rastTel(r)+' '+rastBarrio(r)).toLowerCase().includes(q));
+  if(!list.length){ el.innerHTML='<div style="text-align:center;padding:42px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">🛡️</div>'+(q?'Sin resultados para "'+esc(q)+'"':'No hay registros de rastreo todavía')+'</div>'; return; }
+  el.innerHTML=list.map(r=>{
+    const nombre=rastNombre(r),tel=rastTel(r),veh=rastVehiculo(r),barrio=rastBarrio(r);
+    const d=rastDate(r),fecha=d.getTime()>0?tAgo(d):'';
+    const wa=rastWa(nombre,tel);
+    return '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-left:4px solid #0ea5e9;border-radius:14px;padding:13px 15px;margin-bottom:9px">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">'+
+        '<div style="min-width:0">'+
+          '<p style="font-size:14px;font-weight:800;color:var(--t0)">'+esc(nombre||'(sin nombre)')+'</p>'+
+          (tel?'<div style="display:flex;align-items:center;gap:7px;margin-top:5px"><span style="font-size:12px;color:var(--t2);font-weight:600">'+esc(tel)+'</span>'+(wa?'<button onclick="waRastreo(\''+r.id+'\')" title="WhatsApp" style="padding:3px 9px;background:rgba(34,197,94,.16);border:1px solid rgba(34,197,94,.32);border-radius:999px;font-size:13px;cursor:pointer;line-height:1">📲</button>':'')+'</div>':'')+
+          '<p style="font-size:11px;color:var(--t3);font-weight:600;margin-top:7px">'+vehEmoji(veh)+' '+esc(veh||'—')+(barrio?' · 📍 '+esc(barrio):'')+(fecha?' · '+fecha:'')+'</p>'+
+        '</div>'+
+        '<button onclick="delRastreo(\''+r.id+'\')" title="Eliminar registro" style="flex-shrink:0;padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer">🗑️</button>'+
+      '</div></div>';
+  }).join('');
+}
+async function delRastreo(id){
+  if(!confirm('¿Eliminar este registro de rastreo permanentemente?')) return;
+  try{
+    await db.collection(RASTREO_COL).doc(id).delete();
+    G.rastreo=(G.rastreo||[]).filter(x=>x.id!==id);
+    renderRastreoList();
+    showToast('Registro eliminado','r');
+  }catch(e){ console.error('delRastreo',e); showToast('Error al eliminar','r'); }
+}
+function exportRastreoCSV(){
+  const rows=G.rastreo||[];
+  if(!rows.length){ showToast('No hay registros para exportar','r'); return; }
+  const header=['Nombre','Telefono','Vehiculo','Barrio','Fecha'];
+  const lines=[header.join(',')];
+  rows.forEach(r=>{
+    const d=rastDate(r);
+    lines.push([ rastNombre(r), rastTel(r), rastVehiculo(r), rastBarrio(r), d.getTime()>0?expFmtDate(d):'' ].map(csvCell).join(','));
+  });
+  downloadBlob(new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'}), 'rastreo_mdp_'+todayStr()+'.csv');
+  showToast('CSV exportado ('+rows.length+' registros)','g');
 }
 
 function tAgo(date){
