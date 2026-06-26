@@ -1675,6 +1675,7 @@ window.onload=()=>{
   if(auth) auth.signOut().catch(()=>{});
   const ms=document.getElementById('msearch');
   if(ms) ms.addEventListener('keydown',e=>{if(e.key==='Enter')doS('msearch');});
+  applyHashRoute();   // URL compartible: si hay #seccion, saltar directo
 };
 
 function buildCats(){
@@ -1756,11 +1757,32 @@ function goL(){
   const app=document.getElementById('app');
   app.style.opacity='0';app.style.pointerEvents='none';
   closeSB();
+  setHash('');   // vuelve a la landing: URL limpia
+}
+
+// ===== HASH ROUTING (URLs compartibles por seccion, 100% client-side) =====
+const TAB_HASH={robos:'robos',basura:'basura',pozos:'pozos',abandonados:'autos',luminarias:'luminarias'};
+const HASH_TABS={robos:'robos',basura:'basura',pozos:'pozos',autos:'abandonados',luminarias:'luminarias'};
+function setHash(h){ try{ history.replaceState(null,'',window.location.pathname+(h?('#'+h):'')); }catch(e){} }
+function appOpen(){ const a=document.getElementById('app'); return !!(a && a.style.opacity==='1'); }
+// Al cerrar un panel (patentes/objetos/stats): la URL refleja lo que queda debajo.
+function restoreHashFromState(){ if(appOpen()&&G.tab) setHash(TAB_HASH[G.tab]||G.tab); else setHash(''); }
+// Lee el hash al cargar y salta directo a esa seccion. Devuelve true si actuo.
+function applyHashRoute(){
+  const h=(window.location.hash||'').replace('#','').toLowerCase();
+  if(!h) return false;
+  if(h==='foro'){ window.location.replace('./foro.html'); return true; }
+  if(HASH_TABS[h]){ enterApp(HASH_TABS[h]); return true; }
+  if(h==='patentes'){ openPatentes(); return true; }
+  if(h==='objetos'){ openObjetos(); return true; }
+  if(h==='estadisticas'){ openStats(); return true; }
+  return false;
 }
 
 // ===== APP TABS =====
 function switchAT(tab,skipMap){
   G.tab=tab;
+  setHash(TAB_HASH[tab]||tab);   // refleja la seccion del mapa en la URL
   const cfg=MOD_CFG[tab];
   ['robos','basura','pozos','abandonados','luminarias'].forEach(t=>{
     document.getElementById('at-'+t).className='atab';
@@ -3090,8 +3112,8 @@ async function discardAviso(avisoId){
 const PAT_COL='patentes';
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function patDate(p){ const v=p.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); const d=new Date(p.fecha||0); return isNaN(d.getTime())?new Date(0):d; }
-function openPatentes(){ document.getElementById('patentes-p').style.display='flex'; loadPatentes(); safeIcons(); }
-function closePatentes(){ document.getElementById('patentes-p').style.display='none'; }
+function openPatentes(){ document.getElementById('patentes-p').style.display='flex'; setHash('patentes'); loadPatentes(); safeIcons(); }
+function closePatentes(){ document.getElementById('patentes-p').style.display='none'; restoreHashFromState(); }
 async function loadPatentes(){
   try{
     const snap=await db.collection(PAT_COL).limit(500).get();
@@ -3224,8 +3246,8 @@ const OBJ_CATS=[
 ];
 function objCat(id){ return OBJ_CATS.find(c=>c.id===id)||OBJ_CATS[OBJ_CATS.length-1]; }
 function objDate(o){ const v=o.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); const d=new Date(o.fecha||0); return isNaN(d.getTime())?new Date(0):d; }
-function openObjetos(){ document.getElementById('objetos-p').style.display='flex'; loadObjetos(); safeIcons(); }
-function closeObjetos(){ document.getElementById('objetos-p').style.display='none'; }
+function openObjetos(){ document.getElementById('objetos-p').style.display='flex'; setHash('objetos'); loadObjetos(); safeIcons(); }
+function closeObjetos(){ document.getElementById('objetos-p').style.display='none'; restoreHashFromState(); }
 async function loadObjetos(){
   try{
     const snap=await db.collection(OBJ_COL).limit(500).get();
@@ -3522,6 +3544,7 @@ const STCH={meses:null,cats:null,dias:null};
 function openStats(){
   gaEvent('view_stats');
   document.getElementById('stats-p').style.display='flex';
+  setHash('estadisticas');
   ['robos','basura','pozos','abandonados','luminarias'].forEach(t=>loadReports(t));
   statsTab=['robos','basura','pozos','abandonados','luminarias'].includes(G.tab)?G.tab:'robos';
   switchStatsTab(statsTab);
@@ -3529,7 +3552,7 @@ function openStats(){
   setTimeout(()=>{if(document.getElementById('stats-p').style.display==='flex')renderStats();},1500);
 }
 
-function closeStats(){document.getElementById('stats-p').style.display='none';}
+function closeStats(){document.getElementById('stats-p').style.display='none';restoreHashFromState();}
 
 function switchStatsTab(tab){
   statsTab=tab;
@@ -4108,6 +4131,7 @@ function rastNombre(r){ return rastGet(r,['nombre','nombreCompleto','nombre_comp
 function rastTel(r){ return rastGet(r,['telefono','tel','phone','whatsapp','celular','cel']); }
 function rastVehiculo(r){ return rastGet(r,['vehiculo','tipoVehiculo','tipo_vehiculo','tipo','vehicle']); }
 function rastBarrio(r){ return rastGet(r,['barrio','neighborhood','zona']); }
+function rastEmail(r){ return rastGet(r,['email','mail','correo']); }
 function rastDate(x){ const v=x.timestamp||x.createdAt||x.created_at||x.fecha||x.date; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); if(typeof v==='string'){ const d=new Date(v); if(!isNaN(d)) return d; } return new Date(0); }
 function vehEmoji(v){ const n=String(v||'').toLowerCase();
   if(n.indexOf('moto')>=0) return '🏍️';
@@ -4189,11 +4213,11 @@ async function delRastreo(id){
 function exportRastreoCSV(){
   const rows=G.rastreo||[];
   if(!rows.length){ showToast('No hay registros para exportar','r'); return; }
-  const header=['Nombre','Telefono','Vehiculo','Barrio','Fecha'];
+  const header=['Nombre','Telefono','Email','Vehiculo','Fecha'];
   const lines=[header.join(',')];
   rows.forEach(r=>{
     const d=rastDate(r);
-    lines.push([ rastNombre(r), rastTel(r), rastVehiculo(r), rastBarrio(r), d.getTime()>0?expFmtDate(d):'' ].map(csvCell).join(','));
+    lines.push([ rastNombre(r), rastTel(r), rastEmail(r), rastVehiculo(r), d.getTime()>0?expFmtDate(d):'' ].map(csvCell).join(','));
   });
   downloadBlob(new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'}), 'rastreo_mdp_'+todayStr()+'.csv');
   showToast('CSV exportado ('+rows.length+' registros)','g');
