@@ -1873,6 +1873,8 @@ function appOpen(){ const a=document.getElementById('app'); return !!(a && a.sty
 function restoreHashFromState(){ if(appOpen()&&G.tab) setHash(TAB_HASH[G.tab]||G.tab); else setHash(''); }
 // Lee el hash al cargar y salta directo a esa seccion. Devuelve true si actuo.
 function applyHashRoute(){
+  // Ruta limpia /mascotas (sin #): la sirve _redirects → index.html
+  if(/\/mascotas\/?$/i.test(window.location.pathname||'')){ openMascotas(); return true; }
   const h=(window.location.hash||'').replace('#','').toLowerCase();
   if(!h) return false;
   if(h==='foro'){ window.location.replace('./foro.html'); return true; }
@@ -3490,8 +3492,20 @@ const MASC_COL='mascotas';
 const MASC_ESP={perro:{label:'Perro',emoji:'🐕'},gato:{label:'Gato',emoji:'🐈'},ave:{label:'Ave',emoji:'🐦'},otro:{label:'Otro',emoji:'🐾'}};
 function mascEsp(id){ return MASC_ESP[id]||MASC_ESP.otro; }
 function mascDate(m){ const v=m.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); const d=new Date(m.fecha||0); return isNaN(d.getTime())?new Date(0):d; }
-function openMascotas(){ document.getElementById('mascotas-p').style.display='flex'; setHash('mascotas'); loadMascotas(); safeIcons(); }
-function closeMascotas(){ document.getElementById('mascotas-p').style.display='none'; restoreHashFromState(); }
+let _mascPrevUrl=null;
+function openMascotas(){
+  // URL compartible limpia: robosmdp.com.ar/mascotas (sin #). Guardamos la URL previa para restaurarla al cerrar.
+  const cur=window.location.pathname+window.location.hash;
+  _mascPrevUrl=/\/mascotas\/?$/i.test(window.location.pathname)?'/':cur;
+  document.getElementById('mascotas-p').style.display='flex';
+  try{ history.replaceState(null,'','/mascotas'); }catch(e){}
+  loadMascotas(); safeIcons();
+}
+function closeMascotas(){
+  document.getElementById('mascotas-p').style.display='none';
+  if(_mascPrevUrl!=null){ try{ history.replaceState(null,'',_mascPrevUrl); }catch(e){} _mascPrevUrl=null; }
+  else restoreHashFromState();
+}
 async function loadMascotas(){
   try{
     const snap=await db.collection(MASC_COL).limit(500).get();
@@ -3650,10 +3664,23 @@ function renderMascotasAdmin(){
           '<p style="font-size:11px;color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(m.descripcion||'')+(m.zona?' · '+esc(m.zona):'')+' · '+fecha+(m.contacto?' · '+esc(m.contacto):'')+'</p>'+
         '</div>'+
       '</div>'+
-      '<button onclick="delMascota(\''+m.id+'\')" title="Eliminar" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer;flex-shrink:0">🗑️</button>'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+
+        '<button onclick="toggleMascResuelto(\''+m.id+'\')" title="Marcar si fue reunida/encontrada o no" style="padding:5px 10px;background:'+(m.resuelto?'rgba(34,197,94,.18)':'rgba(var(--rgb-line),.15)')+';color:'+(m.resuelto?'#4ade80':'var(--t3)')+';border:none;border-radius:999px;font-size:9px;font-weight:800;text-transform:uppercase;cursor:pointer;white-space:nowrap">'+(m.resuelto?'✅ Reunida':'Sin reunir')+'</button>'+
+        '<button onclick="delMascota(\''+m.id+'\')" title="Eliminar" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer">🗑️</button>'+
+      '</div>'+
     '</div>';
   }).join('');
   safeIcons();
+}
+async function toggleMascResuelto(id){
+  const m=(G.mascotas||[]).find(x=>x.id===id); if(!m) return;
+  const nv=!m.resuelto;
+  try{
+    await db.collection(MASC_COL).doc(id).update({resuelto:nv});
+    m.resuelto=nv;
+    renderMascotasAdmin(); renderMascotas();
+    showToast(nv?'Marcada como reunida ✅':'Marcada como sin reunir','g');
+  }catch(e){ console.error('toggleMascResuelto',e); showToast('No se pudo actualizar','r'); }
 }
 async function delMascota(id){
   if(!confirm('¿Eliminar esta publicación de mascota permanentemente?')) return;
