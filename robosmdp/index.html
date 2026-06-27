@@ -423,6 +423,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
       <button onclick="openPatentes()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🔖</span>Patentes perdidas / encontradas</button>
       <button onclick="openObjetos()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">📦</span>Objetos perdidos / encontrados</button>
+      <button onclick="openMascotas()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🐾</span>Mascotas perdidas / encontradas</button>
       <button onclick="openForo()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">💬</span>Foro vecinal</button>
       <div class="gcard" style="width:100%;max-width:420px;margin:0 auto;padding:22px;text-align:left">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
@@ -654,6 +655,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
       <button onclick="openStats()" style="width:100%;padding:13px;margin-bottom:8px;background:#ef4444;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i>Estadísticas</button>
       <button onclick="openPatentes()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">🔖</span>Patentes</button>
       <button onclick="openObjetos()" style="width:100%;padding:13px;margin-bottom:8px;background:#f97316;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(249,115,22,.26)"><span style="font-size:13px">📦</span>Objetos</button>
+      <button onclick="openMascotas()" style="width:100%;padding:13px;margin-bottom:8px;background:#10b981;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(16,185,129,.26)"><span style="font-size:13px">🐾</span>Mascotas</button>
       <button onclick="openForo()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">💬</span>Foro vecinal</button>
       <div style="display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;margin-bottom:9px">
         <a href="#" onclick="goLandingTo('acerca');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Acerca de</a>
@@ -1010,6 +1012,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
         <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
         <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
         <button id="adm-tab-objetos" onclick="switchAdmTab('objetos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">📦 Objetos</button>
+        <button id="adm-tab-mascotas" onclick="switchAdmTab('mascotas')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🐾 Mascotas</button>
         <button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
         <button id="adm-tab-rastreo" onclick="switchAdmTab('rastreo')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🛡️ Rastreo</button>
       </div>
@@ -1295,6 +1298,106 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
   </div>
 </div>
 
+<!-- ===== MASCOTAS PERDIDAS Y ENCONTRADAS ===== -->
+<div id="mascotas-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:var(--bg-overlay);background-image:radial-gradient(900px circle at 50% -8%,rgba(16,185,129,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(16,185,129,.06),transparent 50%)">
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#10b981;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(16,185,129,.3);font-size:20px">🐾</div>
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em">Mascotas MDP</h2>
+        <p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Perdidas y encontradas · vecinal</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="openMascM()" style="padding:9px 14px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:#fff;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(16,185,129,.35)"><i data-lucide="plus" style="width:14px;height:14px"></i>Publicar</button>
+      <button onclick="closeMascotas()" style="padding:9px 18px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2)">Cerrar</button>
+    </div>
+  </header>
+  <div class="ns" style="flex:1;padding:18px 22px">
+    <div style="max-width:680px;margin:0 auto">
+      <div style="position:relative;margin-bottom:14px">
+        <i data-lucide="search" style="width:16px;height:16px;color:#64748b;position:absolute;left:14px;top:50%;transform:translateY(-50%)"></i>
+        <input id="masc-search" oninput="onMascSearch()" placeholder="Buscá por nombre, raza, zona o especie..." style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:14px;padding:13px 14px 13px 40px;font-size:14px;font-weight:600;color:var(--t1);outline:none">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+        <div style="display:flex;gap:3px;background:rgba(var(--rgb-deep),.6);padding:4px;border-radius:12px;border:1px solid rgba(var(--rgb-line),.12)">
+          <button id="masc-f-all" onclick="setMascFilter('all')" style="padding:8px 14px;border-radius:9px;border:none;background:#10b981;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Todas</button>
+          <button id="masc-f-perdida" onclick="setMascFilter('perdida')" style="padding:8px 14px;border-radius:9px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Perdidas</button>
+          <button id="masc-f-encontrada" onclick="setMascFilter('encontrada')" style="padding:8px 14px;border-radius:9px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer">Encontradas</button>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;margin-left:auto;cursor:pointer;font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase">
+          <input type="checkbox" id="masc-show-resolved" onchange="toggleMascResolved(this.checked)" style="width:15px;height:15px;accent-color:#10b981"> Mostrar reunidas
+        </label>
+      </div>
+      <div id="masc-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: publicar mascota -->
+<div class="movl" id="masc-m" style="z-index:7200" onclick="if(event.target===this)closeMascM()">
+  <div class="mbox">
+    <div style="padding:20px 24px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(16,185,129,.08)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(16,185,129,.18);border:2px solid rgba(16,185,129,.35);flex-shrink:0;font-size:22px">🐾</div>
+        <div>
+          <h2 style="font-size:16px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em;line-height:1">Publicar mascota</h2>
+          <p style="font-size:9px;font-weight:700;color:#6ee7b7;text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Perdida o encontrada</p>
+        </div>
+      </div>
+      <button onclick="closeMascM()" style="padding:8px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:var(--t3)"></i></button>
+    </div>
+    <div class="ns" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;padding-bottom:26px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button type="button" id="masc-tipo-perdida" onclick="setMascTipo('perdida')" style="padding:13px;border-radius:13px;border:2px solid #ef4444;background:rgba(239,68,68,.16);color:#fca5a5;font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Perdí mi mascota</button>
+        <button type="button" id="masc-tipo-encontrada" onclick="setMascTipo('encontrada')" style="padding:13px;border-radius:13px;border:2px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.5);color:var(--t3);font-size:12px;font-weight:800;text-transform:uppercase;cursor:pointer">Encontré una mascota</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Especie</label>
+          <select id="masc-especie" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:13px 14px;font-size:13px;font-weight:600;color:var(--t1);outline:none;color-scheme:dark">
+            <option value="perro">🐕 Perro</option>
+            <option value="gato">🐈 Gato</option>
+            <option value="ave">🐦 Ave</option>
+            <option value="otro">🐾 Otro</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Nombre (opcional)</label>
+          <input id="masc-nombre" placeholder="Ej: Rocky" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:var(--t1);outline:none">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Raza / descripción física (color, tamaño, marcas)</label>
+        <textarea id="masc-desc" rows="2" placeholder="Ej: Caniche mediano, color marrón claro, con collar rojo y una mancha blanca en el pecho" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit"></textarea>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Zona / barrio</label>
+        <input id="masc-zona" placeholder="Ej: Plaza Mitre, cerca de la fuente" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:500;color:var(--t1);outline:none">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Fecha</label>
+          <input id="masc-date" type="date" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:12px;font-size:13px;font-weight:600;color:var(--t1);outline:none;color-scheme:dark">
+        </div>
+        <div>
+          <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Contacto (WhatsApp)</label>
+          <input id="masc-contact" placeholder="223 555-1234" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:var(--t1);outline:none">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Foto (obligatoria — es lo más importante para identificarla)</label>
+        <div style="display:flex;gap:10px;align-items:center">
+          <label style="flex:1;cursor:pointer;background:rgba(var(--rgb-deep),.5);border:2px dashed rgba(16,185,129,.55);padding:13px;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:4px"><i data-lucide="image" style="width:19px;height:19px;color:#10b981"></i><span style="font-size:9px;font-weight:700;color:#10b981;text-transform:uppercase">Seleccionar imagen</span><input type="file" id="masc-photo" accept="image/*" style="display:none" onchange="prevMascPhoto(this)"></label>
+          <div id="masc-ph-prev" style="display:none;width:64px;height:64px;border-radius:11px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="masc-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmMascPhoto()" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:3px;cursor:pointer"><i data-lucide="x" style="width:8px;height:8px"></i></button></div>
+        </div>
+      </div>
+      <div id="masc-err" style="text-align:center;font-size:9px;font-weight:700;color:#ef4444;text-transform:uppercase;display:none">Completá la descripción, la foto y el contacto</div>
+      <button id="masc-sub" onclick="submitMascota()" style="background:#10b981;color:#fff;border:none;border-radius:20px;padding:16px;font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;width:100%;box-shadow:0 8px 22px rgba(16,185,129,.4)">Publicar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== FORO VECINAL ===== -->
 <div id="foro-p" style="position:fixed;inset:0;z-index:6800;display:none;flex-direction:column;background:var(--bg-overlay);background-image:radial-gradient(900px circle at 50% -8%,rgba(99,102,241,.16),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(79,70,229,.06),transparent 50%)">
   <header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
@@ -1463,6 +1566,7 @@ const G={
   avisos:[],resNotif:null,
   patentes:[],patFilter:'all',patQuery:'',patShowResolved:false,patTipo:'perdida',
   objetos:[],objFilter:'all',objQuery:'',objShowResolved:false,objTipo:'perdido',
+  mascotas:[],mascFilter:'all',mascQuery:'',mascShowResolved:false,mascTipo:'perdida',mascPhoto:null,
   ltab:'robos',
   zone:null,zoneDraft:null,zoneMode:false,zoneCircle:{robos:null,basura:null,pozos:null,abandonados:null,luminarias:null},
   adminTaps:0,adminTimer:null,
@@ -1775,6 +1879,7 @@ function applyHashRoute(){
   if(HASH_TABS[h]){ enterApp(HASH_TABS[h]); return true; }
   if(h==='patentes'){ openPatentes(); return true; }
   if(h==='objetos'){ openObjetos(); return true; }
+  if(h==='mascotas'){ openMascotas(); return true; }
   if(h==='estadisticas'){ openStats(); return true; }
   return false;
 }
@@ -2798,6 +2903,7 @@ function openAP(){
   loadAvisos();
   loadPatentes();
   loadObjetos();
+  loadMascotas();
   renderAdm(); safeIcons();
 }
 
@@ -2807,6 +2913,7 @@ function renderAdm(){
   if(admTab==='avisos'){ renderAvisos(); return; }
   if(admTab==='patentes'){ renderPatentesAdmin(); return; }
   if(admTab==='objetos'){ renderObjetosAdmin(); return; }
+  if(admTab==='mascotas'){ renderMascotasAdmin(); return; }
   if(admTab==='foro'){ renderForoAdmin(); return; }
   if(admTab==='rastreo'){ renderRastreoAdmin(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
@@ -2845,16 +2952,17 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',foro:'#6366f1',rastreo:'#0ea5e9'};
-  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','foro','rastreo'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',mascotas:'#10b981',foro:'#6366f1',rastreo:'#0ea5e9'};
+  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','mascotas','foro','rastreo'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'var(--t3)';}
   });
-  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='foro'||tab==='rastreo');
+  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='mascotas'||tab==='foro'||tab==='rastreo');
   const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=noGrid?'none':'block';
   const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=noGrid?'none':'flex';
   if(tab==='patentes') loadPatentes();
   if(tab==='objetos') loadObjetos();
+  if(tab==='mascotas') loadMascotas();
   if(tab==='foro') loadForoAdmin();
   if(tab==='rastreo') loadRastreoAdmin();
   renderAdm();
@@ -3375,6 +3483,186 @@ async function delObjeto(id){
     renderObjetosAdmin(); renderObjetos();
     showToast('Publicación eliminada','r');
   }catch(e){ console.error('delObjeto',e); showToast('Error al eliminar','r'); }
+}
+
+// ===== MASCOTAS PERDIDAS Y ENCONTRADAS =====
+const MASC_COL='mascotas';
+const MASC_ESP={perro:{label:'Perro',emoji:'🐕'},gato:{label:'Gato',emoji:'🐈'},ave:{label:'Ave',emoji:'🐦'},otro:{label:'Otro',emoji:'🐾'}};
+function mascEsp(id){ return MASC_ESP[id]||MASC_ESP.otro; }
+function mascDate(m){ const v=m.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); const d=new Date(m.fecha||0); return isNaN(d.getTime())?new Date(0):d; }
+function openMascotas(){ document.getElementById('mascotas-p').style.display='flex'; setHash('mascotas'); loadMascotas(); safeIcons(); }
+function closeMascotas(){ document.getElementById('mascotas-p').style.display='none'; restoreHashFromState(); }
+async function loadMascotas(){
+  try{
+    const snap=await db.collection(MASC_COL).limit(500).get();
+    G.mascotas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>mascDate(b)-mascDate(a));
+  }catch(e){ console.warn('loadMascotas',e); G.mascotas=[]; }
+  renderMascotas();
+  if(admTab==='mascotas') renderMascotasAdmin();
+}
+function setMascFilter(f){
+  G.mascFilter=f;
+  ['all','perdida','encontrada'].forEach(x=>{const b=document.getElementById('masc-f-'+x);if(b){b.style.background=x===f?'#10b981':'transparent';b.style.color=x===f?'#fff':'var(--t3)';}});
+  renderMascotas();
+}
+function onMascSearch(){ G.mascQuery=(document.getElementById('masc-search')?.value||'').toLowerCase().trim(); renderMascotas(); }
+function toggleMascResolved(v){ G.mascShowResolved=!!v; renderMascotas(); }
+function mascWaLink(m){
+  const digits=String(m.contacto||'').replace(/\D/g,'');
+  if(digits.length<8) return null;
+  const wp=digits.startsWith('54')?digits:'54'+(digits.startsWith('0')?digits.slice(1):digits);
+  return 'https://wa.me/'+wp+'?text='+encodeURIComponent('Hola! Vi tu publicación sobre '+mascEsp(m.especie).label.toLowerCase()+' en Robos MDP. ¿Podemos hablar?');
+}
+function renderMascotas(){
+  const el=document.getElementById('masc-list'); if(!el) return;
+  let list=(G.mascotas||[]).slice();
+  if(G.mascFilter!=='all') list=list.filter(m=>m.tipo===G.mascFilter);
+  if(!G.mascShowResolved) list=list.filter(m=>!m.resuelto);
+  if(G.mascQuery){ const q=G.mascQuery; list=list.filter(m=>String(m.nombre||'').toLowerCase().includes(q)||String(m.descripcion||'').toLowerCase().includes(q)||String(m.zona||'').toLowerCase().includes(q)||mascEsp(m.especie).label.toLowerCase().includes(q)); }
+  if(!list.length){ el.innerHTML='<div style="text-align:center;padding:46px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">🐾</div>'+(G.mascQuery?'Sin resultados para "'+esc(G.mascQuery)+'"':'No hay publicaciones todavía')+'</div>'; return; }
+  const now=Date.now();
+  el.innerHTML=list.map(m=>{
+    const lost=m.tipo==='perdida', color=lost?'#ef4444':'#22c55e', label=lost?'🔴 Perdida':'🟢 Encontrada';
+    const esp=mascEsp(m.especie);
+    const d=mascDate(m), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const isNew=d.getTime()>0&&(now-d.getTime())<86400000;
+    const wa=mascWaLink(m);
+    const desc=String(m.descripcion||''); const descShort=desc.length>140?esc(desc.slice(0,140))+'…':esc(desc);
+    const thumb=m.photoBase64?'<img src="'+m.photoBase64+'" style="width:84px;height:84px;border-radius:12px;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid rgba(var(--rgb-line),.16)" onclick="openIV(this.src)">':'<div style="width:84px;height:84px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(16,185,129,.16);border:1px solid rgba(16,185,129,.3);font-size:34px">'+esp.emoji+'</div>';
+    return '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-left:4px solid '+(m.resuelto?'#22c55e':color)+';border-radius:16px;padding:14px 16px;margin-bottom:10px;'+(m.resuelto?'opacity:.7':'')+'">'+
+      '<div style="display:flex;gap:13px">'+
+        thumb+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">'+
+            (m.resuelto?'<span style="font-size:9px;font-weight:800;background:rgba(34,197,94,.22);color:#4ade80;padding:3px 9px;border-radius:999px">✅ Reunida</span>':'<span style="font-size:9px;font-weight:800;background:'+color+'22;color:'+color+';padding:3px 9px;border-radius:999px;text-transform:uppercase">'+label+'</span>')+
+            (isNew&&!m.resuelto?'<span style="font-size:8px;font-weight:900;background:#10b981;color:#fff;padding:3px 8px;border-radius:999px;letter-spacing:.05em">NUEVO</span>':'')+
+          '</div>'+
+          '<div style="display:flex;align-items:center;gap:7px;margin-top:8px;flex-wrap:wrap">'+
+            '<span style="font-size:14px;font-weight:800;color:var(--t0)">'+esp.emoji+' '+esc(esp.label)+'</span>'+
+            (m.nombre?'<span style="font-size:13px;font-weight:700;color:#6ee7b7">«'+esc(m.nombre)+'»</span>':'')+
+          '</div>'+
+          (desc?'<p style="font-size:12px;color:var(--t2);line-height:1.45;margin-top:7px">'+descShort+'</p>':'')+
+          (m.zona?'<p style="font-size:11px;color:var(--t3);font-weight:600;margin-top:6px">📍 '+esc(m.zona)+'</p>':'')+
+          (fecha?'<p style="font-size:9px;color:#64748b;font-weight:600;margin-top:5px;text-transform:uppercase;letter-spacing:.04em">'+fecha+'</p>':'')+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap">'+
+        (wa?'<a href="'+wa+'" target="_blank" style="flex:1;min-width:130px;text-align:center;padding:10px;background:#25D366;color:#fff;border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;text-decoration:none">📲 Contactar</a>':'')+
+        (!m.resuelto?'<button onclick="markMascResolved(\''+m.id+'\')" style="flex:1;min-width:130px;padding:10px;background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3);border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;cursor:pointer">✅ Marcar como reunida</button>':'')+
+      '</div></div>';
+  }).join('');
+  safeIcons();
+}
+async function markMascResolved(id){
+  if(!confirm('¿Marcar esta mascota como reunida/recuperada?')) return;
+  try{
+    await db.collection(MASC_COL).doc(id).update({resuelto:true});
+    const m=(G.mascotas||[]).find(x=>x.id===id); if(m) m.resuelto=true;
+    renderMascotas();
+    showToast('¡Marcada como reunida! ✅','g');
+  }catch(e){ console.error('markMascResolved',e); showToast('No se pudo actualizar','r'); }
+}
+function prevMascPhoto(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=800;
+      let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const compressed=canvas.toDataURL('image/jpeg',0.72);
+      G.mascPhoto=compressed;
+      const prev=document.getElementById('masc-ph-prev'),imgEl=document.getElementById('masc-ph-img');
+      if(prev&&imgEl){imgEl.src=compressed;prev.style.display='block';}
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function rmMascPhoto(){
+  G.mascPhoto=null;
+  const prev=document.getElementById('masc-ph-prev'); if(prev) prev.style.display='none';
+  const inp=document.getElementById('masc-photo'); if(inp) inp.value='';
+}
+function openMascM(){
+  setMascTipo('perdida');
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+  set('masc-especie','perro'); set('masc-nombre',''); set('masc-desc',''); set('masc-zona',''); set('masc-contact','');
+  set('masc-date',new Date().toISOString().split('T')[0]);
+  rmMascPhoto();
+  const err=document.getElementById('masc-err'); if(err) err.style.display='none';
+  document.getElementById('masc-m').style.display='flex';
+  safeIcons();
+}
+function closeMascM(){ document.getElementById('masc-m').style.display='none'; }
+function setMascTipo(t){
+  G.mascTipo=t;
+  const a=document.getElementById('masc-tipo-perdida'), b=document.getElementById('masc-tipo-encontrada');
+  if(a){ a.style.border='2px solid '+(t==='perdida'?'#ef4444':'rgba(var(--rgb-line),.2)'); a.style.background=t==='perdida'?'rgba(239,68,68,.16)':'rgba(var(--rgb-slate),.5)'; a.style.color=t==='perdida'?'#fca5a5':'var(--t3)'; }
+  if(b){ b.style.border='2px solid '+(t==='encontrada'?'#22c55e':'rgba(var(--rgb-line),.2)'); b.style.background=t==='encontrada'?'rgba(34,197,94,.16)':'rgba(var(--rgb-slate),.5)'; b.style.color=t==='encontrada'?'#86efac':'var(--t3)'; }
+}
+async function submitMascota(){
+  const desc=(document.getElementById('masc-desc')?.value||'').trim();
+  const contacto=(document.getElementById('masc-contact')?.value||'').trim();
+  const err=document.getElementById('masc-err');
+  if(desc.length<3||!G.mascPhoto||String(contacto).replace(/\D/g,'').length<8){ if(err) err.style.display='block'; return; }
+  if(err) err.style.display='none';
+  const sub=document.getElementById('masc-sub'); if(sub){ sub.disabled=true; sub.textContent='Publicando...'; sub.style.opacity='.7'; }
+  try{
+    await db.collection(MASC_COL).add({
+      tipo:G.mascTipo||'perdida',
+      especie:document.getElementById('masc-especie')?.value||'otro',
+      nombre:(document.getElementById('masc-nombre')?.value||'').trim(),
+      descripcion:desc,
+      zona:(document.getElementById('masc-zona')?.value||'').trim(),
+      fecha:document.getElementById('masc-date')?.value||new Date().toISOString().split('T')[0],
+      photoBase64:G.mascPhoto,
+      contacto:contacto,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+      resuelto:false,
+    });
+    closeMascM(); showToast('¡Mascota publicada! 🐾','g'); loadMascotas();
+  }catch(e){ console.error('submitMascota',e); showToast('No se pudo publicar (¿reglas Firestore?)','r'); }
+  finally{ if(sub){ sub.disabled=false; sub.textContent='Publicar'; sub.style.opacity='1'; } }
+}
+function renderMascotasAdmin(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return;
+  if(grid) grid.innerHTML='';
+  const mascs=G.mascotas||[];
+  if(!mascs.length){ list.innerHTML='<div style="text-align:center;padding:42px 0;color:#475569;font-size:12px;font-weight:700"><div style="font-size:34px;margin-bottom:8px">🐾</div>Sin publicaciones</div>'; return; }
+  list.innerHTML=mascs.map(m=>{
+    const lost=m.tipo==='perdida', color=lost?'#ef4444':'#22c55e', esp=mascEsp(m.especie);
+    const d=mascDate(m), fecha=d.getTime()>0?d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):'';
+    const thumb=m.photoBase64?'<img src="'+m.photoBase64+'" style="width:34px;height:34px;border-radius:10px;object-fit:cover;cursor:pointer;flex-shrink:0" onclick="openIV(this.src)">':'<div style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(16,185,129,.16);font-size:18px">'+esp.emoji+'</div>';
+    return '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border-radius:16px;border:1px solid rgba(var(--rgb-line),.14);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px">'+
+      '<div style="min-width:0;display:flex;align-items:center;gap:10px">'+
+        thumb+
+        '<div style="min-width:0">'+
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:13px;font-weight:800;color:var(--t0)">'+esp.emoji+' '+esc(esp.label)+(m.nombre?' «'+esc(m.nombre)+'»':'')+'</span>'+
+          '<span style="font-size:8px;font-weight:800;background:'+color+'22;color:'+color+';padding:2px 8px;border-radius:999px;text-transform:uppercase">'+(lost?'Perdida':'Encontrada')+'</span>'+
+          (m.resuelto?'<span style="font-size:9px">✅</span>':'')+'</div>'+
+          '<p style="font-size:11px;color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(m.descripcion||'')+(m.zona?' · '+esc(m.zona):'')+' · '+fecha+(m.contacto?' · '+esc(m.contacto):'')+'</p>'+
+        '</div>'+
+      '</div>'+
+      '<button onclick="delMascota(\''+m.id+'\')" title="Eliminar" style="padding:6px 10px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;cursor:pointer;flex-shrink:0">🗑️</button>'+
+    '</div>';
+  }).join('');
+  safeIcons();
+}
+async function delMascota(id){
+  if(!confirm('¿Eliminar esta publicación de mascota permanentemente?')) return;
+  try{
+    await db.collection(MASC_COL).doc(id).delete();
+    G.mascotas=(G.mascotas||[]).filter(x=>x.id!==id);
+    renderMascotasAdmin(); renderMascotas();
+    showToast('Publicación eliminada','r');
+  }catch(e){ console.error('delMascota',e); showToast('Error al eliminar','r'); }
 }
 
 // ===== TÉRMINOS Y PRIVACIDAD =====
