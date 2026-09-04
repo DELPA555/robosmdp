@@ -2484,12 +2484,13 @@ function renderLandMiniMap(){
 
 // ===== CONTADOR DE VISITAS =====
 let _visTotal=0,_visToday=0;
+const VISIT_BASE=48000; // base fija sumada SOLO en la visualización del total (no se guarda en Firestore)
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function renderVisits(total,today){
   _visTotal=total; _visToday=today;
-  setT('ls-visit-total',total);
+  setT('ls-visit-total',(total||0)+VISIT_BASE);
   const lt=document.getElementById('ls-visit-today'); if(lt) lt.textContent=today;
-  const at=document.getElementById('adm-visit-total'); if(at) at.textContent=(total||0).toLocaleString('es-AR');
+  const at=document.getElementById('adm-visit-total'); if(at) at.textContent=((total||0)+VISIT_BASE).toLocaleString('es-AR');
   const ah=document.getElementById('adm-visit-today'); if(ah) ah.textContent=today;
   const card=document.getElementById('ls-visit-card'); if(card&&card.style.display==='none'){card.style.display='flex';card.classList.add('land-show');}
 }
@@ -2497,7 +2498,7 @@ function visitsAdminCard(){
   return '<div style="background:linear-gradient(160deg,rgba(99,102,241,.18),rgba(var(--rgb-deep),.78));border:1px solid rgba(99,102,241,.32);border-radius:18px;padding:14px;text-align:center">'+
     '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,.22);font-size:18px">👥</div>'+
     '<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase">Visitas</p>'+
-    '<p style="font-size:22px;font-weight:700;color:#a5b4fc"><span id="adm-visit-total">'+(_visTotal||0).toLocaleString('es-AR')+'</span></p>'+
+    '<p style="font-size:22px;font-weight:700;color:#a5b4fc"><span id="adm-visit-total">'+((_visTotal||0)+VISIT_BASE).toLocaleString('es-AR')+'</span></p>'+
     '<p style="font-size:9px;font-weight:700;color:#64748b;margin-top:2px"><span id="adm-visit-today">'+(_visToday||0)+'</span> hoy</p></div>';
 }
 function initVisitCounter(){
