@@ -190,9 +190,9 @@ a{color:inherit;text-decoration:none}
   width:100%;background:var(--card);border:1px solid var(--border2);
   border-radius:8px;padding:12px 14px;
   font-size:14px;font-weight:500;color:var(--white);
-  font-family:var(--sans);outline:none;transition:border-color .2s;
+  font-family:var(--sans);outline:none;transition:border-color .2s,box-shadow .2s;
 }
-.form-input:focus{border-color:var(--red)}
+.form-input:focus{border-color:#E8192C;box-shadow:0 0 0 3px rgba(232,25,44,.15)}
 .form-input::placeholder{color:var(--muted)}
 select.form-input option{background:var(--card)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -237,7 +237,11 @@ select.form-input option{background:var(--card)}
 .how{padding:100px 0;background:var(--deep)}
 .how-inner{max-width:1200px;margin:0 auto;padding:0 32px}
 .how-header{margin-bottom:64px}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);position:relative}
+/* Línea conectora horizontal entre los 4 pasos (solo desktop) */
+@media(min-width:1001px){
+  .steps::before{content:'';position:absolute;top:52px;left:12.5%;right:12.5%;border-top:2px dashed var(--red);opacity:.35;z-index:3;pointer-events:none}
+}
 .step{
   background:var(--deep);padding:36px 28px;
   position:relative;overflow:hidden;
@@ -837,6 +841,35 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
+</script>
+<!-- Count-up de stats al entrar al viewport (IntersectionObserver). Autocontenido:
+     solo anima los .dstat-n estáticos, no toca los contadores dinámicos de Firebase. -->
+<script>
+(function(){
+  function animate(el){
+    const raw=el.textContent.trim();
+    const m=raw.match(/^(\D*)(\d[\d.,]*)(\D*)$/);
+    if(!m){ return; }
+    const pre=m[1], suf=m[3];
+    const target=parseInt(m[2].replace(/[.,]/g,''),10);
+    if(!isFinite(target)||target<=0){ return; }
+    const dur=1100, t0=performance.now();
+    function tick(now){
+      const p=Math.min(1,(now-t0)/dur);
+      const eased=1-Math.pow(1-p,3);
+      el.textContent=pre+Math.round(target*eased).toLocaleString('es-AR')+suf;
+      if(p<1) requestAnimationFrame(tick);
+      else el.textContent=raw; // valor original exacto al final
+    }
+    requestAnimationFrame(tick);
+  }
+  const nums=document.querySelectorAll('.dstat-n');
+  if(!('IntersectionObserver' in window)||!nums.length) return;
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ animate(e.target); io.unobserve(e.target); } });
+  },{threshold:.4});
+  nums.forEach(n=>io.observe(n));
+})();
 </script>
 </body>
 </html>
