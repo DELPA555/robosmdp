@@ -1936,10 +1936,10 @@ function addBasemap(map,maxZoom){
   if(map._rmdpBase){ map._rmdpBase.forEach(l=>{try{map.removeLayer(l);}catch(e){}}); }
   const mz=maxZoom||20, layers=[];
   if(currentTheme()==='light'){
-    layers.push(L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:mz}));
+    layers.push(L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_3vlm_1_3bd2e7de280dbaf3381c43e5',{attribution:'© OpenStreetMap © CARTO',maxZoom:mz}));
   }else{
-    layers.push(L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:mz}));
-    layers.push(L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',{maxZoom:mz}));
+    layers.push(L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png?key=cb1_3vlm_1_3bd2e7de280dbaf3381c43e5',{attribution:'© OpenStreetMap © CARTO',maxZoom:mz}));
+    layers.push(L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png?key=cb1_3vlm_1_3bd2e7de280dbaf3381c43e5',{maxZoom:mz}));
   }
   layers.forEach(l=>l.addTo(map));
   map._rmdpBase=layers;
