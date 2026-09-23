@@ -23,6 +23,9 @@
 <link rel="preload" as="image" href="./assets/banner-robos-map.png">
 <link rel="preload" as="image" href="./assets/logo-robos.png">
 <link rel="apple-touch-icon" href="./assets/logo-robos.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script defer src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -62,6 +65,7 @@
   --ink:#eef2f8;--ink-2:#a4b1c4;--ink-3:#67748a;
   --red:#ef4444;--green:#22c55e;--amber:#f59e0b;--blue:#5b8def;
   --disp:'Space Grotesk','Inter',sans-serif;
+  --mono:'Space Mono',ui-monospace,SFMono-Regular,monospace;
   /* Tokens del tema (valores OSCUROS exactos a los literales originales) */
   --rgb-deep:15,23,42; --rgb-slate:30,41,59; --rgb-line:148,163,184;
   --bg-overlay:#0a0e1a;
@@ -206,6 +210,44 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .mpin-zone{width:50px;height:50px;margin:-25px 0 0 -25px;border-width:3px}
 #zone-btn.on{background:#6366f1;border-color:transparent}
 #zone-btn.on i{color:#fff}
+
+/* ============================================================
+   REDISEÑO DESKTOP (aditivo — no toca mobile ni el JS/ids)
+   ============================================================ */
+/* Números y stats en Space Mono (todos los tamaños) */
+.scard .n,#ls-visit-total,#land-minimap-count,#acerca-total{font-family:var(--mono)!important;font-weight:700}
+/* Banners: siempre visibles, bien altos y centrados (prioridad de negocio) */
+.pub-slot{min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ad-slot{min-height:60px}
+#pub-landing-1{max-width:728px;margin-left:auto;margin-right:auto}
+/* Foco accesible + scrollbar fina en el landing */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+#landing::-webkit-scrollbar{width:8px}
+#landing::-webkit-scrollbar-thumb{background:var(--red);border-radius:8px}
+#landing::-webkit-scrollbar-track{background:transparent}
+
+@media(min-width:1024px){
+  /* El landing dejaba de ser una columna angosta: contenedor cómodo y centrado */
+  .land-wrap{max-width:900px!important;padding-left:44px!important;padding-right:44px!important}
+  #land-title{font-size:64px!important}
+  .land-wrap>.fu p{max-width:none}
+  /* Tabs de módulo más grandes y prominentes */
+  .ltab{padding:16px 6px!important;font-size:13px}
+  .ltab i{width:22px!important;height:22px!important}
+  /* Botón "Ingresar al mapa" más grande */
+  .ebtn{max-width:460px;font-size:17px;padding:21px 28px}
+  /* Cards de contenido más anchas (cómo reportar, acerca) */
+  .rcard{max-width:760px}
+  /* ¿Qué es? y Colaboración más prominentes y centradas */
+  #landing .gcard{max-width:660px!important}
+  /* Banner de la landing centrado 728px */
+  #pub-landing-1{max-width:728px!important}
+  /* Banners más altos en desktop (prioridad de negocio) */
+  .pub-slot,.ad-slot{min-height:90px}
+  /* Panel del mapa: sidebar más ancho (420px) */
+  #sidebar{width:420px}
+  #sidebar .pub-slot{min-height:100px}
+}
 </style>
 
   <!-- PWA Manifest -->
