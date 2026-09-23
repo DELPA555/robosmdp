@@ -33,6 +33,12 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .toast{background:var(--surface-2);color:var(--t1);border:1px solid var(--line-2);padding:12px 16px;border-radius:13px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:600;border-left:4px solid}
 @keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 .flink{text-decoration:none}
+/* Badge "Nuevo" con pulso sutil */
+@keyframes foroPulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.45)}50%{box-shadow:0 0 0 5px rgba(99,102,241,0)}}
+.foro-new-badge{animation:foroPulse 1.8s ease-out infinite}
+/* Contador de caracteres del input de respuesta */
+#foro-reply-count{font-family:'Space Mono',ui-monospace,monospace;font-size:10px;color:var(--t3);text-align:right;margin-top:6px}
+#foro-reply-count.over{color:#ef4444;font-weight:700}
 </style>
 </head>
 <body>
@@ -53,7 +59,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
     </div>
   </header>
   <div class="ns" style="flex:1;padding:18px 22px">
-    <div style="max-width:680px;margin:0 auto">
+    <div style="max-width:800px;margin:0 auto">
       <p style="font-size:11px;color:var(--t3);font-weight:600;line-height:1.5;margin-bottom:14px;text-align:center;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:11px 14px">Espacio vecinal para hablar de seguridad y problemas urbanos de Mar del Plata.</p>
       <div style="position:relative;margin-bottom:14px">
         <i data-lucide="search" style="width:16px;height:16px;color:#64748b;position:absolute;left:14px;top:50%;transform:translateY(-50%)"></i>
@@ -73,13 +79,14 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
     </div>
   </header>
   <div class="ns" style="flex:1;padding:18px 22px">
-    <div style="max-width:680px;margin:0 auto">
+    <div style="max-width:800px;margin:0 auto">
       <div id="foro-thread-body"></div>
       <p style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:20px 0 10px">Respuestas (<span id="foro-reply-cnt">0</span>)</p>
       <div id="foro-reply-list" style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px"></div>
       <div id="foro-reply-box" style="background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.16);border-radius:14px;padding:13px 15px">
         <div class="apodo-who" id="foro-reply-who" style="font-size:9px;color:var(--t3);margin-bottom:7px"></div>
-        <textarea id="foro-reply-in" maxlength="1000" rows="3" placeholder="Escribí tu respuesta..." style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;padding:11px 13px;font-size:13px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit"></textarea>
+        <textarea id="foro-reply-in" maxlength="1000" rows="3" oninput="foroReplyCount()" placeholder="Escribí tu respuesta..." style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;padding:11px 13px;font-size:13px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit"></textarea>
+        <div id="foro-reply-count">0 / 1000 caracteres</div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:9px">
           <label style="cursor:pointer;display:flex;align-items:center;gap:6px;background:rgba(var(--rgb-deep),.5);border:1px solid rgba(99,102,241,.4);padding:8px 12px;border-radius:11px;font-size:10px;font-weight:700;color:#a5b4fc;text-transform:uppercase"><i data-lucide="image" style="width:14px;height:14px;color:#6366f1"></i>Foto<input type="file" id="foro-reply-photo" accept="image/*" style="display:none" onchange="prevForoPhoto(this,'reply')"></label>
           <div id="foro-reply-ph-prev" style="display:none;width:44px;height:44px;border-radius:9px;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;flex-shrink:0"><img id="foro-reply-ph-img" src="" style="width:100%;height:100%;object-fit:cover"><button type="button" onclick="rmForoPhoto('reply')" style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;border-radius:0 0 0 6px;padding:2px;cursor:pointer"><i data-lucide="x" style="width:7px;height:7px"></i></button></div>
@@ -226,6 +233,11 @@ function apodoWhoHTML(){
     '<a onclick="changeApodo()" style="color:#818cf8;cursor:pointer;text-decoration:underline">'+(a?'Cambiar':'Elegí un apodo')+'</a>';
 }
 function refreshApodoLabels(){ document.querySelectorAll('.apodo-who').forEach(el=>{ el.innerHTML=apodoWhoHTML(); }); }
+// Avatar circular generado desde la inicial del apodo (color estable por hash del nombre)
+function foroColor(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
+function foroAvatar(name,size){ size=size||36; const n=(String(name||'').trim())||'?'; const ini=n.charAt(0).toUpperCase(); return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+foroColor(n)+';color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:'+Math.round(size*.42)+'px;flex-shrink:0;font-family:\'Space Grotesk\',sans-serif;line-height:1">'+esc(ini)+'</div>'; }
+// Contador de caracteres del input de respuesta (se pone rojo > 90%)
+function foroReplyCount(){ const ta=document.getElementById('foro-reply-in'), c=document.getElementById('foro-reply-count'); if(!ta||!c) return; const max=1000, n=ta.value.length; c.textContent=n+' / '+max+' caracteres'; c.classList.toggle('over', n>max*0.9); }
 function changeApodo(){ const a=promptApodo(getApodo()); if(a) setApodo(a); refreshApodoLabels(); }
 
 // ===== FORO =====
@@ -257,9 +269,10 @@ function renderForo(){
     const rc=t.respuestas_count||0;
     const thumb=t.photoBase64?'<img src="'+t.photoBase64+'" alt="" style="width:60px;height:60px;border-radius:11px;object-fit:cover;flex-shrink:0;border:1px solid rgba(var(--rgb-line),.2)">':'';
     return '<div onclick="openThread(\''+t.id+'\')" style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-left:4px solid #6366f1;border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;gap:12px;align-items:flex-start">'+
+      foroAvatar(t.apodo,40)+
       '<div style="min-width:0;flex:1">'+
       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px">'+
-        (nuevo?'<span style="font-size:8px;font-weight:800;background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 8px;border-radius:999px;text-transform:uppercase">Nuevo</span>':'')+
+        (nuevo?'<span class="foro-new-badge" style="font-size:8px;font-weight:800;background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 8px;border-radius:999px;text-transform:uppercase">Nuevo</span>':'')+
         '<span style="font-size:14px;font-weight:800;color:var(--t0);line-height:1.3">'+esc(t.titulo||'(sin título)')+'</span></div>'+
       '<p style="font-size:9px;color:var(--t3);font-weight:600;margin-bottom:7px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+vbadge(t)+''+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
       (preview?'<p style="font-size:12px;color:var(--t2);line-height:1.5">'+esc(preview)+(t.cuerpo&&t.cuerpo.length>140?'…':'')+'</p>':'')+
@@ -299,14 +312,17 @@ function openThread(id){
   const d=foroDate(t);
   document.getElementById('foro-thread-body').innerHTML=
     '<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border:1px solid rgba(var(--rgb-line),.14);border-radius:16px;padding:18px 20px">'+
-    '<h3 style="font-size:18px;font-weight:800;color:var(--t0);line-height:1.25;margin-bottom:7px">'+esc(t.titulo||'(sin título)')+'</h3>'+
-    '<p style="font-size:10px;color:var(--t3);font-weight:600;margin-bottom:12px"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+vbadge(t)+''+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
+    '<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px">'+foroAvatar(t.apodo,42)+'<div style="min-width:0;flex:1">'+
+    '<h3 style="font-size:18px;font-weight:800;color:var(--t0);line-height:1.25;margin-bottom:5px">'+esc(t.titulo||'(sin título)')+'</h3>'+
+    '<p style="font-size:10px;color:var(--t3);font-weight:600"><strong style="color:var(--t2)">'+esc(t.apodo||'Vecino anónimo')+'</strong>'+vbadge(t)+''+(d.getTime()>0?' · '+tAgo(d):'')+'</p>'+
+    '</div></div>'+
     '<p style="font-size:13px;color:var(--t1);line-height:1.6;white-space:pre-wrap">'+esc(t.cuerpo||'')+'</p>'+
     (t.photoBase64?'<img src="'+t.photoBase64+'" alt="" onclick="openIV(this.src)" style="margin-top:12px;max-width:100%;max-height:340px;border-radius:12px;object-fit:contain;cursor:zoom-in;display:block">':'')+
     '</div>';
   refreshApodoLabels();
   rmForoPhoto('reply');
   const rin=document.getElementById('foro-reply-in'); if(rin) rin.value='';
+  foroReplyCount();
   document.getElementById('foro-thread-p').style.display='flex';
   openReplies(id);
   safeIcons();
@@ -326,11 +342,12 @@ function openReplies(tid){
       if(!list) return;
       if(snap.empty){ list.innerHTML='<p style="font-size:11px;color:var(--t3);font-style:italic">Todavía no hay respuestas. ¡Sé el primero!</p>'; return; }
       list.innerHTML=snap.docs.map(d=>{ const c=d.data(), t=cmTime(c);
-        return '<div style="background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.14);border-radius:12px;padding:11px 14px">'+
+        return '<div style="background:rgba(var(--rgb-slate),.5);border:1px solid rgba(var(--rgb-line),.14);border-radius:12px;padding:11px 14px;display:flex;gap:10px">'+
+          foroAvatar(c.apodo,32)+'<div style="min-width:0;flex:1">'+
           '<p style="font-size:9px;color:var(--t3);font-weight:700;margin-bottom:3px"><strong style="color:var(--t2)">'+esc(c.apodo||'Vecino anónimo')+'</strong>'+vbadge(c)+''+(t?' · '+tAgo(t):'')+'</p>'+
           '<p style="font-size:13px;color:var(--t1);line-height:1.5;white-space:pre-wrap">'+esc(c.texto||'')+'</p>'+
           (c.photoBase64?'<img src="'+c.photoBase64+'" alt="" onclick="openIV(this.src)" style="margin-top:8px;max-width:200px;max-height:200px;border-radius:10px;object-fit:cover;cursor:zoom-in;display:block">':'')+
-          '</div>';
+          '</div></div>';
       }).join('');
     },err=>{ console.warn('respuestas',err); });
   }catch(e){ console.warn('openReplies',e); }
@@ -345,7 +362,7 @@ async function submitReply(){
     await repliesRef(tid).add({apodo:a.apodo,admin:a.admin,texto:txt.slice(0,1000),photoBase64:G.foroReplyPhoto||'',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     await db.collection(FORO_COL).doc(tid).update({respuestas_count:firebase.firestore.FieldValue.increment(1)});
     const t=(G.foro||[]).find(x=>x.id===tid); if(t) t.respuestas_count=(t.respuestas_count||0)+1;
-    ta.value=''; rmForoPhoto('reply'); renderForo();
+    ta.value=''; foroReplyCount(); rmForoPhoto('reply'); renderForo();
   }catch(e){ console.error('submitReply',e); showToast('No se pudo responder (¿reglas Firestore?)','r'); }
   finally{ ta.disabled=false; }
 }
