@@ -1,22 +1,52 @@
 {
   "name": "Robos MDP - Monitor Ciudadano",
   "short_name": "Robos MDP",
-  "description": "Mapa colaborativo vecinal. Mar del Plata unida por la seguridad.",
+  "description": "Mapa colaborativo de seguridad vecinal de Mar del Plata",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "orientation": "portrait",
+  "background_color": "#07090D",
+  "theme_color": "#E8192C",
+  "orientation": "portrait-primary",
+  "lang": "es-AR",
+  "categories": ["news", "social", "utilities"],
   "icons": [
     {
-      "src": "./assets/logo-robos.png",
+      "src": "/assets/logo-robos.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "./assets/logo-robos.png",
+      "src": "/assets/logo-robos.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/banner-robos.jpg",
+      "sizes": "1200x400",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Mapa de robos en Mar del Plata"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver mapa de Robos",
+      "url": "/#robos",
+      "icons": [{"src": "/assets/logo-robos.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "Mascotas perdidas",
+      "url": "/mascotas",
+      "icons": [{"src": "/assets/logo-robos.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "Foro vecinal",
+      "url": "/foro",
+      "icons": [{"src": "/assets/logo-robos.png", "sizes": "96x96"}]
     }
   ]
 }
