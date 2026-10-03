@@ -240,6 +240,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .land-footer{text-align:center;padding:26px 18px 40px}
 /* Menú de secciones: mobile = lista vertical (como antes) */
 .sec-grid{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+/* Donación compacta del sidebar izquierdo */
+.ll-donate{max-width:420px;margin:0 auto}
+.ll-donate-amts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ll-donate-sub{display:block;text-align:center;margin-top:8px;padding:11px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:11px;font-weight:800;text-decoration:none;text-transform:uppercase;letter-spacing:.02em;box-shadow:0 8px 20px rgba(34,197,94,.28)}
 
 @media(min-width:1024px){
   /* Landing en 3 columnas: sidebar izq (banner/colab) + centro + feed lateral */
@@ -562,6 +566,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <div class="ll-block ll-ad">
         <p class="ll-label">Publicidad</p>
         <div class="pub-slot" id="pub-landing-1"></div>
+      </div>
+      <div class="ll-block ll-donate">
+        <p class="ll-label">💛 Colaborá con el proyecto</p>
+        <div class="ll-donate-amts">
+          <a href="https://mpago.la/2Du938j" target="_blank" rel="noopener" class="donate-btn">$1.000</a>
+          <a href="https://mpago.la/1BdhoR8" target="_blank" rel="noopener" class="donate-btn">$5.000</a>
+          <a href="https://mpago.la/15Toxq8" target="_blank" rel="noopener" class="donate-btn">$10.000</a>
+        </div>
+        <a href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=98a5d3e7fb884bbc8881d13b96ae00f3" target="_blank" rel="noopener" class="ll-donate-sub">💚 Colaborá mensualmente</a>
       </div>
     </aside>
     <aside id="hero-feed" aria-label="Últimos reportes en vivo"></aside>
