@@ -238,6 +238,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .ll-label{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;text-align:left}
 .ll-ad .pub-slot{min-height:0;margin:0;padding:0;background:transparent;border:none}
 .land-footer{text-align:center;padding:26px 18px 40px}
+/* Menú de secciones: mobile = lista vertical (como antes) */
+.sec-grid{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 
 @media(min-width:1024px){
   /* Landing en 3 columnas: sidebar izq (banner/colab) + centro + feed lateral */
@@ -256,6 +258,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .ebtn{max-width:460px;font-size:17px;padding:21px 28px}
   /* Cards de contenido más anchas (cómo reportar, acerca) */
   .rcard{max-width:760px}
+  /* Menú de secciones: grilla 3x2 en desktop */
+  .sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:stretch}
+  .sec-grid>a,.sec-grid>button{max-width:none!important;margin:0!important;width:100%!important;height:100%}
+  /* "Cómo reportar": 5 pasos en 2 columnas */
+  #como-reportar .rcard{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
+  #como-reportar .rstep{margin-bottom:0!important}
   /* ¿Qué es? y Colaboración más prominentes y centradas */
   #landing .gcard{max-width:660px!important}
   /* Banner de la landing centrado 728px */
@@ -532,12 +540,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 
     <!-- Redes -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:28px;margin-top:28px;border-top:1px solid rgba(var(--rgb-line),.12)">
+      <div class="sec-grid">
       <a href="./rastreo.html" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid rgba(239,68,68,.42);background:rgba(239,68,68,.12);color:#fca5a5;font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(239,68,68,.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(239,68,68,.12)';this.style.transform='translateY(0)'"><span style="font-size:16px">🛡️</span>Rastreo vehicular MDP</a>
       <button onclick="openStats()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:#ef4444"></i>Ver estadísticas completas</button>
       <button onclick="openPatentes()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🔖</span>Patentes perdidas / encontradas</button>
       <button onclick="openObjetos()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">📦</span>Objetos perdidos / encontrados</button>
       <button onclick="openMascotas()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🐾</span>Mascotas perdidas / encontradas</button>
       <button onclick="openForo()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">💬</span>Foro vecinal</button>
+      </div><!-- /.sec-grid -->
       <p style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.18em;margin-top:8px">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
         <a href="https://www.instagram.com/robos.mdp/" target="_blank" class="soc" style="color:#f472b6"><span style="font-size:13px;font-weight:700">IG</span></a>
