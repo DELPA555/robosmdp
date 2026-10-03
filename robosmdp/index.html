@@ -99,10 +99,10 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .rstep-n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.34);color:#f87171;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1}
 .rcard{background:var(--surface);border:1px solid var(--line-2);border-radius:16px;padding:22px;text-align:left;max-width:440px;margin:0 auto}
 #landing{position:fixed;inset:0;z-index:5000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform .55s cubic-bezier(.4,0,.2,1)}
-#landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px circle at 50% -12%,rgba(239,68,68,.10),transparent 60%),radial-gradient(800px circle at 92% 8%,rgba(91,141,239,.05),transparent 55%)}
+#landing::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px circle at 50% -12%,rgba(239,68,68,.03),transparent 60%),radial-gradient(800px circle at 92% 8%,rgba(91,141,239,.04),transparent 55%)}
 .land-wrap{position:relative;z-index:10}
 .hero{position:relative;width:100%;height:288px;overflow:hidden;background:#0d1424}
-.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.95) saturate(1.05);transform:scale(1.04);animation:heroZoom 34s ease-in-out infinite alternate}
+.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.8) saturate(.6);transform:scale(1.04);animation:heroZoom 34s ease-in-out infinite alternate}
 @keyframes heroZoom{from{transform:scale(1.04)}to{transform:scale(1.12)}}
 .hero-g{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,15,28,.2) 0%,rgba(10,15,28,.04) 38%,rgba(10,15,28,.68) 80%,var(--bg) 100%)}
 .hero-grid{display:none}
@@ -201,8 +201,8 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
 .leaflet-control-attribution a{color:var(--t3)!important}
 .ph-spin{width:13px;height:13px;border:2px solid rgba(var(--rgb-line),.3);border-top-color:var(--t3);border-radius:50%;display:inline-block;animation:phspin .7s linear infinite}
 @keyframes phspin{to{transform:rotate(360deg)}}
-.donate-btn{padding:13px 6px;border-radius:12px;border:1px solid rgba(234,179,8,.3);background:rgba(234,179,8,.1);color:#fbbf24;font-size:13px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;transition:transform .18s,background .18s}
-.donate-btn:hover{background:rgba(234,179,8,.18);transform:translateY(-2px)}
+.donate-btn{padding:11px 6px;border-radius:12px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:13px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;transition:transform .18s,background .18s,border-color .18s}
+.donate-btn:hover{background:rgba(239,68,68,.16);border-color:#ef4444;transform:translateY(-2px)}
 .hotzone{position:relative;width:46px;height:46px;display:flex;align-items:center;justify-content:center}
 .hotzone::before,.hotzone::after{content:'';position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--hz);opacity:.55;animation:hzpulse 1.9s ease-out infinite}
 .hotzone::after{animation-delay:.95s}
@@ -228,12 +228,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 #landing::-webkit-scrollbar-track{background:transparent}
 /* Feed lateral del hero (solo desktop; oculto en mobile) */
 #hero-feed{display:none}
-.hf-card{display:flex;gap:10px;padding:10px;border-radius:12px;background:var(--surface);border:1px solid var(--line);cursor:pointer;transition:all .2s;margin-bottom:8px;text-align:left}
+.hf-card{display:flex;gap:11px;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);cursor:pointer;transition:all .2s;margin-bottom:11px;text-align:left;box-shadow:0 1px 0 rgba(255,255,255,.02)}
 .hf-card:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--surface-2)}
 .hf-thumb{width:52px;height:52px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hf-thumb img{width:100%;height:100%;object-fit:cover}
-/* Sidebar izquierdo (banner + colaboración). En mobile es un bloque normal. */
+/* Columnas laterales. En mobile son bloques normales. */
 .land-left{margin:26px 0 0}
+.land-ads{margin:26px 0 0;display:flex;flex-direction:column;gap:18px}
 .ll-block{background:#12161F;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px}
 .ll-label{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;text-align:left}
 .ll-ad .pub-slot{min-height:0;margin:0;padding:0;background:transparent;border:none}
@@ -243,21 +244,32 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 /* Donación compacta del sidebar izquierdo */
 .ll-donate{max-width:420px;margin:0 auto}
 .ll-donate-amts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.ll-donate-sub{display:block;text-align:center;margin-top:8px;padding:11px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:11px;font-weight:800;text-decoration:none;text-transform:uppercase;letter-spacing:.02em;box-shadow:0 8px 20px rgba(34,197,94,.28)}
+.ll-donate-sub{display:block;text-align:center;margin-top:8px;padding:11px;border-radius:12px;background:#15803d;color:#fff;font-size:11px;font-weight:800;text-decoration:none;text-transform:uppercase;letter-spacing:.02em;box-shadow:0 6px 16px rgba(21,128,61,.3);transition:background .18s}
+.ll-donate-sub:hover{background:#166534}
+/* Marca del sidebar (logo + nombre) */
+.ll-brand{text-align:center;margin-bottom:16px}
+.ll-brand-name{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-.02em;margin-top:10px;line-height:1}
+/* Bloque de navegación de módulos */
+.ll-nav{padding:12px}
+.ll-nav .ltabs{background:transparent;border:none;padding:0}
+/* Ocultar el caption de texto del banner (ya se lee en la imagen) */
+.ll-ad .pub-slot a p{display:none!important}
 
 @media(min-width:1024px){
-  /* Landing en 3 columnas: sidebar izq (banner/colab) + centro + feed lateral */
-  .land-wrap{max-width:1340px!important;display:grid;grid-template-columns:280px minmax(0,1fr) 340px;gap:34px;align-items:start;padding-left:40px!important;padding-right:40px!important}
-  .land-main{min-width:0}
-  .land-left{order:-1;position:sticky;top:18px;margin:0;display:flex;flex-direction:column;gap:18px}
-  #hero-feed{display:block;position:sticky;top:18px}
-  #land-title{font-size:64px!important}
+  /* Landing en 3 columnas con áreas: col izq (nav arriba + ads abajo) · centro · feed */
+  .land-wrap{max-width:1400px!important;display:grid;grid-template-columns:300px minmax(0,1fr) 340px;grid-template-rows:auto 1fr;grid-template-areas:"nav main feed" "ads main feed";gap:22px 32px;align-items:start;padding-left:40px!important;padding-right:40px!important}
+  .land-main{grid-area:main;min-width:0}
+  .land-left{grid-area:nav;margin:0;position:sticky;top:18px}
+  .land-ads{grid-area:ads;margin:0;align-self:start}
+  #hero-feed{grid-area:feed;display:block;position:sticky;top:18px}
+  #land-title{font-size:72px!important}
   .land-wrap .fu p{max-width:none}
   /* Colaboración en 2 columnas: texto izquierda, acciones derecha */
   .gcard-colab .colab-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
-  /* Tabs de módulo más grandes y prominentes */
-  .ltab{padding:16px 6px!important;font-size:13px}
-  .ltab i{width:22px!important;height:22px!important}
+  /* Tabs de módulo VERTICALES en el sidebar izquierdo (icono + texto) */
+  .ll-nav .ltabs{flex-direction:column;gap:6px}
+  .ll-nav .ltab{flex:none;flex-direction:row;justify-content:flex-start;gap:11px;padding:0 14px!important;min-height:48px;font-size:13.5px;text-align:left;border-radius:12px}
+  .ll-nav .ltab i{width:19px!important;height:19px!important}
   /* Botón "Ingresar al mapa" más grande */
   .ebtn{max-width:460px;font-size:17px;padding:21px 28px}
   /* Cards de contenido más anchas (cómo reportar, acerca) */
@@ -267,14 +279,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .sec-grid>a,.sec-grid>button{max-width:none!important;margin:0!important;width:100%!important;height:100%;min-height:72px;border-radius:16px!important;text-align:center;line-height:1.3}
   /* Polish: radio consistente 16px en cards clave del desktop */
   #landing .gcard,#landing .rcard,.hf-card,.ll-block{border-radius:16px!important}
-  .land-left .ll-block{box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .land-left .ll-block,.land-ads .ll-block{box-shadow:0 10px 30px rgba(0,0,0,.35)}
   /* "Cómo reportar": 5 pasos en 2 columnas */
   #como-reportar .rcard{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
   #como-reportar .rstep{margin-bottom:0!important}
   /* ¿Qué es? y Colaboración más prominentes y centradas */
   #landing .gcard{max-width:660px!important}
-  /* Banner de la landing centrado 728px */
-  #pub-landing-1{max-width:728px!important}
+  /* Banner Nikro: ocupa todo el ancho del sidebar izquierdo */
+  #pub-landing-1{max-width:none!important;width:100%}
   /* Banners más altos en desktop (prioridad de negocio) */
   .pub-slot,.ad-slot{min-height:90px}
   /* Panel del mapa: sidebar más ancho (420px) */
@@ -298,12 +310,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
     <div class="hero-g"></div>
   </div>
   <div class="land-wrap" style="padding:0 18px 60px;margin-top:-92px;max-width:440px;margin-left:auto;margin-right:auto">
-    <div class="land-main">
-    <div class="fu" style="display:flex;justify-content:center;margin-bottom:20px;animation-delay:.05s">
-      <div id="land-logo" style="width:104px;height:104px;border-radius:24px;overflow:hidden;border:1px solid rgba(var(--rgb-line),.18);box-shadow:0 0 0 6px rgba(var(--rgb-line),.05),0 18px 44px rgba(0,0,0,.55)">
-        <img id="land-logo-img" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
+    <!-- ===== COLUMNA IZQUIERDA: logo + marca + navegación de módulos ===== -->
+    <aside class="land-left" aria-label="Navegación de módulos">
+      <div class="fu ll-brand" style="animation-delay:.05s">
+        <div id="land-logo" style="width:80px;height:80px;border-radius:20px;overflow:hidden;border:1px solid rgba(var(--rgb-line),.18);box-shadow:0 0 0 5px rgba(var(--rgb-line),.05),0 14px 34px rgba(0,0,0,.5);margin:0 auto">
+          <img id="land-logo-img" src="./assets/logo-robos.png" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <p class="ll-brand-name">ROBOS <span style="color:#ef4444">MDP</span></p>
       </div>
-    </div>
+      <div class="ll-block ll-nav">
+        <p class="ll-label">Módulos</p>
+        <div class="ltabs fu" style="animation-delay:.1s">
+          <button class="ltab r" id="ltab-robos" onclick="switchLT('robos')"><i data-lucide="siren" style="width:16px;height:16px"></i>Robos</button>
+          <button class="ltab" id="ltab-basura" onclick="switchLT('basura')"><i data-lucide="trash-2" style="width:16px;height:16px"></i>Basura</button>
+          <button class="ltab" id="ltab-pozos" onclick="switchLT('pozos')"><i data-lucide="alert-triangle" style="width:16px;height:16px"></i>Pozos</button>
+          <button class="ltab" id="ltab-abandonados" onclick="switchLT('abandonados')"><i data-lucide="car" style="width:16px;height:16px"></i>Autos</button>
+          <button class="ltab" id="ltab-luminarias" onclick="switchLT('luminarias')"><i data-lucide="lightbulb" style="width:16px;height:16px"></i>Luces</button>
+        </div>
+      </div>
+    </aside>
+    <div class="land-main">
     <div class="fu" style="text-align:center;margin-bottom:18px;animation-delay:.12s">
       <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);margin-bottom:14px">
         <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 8px #22c55e;animation:pulse 1.5s infinite"></span>
@@ -318,23 +344,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <div class="feat" style="flex-direction:column;text-align:center;gap:5px"><i data-lucide="zap" style="width:16px;height:16px;color:#f59e0b"></i>Al instante</div>
       <div class="feat" style="flex-direction:column;text-align:center;gap:5px"><i data-lucide="shield-check" style="width:16px;height:16px;color:#22c55e"></i>Anónimo</div>
     </div>
-    <div class="ltabs fu" style="margin-bottom:22px;animation-delay:.24s">
-      <button class="ltab r" id="ltab-robos" onclick="switchLT('robos')">
-        <i data-lucide="siren" style="width:16px;height:16px"></i>Robos
-      </button>
-      <button class="ltab" id="ltab-basura" onclick="switchLT('basura')">
-        <i data-lucide="trash-2" style="width:16px;height:16px"></i>Basura
-      </button>
-      <button class="ltab" id="ltab-pozos" onclick="switchLT('pozos')">
-        <i data-lucide="alert-triangle" style="width:16px;height:16px"></i>Pozos
-      </button>
-      <button class="ltab" id="ltab-abandonados" onclick="switchLT('abandonados')">
-        <i data-lucide="car" style="width:16px;height:16px"></i>Autos
-      </button>
-      <button class="ltab" id="ltab-luminarias" onclick="switchLT('luminarias')">
-        <i data-lucide="lightbulb" style="width:16px;height:16px"></i>Luces
-      </button>
-    </div>
+    <!-- tabs de módulos movidas al sidebar izquierdo (.land-left > .ll-nav) -->
     <!-- ===== BÚSQUEDA GLOBAL ===== -->
     <div class="fu" style="margin-bottom:20px;animation-delay:.27s">
       <div style="position:relative">
@@ -564,8 +574,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <p style="font-size:9px;color:#475569;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
     </div>
     </div><!-- /.land-main -->
-    <!-- ===== SIDEBAR IZQUIERDO (desktop): banner Nikro + colaboración ===== -->
-    <aside class="land-left" aria-label="Publicidad y colaboración">
+    <!-- ===== BANNER NIKRO + COLABORACIÓN (columna izq fila 2 en desktop / abajo en mobile) ===== -->
+    <aside class="land-ads" aria-label="Publicidad y colaboración">
       <div class="ll-block ll-ad">
         <p class="ll-label">Publicidad</p>
         <div class="pub-slot" id="pub-landing-1"></div>
