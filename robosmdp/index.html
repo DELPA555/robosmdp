@@ -232,11 +232,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .hf-card:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--surface-2)}
 .hf-thumb{width:52px;height:52px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hf-thumb img{width:100%;height:100%;object-fit:cover}
+/* Sidebar izquierdo (banner + colaboración). En mobile es un bloque normal. */
+.land-left{margin:26px 0 0}
+.ll-block{background:#12161F;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px}
+.ll-label{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;text-align:left}
+.ll-ad .pub-slot{min-height:0;margin:0;padding:0;background:transparent;border:none}
+.land-footer{text-align:center;padding:26px 18px 40px}
 
 @media(min-width:1024px){
-  /* Landing en 2 columnas: contenido a la izquierda + feed lateral a la derecha */
-  .land-wrap{max-width:1180px!important;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:38px;align-items:start;padding-left:40px!important;padding-right:40px!important}
+  /* Landing en 3 columnas: sidebar izq (banner/colab) + centro + feed lateral */
+  .land-wrap{max-width:1340px!important;display:grid;grid-template-columns:280px minmax(0,1fr) 340px;gap:34px;align-items:start;padding-left:40px!important;padding-right:40px!important}
   .land-main{min-width:0}
+  .land-left{order:-1;position:sticky;top:18px;margin:0;display:flex;flex-direction:column;gap:18px}
   #hero-feed{display:block;position:sticky;top:18px}
   #land-title{font-size:64px!important}
   .land-wrap .fu p{max-width:none}
@@ -539,23 +546,28 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       </div>
       <p style="font-size:9px;color:#475569;font-weight:600;text-align:center;max-width:300px;line-height:1.6;text-transform:uppercase;letter-spacing:.03em">Los reportes no constituyen denuncia policial. Para registro formal acudí a la Policía o Fiscalía.</p>
     </div>
-    <!-- ===== PUBLICIDAD DIRECTA (banner landing) ===== -->
-    <div class="pub-slot" id="pub-landing-1" style="margin-top:30px"></div>
-    <!-- ===== FOOTER ===== -->
-    <footer class="rfooter">
-      <div style="display:flex;flex-wrap:wrap;gap:12px 18px;justify-content:center;margin-bottom:14px">
-        <a href="#acerca">Acerca de</a>
-        <a href="#como-reportar">Cómo reportar</a>
-        <a href="#" onclick="openTerminos();return false">Términos y privacidad</a>
-        <a href="https://wa.me/542235994909" target="_blank" rel="noopener">Contacto</a>
-        <a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" rel="noopener">Facebook</a>
-      </div>
-      <p style="font-size:10px;color:#475569;font-weight:600;line-height:1.7">Robos MDP · Mapa colaborativo de Mar del Plata · Plataforma independiente sin fines de lucro<br>Contacto: WhatsApp +54 223 599-4909</p>
-    </footer>
     </div><!-- /.land-main -->
+    <!-- ===== SIDEBAR IZQUIERDO (desktop): banner Nikro + colaboración ===== -->
+    <aside class="land-left" aria-label="Publicidad y colaboración">
+      <div class="ll-block ll-ad">
+        <p class="ll-label">Publicidad</p>
+        <div class="pub-slot" id="pub-landing-1"></div>
+      </div>
+    </aside>
     <aside id="hero-feed" aria-label="Últimos reportes en vivo"></aside>
   </div>
+  <!-- ===== FOOTER (full width) ===== -->
+  <footer class="rfooter land-footer">
+    <div style="display:flex;flex-wrap:wrap;gap:12px 18px;justify-content:center;margin-bottom:14px">
+      <a href="#acerca">Acerca de</a>
+      <a href="#como-reportar">Cómo reportar</a>
+      <a href="#" onclick="openTerminos();return false">Términos y privacidad</a>
+      <a href="https://wa.me/542235994909" target="_blank" rel="noopener">Contacto</a>
+      <a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61586689222412" target="_blank" rel="noopener">Facebook</a>
+    </div>
+    <p style="font-size:10px;color:#475569;font-weight:600;line-height:1.7">Robos MDP · Mapa colaborativo de Mar del Plata · Plataforma independiente sin fines de lucro<br>Contacto: WhatsApp +54 223 599-4909</p>
+  </footer>
 </div>
 <!-- APP -->
 <div id="app">
