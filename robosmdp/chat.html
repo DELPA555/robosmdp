@@ -224,12 +224,12 @@ function getSid(){
 }
 function pushPresence(){
   if(!db) return; const a=getApodo(); if(!a) return;
-  try{ db.collection(PRES_COL).doc(getSid()).set({apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}); }catch(e){}
+  try{ db.collection(PRES_COL).doc(getSid()).set({apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}).catch(()=>{}); }catch(e){}
 }
 function startPresence(){
   pushPresence();
   setInterval(pushPresence,30000);
-  window.addEventListener('beforeunload',()=>{ try{ db.collection(PRES_COL).doc(getSid()).set({activo:false},{merge:true}); }catch(e){} });
+  window.addEventListener('beforeunload',()=>{ try{ db.collection(PRES_COL).doc(getSid()).set({activo:false},{merge:true}).catch(()=>{}); }catch(e){} });
 }
 let _presDocs=[];
 function presTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toDate().getTime(); if(v&&typeof v.seconds==='number') return v.seconds*1000; return 0; }
