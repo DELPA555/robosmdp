@@ -94,6 +94,24 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .mod-btn{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;line-height:1.5}
 .mod-del{background:rgba(239,68,68,.14);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
 .mod-ban{background:rgba(249,115,22,.14);color:#fdba74;border:1px solid rgba(249,115,22,.3)}
+/* Pantalla de estado / suspensión (Premium V5) */
+#chat-lockout{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:28px 20px;text-align:center}
+#chat-lockout .lk-card{max-width:420px;width:100%;background:linear-gradient(170deg,rgba(var(--rgb-slate),.55),rgba(var(--rgb-deep),.72));border:1px solid var(--line-2);border-radius:22px;padding:34px 26px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+#chat-lockout.suspended .lk-card{border-color:rgba(239,68,68,.4);background:linear-gradient(170deg,rgba(239,68,68,.10),rgba(var(--rgb-deep),.78))}
+#chat-lockout .lk-icon{width:78px;height:78px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(var(--rgb-slate),.5);border:1px solid var(--line-2)}
+#chat-lockout.suspended .lk-icon{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.4)}
+#chat-lockout .lk-emoji{font-size:38px;line-height:1}
+#chat-lockout .lk-spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(var(--rgb-line),.25);border-top-color:var(--accent);animation:lkspin .8s linear infinite}
+@keyframes lkspin{to{transform:rotate(360deg)}}
+#chat-lockout h3{font-size:19px;font-weight:800;color:var(--t0);letter-spacing:-.02em;line-height:1.2;margin-bottom:10px}
+#chat-lockout.suspended h3{color:#fca5a5;text-transform:uppercase;letter-spacing:.01em;font-size:18px}
+#chat-lockout p{font-size:13.5px;color:var(--t2);line-height:1.55}
+#chat-lockout #chat-lockout-meta{margin-top:16px;display:flex;flex-direction:column;gap:9px}
+#chat-lockout .lk-row{background:rgba(var(--rgb-deep),.55);border:1px solid var(--line);border-radius:12px;padding:10px 13px;text-align:left}
+#chat-lockout .lk-row b{display:block;font-size:9px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+#chat-lockout .lk-row span{font-size:13px;font-weight:600;color:var(--t1);word-break:break-word}
+#chat-lockout .lk-note{margin-top:15px;font-size:11px;color:var(--t3);line-height:1.5}
+@media (max-width:680px){#chat-lockout{padding:20px 14px}#chat-lockout .lk-card{padding:28px 20px;border-radius:18px}#chat-lockout h3{font-size:17px}}
 </style>
 <link rel="stylesheet" href="./assets/premium-v5-chat.css?v=5">
 </head>
@@ -111,7 +129,20 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
     <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
   </header>
 
-  <div id="chat-msgs" class="ns">
+  <!-- Pantalla de estado / suspensión (fail-closed: visible hasta verificar acceso) -->
+  <section id="chat-lockout" role="status" aria-live="polite">
+    <div class="lk-card">
+      <div class="lk-icon" id="lk-icon">
+        <span class="lk-spin" id="lk-spin" aria-hidden="true"></span>
+        <span class="lk-emoji" id="lk-emoji" style="display:none">🚫</span>
+      </div>
+      <h3 id="chat-lockout-title">Verificando acceso…</h3>
+      <p id="chat-lockout-desc">Conectando con el chat vecinal de forma segura.</p>
+      <div id="chat-lockout-meta" style="display:none"></div>
+    </div>
+  </section>
+
+  <div id="chat-msgs" class="ns" style="display:none">
     <div id="chat-loadmore" style="display:none;text-align:center;margin-bottom:4px"><button onclick="loadMoreMsgs()" style="background:rgba(var(--rgb-slate),.6);border:1px solid rgba(var(--rgb-line),.18);border-radius:999px;padding:7px 16px;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;cursor:pointer">↑ Cargar mensajes anteriores</button></div>
     <div id="chat-empty" style="text-align:center;padding:40px 10px;color:#475569;font-size:12px;font-weight:700;display:none"><div style="font-size:34px;margin-bottom:8px">💬</div>Todavía no hay mensajes. ¡Rompé el hielo!</div>
   </div>
@@ -160,16 +191,26 @@ const FB_CONFIG={
   appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
 let db=null, auth=null;
-if(window.firebase){ firebase.initializeApp(FB_CONFIG); db=firebase.firestore(); try{ if(firebase.auth) auth=firebase.auth(); }catch(e){} }
+// App Firebase NOMBRADA e independiente ('rmdp_chat'): el login anónimo del chat
+// NO interfiere con la sesión admin del portal (app por defecto en index.html).
+if(window.firebase){
+  const ca=firebase.apps.find(x=>x.name==='rmdp_chat')||firebase.initializeApp(FB_CONFIG,'rmdp_chat');
+  db=ca.firestore();
+  try{ if(firebase.auth) auth=ca.auth(); }catch(e){}
+}
 const FV=firebase.firestore.FieldValue;
 const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
 const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderadores', BAN_COL='chat_bans';
 const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
 
+// banned arranca en true (fail-closed): nadie lee/escribe hasta verificar auth + ban.
+// G.mods es un Set de UIDs (los moderadores se indexan por UID, no por apodo).
 const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUnsub:null,
-  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0, isAdmin:false,
-  replyTo:null, mentionStart:-1, notifOn:false, notifReady:false, hasSent:false };
+  mods:new Set(), lastSend:0, sendTimes:[], banned:true, authReady:false, banReady:false,
+  uid:null, sid:null, presTimer:null, onlineTimer:null, banExpiryTimer:null,
+  msgsCount:0, isAdmin:false, replyTo:null, mentionStart:-1,
+  notifOn:false, notifReady:false, hasSent:false };
 
 // ===== UTILS =====
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -221,11 +262,11 @@ function changeApodo(){ const a=promptApodo(getApodo()); if(a){ setApodo(a); onA
 function chatColor(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
 function chatAvatar(name,size){ size=size||36; const n=(String(name||'').trim())||'?'; const ini=n.charAt(0).toUpperCase(); return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+chatColor(n)+';color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:'+Math.round(size*.42)+'px;flex-shrink:0;font-family:\'Space Grotesk\',sans-serif;line-height:1">'+esc(ini)+'</div>'; }
 
-// Cuando cambia el apodo: refrescar etiquetas, presencia y chequeo de ban.
+// Cuando cambia el apodo: refrescar etiquetas y presencia. El ban NO depende del apodo
+// (está indexado por UID): cambiar de apodo nunca levanta ni elude una sanción.
 function onApodoChanged(){
   refreshApodoLabels();
-  pushPresence();
-  subscribeBan();
+  if(!G.banned && G.authReady && G.banReady) pushPresence();
   renderFromCache();
 }
 
@@ -234,6 +275,7 @@ let _cache=[]; // docs ordenados asc
 function nearBottom(){ const el=document.getElementById('chat-msgs'); if(!el) return true; return (el.scrollHeight-el.scrollTop-el.clientHeight)<120; }
 function scrollBottom(){ const el=document.getElementById('chat-msgs'); if(el) el.scrollTop=el.scrollHeight; }
 function subscribeMessages(){
+  if(!G.authReady || !G.banReady || G.banned) return;   // baneado/no verificado: NO recibe mensajes
   if(G.msgsUnsub){ try{G.msgsUnsub();}catch(e){} }
   G.notifReady=false; // no notificar en la carga inicial (ni al recargar más mensajes)
   try{
@@ -265,6 +307,7 @@ function highlightMentions(escaped){
 }
 function renderText(t){ return highlightMentions(esc(t)); }
 function renderMessages(doScroll){
+  if(G.banned) return;  // nunca pintar historial a un usuario suspendido
   const el=document.getElementById('chat-msgs'); if(!el) return;
   const empty=document.getElementById('chat-empty');
   const me=getApodo();
@@ -275,12 +318,12 @@ function renderMessages(doScroll){
   _cache.forEach(m=>{
     const mine=!!me && m.apodo===me;
     const d=msgDate(m);
-    const isMod=!!m.moderador || G.mods.has(m.apodo);
+    const isMod=!!m.moderador || (!!m.uid && G.mods.has(m.uid));
     const isAdm=!!m.admin;
     const badge=isAdm?'<span class="badge badge-admin">✓ AdminRobos</span>':(isMod?'<span class="badge badge-mod">🛡️ Mod</span>':'');
     const modActions = G.isAdmin ? ('<div class="mod-actions">'+
       '<button class="mod-btn mod-del" onclick="adminDeleteMsgInline(\''+m.id+'\')" title="Eliminar mensaje">🗑️</button>'+
-      (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
+      (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.uid||'')+'\',\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
       '</div>') : '';
     // Cita (respuesta a otro mensaje)
     let quote='';
@@ -320,13 +363,18 @@ function getSid(){
   return G.sid;
 }
 function pushPresence(){
-  if(!db) return; const a=getApodo(); if(!a) return;
-  try{ db.collection(PRES_COL).doc(getSid()).set({apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}).catch(()=>{}); }catch(e){}
+  if(!db || !auth || !auth.currentUser || G.banned || !G.authReady || !G.banReady) return;
+  const a=getApodo(); if(!a) return;
+  try{ db.collection(PRES_COL).doc(getSid()).set({uid:auth.currentUser.uid,apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}).catch(()=>{}); }catch(e){}
+}
+function stopPresence(){
+  if(G.presTimer){ clearInterval(G.presTimer); G.presTimer=null; }
+  try{ if(db && G.sid) db.collection(PRES_COL).doc(G.sid).update({activo:false}).catch(()=>{}); }catch(e){}
 }
 function startPresence(){
+  if(G.presTimer || G.banned || !G.banReady || !G.authReady) return;
   pushPresence();
-  setInterval(pushPresence,30000);
-  window.addEventListener('beforeunload',()=>{ try{ db.collection(PRES_COL).doc(getSid()).set({activo:false},{merge:true}).catch(()=>{}); }catch(e){} });
+  G.presTimer=setInterval(pushPresence,30000);
 }
 let _presDocs=[];
 function presTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toDate().getTime(); if(v&&typeof v.seconds==='number') return v.seconds*1000; return 0; }
@@ -334,48 +382,93 @@ function recomputeOnline(){
   const now=Date.now();
   const seen=new Set();
   let n=0;
-  _presDocs.forEach(p=>{ if(p.activo===false) return; if((now-presTime(p))>ONLINE_TTL) return; const key=p.apodo||p._id; if(seen.has(key)) return; seen.add(key); n++; });
-  n=Math.max(n,1); // uno mismo siempre cuenta
+  // Dedupe por UID (una identidad = un conectado, aunque tenga varias pestañas/sesiones).
+  _presDocs.forEach(p=>{ if(p.activo===false) return; if((now-presTime(p))>ONLINE_TTL) return; const key=p.uid||p.apodo||p._id; if(seen.has(key)) return; seen.add(key); n++; });
   const el=document.getElementById('chat-online'); if(el) el.textContent=n+' '+(n===1?'vecino':'vecinos')+' en línea';
 }
 function subscribeOnline(){
+  if(G.banned || !G.banReady || G.presUnsub) return;
   try{
-    db.collection(PRES_COL).onSnapshot(snap=>{ _presDocs=snap.docs.map(d=>({_id:d.id,...d.data()})); recomputeOnline(); },err=>{ console.warn('presencia',err); });
+    G.presUnsub=db.collection(PRES_COL).onSnapshot(snap=>{ _presDocs=snap.docs.map(d=>({_id:d.id,...d.data()})); recomputeOnline(); },err=>{ console.warn('presencia',err); });
   }catch(e){ console.warn('subscribeOnline',e); }
-  setInterval(recomputeOnline,15000);
+  if(!G.onlineTimer) G.onlineTimer=setInterval(recomputeOnline,15000);
 }
 
-// ===== MODERADORES =====
+// ===== MODERADORES (indexados por UID: chat_moderadores/{uid}) =====
 function subscribeMods(){
+  if(!G.authReady || !G.banReady || G.banned || G.modUnsub) return;
   try{
     G.modUnsub=db.collection(MOD_COL).onSnapshot(snap=>{ G.mods=new Set(snap.docs.map(d=>d.id)); renderFromCache(); },err=>{ console.warn('mods',err); });
   }catch(e){}
 }
 
-// ===== BANS =====
-function banActive(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
-function fmtBanUntil(d){ const h=d&&d.ban_hasta; if(h==null) return 'indefinidamente'; const dt=(h&&h.toDate)?h.toDate():(h&&h.seconds?new Date(h.seconds*1000):null); if(!dt) return 'indefinidamente'; return 'hasta el '+dt.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
+// ===== BANS POR UID DE FIREBASE =====
+function banTime(h){ if(h==null) return null; return (h&&h.toDate)?h.toDate().getTime():(h&&typeof h.seconds==='number'?h.seconds*1000:null); }
+function banActive(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=banTime(h); return t!=null && t>Date.now(); }
+function fmtBanUntil(d){ const h=d&&d.ban_hasta; if(h==null) return 'de forma indefinida'; const t=banTime(h); if(t==null) return 'de forma indefinida'; const dt=new Date(t); return 'hasta el '+dt.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' a las '+dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+' hs'; }
+// Corta TODO lo que recibe un usuario (mensajes, presencia, mods) y limpia el historial en pantalla.
+function stopChatListeners(){
+  ['msgsUnsub','presUnsub','modUnsub'].forEach(k=>{ if(G[k]){ try{ G[k](); }catch(e){} G[k]=null; } });
+  if(G.onlineTimer){ clearInterval(G.onlineTimer); G.onlineTimer=null; }
+  _cache=[]; _presDocs=[]; G.mods=new Set(); G.notifReady=false; G.msgsCount=0;
+  document.querySelectorAll('#chat-msgs .cmsg').forEach(el=>el.remove());
+}
+function showStatusScreen(mode,title,desc,metaHTML){
+  const lock=document.getElementById('chat-lockout'), msgs=document.getElementById('chat-msgs'), footer=document.getElementById('chat-footer');
+  const spin=document.getElementById('lk-spin'), emoji=document.getElementById('lk-emoji');
+  const tEl=document.getElementById('chat-lockout-title'), dEl=document.getElementById('chat-lockout-desc'), mEl=document.getElementById('chat-lockout-meta');
+  if(!lock) return;
+  if(mode==='open'){ lock.style.display='none'; if(msgs)msgs.style.display='block'; if(footer)footer.style.display='block'; return; }
+  lock.style.display='flex';
+  lock.classList.toggle('suspended', mode==='suspended');
+  if(spin) spin.style.display=(mode==='loading')?'block':'none';
+  if(emoji){ emoji.style.display=(mode==='loading')?'none':'block'; emoji.textContent=(mode==='error')?'⚠️':'🚫'; }
+  if(tEl) tEl.textContent=title;
+  if(dEl) dEl.textContent=desc;
+  if(mEl){ mEl.innerHTML=metaHTML||''; mEl.style.display=metaHTML?'flex':'none'; }
+  if(msgs) msgs.style.display='none';
+  if(footer) footer.style.display='none';
+}
 function applyBanUI(d){
-  const active=banActive(d);
-  G.banned=active;
-  const banEl=document.getElementById('chat-ban'), live=document.getElementById('chat-live');
-  const inp=document.getElementById('chat-in'), snd=document.getElementById('chat-send');
-  if(active){
-    if(banEl){ banEl.style.display='block'; banEl.innerHTML='🚫 Tu acceso al chat está suspendido '+fmtBanUntil(d)+'.'+((d&&d.motivo)?' <span style="color:var(--t3)">Motivo: '+esc(d.motivo)+'</span>':''); }
-    if(live) live.style.display='none';
-    if(inp) inp.disabled=true; if(snd) snd.disabled=true;
+  G.banReady=true;
+  const banned=banActive(d) && !G.isAdmin;   // el administrador nunca queda bloqueado
+  const was=G.banned;
+  G.banned=banned;
+  if(G.banExpiryTimer){ clearTimeout(G.banExpiryTimer); G.banExpiryTimer=null; }
+  if(banned){
+    stopPresence();
+    stopChatListeners();
+    const meta='<div class="lk-row"><b>Duración</b><span>'+esc(fmtBanUntil(d))+'</span></div>'+
+      ((d&&d.motivo)?'<div class="lk-row"><b>Motivo</b><span>'+esc(d.motivo)+'</span></div>':'')+
+      '<p class="lk-note">Cambiar de apodo, recargar la página o abrir otra pestaña no modifica esta suspensión. El acceso se restablece automáticamente cuando termina.</p>';
+    showStatusScreen('suspended','🚫 Acceso al chat suspendido',
+      'Tu acceso al Chat Vecinal de Robos MDP ha sido suspendido. No podés leer ni enviar mensajes.', meta);
+    // Programar restablecimiento automático al vencer una sanción temporal.
+    const t=d?banTime(d.ban_hasta):null;
+    if(t!=null && t>Date.now()){
+      G.banExpiryTimer=setTimeout(()=>applyBanUI(d), Math.min(t-Date.now()+200, 2147483000));
+    }
   }else{
-    if(banEl) banEl.style.display='none';
-    if(live) live.style.display='block';
-    if(inp) inp.disabled=false; if(snd) snd.disabled=false;
+    showStatusScreen('open');
+    // (Re)iniciar suscripciones al recuperar acceso o al verificar que no hay ban.
+    subscribeMessages(); subscribeOnline(); subscribeMods(); startPresence();
+    if(was) refreshApodoLabels();
   }
 }
 function subscribeBan(){
   if(G.banUnsub){ try{G.banUnsub();}catch(e){} G.banUnsub=null; }
-  const a=getApodo(); if(!a){ applyBanUI(null); return; }
+  G.banned=true; G.banReady=false;
+  if(!auth || !auth.currentUser) return;
   try{
-    G.banUnsub=db.collection(BAN_COL).doc(a).onSnapshot(snap=>{ applyBanUI(snap.exists?snap.data():null); },err=>{ console.warn('ban',err); });
-  }catch(e){}
+    G.banUnsub=db.collection(BAN_COL).doc(auth.currentUser.uid).onSnapshot(
+      snap=>applyBanUI(snap.exists?snap.data():null),
+      err=>{ // fail-closed: si no se puede verificar el ban, no se abre el chat
+        console.error('ban',err); G.banned=true; G.banReady=false;
+        stopPresence(); stopChatListeners();
+        showStatusScreen('error','No se pudo verificar tu acceso',
+          'Hubo un problema al comprobar el estado de tu acceso al chat. Volvé a intentarlo en unos minutos.');
+      });
+  }catch(e){ console.warn('subscribeBan',e); }
 }
 
 // ===== ENVÍO + ANTI-SPAM =====
@@ -402,7 +495,7 @@ async function sendChat(){
   const txt=ta.value.trim();
   if(!txt) return;
   const a=ensureApodo(); if(!a){ showToast('Elegí un apodo para escribir','r'); return; }
-  if(G.banned){ showToast('Tu acceso al chat está suspendido','r'); return; }
+  if(G.banned || !G.authReady || !G.banReady || !auth || !auth.currentUser){ showToast('Tu acceso al chat no está habilitado','r'); return; }
   const now=Date.now();
   // cooldown 3s
   if(now-G.lastSend<COOLDOWN_MS){ showToast('Esperá un segundo entre mensajes','r'); return; }
@@ -411,8 +504,8 @@ async function sendChat(){
   if(G.sendTimes.length>=RATE_MAX){ showToast('Demasiados mensajes, esperá un momento','r'); return; }
   const snd=document.getElementById('chat-send'); if(snd) snd.disabled=true;
   const payload={
-    apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
-    admin:G.isAdmin===true, moderador:G.mods.has(a),
+    uid:auth.currentUser.uid, apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
+    admin:G.isAdmin===true, moderador:G.mods.has(auth.currentUser.uid),
     timestamp:FV.serverTimestamp()
   };
   if(G.replyTo && G.replyTo.msgId){
@@ -613,9 +706,11 @@ async function adminDeleteMsgInline(id){
   try{ await db.collection(CHAT_COL).doc(id).delete(); }
   catch(e){ console.error('del inline',e); showToast('No se pudo eliminar','r'); }
 }
-function adminBanInline(encA){
+function adminBanInline(encUid,encA){
   if(!G.isAdmin) return;
-  const a=decodeURIComponent(encA); if(!a||a==='AdminRobos') return;
+  const uid=decodeURIComponent(encUid||''), a=decodeURIComponent(encA||'');
+  if(!uid){ showToast('Mensaje antiguo sin UID: no se puede aplicar un ban persistente desde este mensaje. Usá el panel admin.','r',7000); return; }
+  if(a==='AdminRobos' || (auth&&auth.currentUser&&uid===auth.currentUser.uid)) return;
   const prev=document.getElementById('chat-ban-modal'); if(prev) prev.remove();
   const ov=document.createElement('div'); ov.className='movl'; ov.id='chat-ban-modal'; ov.style.display='flex';
   ov.onclick=e=>{ if(e.target===ov) ov.remove(); };
@@ -626,9 +721,9 @@ function adminBanInline(encA){
     '<div id="chat-ban-dur" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:13px">'+opts.map((o,i)=>'<button data-ms="'+(o[1]==null?'null':o[1])+'" onclick="banInlinePick(this)" style="padding:9px 5px;border-radius:11px;border:1px solid '+(i===2?'#0ea5e9':'rgba(var(--rgb-line),.2)')+';background:'+(i===2?'rgba(14,165,233,.16)':'rgba(var(--rgb-deep),.6)')+';color:'+(i===2?'#7dd3fc':'var(--t2)')+';font-size:11px;font-weight:700;cursor:pointer">'+o[0]+'</button>').join('')+'</div>'+
     '<input id="chat-ban-motivo" class="min" maxlength="120" placeholder="Motivo (opcional)">'+
     '<div style="display:flex;gap:9px;margin-top:4px"><button onclick="document.getElementById(\'chat-ban-modal\').remove()" style="flex:1;padding:12px;border-radius:12px;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:12px;font-weight:700;cursor:pointer">Cancelar</button>'+
-    '<button onclick="banInlineConfirm(\''+encodeURIComponent(a)+'\')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Confirmar ban</button></div>';
+    '<button onclick="banInlineConfirm()" style="flex:1;padding:12px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Confirmar ban</button></div>';
   document.body.appendChild(ov);
-  ov.dataset.ms=String(24*3600e3);
+  ov.dataset.ms=String(24*3600e3); ov.dataset.uid=uid; ov.dataset.apodo=a;
 }
 function banInlinePick(btn){
   const wrap=document.getElementById('chat-ban-dur'); if(!wrap) return;
@@ -636,14 +731,17 @@ function banInlinePick(btn){
   btn.style.borderColor='#0ea5e9'; btn.style.background='rgba(14,165,233,.16)'; btn.style.color='#7dd3fc';
   const ov=document.getElementById('chat-ban-modal'); if(ov) ov.dataset.ms=btn.dataset.ms;
 }
-async function banInlineConfirm(encA){
+async function banInlineConfirm(){
   if(!G.isAdmin) return;
-  const a=decodeURIComponent(encA); const ov=document.getElementById('chat-ban-modal'); if(!ov) return;
+  const ov=document.getElementById('chat-ban-modal'); if(!ov) return;
+  const uid=ov.dataset.uid, a=ov.dataset.apodo||''; if(!uid) return;
   const ms=ov.dataset.ms; const motivo=(document.getElementById('chat-ban-motivo')?.value||'').trim();
-  let ban_hasta=null;
-  if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); }
+  let ban_hasta=null, dur='indefinido';
+  if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); dur=ms; }
   try{
-    await db.collection(BAN_COL).doc(a).set({apodo:a,motivo:motivo,ban_hasta:ban_hasta,baneado_por:'AdminRobos',timestamp:FV.serverTimestamp()});
+    await db.collection(BAN_COL).doc(uid).set({uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,duracion_ms:dur,baneado_por:'AdminRobos',timestamp:FV.serverTimestamp()});
+    // Sacarlo YA de los conectados: marcar sus presencias como inactivas.
+    try{ const ps=await db.collection(PRES_COL).where('uid','==',uid).get(); await Promise.all(ps.docs.map(p=>p.ref.update({activo:false}).catch(()=>{}))); }catch(_){}
     ov.remove(); showToast('Usuario baneado 🚫','g');
   }catch(e){ console.error('ban inline',e); showToast('No se pudo banear','r'); }
 }
@@ -651,15 +749,32 @@ async function banInlineConfirm(encA){
 // ===== INIT =====
 window.addEventListener('load',()=>{
   if(!db){ showToast('Sin conexión a la base','r'); return; }
-  if(auth){ try{ auth.onAuthStateChanged(u=>{ setAdminMode(!!(u && u.email===ADMIN_EMAIL)); }); }catch(e){ console.warn('authState',e); } }
+  if(auth){
+    auth.onAuthStateChanged(async u=>{
+      if(!u){
+        // Sin sesión activa → resetear estado (fail-closed) e ingresar de forma anónima.
+        G.authReady=false; G.banReady=false; G.banned=true; G.uid=null;
+        stopPresence(); stopChatListeners();
+        if(G.banUnsub){ try{G.banUnsub();}catch(e){} G.banUnsub=null; }
+        showStatusScreen('loading','Verificando acceso…','Conectando con el chat vecinal de forma segura.');
+        try{ await auth.signInAnonymously(); }
+        catch(e){ console.error('anon auth',e);
+          showStatusScreen('error','No se pudo iniciar el chat',
+            'No se pudo conectar de forma anónima. Es necesario habilitar el proveedor «Anonymous» en Firebase Authentication → Sign-in method.'); }
+        return;
+      }
+      // Sesión lista (anónima o admin): verificar identidad y recién ahí comprobar el ban.
+      G.uid=u.uid; G.authReady=true; G.banReady=false; G.banned=true;
+      setAdminMode(u.email===ADMIN_EMAIL);
+      subscribeBan();   // applyBanUI abrirá (o no) las suscripciones según el estado de la sanción
+    });
+    window.addEventListener('beforeunload',()=>{ try{ if(db&&G.sid) db.collection(PRES_COL).doc(G.sid).update({activo:false}).catch(()=>{}); }catch(e){} });
+  }else{
+    showStatusScreen('error','Login no disponible','No se pudo inicializar la autenticación del chat.');
+  }
   // No se fuerza el prompt de apodo al cargar (evita bloquear y pisar la resolución de auth);
-  // se pide al enfocar el input o al enviar.
+  // se pide al enfocar el input o al enviar. Las suscripciones arrancan tras verificar el ban.
   refreshApodoLabels();
-  subscribeMods();
-  subscribeMessages();
-  subscribeOnline();
-  subscribeBan();
-  startPresence();
   onChatInput();
   // Alertas ON por defecto (el sonido no necesita permiso); solo off si el user las silenció.
   G.notifOn = (function(){ try{ return localStorage.getItem(NOTIF_ON_LS)!=='0'; }catch(e){ return true; } })();

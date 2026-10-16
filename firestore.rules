@@ -1,0 +1,211 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'admin@robosmdp.com.ar';
+    }
+
+    function reservedName(a) {
+      return a is string && (
+        a.lower().matches('.*admin.*') ||
+        a.lower().matches('.*robosmdp.*') ||
+        a.lower().matches('.*oficial.*') ||
+        a.lower().matches('.*verificad.*')
+      );
+    }
+
+    function honestAuthor() {
+      return (!('admin' in request.resource.data) || request.resource.data.admin == false || isAdmin())
+          && (!('apodo' in request.resource.data) || !reservedName(request.resource.data.apodo) || isAdmin());
+    }
+
+    // ===== Helpers del Chat Vecinal v2 (identidad por UID) =====
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function banRef() {
+      return /databases/$(database)/documents/chat_bans/$(request.auth.uid);
+    }
+    // Baneado = existe su doc de ban por UID y sigue vigente (permanente = sin ban_hasta).
+    function isBanned() {
+      return isSignedIn()
+        && exists(banRef())
+        && (get(banRef()).data.ban_hasta == null
+            || get(banRef()).data.ban_hasta > request.time);
+    }
+    // Moderador = tiene doc en chat_moderadores indexado por su UID.
+    function isMod() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/chat_moderadores/$(request.auth.uid));
+    }
+
+    match /artifacts/{appId}/public/data/reports/{rid} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+    match /reportes/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+    match /basura/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+    match /pozos/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+    match /pageCounters/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /stats/visitas {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /notificaciones_resolucion/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+    match /subscripciones_push/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /patentes/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /abandonados/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /luminarias/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /objetos_perdidos/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+    match /artifacts/{aid}/public/data/reports/{rid}/comentarios/{cid} {
+      allow read: if true;
+      allow create: if request.resource.data.texto is string
+                  && request.resource.data.texto.size() > 0
+                  && request.resource.data.texto.size() <= 280
+                  && honestAuthor();
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+    match /{col}/{rid}/comentarios/{cid} {
+      allow read: if col in ['basura','pozos','abandonados','luminarias','reportes'];
+      allow create: if col in ['basura','pozos','abandonados','luminarias','reportes']
+                  && request.resource.data.texto is string
+                  && request.resource.data.texto.size() > 0
+                  && request.resource.data.texto.size() <= 280
+                  && honestAuthor();
+      allow update: if false;
+      allow delete: if col in ['basura','pozos','abandonados','luminarias','reportes'] && isAdmin();
+    }
+    match /foro/{tid} {
+      allow read: if true;
+      allow create: if request.resource.data.titulo is string
+                  && request.resource.data.titulo.size() > 0
+                  && request.resource.data.titulo.size() <= 100
+                  && request.resource.data.cuerpo is string
+                  && request.resource.data.cuerpo.size() <= 1000
+                  && request.resource.data.respuestas_count == 0
+                  && honestAuthor();
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['respuestas_count']);
+      allow delete: if isAdmin();
+      match /respuestas/{rid} {
+        allow read: if true;
+        allow create: if request.resource.data.texto is string
+                    && request.resource.data.texto.size() > 0
+                    && request.resource.data.texto.size() <= 1000
+                    && honestAuthor();
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+    }
+    match /rastreo_registros/{docId} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+    match /mascotas/{id} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if isAdmin() || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resuelto'])
+        && request.resource.data.resuelto == true
+      );
+      allow delete: if isAdmin();
+    }
+
+    // ===========================================================
+    //  CHAT VECINAL v2 — identidad y moderación por UID de Auth
+    // ===========================================================
+
+    // Mensajes: solo autenticados y NO baneados leen/escriben. El uid del
+    // mensaje debe ser el del autor y no se puede auto-atribuir admin/moderador.
+    match /chat_publico/{msgId} {
+      allow read: if isAdmin() || (isSignedIn() && !isBanned());
+      allow create: if isSignedIn() && !isBanned()
+                  && request.resource.data.uid == request.auth.uid
+                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo'])
+                  && request.resource.data.texto is string
+                  && request.resource.data.texto.size() > 0
+                  && request.resource.data.texto.size() <= 280
+                  && request.resource.data.apodo is string
+                  && request.resource.data.apodo.size() <= 40
+                  && request.resource.data.timestamp == request.time
+                  && honestAuthor()
+                  && (!('moderador' in request.resource.data)
+                      || request.resource.data.moderador == false
+                      || isMod() || isAdmin());
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    // Presencia atada al UID autenticado. El admin puede escribir la de otros
+    // para marcarla inactiva al banear. La limpieza programada usa Service
+    // Account vía REST y no pasa por estas reglas.
+    match /chat_presencia/{sessionId} {
+      allow read: if isAdmin() || (isSignedIn() && !isBanned());
+      allow create, update: if isAdmin()
+                  || (isSignedIn() && !isBanned()
+                      && request.resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // Moderadores indexados por UID. La lista no es sensible (solo da el badge 🛡️);
+    // asignarlos/quitarlos es exclusivo del administrador.
+    match /chat_moderadores/{uid} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Baneos indexados por UID. Un vecino solo puede leer SU propio ban (para
+    // auto-bloquearse en vivo); el admin lista todos y es el único que crea,
+    // modifica o levanta sanciones.
+    match /chat_bans/{uid} {
+      allow get:  if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}
