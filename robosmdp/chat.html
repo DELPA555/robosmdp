@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Chat vecinal — Robos MDP · Mar del Plata</title>
 <meta name="description" content="Chat vecinal en tiempo real de Robos MDP: hablá con otros vecinos de Mar del Plata sobre seguridad y lo que pasa en el barrio, en vivo.">
 <meta name="theme-color" content="#0a0f1c">
@@ -50,7 +50,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 #chat-footer{flex-shrink:0;border-top:1px solid rgba(var(--rgb-line),.1);background:rgba(var(--rgb-deep),.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 #chat-who{font-size:10px;color:var(--t3);margin-bottom:7px}
 .inrow{display:flex;gap:9px;align-items:flex-end}
-#chat-in{flex:1;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:14px;padding:11px 13px;font-size:14px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit;max-height:120px;line-height:1.4}
+#chat-in{flex:1;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:14px;padding:11px 13px;font-size:16px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit;max-height:120px;line-height:1.4}
 #chat-in:focus{border-color:rgba(14,165,233,.55)}
 #chat-send{flex-shrink:0;width:46px;height:46px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(14,165,233,.35)}
 #chat-send:disabled{opacity:.45;cursor:not-allowed}
@@ -83,6 +83,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 /* Login admin */
 #chat-admin-btn{flex-shrink:0;white-space:nowrap;padding:8px 10px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;border:1px solid rgba(var(--rgb-line),.18);background:rgba(var(--rgb-slate),.7);color:var(--t3)}
 #chat-admin-btn.is-admin{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.4);color:#4ade80}
+#chat-notif-btn{flex-shrink:0;width:38px;height:36px;border-radius:12px;font-size:16px;cursor:pointer;border:1px solid rgba(var(--rgb-line),.18);background:rgba(var(--rgb-slate),.7);display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
 .movl{position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:16px}
 .mbox{background:var(--bg-2);border:1px solid var(--line-2);width:100%;max-width:380px;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.6);padding:20px 22px}
 .min{width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:11px 13px;font-size:14px;color:var(--t1);outline:none;margin-bottom:10px;font-family:inherit}
@@ -104,6 +105,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
       <h2 style="font-size:15px;font-weight:700;color:var(--t0);letter-spacing:-.02em;line-height:1.1">Chat Vecinal</h2>
       <p style="font-size:10px;font-weight:600;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px"><span class="online-dot"></span><span id="chat-online">0 vecinos en línea</span></p>
     </div>
+    <button id="chat-notif-btn" onclick="toggleNotif()" title="Notificaciones">🔕</button>
     <button id="chat-admin-btn" onclick="openAdminLogin()" title="Acceso administrador">🔐 Login admin</button>
     <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
   </header>
@@ -166,7 +168,7 @@ const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_M
 
 const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUnsub:null,
   mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0, isAdmin:false,
-  replyTo:null, mentionStart:-1 };
+  replyTo:null, mentionStart:-1, notifOn:false, notifReady:false, hasSent:false };
 
 // ===== UTILS =====
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -232,14 +234,24 @@ function nearBottom(){ const el=document.getElementById('chat-msgs'); if(!el) re
 function scrollBottom(){ const el=document.getElementById('chat-msgs'); if(el) el.scrollTop=el.scrollHeight; }
 function subscribeMessages(){
   if(G.msgsUnsub){ try{G.msgsUnsub();}catch(e){} }
+  G.notifReady=false; // no notificar en la carga inicial (ni al recargar más mensajes)
   try{
     G.msgsUnsub=db.collection(CHAT_COL).orderBy('timestamp','desc').limit(G.limit).onSnapshot(snap=>{
+      // Notificar mensajes realmente nuevos (no la carga inicial, no los propios optimistas)
+      if(G.notifReady){
+        snap.docChanges().forEach(ch=>{
+          if(ch.type!=='added') return;
+          if(ch.doc.metadata && ch.doc.metadata.hasPendingWrites) return;
+          maybeNotify(ch.doc.data());
+        });
+      }
       const stick=nearBottom();
       const grew=snap.size>G.msgsCount;
       G.msgsCount=snap.size;
       _cache=snap.docs.map(d=>({id:d.id,...d.data()})).reverse();
       const lm=document.getElementById('chat-loadmore'); if(lm) lm.style.display=(snap.size>=G.limit)?'block':'none';
       renderMessages(stick||grew);
+      G.notifReady=true;
     },err=>{ console.warn('chat msgs',err); });
   }catch(e){ console.warn('subscribeMessages',e); }
 }
@@ -410,6 +422,7 @@ async function sendChat(){
     G.lastSend=now; G.sendTimes.push(now);
     ta.value=''; clearReply(); onChatInput(); ta.focus();
     requestAnimationFrame(scrollBottom);
+    G.hasSent=true; maybeAskNotif();   // recién tras escribir al menos 1 mensaje
   }catch(e){ console.error('sendChat',e); showToast('No se pudo enviar (¿reglas Firestore?)','r'); }
   finally{ if(snd) snd.disabled=G.banned; }
 }
@@ -474,6 +487,57 @@ function pickMention(encA){
   const np=(before+insert).length; try{ ta.setSelectionRange(np,np); }catch(e){}
   const dd=document.getElementById('mention-dd'); if(dd) dd.style.display='none';
   G.mentionStart=-1; ta.focus(); onChatInput();
+}
+
+// ===== NOTIFICACIONES DE MENSAJES NUEVOS =====
+const NOTIF_LS='rmdp_chat_notif', NOTIF_ON_LS='rmdp_chat_notif_on';
+function notifSupported(){ return ('Notification' in window); }
+function notifEnabled(){ return notifSupported() && Notification.permission==='granted' && G.notifOn; }
+function updateNotifToggle(){
+  const b=document.getElementById('chat-notif-btn'); if(!b) return;
+  if(!notifSupported()){ b.style.display='none'; return; }
+  const on=notifEnabled();
+  b.textContent=on?'🔔':'🔕';
+  b.title=on?'Notificaciones activadas — tocá para silenciar':'Notificaciones silenciadas — tocá para activar';
+}
+// Se pide permiso SOLO tras el primer mensaje enviado y SOLO si nunca se decidió.
+function maybeAskNotif(){
+  if(!notifSupported()||!G.hasSent) return;
+  if(Notification.permission!=='default'){ try{ localStorage.setItem(NOTIF_LS,Notification.permission); }catch(e){} updateNotifToggle(); return; }
+  let asked=null; try{ asked=localStorage.getItem(NOTIF_LS); }catch(e){}
+  if(asked) return; // ya se preguntó antes
+  try{
+    Notification.requestPermission().then(p=>{
+      try{ localStorage.setItem(NOTIF_LS,p); }catch(e){}
+      if(p==='granted'){ G.notifOn=true; try{ localStorage.setItem(NOTIF_ON_LS,'1'); }catch(e){} showToast('Notificaciones activadas 🔔','g'); }
+      updateNotifToggle();
+    }).catch(()=>{});
+  }catch(e){}
+}
+// Toggle manual del header.
+function toggleNotif(){
+  if(!notifSupported()){ showToast('Tu navegador no soporta notificaciones','r'); return; }
+  if(Notification.permission==='denied'){ showToast('Activá las notificaciones para este sitio en el navegador','r'); return; }
+  if(Notification.permission==='default'){
+    try{ Notification.requestPermission().then(p=>{ try{ localStorage.setItem(NOTIF_LS,p); }catch(e){} if(p==='granted'){ G.notifOn=true; try{ localStorage.setItem(NOTIF_ON_LS,'1'); }catch(e){} showToast('Notificaciones activadas 🔔','g'); } else { showToast('Permiso de notificaciones denegado','r'); } updateNotifToggle(); }).catch(()=>{}); }catch(e){}
+    return;
+  }
+  // permiso ya concedido → prender/apagar
+  G.notifOn=!G.notifOn;
+  try{ localStorage.setItem(NOTIF_ON_LS, G.notifOn?'1':'0'); }catch(e){}
+  showToast(G.notifOn?'Notificaciones activadas 🔔':'Notificaciones silenciadas 🔕','g');
+  updateNotifToggle();
+}
+function maybeNotify(m){
+  try{
+    if(!m||!notifEnabled()) return;
+    if(!document.hidden) return;                                   // el usuario está mirando el chat
+    const me=(getApodo()||'').toLowerCase();
+    if((m.apodo||'').toLowerCase()===me) return;                   // no notificar mis propios mensajes
+    const body='@'+(m.apodo||'Vecino')+': '+String(m.texto||'').slice(0,60);
+    const n=new Notification('💬 Robos MDP Chat',{ body:body, icon:'/assets/logo-robos.png', tag:'rmdp-chat', renotify:true });
+    n.onclick=()=>{ try{ window.focus(); }catch(e){} try{ n.close(); }catch(e){} };
+  }catch(e){ console.warn('notify',e); }
 }
 
 // ===== LOGIN ADMIN =====
@@ -575,6 +639,9 @@ window.addEventListener('load',()=>{
   subscribeBan();
   startPresence();
   onChatInput();
+  // Estado inicial de notificaciones (si ya hay permiso y el user no las silenció)
+  G.notifOn = notifSupported() && Notification.permission==='granted' && (function(){ try{ return localStorage.getItem(NOTIF_ON_LS)!=='0'; }catch(e){ return true; } })();
+  updateNotifToggle();
   safeIcons();
   document.getElementById('chat-in')&&document.getElementById('chat-in').addEventListener('focus',()=>{ if(!getApodo()) ensureApodo(); });
   // Long-press en mobile para responder

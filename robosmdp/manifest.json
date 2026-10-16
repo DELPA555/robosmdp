@@ -34,6 +34,13 @@
   ],
   "shortcuts": [
     {
+      "name": "Chat vecinal",
+      "short_name": "Chat",
+      "description": "Chat en tiempo real con los vecinos",
+      "url": "/chat",
+      "icons": [{"src": "/assets/logo-robos.png", "sizes": "96x96"}]
+    },
+    {
       "name": "Ver mapa de Robos",
       "url": "/#robos",
       "icons": [{"src": "/assets/logo-robos.png", "sizes": "96x96"}]
