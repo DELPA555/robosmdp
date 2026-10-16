@@ -60,6 +60,26 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .online-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:odot 2s ease-out infinite}
 @keyframes odot{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
 .flink{text-decoration:none}
+/* Responder a un mensaje + menciones */
+.cmsg{position:relative}
+.reply-btn{flex-shrink:0;align-self:center;opacity:0;transition:opacity .15s;width:30px;height:30px;border-radius:50%;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.9);color:var(--t2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0}
+@media (hover:hover){.cmsg:hover .reply-btn{opacity:1}}
+@media (hover:none){.reply-btn{display:none}}
+.cquote{border-left:3px solid var(--accent);background:rgba(var(--rgb-deep),.55);border-radius:7px;padding:5px 9px;margin-bottom:6px;cursor:pointer;max-width:100%}
+.cquote .cq-name{font-size:10px;font-weight:800;color:#7dd3fc;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cquote .cq-text{font-size:11px;color:var(--t3);line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cq-del{font-style:italic;color:#64748b}
+.mention{color:#38bdf8;font-weight:700}
+.cmsg.flash .cbubble{animation:flashb 1.4s ease-out}
+@keyframes flashb{0%,35%{box-shadow:0 0 0 2px rgba(14,165,233,.65)}100%{box-shadow:0 0 0 0 rgba(14,165,233,0)}}
+#reply-preview{display:none;align-items:center;gap:9px;background:rgba(var(--rgb-deep),.6);border:1px solid rgba(14,165,233,.3);border-left:3px solid var(--accent);border-radius:12px;padding:8px 11px;margin-bottom:8px}
+#reply-preview .rp-body{min-width:0;flex:1}
+#reply-preview .rp-name{font-size:10px;font-weight:800;color:#7dd3fc;line-height:1.35}
+#reply-preview .rp-text{font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;margin-top:1px}
+#reply-cancel{flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid rgba(var(--rgb-line),.2);background:transparent;color:var(--t3);cursor:pointer;font-size:12px;line-height:1}
+#mention-dd{display:none;position:absolute;left:0;right:0;bottom:calc(100% + 6px);max-height:190px;overflow-y:auto;background:var(--bg-2);border:1px solid var(--line-2);border-radius:13px;box-shadow:0 -10px 30px rgba(0,0,0,.45);z-index:50;padding:5px}
+#mention-dd .md-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;color:var(--t1)}
+#mention-dd .md-item.sel,#mention-dd .md-item:hover{background:rgba(14,165,233,.14)}
 /* Login admin */
 #chat-admin-btn{flex-shrink:0;white-space:nowrap;padding:8px 10px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;border:1px solid rgba(var(--rgb-line),.18);background:rgba(var(--rgb-slate),.7);color:var(--t3)}
 #chat-admin-btn.is-admin{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.4);color:#4ade80}
@@ -97,7 +117,12 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
     <div id="chat-ban"></div>
     <div id="chat-live">
       <div id="chat-who" class="apodo-who"></div>
-      <div class="inrow">
+      <div id="reply-preview">
+        <div class="rp-body"><div class="rp-name" id="rp-name"></div><div class="rp-text" id="rp-text"></div></div>
+        <button id="reply-cancel" onclick="clearReply()" title="Cancelar respuesta">✕</button>
+      </div>
+      <div class="inrow" style="position:relative">
+        <div id="mention-dd"></div>
         <textarea id="chat-in" rows="1" maxlength="280" placeholder="Escribí un mensaje..." oninput="onChatInput()" onkeydown="onChatKey(event)"></textarea>
         <button id="chat-send" onclick="sendChat()" title="Enviar"><i data-lucide="send" style="width:19px;height:19px"></i></button>
       </div>
@@ -140,7 +165,8 @@ const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderado
 const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
 
 const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUnsub:null,
-  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0, isAdmin:false };
+  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0, isAdmin:false,
+  replyTo:null, mentionStart:-1 };
 
 // ===== UTILS =====
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -219,6 +245,12 @@ function subscribeMessages(){
 }
 function loadMoreMsgs(){ G.limit+=CHAT_PAGE; subscribeMessages(); }
 function renderFromCache(){ renderMessages(false); }
+// Resalta menciones @apodo (solo visual). Se aplica sobre el texto ya escapado.
+function highlightMentions(escaped){
+  try{ return escaped.replace(/(^|\s)@([\p{L}\p{N}_.-]{1,30})/gu,'$1<span class="mention">@$2</span>'); }
+  catch(e){ return escaped.replace(/(^|\s)@([A-Za-z0-9_.-]{1,30})/g,'$1<span class="mention">@$2</span>'); }
+}
+function renderText(t){ return highlightMentions(esc(t)); }
 function renderMessages(doScroll){
   const el=document.getElementById('chat-msgs'); if(!el) return;
   const empty=document.getElementById('chat-empty');
@@ -237,15 +269,29 @@ function renderMessages(doScroll){
       '<button class="mod-btn mod-del" onclick="adminDeleteMsgInline(\''+m.id+'\')" title="Eliminar mensaje">🗑️</button>'+
       (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
       '</div>') : '';
+    // Cita (respuesta a otro mensaje)
+    let quote='';
+    if(m.replyTo && (m.replyTo.msgId || m.replyTo.apodo)){
+      const origLoaded=_cache.some(x=>x.id===m.replyTo.msgId);
+      const qt=esc(m.replyTo.texto||'');
+      const body=origLoaded ? (qt||'<span class="cq-del">(sin texto)</span>')
+                            : (qt?('<span class="cq-del">'+qt+'</span>'):'<span class="cq-del">Mensaje eliminado</span>');
+      quote='<div class="cquote" onclick="scrollToReply(\''+esc(m.replyTo.msgId||'')+'\')">'+
+        '<div class="cq-name">↩️ @'+esc(m.replyTo.apodo||'alguien')+(origLoaded?'':' · <span class="cq-del">eliminado</span>')+'</div>'+
+        '<div class="cq-text">'+body+'</div></div>';
+    }
     const div=document.createElement('div');
     div.className='cmsg'+(mine?' mine':'');
+    div.dataset.mid=m.id;
     div.innerHTML=chatAvatar(m.apodo,34)+
       '<div class="cbubble">'+
       '<div class="cname" style="color:'+chatColor(m.apodo||'?')+'">'+esc(m.apodo||'Vecino anónimo')+badge+'</div>'+
-      '<div class="ctext">'+esc(m.texto||'')+'</div>'+
+      quote+
+      '<div class="ctext">'+renderText(m.texto||'')+'</div>'+
       '<div class="ctime">'+tAgo(d)+'</div>'+
       modActions+
-      '</div>';
+      '</div>'+
+      '<button class="reply-btn" onclick="setReply(\''+m.id+'\')" title="Responder" aria-label="Responder">↩️</button>';
     frag.appendChild(div);
   });
   const empt=document.getElementById('chat-empty');
@@ -325,8 +371,18 @@ function onChatInput(){
   if(!ta) return;
   ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,120)+'px';
   if(c){ const n=ta.value.length; c.textContent=n+' / '+CHAT_MAX_LEN; c.classList.toggle('over',n>=CHAT_MAX_LEN); }
+  checkMention();
 }
-function onChatKey(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChat(); } }
+function mentionOpen(){ const dd=document.getElementById('mention-dd'); return !!dd && dd.style.display==='block'; }
+function onChatKey(e){
+  if(mentionOpen()){
+    const dd=document.getElementById('mention-dd');
+    if(e.key==='Enter'||e.key==='Tab'){ const sel=dd.querySelector('.md-item.sel')||dd.querySelector('.md-item'); if(sel){ e.preventDefault(); sel.click(); return; } }
+    if(e.key==='Escape'){ e.preventDefault(); dd.style.display='none'; return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); moveMentionSel(e.key==='ArrowDown'?1:-1); return; }
+  }
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChat(); }
+}
 async function sendChat(){
   if(!db) return;
   const ta=document.getElementById('chat-in'); if(!ta) return;
@@ -341,17 +397,83 @@ async function sendChat(){
   G.sendTimes=G.sendTimes.filter(t=>now-t<RATE_WIN_MS);
   if(G.sendTimes.length>=RATE_MAX){ showToast('Demasiados mensajes, esperá un momento','r'); return; }
   const snd=document.getElementById('chat-send'); if(snd) snd.disabled=true;
+  const payload={
+    apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
+    admin:G.isAdmin===true, moderador:G.mods.has(a),
+    timestamp:FV.serverTimestamp()
+  };
+  if(G.replyTo && G.replyTo.msgId){
+    payload.replyTo={ msgId:G.replyTo.msgId, apodo:String(G.replyTo.apodo||'').slice(0,40), texto:String(G.replyTo.texto||'').slice(0,80) };
+  }
   try{
-    await db.collection(CHAT_COL).add({
-      apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
-      admin:G.isAdmin===true, moderador:G.mods.has(a),
-      timestamp:FV.serverTimestamp()
-    });
+    await db.collection(CHAT_COL).add(payload);
     G.lastSend=now; G.sendTimes.push(now);
-    ta.value=''; onChatInput(); ta.focus();
+    ta.value=''; clearReply(); onChatInput(); ta.focus();
     requestAnimationFrame(scrollBottom);
   }catch(e){ console.error('sendChat',e); showToast('No se pudo enviar (¿reglas Firestore?)','r'); }
   finally{ if(snd) snd.disabled=G.banned; }
+}
+
+// ===== RESPONDER A UN MENSAJE =====
+function setReply(id){
+  const m=_cache.find(x=>x.id===id); if(!m) return;
+  G.replyTo={ msgId:id, apodo:m.apodo||'Vecino anónimo', texto:String(m.texto||'').slice(0,80) };
+  const pv=document.getElementById('reply-preview');
+  const nm=document.getElementById('rp-name'), tx=document.getElementById('rp-text');
+  if(nm) nm.textContent='↩️ Respondiendo a @'+G.replyTo.apodo;
+  if(tx) tx.textContent=G.replyTo.texto||'(sin texto)';
+  if(pv) pv.style.display='flex';
+  const ta=document.getElementById('chat-in'); if(ta) ta.focus();
+}
+function clearReply(){ G.replyTo=null; const pv=document.getElementById('reply-preview'); if(pv) pv.style.display='none'; }
+function scrollToReply(id){
+  if(!id){ showToast('Ese mensaje ya no está disponible','r'); return; }
+  const el=[...document.querySelectorAll('.cmsg')].find(n=>n.dataset.mid===id);
+  if(!el){ showToast('Ese mensaje ya no está disponible','r'); return; }
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1500);
+}
+
+// ===== MENCIONES (@apodo) =====
+function activeApodos(){
+  const now=Date.now(), seen=new Set(), out=[];
+  _presDocs.slice().sort((a,b)=>presTime(b)-presTime(a)).forEach(p=>{
+    if(p.activo===false) return; if((now-presTime(p))>ONLINE_TTL) return;
+    const a=p.apodo; if(!a||seen.has(a)) return; seen.add(a); out.push(a);
+  });
+  return out;
+}
+function checkMention(){
+  const ta=document.getElementById('chat-in'), dd=document.getElementById('mention-dd');
+  if(!ta||!dd) return;
+  const pos=ta.selectionStart||0;
+  const m=ta.value.slice(0,pos).match(/(?:^|\s)@([^\s@]{0,30})$/);
+  if(!m){ dd.style.display='none'; G.mentionStart=-1; return; }
+  G.mentionStart=pos-m[1].length-1;
+  const q=m[1].toLowerCase(), self=(getApodo()||'').toLowerCase();
+  let list=activeApodos().filter(a=>a.toLowerCase()!==self);
+  if(q) list=list.filter(a=>a.toLowerCase().includes(q));
+  list=list.slice(0,6);
+  if(!list.length){ dd.style.display='none'; return; }
+  dd.innerHTML=list.map((a,i)=>'<div class="md-item'+(i===0?' sel':'')+'" onclick="pickMention(\''+encodeURIComponent(a)+'\')">'+chatAvatar(a,22)+'<span>'+esc(a)+'</span></div>').join('');
+  dd.style.display='block'; safeIcons();
+}
+function moveMentionSel(dir){
+  const dd=document.getElementById('mention-dd'); if(!dd) return;
+  const items=[...dd.querySelectorAll('.md-item')]; if(!items.length) return;
+  let i=items.findIndex(x=>x.classList.contains('sel')); items.forEach(x=>x.classList.remove('sel'));
+  i=(i+dir+items.length)%items.length; items[i].classList.add('sel'); items[i].scrollIntoView({block:'nearest'});
+}
+function pickMention(encA){
+  const a=decodeURIComponent(encA); const ta=document.getElementById('chat-in'); if(!ta) return;
+  const pos=ta.selectionStart||ta.value.length;
+  const start=(G.mentionStart>=0)?G.mentionStart:pos;
+  const before=ta.value.slice(0,start), after=ta.value.slice(pos);
+  const insert='@'+a+' ';
+  ta.value=before+insert+after;
+  const np=(before+insert).length; try{ ta.setSelectionRange(np,np); }catch(e){}
+  const dd=document.getElementById('mention-dd'); if(dd) dd.style.display='none';
+  G.mentionStart=-1; ta.focus(); onChatInput();
 }
 
 // ===== LOGIN ADMIN =====
@@ -455,6 +577,26 @@ window.addEventListener('load',()=>{
   onChatInput();
   safeIcons();
   document.getElementById('chat-in')&&document.getElementById('chat-in').addEventListener('focus',()=>{ if(!getApodo()) ensureApodo(); });
+  // Long-press en mobile para responder
+  (function(){
+    const box=document.getElementById('chat-msgs'); if(!box) return;
+    let timer=null, tgt=null;
+    const clr=()=>{ if(timer){clearTimeout(timer);timer=null;} if(tgt){tgt.classList.remove('lp');tgt=null;} };
+    box.addEventListener('touchstart',e=>{
+      const cm=e.target.closest&&e.target.closest('.cmsg'); if(!cm||!cm.dataset.mid) return;
+      tgt=cm;
+      timer=setTimeout(()=>{ timer=null; if(tgt){ tgt.classList.add('lp'); setReply(tgt.dataset.mid); try{ if(navigator.vibrate) navigator.vibrate(15); }catch(_){} setTimeout(()=>{ if(cm) cm.classList.remove('lp'); },700); } },450);
+    },{passive:true});
+    box.addEventListener('touchmove',clr,{passive:true});
+    box.addEventListener('touchend',clr,{passive:true});
+    box.addEventListener('touchcancel',clr,{passive:true});
+    box.addEventListener('scroll',clr,{passive:true});
+  })();
+  // Cerrar dropdown de menciones al tocar afuera
+  document.addEventListener('click',e=>{
+    if(e.target.closest&&(e.target.closest('#mention-dd')||e.target.id==='chat-in')) return;
+    const dd=document.getElementById('mention-dd'); if(dd) dd.style.display='none';
+  });
 });
 </script>
 </body>
