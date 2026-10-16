@@ -1,0 +1,10 @@
+{
+  "//": "Solo para el emulador de Firestore y el despliegue de reglas. El hosting del sitio sigue en Netlify; este archivo NO configura Firebase Hosting.",
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "emulators": {
+    "firestore": { "port": 8080 },
+    "singleProjectMode": true
+  }
+}

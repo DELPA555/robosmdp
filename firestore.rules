@@ -1,0 +1,122 @@
+rules_version = '2';
+
+// ===========================================================================
+//  ROBOS MDP — Reglas de seguridad de Firestore (v2: Chat Vecinal por UID)
+// ===========================================================================
+//
+//  ⚠️  PLANTILLA DE INTEGRACIÓN — NO DESPLEGAR TAL CUAL.
+//
+//  Este archivo contiene SOLAMENTE las reglas nuevas del Chat Vecinal.
+//  Firestore usa "deny by default": si desplegás este archivo sin las reglas
+//  de las demás colecciones (reportes, foro, mascotas, patentes, rastreo,
+//  sponsors, estadísticas, etc.), ESAS COLECCIONES DEJARÍAN DE FUNCIONAR.
+//
+//  PASOS:
+//   1. Obtené las reglas ACTUALES desde Firebase Console
+//      (Firestore Database → Reglas) y pegalas en el bloque marcado
+//      "<<< REGLAS ACTUALES DE LAS DEMÁS COLECCIONES >>>".
+//   2. Reemplazá los bloques `match /chat_*` de tus reglas actuales por los
+//      bloques de chat de abajo (ojo: antes el ban era por apodo; ahora es por UID).
+//   3. Probá con el emulador (ver firestore/tests/) ANTES de publicar.
+//   4. Publicá recién después de: (a) habilitar el proveedor Anonymous en
+//      Authentication, y (b) tener la nueva chat.html / index.html en producción.
+//      Ver SEGURIDAD-CHAT-V2.md → "Orden de despliegue".
+// ===========================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Helpers del chat -------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    // El administrador se identifica por el email de su cuenta de Firebase Auth.
+    // El claim `email` lo emite Firebase; el navegador no puede falsificarlo.
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'admin@robosmdp.com.ar';
+    }
+    function banRef() {
+      return /databases/$(database)/documents/chat_bans/$(request.auth.uid);
+    }
+    // Baneado = existe su doc de ban por UID y sigue vigente (permanente = sin ban_hasta).
+    function isBanned() {
+      return isSignedIn()
+        && exists(banRef())
+        && (get(banRef()).data.ban_hasta == null
+            || get(banRef()).data.ban_hasta > request.time);
+    }
+    // Moderador = tiene doc en chat_moderadores indexado por su UID.
+    function isMod() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/chat_moderadores/$(request.auth.uid));
+    }
+
+    // ---- chat_publico : mensajes -----------------------------------------
+    match /chat_publico/{msgId} {
+      // Solo usuarios autenticados y NO baneados pueden leer el chat.
+      allow read: if isAdmin() || (isSignedIn() && !isBanned());
+
+      // Crear mensaje propio: uid debe ser el del autor, no baneado, y no puede
+      // auto-atribuirse rol de admin/moderador desde el navegador.
+      allow create: if isSignedIn() && !isBanned()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo'])
+        && request.resource.data.texto is string
+        && request.resource.data.texto.size() > 0
+        && request.resource.data.texto.size() <= 280
+        && request.resource.data.apodo is string
+        && request.resource.data.apodo.size() <= 40
+        && request.resource.data.timestamp == request.time
+        && (!('admin' in request.resource.data) || request.resource.data.admin == false || isAdmin())
+        && (!('moderador' in request.resource.data) || request.resource.data.moderador == false || isMod() || isAdmin());
+
+      // Editar o eliminar mensajes: solo el administrador (moderación).
+      allow update, delete: if isAdmin();
+    }
+
+    // ---- chat_presencia : quién está en línea ----------------------------
+    match /chat_presencia/{sid} {
+      allow read: if isAdmin() || (isSignedIn() && !isBanned());
+
+      // Cada quien escribe SU propia presencia (uid propio) y solo si no está baneado.
+      // El admin puede escribir la de otros para marcarla inactiva al banear.
+      allow create, update: if isAdmin()
+        || (isSignedIn() && !isBanned() && request.resource.data.uid == request.auth.uid);
+
+      // Borrar: el dueño de la sesión o el admin (la limpieza programada usa
+      // Service Account vía REST y no pasa por estas reglas).
+      allow delete: if isAdmin()
+        || (isSignedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // ---- chat_bans : sanciones (indexadas por UID) -----------------------
+    match /chat_bans/{uid} {
+      // Un usuario puede leer SU propio ban (para auto-bloquearse en vivo).
+      // El administrador puede leer/listar todos.
+      allow get:  if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isAdmin();
+      // Crear/modificar/levantar baneos: SOLO administrador.
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---- chat_moderadores : roles de moderación (indexados por UID) ------
+    match /chat_moderadores/{uid} {
+      // La lista de mods no es sensible (se usa para mostrar el badge 🛡️).
+      allow read: if isSignedIn();
+      // Asignar/quitar moderadores: SOLO administrador.
+      allow create, update, delete: if isAdmin();
+    }
+
+    // =====================================================================
+    //  <<< REGLAS ACTUALES DE LAS DEMÁS COLECCIONES >>>
+    //
+    //  Pegá aquí EXACTAMENTE tus reglas vigentes de Firebase Console para:
+    //    reportes / robos / basura / pozos / abandonados / luminarias,
+    //    foro, mascotas, patentes, rastreo_registros, sponsors, estadísticas,
+    //    y cualquier otra colección del proyecto.
+    //
+    //  NO borres ni cambies esas reglas: este trabajo solo toca el chat.
+    // =====================================================================
+
+  }
+}
