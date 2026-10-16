@@ -1,0 +1,7 @@
+# Capacitor / Android (build local, nunca al repo)
+node_modules/
+android/
+*.keystore
+*.jks
+.gradle/
+local.properties
