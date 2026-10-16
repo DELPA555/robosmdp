@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// ===========================================================================
+//  ROBOS MDP — Reglas de Firebase Storage (media del Chat Vecinal)
+//  Bucket: gs://robosmdp-d1ef3.firebasestorage.app
+//
+//  Publicar en: Firebase Console → Storage → Reglas (o `firebase deploy
+//  --only storage`). NO se publica automáticamente.
+// ===========================================================================
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Imágenes/videos del chat: chat_media/{uid}/{archivo}
+    match /chat_media/{uid}/{file} {
+      // Ver el media: cualquier usuario autenticado (vecinos anónimos incluidos).
+      allow read: if request.auth != null;
+
+      // Subir: SOLO el administrador, con límite de tamaño y tipo.
+      allow write: if request.auth != null
+        && request.auth.token.email == 'admin@robosmdp.com.ar'
+        && request.resource.size < 60 * 1024 * 1024
+        && (request.resource.contentType.matches('image/.*')
+            || request.resource.contentType.matches('video/.*'));
+    }
+
+    // Todo lo demás del bucket: denegado por defecto.
+  }
+}

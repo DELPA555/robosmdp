@@ -165,17 +165,22 @@ service cloud.firestore {
       allow read: if isAdmin() || (isSignedIn() && !isBanned());
       allow create: if isSignedIn() && !isBanned()
                   && request.resource.data.uid == request.auth.uid
-                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo'])
+                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo','media'])
                   && request.resource.data.texto is string
-                  && request.resource.data.texto.size() > 0
                   && request.resource.data.texto.size() <= 280
+                  && (request.resource.data.texto.size() > 0 || 'media' in request.resource.data)
                   && request.resource.data.apodo is string
                   && request.resource.data.apodo.size() <= 40
                   && request.resource.data.timestamp == request.time
                   && honestAuthor()
                   && (!('moderador' in request.resource.data)
                       || request.resource.data.moderador == false
-                      || isMod() || isAdmin());
+                      || isMod() || isAdmin())
+                  // Imágenes/videos: SOLO el admin puede adjuntar media.
+                  && (!('media' in request.resource.data)
+                      || (isAdmin()
+                          && request.resource.data.media.url is string
+                          && request.resource.data.media.type is string));
       allow update: if false;
       allow delete: if isAdmin();
     }

@@ -11,6 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -112,6 +113,18 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 #chat-lockout .lk-row span{font-size:13px;font-weight:600;color:var(--t1);word-break:break-word}
 #chat-lockout .lk-note{margin-top:15px;font-size:11px;color:var(--t3);line-height:1.5}
 @media (max-width:680px){#chat-lockout{padding:20px 14px}#chat-lockout .lk-card{padding:28px 20px;border-radius:18px}#chat-lockout h3{font-size:17px}}
+/* Adjuntar media (solo admin) */
+#btn-adjuntar{flex-shrink:0;align-self:flex-end;width:46px;height:46px;border-radius:14px;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.7);color:var(--t2);cursor:pointer;font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
+#btn-adjuntar:hover{border-color:rgba(14,165,233,.5);color:var(--t1)}
+#media-preview{display:none;align-items:center;gap:10px;background:rgba(var(--rgb-deep),.6);border:1px solid rgba(14,165,233,.3);border-left:3px solid var(--accent);border-radius:12px;padding:8px 11px;margin-bottom:8px}
+#media-preview .mp-thumb{flex-shrink:0;width:46px;height:46px;border-radius:9px;overflow:hidden;background:rgba(var(--rgb-slate),.6);display:flex;align-items:center;justify-content:center;font-size:20px}
+#media-preview .mp-thumb img,#media-preview .mp-thumb video{width:100%;height:100%;object-fit:cover}
+#media-preview .mp-info{flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#media-cancel{flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid rgba(var(--rgb-line),.2);background:transparent;color:var(--t3);cursor:pointer;font-size:12px;line-height:1}
+.cmedia{display:block;max-width:100%;max-height:320px;border-radius:11px;margin-top:3px;background:rgba(var(--rgb-deep),.5)}
+img.cmedia{cursor:zoom-in;object-fit:cover}
+#img-viewer{position:fixed;inset:0;z-index:8000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.9);padding:20px;cursor:zoom-out}
+#img-viewer img{max-width:100%;max-height:100%;border-radius:8px}
 </style>
 <link rel="stylesheet" href="./assets/premium-v5-chat.css?v=5">
 </head>
@@ -155,8 +168,15 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
         <div class="rp-body"><div class="rp-name" id="rp-name"></div><div class="rp-text" id="rp-text"></div></div>
         <button id="reply-cancel" onclick="clearReply()" title="Cancelar respuesta">✕</button>
       </div>
+      <div id="media-preview">
+        <div class="mp-thumb" id="mp-thumb"></div>
+        <div class="mp-info" id="mp-info"></div>
+        <button id="media-cancel" onclick="clearMedia()" title="Quitar adjunto">✕</button>
+      </div>
+      <input id="media-input" type="file" accept="image/*,video/*" style="display:none" onchange="onPickMedia(this)">
       <div class="inrow" style="position:relative">
         <div id="mention-dd"></div>
+        <button id="btn-adjuntar" onclick="document.getElementById('media-input').click()" title="Adjuntar imagen o video (solo admin)" style="display:none">📎</button>
         <textarea id="chat-in" rows="1" maxlength="280" placeholder="Escribí un mensaje..." oninput="onChatInput()" onkeydown="onChatKey(event)"></textarea>
         <button id="chat-send" onclick="sendChat()" title="Enviar"><i data-lucide="send" style="width:19px;height:19px"></i></button>
       </div>
@@ -179,6 +199,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 </div>
 
 <div id="toast-c"></div>
+<div id="img-viewer" onclick="closeImg()"><img id="img-viewer-img" src="" alt="imagen"></div>
 
 <script>
 // ===== FIREBASE (misma config del sitio — NO modificar) =====
@@ -190,13 +211,14 @@ const FB_CONFIG={
   messagingSenderId:"329992862097",
   appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
-let db=null, auth=null;
+let db=null, auth=null, storage=null;
 // App Firebase NOMBRADA e independiente ('rmdp_chat'): el login anónimo del chat
 // NO interfiere con la sesión admin del portal (app por defecto en index.html).
 if(window.firebase){
   const ca=firebase.apps.find(x=>x.name==='rmdp_chat')||firebase.initializeApp(FB_CONFIG,'rmdp_chat');
   db=ca.firestore();
   try{ if(firebase.auth) auth=ca.auth(); }catch(e){}
+  try{ if(firebase.storage) storage=ca.storage(); }catch(e){}
 }
 const FV=firebase.firestore.FieldValue;
 const ADMIN_EMAIL='admin@robosmdp.com.ar';
@@ -210,7 +232,9 @@ const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUns
   mods:new Set(), lastSend:0, sendTimes:[], banned:true, authReady:false, banReady:false,
   uid:null, sid:null, presTimer:null, onlineTimer:null, banExpiryTimer:null,
   msgsCount:0, isAdmin:false, replyTo:null, mentionStart:-1,
-  notifOn:false, notifReady:false, hasSent:false, ipSent:false };
+  notifOn:false, notifReady:false, hasSent:false, ipSent:false, pendingMedia:null };
+// Envío de imágenes/videos: SOLO admin. Límites de tamaño.
+const MEDIA_MAX_VIDEO=60*1024*1024, IMG_MAX_DIM=1280, IMG_QUALITY=0.82;
 
 // ===== UTILS =====
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -306,6 +330,15 @@ function highlightMentions(escaped){
   catch(e){ return escaped.replace(/(^|\s)@([A-Za-z0-9_.-]{1,30})/g,'$1<span class="mention">@$2</span>'); }
 }
 function renderText(t){ return highlightMentions(esc(t)); }
+// Media del mensaje (imagen/video). La IP NO se expone; solo se muestra el archivo subido.
+function mediaHTML(m){
+  if(!m || !m.media || !m.media.url) return '';
+  const u=esc(m.media.url);
+  if(m.media.type==='video') return '<video class="cmedia" src="'+u+'" controls preload="metadata" playsinline></video>';
+  return '<img class="cmedia" src="'+u+'" loading="lazy" alt="imagen" onclick="openImg(\''+u+'\')">';
+}
+function openImg(u){ const v=document.getElementById('img-viewer'), i=document.getElementById('img-viewer-img'); if(!v||!i) return; i.src=u; v.style.display='flex'; }
+function closeImg(){ const v=document.getElementById('img-viewer'), i=document.getElementById('img-viewer-img'); if(v) v.style.display='none'; if(i) i.src=''; }
 function renderMessages(doScroll){
   if(G.banned) return;  // nunca pintar historial a un usuario suspendido
   const el=document.getElementById('chat-msgs'); if(!el) return;
@@ -343,7 +376,8 @@ function renderMessages(doScroll){
       '<div class="cbubble">'+
       '<div class="cname" style="color:'+chatColor(m.apodo||'?')+'">'+esc(m.apodo||'Vecino anónimo')+badge+'</div>'+
       quote+
-      '<div class="ctext">'+renderText(m.texto||'')+'</div>'+
+      mediaHTML(m)+
+      (m.texto?('<div class="ctext">'+renderText(m.texto)+'</div>'):'')+
       '<div class="ctime">'+tAgo(d)+'</div>'+
       modActions+
       '</div>'+
@@ -483,6 +517,61 @@ function subscribeBan(){
   }catch(e){ console.warn('subscribeBan',e); }
 }
 
+// ===== ADJUNTAR IMÁGENES / VIDEOS (solo admin) =====
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      try{
+        let w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+        const scale=Math.min(1, IMG_MAX_DIM/Math.max(w,h||1));
+        w=Math.max(1,Math.round(w*scale)); h=Math.max(1,Math.round(h*scale));
+        const c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(url);
+        c.toBlob(b=>{ b?resolve(b):reject(new Error('blob')); },'image/jpeg',IMG_QUALITY);
+      }catch(e){ URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error('img')); };
+    img.src=url;
+  });
+}
+async function onPickMedia(input){
+  const f=input.files&&input.files[0]; input.value='';
+  if(!f) return;
+  if(!G.isAdmin){ showToast('Solo el admin puede enviar archivos','r'); return; }
+  const isImg=f.type.indexOf('image/')===0, isVid=f.type.indexOf('video/')===0;
+  if(!isImg && !isVid){ showToast('Solo se permiten imágenes o videos','r'); return; }
+  if(isVid && f.size>MEDIA_MAX_VIDEO){ showToast('El video supera el límite de 60 MB','r'); return; }
+  try{
+    let pm;
+    if(isImg){ const blob=await compressImage(f); pm={blob, mime:'image/jpeg', type:'image', ext:'jpg', url:URL.createObjectURL(blob)}; }
+    else{ const ext=(f.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,'')||'mp4'; pm={blob:f, mime:f.type||'video/mp4', type:'video', ext, url:URL.createObjectURL(f)}; }
+    clearMedia(); G.pendingMedia=pm; showMediaPreview(pm);
+  }catch(e){ console.warn('media pick',e); showToast('No se pudo procesar el archivo','r'); }
+}
+function showMediaPreview(pm){
+  const box=document.getElementById('media-preview'), th=document.getElementById('mp-thumb'), inf=document.getElementById('mp-info');
+  if(!box) return;
+  if(th) th.innerHTML = pm.type==='video' ? '<video src="'+pm.url+'" muted></video>' : '<img src="'+pm.url+'" alt="">';
+  if(inf) inf.textContent = (pm.type==='video'?'🎥 Video':'🖼️ Imagen')+' lista para enviar — escribí un texto opcional y tocá enviar';
+  box.style.display='flex';
+}
+function clearMedia(){
+  if(G.pendingMedia && G.pendingMedia.url){ try{ URL.revokeObjectURL(G.pendingMedia.url); }catch(e){} }
+  G.pendingMedia=null;
+  const box=document.getElementById('media-preview'); if(box) box.style.display='none';
+  const th=document.getElementById('mp-thumb'); if(th) th.innerHTML='';
+}
+async function uploadPendingMedia(){
+  const pm=G.pendingMedia; if(!pm) return null;
+  if(!storage) throw new Error('storage no disponible');
+  const path='chat_media/'+auth.currentUser.uid+'/'+getSid()+'-'+Date.now()+'.'+pm.ext;
+  const snap=await storage.ref(path).put(pm.blob,{contentType:pm.mime});
+  const url=await snap.ref.getDownloadURL();
+  return { url:url, type:pm.type };
+}
+
 // ===== ENVÍO + ANTI-SPAM =====
 function onChatInput(){
   const ta=document.getElementById('chat-in'), c=document.getElementById('chat-count');
@@ -505,7 +594,9 @@ async function sendChat(){
   if(!db) return;
   const ta=document.getElementById('chat-in'); if(!ta) return;
   const txt=ta.value.trim();
-  if(!txt) return;
+  const hasMedia=!!G.pendingMedia;
+  if(!txt && !hasMedia) return;
+  if(hasMedia && !G.isAdmin){ clearMedia(); showToast('Solo el admin puede enviar archivos','r'); return; }
   const a=ensureApodo(); if(!a){ showToast('Elegí un apodo para escribir','r'); return; }
   if(G.banned || !G.authReady || !G.banReady || !auth || !auth.currentUser){ showToast('Tu acceso al chat no está habilitado','r'); return; }
   const now=Date.now();
@@ -524,12 +615,17 @@ async function sendChat(){
     payload.replyTo={ msgId:G.replyTo.msgId, apodo:String(G.replyTo.apodo||'').slice(0,40), texto:String(G.replyTo.texto||'').slice(0,80) };
   }
   try{
+    if(hasMedia){
+      showToast('Subiendo '+(G.pendingMedia.type==='video'?'video':'imagen')+'…','g');
+      const media=await uploadPendingMedia();   // sube a Storage y devuelve {url,type}
+      if(media && media.url) payload.media=media;
+    }
     await db.collection(CHAT_COL).add(payload);
     G.lastSend=now; G.sendTimes.push(now);
-    ta.value=''; clearReply(); onChatInput(); ta.focus();
+    ta.value=''; clearReply(); clearMedia(); onChatInput(); ta.focus();
     requestAnimationFrame(scrollBottom);
-    G.hasSent=true; maybeAskNotif();   // recién tras escribir al menos 1 mensaje
-  }catch(e){ console.error('sendChat',e); showToast('No se pudo enviar (¿reglas Firestore?)','r'); }
+    G.hasSent=true; maybeAskNotif();   // recién tras escribir/enviar algo
+  }catch(e){ console.error('sendChat',e); showToast(hasMedia?'No se pudo subir el archivo':'No se pudo enviar (¿reglas Firestore?)','r'); }
   finally{ if(snd) snd.disabled=G.banned; }
 }
 
@@ -701,13 +797,17 @@ async function adminLogout(){ try{ if(auth) await auth.signOut(); }catch(e){} sh
 function setAdminMode(on){
   G.isAdmin=!!on;
   const btn=document.getElementById('chat-admin-btn');
+  const adj=document.getElementById('btn-adjuntar');
   if(on){
     try{ localStorage.setItem(APODO_LS,'AdminRobos'); }catch(e){}
     if(btn){ btn.textContent='✓ Admin'; btn.classList.add('is-admin'); btn.title='Sesión admin activa — tocá para cerrar sesión'; }
+    if(adj) adj.style.display='flex';   // enviar imágenes/videos: solo admin
   }else{
     // al salir, soltar el apodo reservado para no quedar bloqueado por las reglas
     try{ if((getApodo()||'').toLowerCase()==='adminrobos') localStorage.removeItem(APODO_LS); }catch(e){}
     if(btn){ btn.textContent='🔐 Login admin'; btn.classList.remove('is-admin'); btn.title='Acceso administrador'; }
+    if(adj) adj.style.display='none';
+    clearMedia();   // descartar cualquier adjunto pendiente al dejar de ser admin
   }
   onApodoChanged();
 }
@@ -763,6 +863,7 @@ window.addEventListener('load',()=>{
   if(!db){ showToast('Sin conexión a la base','r'); return; }
   if(auth){
     auth.onAuthStateChanged(async u=>{
+      console.log('Auth state:', u&&u.uid, u&&u.email, u&&u.isAnonymous);
       if(!u){
         // Sin sesión activa → resetear estado (fail-closed) e ingresar de forma anónima.
         G.authReady=false; G.banReady=false; G.banned=true; G.uid=null;
