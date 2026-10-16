@@ -4778,6 +4778,17 @@ function chatPresTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toD
 function chatBanActiveDoc(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
 // UIDs con sanción activa (para excluirlos de "en línea").
 function chatActiveBanUids(){ const s=new Set(); _chatA.bans.forEach(b=>{ if(chatBanActiveDoc(b)){ const u=b.uid||b.id; if(u) s.add(u); } }); return s; }
+// Campos de IP/geo que la Netlify Function chat-ip guarda en chat_presencia.
+function chatGeoOf(p){ return { ip:p.ip||'', ciudad:p.ciudad||'', region:p.region||'', pais:p.pais||'', isp:p.isp||'' }; }
+function chatHasGeo(p){ return !!(p.ip||p.ciudad||p.region||p.pais||p.isp); }
+// IP/geo más reciente registrada para un UID (p. ej. para mostrarla en un baneado
+// cuya presencia ya no está activa).
+function chatIpInfo(uid){
+  if(!uid) return null;
+  let best=null, bt=-1;
+  _chatA.pres.forEach(p=>{ if((p.uid||'')!==uid || !chatHasGeo(p)) return; const t=chatPresTime(p); if(t>=bt){ bt=t; best=p; } });
+  return best?chatGeoOf(best):null;
+}
 // Usuarios conectados, deduplicados por UID (varias pestañas/sesiones = 1 usuario),
 // excluyendo a los baneados. Las presencias antiguas sin UID se agrupan por apodo.
 function chatOnlineUsers(){
@@ -4788,11 +4799,23 @@ function chatOnlineUsers(){
     const uid=p.uid||'', t=chatPresTime(p);
     if(uid && banned.has(uid)) return;                 // un baneado nunca figura en línea
     const key=uid||('apodo:'+(p.apodo||p.id));
+    const geo=chatHasGeo(p)?chatGeoOf(p):null;
     const prev=byKey.get(key);
-    if(prev){ prev.sessions++; if(t>prev.last){ prev.last=t; prev.apodo=p.apodo||prev.apodo; } return; }
-    byKey.set(key,{ uid:uid, apodo:p.apodo||'(sin apodo)', last:t, sessions:1, legacy:!uid });
+    if(prev){ prev.sessions++; if(t>prev.last){ prev.last=t; prev.apodo=p.apodo||prev.apodo; if(geo) prev.geo=geo; } else if(geo && !prev.geo){ prev.geo=geo; } return; }
+    byKey.set(key,{ uid:uid, apodo:p.apodo||'(sin apodo)', last:t, sessions:1, legacy:!uid, geo:geo });
   });
   return [...byKey.values()].sort((a,b)=>b.last-a.last);
+}
+// Línea de IP/ubicación para el panel admin (solo acá; nunca en chat.html público).
+function chatIpLineHTML(geo){
+  if(!geo || !(geo.ip||geo.ciudad||geo.pais)){
+    return '<span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px;opacity:.65">📍 IP no disponible</span>';
+  }
+  const loc=[geo.ciudad,geo.region].filter(Boolean).join(', ')||geo.pais||'ubicación desconocida';
+  const parts=['📍 '+esc(loc)];
+  if(geo.ip) parts.push('🌐 '+esc(geo.ip));
+  if(geo.isp) parts.push('ISP: '+esc(geo.isp));
+  return '<span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+parts.join(' · ')+'</span>';
 }
 function isModUid(uid){ return !!uid && _chatA.mods.some(m=>m.id===uid||m.uid===uid); }
 function renderChatAdmin(){
@@ -4812,10 +4835,10 @@ function renderChatAdmin(){
   // Buscador
   let html='<div style="position:relative;margin-bottom:12px"><input id="chata-q" oninput="onChatAdminSearch()" value="'+esc(q)+'" placeholder="Buscar mensajes por apodo o texto..." style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;color:var(--t1);outline:none"></div>';
   // Usuarios en línea (participantes autorizados y activos; baneados excluidos)
-  html+=box('👥 En línea ('+online.length+')', online.length?('<div style="display:flex;flex-direction:column;gap:7px">'+online.map(u=>{ const act=u.last?tAgo(new Date(u.last)):''; const sess=u.sessions>1?(' · '+u.sessions+' sesiones'):''; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:var(--t1);min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px"></span>'+esc(u.apodo)+(isModUid(u.uid)?' <span style="font-size:8.5px;color:#93c5fd">🛡️</span>':'')+uidChip(u.uid)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+(act?'activo '+act:'')+sess+'</span></span><span style="display:flex;gap:5px;flex-shrink:0">'+modBtn(u.uid,u.apodo)+banBtn(u.uid,u.apodo)+'</span></div>'; }).join('')+'</div>'):'<p style="font-size:11px;color:#475569">Nadie conectado ahora.</p>');
+  html+=box('👥 En línea ('+online.length+')', online.length?('<div style="display:flex;flex-direction:column;gap:7px">'+online.map(u=>{ const act=u.last?tAgo(new Date(u.last)):''; const sess=u.sessions>1?(' · '+u.sessions+' sesiones'):''; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:var(--t1);min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px"></span>'+esc(u.apodo)+(isModUid(u.uid)?' <span style="font-size:8.5px;color:#93c5fd">🛡️</span>':'')+uidChip(u.uid)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+(act?'activo '+act:'')+sess+'</span>'+chatIpLineHTML(u.geo)+'</span><span style="display:flex;gap:5px;flex-shrink:0">'+modBtn(u.uid,u.apodo)+banBtn(u.uid,u.apodo)+'</span></div>'; }).join('')+'</div>'):'<p style="font-size:11px;color:#475569">Nadie conectado ahora.</p>');
   // Baneados (por UID: último apodo, UID, duración, motivo)
   if(activeBans.length){
-    html+=box('🚫 Usuarios baneados ('+activeBans.length+')','<div style="display:flex;flex-direction:column;gap:7px">'+activeBans.map(b=>{ const uid=b.uid||b.id; const until=(b.ban_hasta&&b.ban_hasta.toDate)?b.ban_hasta.toDate().toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:#fca5a5;min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">'+esc(b.apodo||'(sin apodo)')+uidChip(uid)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600">'+(b.ban_hasta==null?'Permanente':'Hasta '+until)+(b.motivo?' · '+esc(b.motivo):'')+(b.baneado_por?' · por '+esc(b.baneado_por):'')+'</span></span><button onclick="admChatUnban(\''+enc(uid)+'\')" style="padding:4px 10px;background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0">✅ Levantar</button></div>'; }).join('')+'</div>');
+    html+=box('🚫 Usuarios baneados ('+activeBans.length+')','<div style="display:flex;flex-direction:column;gap:7px">'+activeBans.map(b=>{ const uid=b.uid||b.id; const until=(b.ban_hasta&&b.ban_hasta.toDate)?b.ban_hasta.toDate().toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:#fca5a5;min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">'+esc(b.apodo||'(sin apodo)')+uidChip(uid)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600">'+(b.ban_hasta==null?'Permanente':'Hasta '+until)+(b.motivo?' · '+esc(b.motivo):'')+(b.baneado_por?' · por '+esc(b.baneado_por):'')+'</span>'+chatIpLineHTML(chatIpInfo(uid))+'</span><button onclick="admChatUnban(\''+enc(uid)+'\')" style="padding:4px 10px;background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0">✅ Levantar</button></div>'; }).join('')+'</div>');
   }
   // Mensajes
   html+=box('💬 Últimos mensajes ('+msgs.length+')', msgs.length?('<div style="display:flex;flex-direction:column;gap:7px">'+msgs.map(m=>{ const d=chatMsgDate(m), f=d.getTime()>0?tAgo(d):'recién'; const mUid=m.uid||''; return '<div style="background:rgba(var(--rgb-deep),.5);border:1px solid rgba(var(--rgb-line),.12);border-radius:12px;padding:9px 11px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px"><span style="font-size:11px;font-weight:800;color:'+chatColorA(m.apodo)+';min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.apodo||'Vecino anónimo')+(m.admin?' <span style="font-size:8px;color:#fca5a5">✓Admin</span>':(m.moderador||isModUid(mUid)?' <span style="font-size:8px;color:#93c5fd">🛡️</span>':''))+uidChip(mUid)+'</span><span style="display:flex;gap:4px;flex-shrink:0"><span style="font-size:9px;color:var(--t3);margin-right:3px">'+f+'</span><button onclick="admChatDelMsg(\''+m.id+'\')" title="Eliminar mensaje" style="padding:3px 7px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:10px;cursor:pointer">🗑️</button></span></div><p style="font-size:12.5px;color:var(--t1);line-height:1.4;word-break:break-word">'+esc(m.texto||'')+'</p><div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap">'+modBtn(mUid,m.apodo)+banBtn(mUid,m.apodo)+delAllBtn(m.apodo)+((!m.admin&&!mUid)?'<span style="font-size:9px;color:#eab308;align-self:center">⚠ mensaje antiguo sin UID: no se puede banear desde aquí</span>':'')+'</div></div>'; }).join('')+'</div>'):'<p style="font-size:11px;color:#475569">Sin mensajes.</p>');
