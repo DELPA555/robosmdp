@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -59,6 +60,19 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .online-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:odot 2s ease-out infinite}
 @keyframes odot{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
 .flink{text-decoration:none}
+/* Login admin */
+#chat-admin-btn{flex-shrink:0;white-space:nowrap;padding:8px 10px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;border:1px solid rgba(var(--rgb-line),.18);background:rgba(var(--rgb-slate),.7);color:var(--t3)}
+#chat-admin-btn.is-admin{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.4);color:#4ade80}
+.movl{position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:16px}
+.mbox{background:var(--bg-2);border:1px solid var(--line-2);width:100%;max-width:380px;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.6);padding:20px 22px}
+.min{width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:11px 13px;font-size:14px;color:var(--t1);outline:none;margin-bottom:10px;font-family:inherit}
+.min:focus{border-color:rgba(14,165,233,.55)}
+.mbtn{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+.mbtn:disabled{opacity:.6;cursor:default}
+.mod-actions{display:flex;gap:5px;margin-top:7px}
+.mod-btn{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;line-height:1.5}
+.mod-del{background:rgba(239,68,68,.14);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.mod-ban{background:rgba(249,115,22,.14);color:#fdba74;border:1px solid rgba(249,115,22,.3)}
 </style>
 </head>
 <body>
@@ -70,6 +84,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
       <h2 style="font-size:15px;font-weight:700;color:var(--t0);letter-spacing:-.02em;line-height:1.1">Chat Vecinal</h2>
       <p style="font-size:10px;font-weight:600;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px"><span class="online-dot"></span><span id="chat-online">0 vecinos en línea</span></p>
     </div>
+    <button id="chat-admin-btn" onclick="openAdminLogin()" title="Acceso administrador">🔐 Login admin</button>
     <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
   </header>
 
@@ -91,6 +106,19 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
   </footer>
 </div>
 
+<!-- Modal login admin -->
+<div class="movl" id="admin-login-m" onclick="if(event.target===this)closeAdminLogin()">
+  <div class="mbox">
+    <p style="font-size:15px;font-weight:800;color:var(--t0);margin-bottom:3px">🔐 Acceso administrador</p>
+    <p style="font-size:11px;color:var(--t3);margin-bottom:14px">Ingresá con la cuenta de administrador de Robos MDP para escribir como <strong style="color:#4ade80">AdminRobos</strong> y moderar.</p>
+    <input id="admin-email" type="email" class="min" placeholder="Email" autocomplete="username" value="admin@robosmdp.com.ar">
+    <input id="admin-pass" type="password" class="min" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    <div id="admin-login-err" style="display:none;font-size:11px;font-weight:700;color:#ef4444;margin:-2px 0 10px"></div>
+    <button class="mbtn" id="admin-login-btn" onclick="doAdminLogin()">Ingresar</button>
+    <button onclick="closeAdminLogin()" style="width:100%;margin-top:8px;padding:10px;border-radius:12px;border:1px solid rgba(var(--rgb-line),.2);background:transparent;color:var(--t3);font-size:12px;font-weight:700;cursor:pointer">Cancelar</button>
+  </div>
+</div>
+
 <div id="toast-c"></div>
 
 <script>
@@ -103,15 +131,16 @@ const FB_CONFIG={
   messagingSenderId:"329992862097",
   appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
-let db=null;
-if(window.firebase){ firebase.initializeApp(FB_CONFIG); db=firebase.firestore(); }
+let db=null, auth=null;
+if(window.firebase){ firebase.initializeApp(FB_CONFIG); db=firebase.firestore(); try{ if(firebase.auth) auth=firebase.auth(); }catch(e){} }
 const FV=firebase.firestore.FieldValue;
+const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
 const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderadores', BAN_COL='chat_bans';
 const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
 
 const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUnsub:null,
-  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0 };
+  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0, isAdmin:false };
 
 // ===== UTILS =====
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -141,15 +170,19 @@ function getApodo(){ try{ return (localStorage.getItem(APODO_LS)||'').trim(); }c
 function setApodo(n){ n=String(n||'').trim().slice(0,40); if(isReservedName(n)) return; try{ localStorage.setItem(APODO_LS,n); }catch(e){} }
 function promptApodo(initial){
   for(let i=0;i<4;i++){
-    const a=(window.prompt(i===0?'¿Cómo querés que te llamen en el chat?':'Ese nombre está reservado. Elegí otro:',initial||'')||'').trim().slice(0,40);
+    const a=(window.prompt(i===0?'¿Cómo querés que te llamen en el chat?':'Ese apodo está reservado para el administrador. Elegí otro:',initial||'')||'').trim().slice(0,40);
     if(!a) return '';
-    if(isReservedName(a)){ showToast('Ese nombre está reservado','r'); initial=''; continue; }
+    if(isReservedName(a)){ showToast('Este apodo está reservado para el administrador. Elegí otro apodo.','r'); initial=''; continue; }
     return a;
   }
   return '';
 }
 function ensureApodo(){ let a=getApodo(); if(!a){ a=promptApodo(''); if(a){ setApodo(a); onApodoChanged(); } } return a||''; }
 function apodoWhoHTML(){
+  if(G.isAdmin){
+    return 'Escribís como <strong style="color:#fca5a5">AdminRobos</strong> <span style="color:#4ade80;font-weight:700">✓ verificado</span> · '+
+      '<a onclick="adminLogout()" style="color:#94a3b8;cursor:pointer;text-decoration:underline">Cerrar sesión</a>';
+  }
   const a=getApodo();
   return (a?'Escribís como <strong style="color:var(--t2)">'+esc(a)+'</strong> · ':'')+
     '<a onclick="changeApodo()" style="color:#38bdf8;cursor:pointer;text-decoration:underline">'+(a?'Cambiar':'Elegí un apodo')+'</a>';
@@ -200,6 +233,10 @@ function renderMessages(doScroll){
     const isMod=!!m.moderador || G.mods.has(m.apodo);
     const isAdm=!!m.admin;
     const badge=isAdm?'<span class="badge badge-admin">✓ AdminRobos</span>':(isMod?'<span class="badge badge-mod">🛡️ Mod</span>':'');
+    const modActions = G.isAdmin ? ('<div class="mod-actions">'+
+      '<button class="mod-btn mod-del" onclick="adminDeleteMsgInline(\''+m.id+'\')" title="Eliminar mensaje">🗑️</button>'+
+      (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
+      '</div>') : '';
     const div=document.createElement('div');
     div.className='cmsg'+(mine?' mine':'');
     div.innerHTML=chatAvatar(m.apodo,34)+
@@ -207,6 +244,7 @@ function renderMessages(doScroll){
       '<div class="cname" style="color:'+chatColor(m.apodo||'?')+'">'+esc(m.apodo||'Vecino anónimo')+badge+'</div>'+
       '<div class="ctext">'+esc(m.texto||'')+'</div>'+
       '<div class="ctime">'+tAgo(d)+'</div>'+
+      modActions+
       '</div>';
     frag.appendChild(div);
   });
@@ -306,7 +344,7 @@ async function sendChat(){
   try{
     await db.collection(CHAT_COL).add({
       apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
-      admin:false, moderador:G.mods.has(a),
+      admin:G.isAdmin===true, moderador:G.mods.has(a),
       timestamp:FV.serverTimestamp()
     });
     G.lastSend=now; G.sendTimes.push(now);
@@ -316,10 +354,98 @@ async function sendChat(){
   finally{ if(snd) snd.disabled=G.banned; }
 }
 
+// ===== LOGIN ADMIN =====
+function openAdminLogin(){
+  if(G.isAdmin){ adminLogout(); return; }
+  if(!auth){ showToast('Login no disponible','r'); return; }
+  const e=document.getElementById('admin-login-err'); if(e) e.style.display='none';
+  const p=document.getElementById('admin-pass'); if(p) p.value='';
+  const m=document.getElementById('admin-login-m'); if(m) m.style.display='flex';
+  if(p) setTimeout(()=>p.focus(),60);
+}
+function closeAdminLogin(){ const m=document.getElementById('admin-login-m'); if(m) m.style.display='none'; }
+async function doAdminLogin(){
+  if(!auth) return;
+  const email=(document.getElementById('admin-email')?.value||'').trim();
+  const pass=document.getElementById('admin-pass')?.value||'';
+  const errEl=document.getElementById('admin-login-err'), btn=document.getElementById('admin-login-btn');
+  const showErr=m=>{ if(errEl){ errEl.textContent=m; errEl.style.display='block'; } };
+  if(!email||!pass){ showErr('Completá email y contraseña.'); return; }
+  if(btn){ btn.disabled=true; btn.textContent='Ingresando...'; }
+  try{
+    const cred=await auth.signInWithEmailAndPassword(email,pass);
+    if(cred.user && cred.user.email===ADMIN_EMAIL){
+      closeAdminLogin(); showToast('Sesión de administrador iniciada ✓','g');
+      // setAdminMode lo dispara onAuthStateChanged
+    }else{
+      await auth.signOut(); showErr('Esa cuenta no es la de administrador.');
+    }
+  }catch(e){ console.warn('login',e); showErr('No se pudo iniciar sesión. Revisá los datos.'); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent='Ingresar'; } }
+}
+async function adminLogout(){ try{ if(auth) await auth.signOut(); }catch(e){} showToast('Sesión de administrador cerrada','g'); }
+// Fuente única de verdad del estado admin: el observer de Firebase Auth.
+function setAdminMode(on){
+  G.isAdmin=!!on;
+  const btn=document.getElementById('chat-admin-btn');
+  if(on){
+    try{ localStorage.setItem(APODO_LS,'AdminRobos'); }catch(e){}
+    if(btn){ btn.textContent='✓ Admin'; btn.classList.add('is-admin'); btn.title='Sesión admin activa — tocá para cerrar sesión'; }
+  }else{
+    // al salir, soltar el apodo reservado para no quedar bloqueado por las reglas
+    try{ if((getApodo()||'').toLowerCase()==='adminrobos') localStorage.removeItem(APODO_LS); }catch(e){}
+    if(btn){ btn.textContent='🔐 Login admin'; btn.classList.remove('is-admin'); btn.title='Acceso administrador'; }
+  }
+  onApodoChanged();
+}
+// ===== MODERACIÓN INLINE (solo admin autenticado; las reglas exigen isAdmin()) =====
+async function adminDeleteMsgInline(id){
+  if(!G.isAdmin||!id) return;
+  if(!confirm('¿Eliminar este mensaje?')) return;
+  try{ await db.collection(CHAT_COL).doc(id).delete(); }
+  catch(e){ console.error('del inline',e); showToast('No se pudo eliminar','r'); }
+}
+function adminBanInline(encA){
+  if(!G.isAdmin) return;
+  const a=decodeURIComponent(encA); if(!a||a==='AdminRobos') return;
+  const prev=document.getElementById('chat-ban-modal'); if(prev) prev.remove();
+  const ov=document.createElement('div'); ov.className='movl'; ov.id='chat-ban-modal'; ov.style.display='flex';
+  ov.onclick=e=>{ if(e.target===ov) ov.remove(); };
+  const opts=[['1 hora',3600e3],['6 horas',6*3600e3],['24 horas',24*3600e3],['7 días',7*24*3600e3],['30 días',30*24*3600e3],['Indefinido',null]];
+  ov.innerHTML='<div class="mbox">'+
+    '<p style="font-size:15px;font-weight:800;color:var(--t0);margin-bottom:3px">🚫 Banear a "'+esc(a)+'"</p>'+
+    '<p style="font-size:11px;color:var(--t3);margin-bottom:13px">Elegí la duración del ban.</p>'+
+    '<div id="chat-ban-dur" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:13px">'+opts.map((o,i)=>'<button data-ms="'+(o[1]==null?'null':o[1])+'" onclick="banInlinePick(this)" style="padding:9px 5px;border-radius:11px;border:1px solid '+(i===2?'#0ea5e9':'rgba(var(--rgb-line),.2)')+';background:'+(i===2?'rgba(14,165,233,.16)':'rgba(var(--rgb-deep),.6)')+';color:'+(i===2?'#7dd3fc':'var(--t2)')+';font-size:11px;font-weight:700;cursor:pointer">'+o[0]+'</button>').join('')+'</div>'+
+    '<input id="chat-ban-motivo" class="min" maxlength="120" placeholder="Motivo (opcional)">'+
+    '<div style="display:flex;gap:9px;margin-top:4px"><button onclick="document.getElementById(\'chat-ban-modal\').remove()" style="flex:1;padding:12px;border-radius:12px;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:12px;font-weight:700;cursor:pointer">Cancelar</button>'+
+    '<button onclick="banInlineConfirm(\''+encodeURIComponent(a)+'\')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Confirmar ban</button></div>';
+  document.body.appendChild(ov);
+  ov.dataset.ms=String(24*3600e3);
+}
+function banInlinePick(btn){
+  const wrap=document.getElementById('chat-ban-dur'); if(!wrap) return;
+  [...wrap.children].forEach(b=>{ b.style.borderColor='rgba(var(--rgb-line),.2)'; b.style.background='rgba(var(--rgb-deep),.6)'; b.style.color='var(--t2)'; });
+  btn.style.borderColor='#0ea5e9'; btn.style.background='rgba(14,165,233,.16)'; btn.style.color='#7dd3fc';
+  const ov=document.getElementById('chat-ban-modal'); if(ov) ov.dataset.ms=btn.dataset.ms;
+}
+async function banInlineConfirm(encA){
+  if(!G.isAdmin) return;
+  const a=decodeURIComponent(encA); const ov=document.getElementById('chat-ban-modal'); if(!ov) return;
+  const ms=ov.dataset.ms; const motivo=(document.getElementById('chat-ban-motivo')?.value||'').trim();
+  let ban_hasta=null;
+  if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); }
+  try{
+    await db.collection(BAN_COL).doc(a).set({apodo:a,motivo:motivo,ban_hasta:ban_hasta,baneado_por:'AdminRobos',timestamp:FV.serverTimestamp()});
+    ov.remove(); showToast('Usuario baneado 🚫','g');
+  }catch(e){ console.error('ban inline',e); showToast('No se pudo banear','r'); }
+}
+
 // ===== INIT =====
 window.addEventListener('load',()=>{
   if(!db){ showToast('Sin conexión a la base','r'); return; }
-  getApodo()||ensureApodo();
+  if(auth){ try{ auth.onAuthStateChanged(u=>{ setAdminMode(!!(u && u.email===ADMIN_EMAIL)); }); }catch(e){ console.warn('authState',e); } }
+  // No se fuerza el prompt de apodo al cargar (evita bloquear y pisar la resolución de auth);
+  // se pide al enfocar el input o al enviar.
   refreshApodoLabels();
   subscribeMods();
   subscribeMessages();
