@@ -111,7 +111,8 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
     <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
   </header>
 
-  <div id="chat-msgs" class="ns">
+  <section id="chat-lockout" style="display:flex;align-items:center;justify-content:center;flex:1;min-height:0;padding:24px;text-align:center" role="status"><div><h3 id="chat-lockout-title" style="font-size:17px;margin-bottom:12px">Verificando acceso...</h3><p id="chat-lockout-desc" style="color:var(--t3);font-size:13px"></p></div></section>
+  <div id="chat-msgs" class="ns" style="display:none">
     <div id="chat-loadmore" style="display:none;text-align:center;margin-bottom:4px"><button onclick="loadMoreMsgs()" style="background:rgba(var(--rgb-slate),.6);border:1px solid rgba(var(--rgb-line),.18);border-radius:999px;padding:7px 16px;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;cursor:pointer">↑ Cargar mensajes anteriores</button></div>
     <div id="chat-empty" style="text-align:center;padding:40px 10px;color:#475569;font-size:12px;font-weight:700;display:none"><div style="font-size:34px;margin-bottom:8px">💬</div>Todavía no hay mensajes. ¡Rompé el hielo!</div>
   </div>
@@ -160,7 +161,7 @@ const FB_CONFIG={
   appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
 let db=null, auth=null;
-if(window.firebase){ firebase.initializeApp(FB_CONFIG); db=firebase.firestore(); try{ if(firebase.auth) auth=firebase.auth(); }catch(e){} }
+if(window.firebase){ const ca=firebase.apps.find(x=>x.name==='rmdp_chat')||firebase.initializeApp(FB_CONFIG,'rmdp_chat');db=ca.firestore();try{auth=ca.auth();}catch(e){} }
 const FV=firebase.firestore.FieldValue;
 const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
@@ -168,7 +169,7 @@ const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderado
 const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
 
 const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUnsub:null,
-  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0, isAdmin:false,
+  mods:new Set(), lastSend:0, sendTimes:[], banned:true, authReady:false, banReady:false, uid:null, sid:null, presTimer:null, presUnsub:null, onlineTimer:null, msgsCount:0, isAdmin:false,
   replyTo:null, mentionStart:-1, notifOn:false, notifReady:false, hasSent:false };
 
 // ===== UTILS =====
@@ -224,8 +225,7 @@ function chatAvatar(name,size){ size=size||36; const n=(String(name||'').trim())
 // Cuando cambia el apodo: refrescar etiquetas, presencia y chequeo de ban.
 function onApodoChanged(){
   refreshApodoLabels();
-  pushPresence();
-  subscribeBan();
+  if(!G.banned&&G.authReady&&G.banReady)pushPresence();
   renderFromCache();
 }
 
@@ -234,6 +234,7 @@ let _cache=[]; // docs ordenados asc
 function nearBottom(){ const el=document.getElementById('chat-msgs'); if(!el) return true; return (el.scrollHeight-el.scrollTop-el.clientHeight)<120; }
 function scrollBottom(){ const el=document.getElementById('chat-msgs'); if(el) el.scrollTop=el.scrollHeight; }
 function subscribeMessages(){
+  if(!G.authReady||!G.banReady||G.banned)return;
   if(G.msgsUnsub){ try{G.msgsUnsub();}catch(e){} }
   G.notifReady=false; // no notificar en la carga inicial (ni al recargar más mensajes)
   try{
@@ -265,6 +266,7 @@ function highlightMentions(escaped){
 }
 function renderText(t){ return highlightMentions(esc(t)); }
 function renderMessages(doScroll){
+  if(G.banned)return;
   const el=document.getElementById('chat-msgs'); if(!el) return;
   const empty=document.getElementById('chat-empty');
   const me=getApodo();
@@ -280,7 +282,7 @@ function renderMessages(doScroll){
     const badge=isAdm?'<span class="badge badge-admin">✓ AdminRobos</span>':(isMod?'<span class="badge badge-mod">🛡️ Mod</span>':'');
     const modActions = G.isAdmin ? ('<div class="mod-actions">'+
       '<button class="mod-btn mod-del" onclick="adminDeleteMsgInline(\''+m.id+'\')" title="Eliminar mensaje">🗑️</button>'+
-      (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
+      (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.uid||'')+'\',\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
       '</div>') : '';
     // Cita (respuesta a otro mensaje)
     let quote='';
@@ -320,62 +322,71 @@ function getSid(){
   return G.sid;
 }
 function pushPresence(){
-  if(!db) return; const a=getApodo(); if(!a) return;
-  try{ db.collection(PRES_COL).doc(getSid()).set({apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}).catch(()=>{}); }catch(e){}
+  if(!db||!auth?.currentUser||G.banned||!G.authReady||!G.banReady)return;
+  const apodo=getApodo();if(!apodo)return;
+  db.collection(PRES_COL).doc(getSid()).set({uid:auth.currentUser.uid,apodo,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}).catch(()=>{});
 }
-function startPresence(){
-  pushPresence();
-  setInterval(pushPresence,30000);
-  window.addEventListener('beforeunload',()=>{ try{ db.collection(PRES_COL).doc(getSid()).set({activo:false},{merge:true}).catch(()=>{}); }catch(e){} });
+function stopPresence(){
+  if(G.presTimer){clearInterval(G.presTimer);G.presTimer=null;}
+  if(db&&G.sid)db.collection(PRES_COL).doc(G.sid).update({activo:false}).catch(()=>{});
 }
+function startPresence(){if(G.presTimer||G.banned||!G.banReady)return;pushPresence();G.presTimer=setInterval(pushPresence,30000);}
 let _presDocs=[];
-function presTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toDate().getTime(); if(v&&typeof v.seconds==='number') return v.seconds*1000; return 0; }
+function presTime(x){const v=x&&x.ultimo_ping;return v&&v.toDate?v.toDate().getTime():v&&v.seconds?v.seconds*1000:0;}
 function recomputeOnline(){
-  const now=Date.now();
-  const seen=new Set();
-  let n=0;
-  _presDocs.forEach(p=>{ if(p.activo===false) return; if((now-presTime(p))>ONLINE_TTL) return; const key=p.apodo||p._id; if(seen.has(key)) return; seen.add(key); n++; });
-  n=Math.max(n,1); // uno mismo siempre cuenta
-  const el=document.getElementById('chat-online'); if(el) el.textContent=n+' '+(n===1?'vecino':'vecinos')+' en línea';
+  const now=Date.now(),seen=new Set();let n=0;
+  _presDocs.forEach(p=>{if(p.activo===false||now-presTime(p)>ONLINE_TTL)return;const key=p.uid||p.apodo||p._id;if(seen.has(key))return;seen.add(key);n++;});
+  const el=document.getElementById('chat-online');if(el)el.textContent=n+' '+(n===1?'vecino':'vecinos')+' en línea';
 }
 function subscribeOnline(){
-  try{
-    db.collection(PRES_COL).onSnapshot(snap=>{ _presDocs=snap.docs.map(d=>({_id:d.id,...d.data()})); recomputeOnline(); },err=>{ console.warn('presencia',err); });
-  }catch(e){ console.warn('subscribeOnline',e); }
-  setInterval(recomputeOnline,15000);
+  if(G.banned||!G.banReady||G.presUnsub)return;
+  G.presUnsub=db.collection(PRES_COL).onSnapshot(s=>{_presDocs=s.docs.map(d=>({_id:d.id,...d.data()}));recomputeOnline();},e=>console.warn('presencia',e));
+  if(!G.onlineTimer)G.onlineTimer=setInterval(recomputeOnline,15000);
 }
 
 // ===== MODERADORES =====
 function subscribeMods(){
+  if(!G.authReady||!G.banReady||G.banned||G.modUnsub)return;
   try{
     G.modUnsub=db.collection(MOD_COL).onSnapshot(snap=>{ G.mods=new Set(snap.docs.map(d=>d.id)); renderFromCache(); },err=>{ console.warn('mods',err); });
   }catch(e){}
 }
 
-// ===== BANS =====
-function banActive(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
-function fmtBanUntil(d){ const h=d&&d.ban_hasta; if(h==null) return 'indefinidamente'; const dt=(h&&h.toDate)?h.toDate():(h&&h.seconds?new Date(h.seconds*1000):null); if(!dt) return 'indefinidamente'; return 'hasta el '+dt.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
+// ===== BANS POR UID FIREBASE =====
+function banActive(d){if(!d)return false;const h=d.ban_hasta;if(h==null)return true;const t=h.toDate?h.toDate().getTime():(h.seconds||0)*1000;return t>Date.now();}
+function fmtBanUntil(d){const h=d?.ban_hasta;if(!h)return 'indefinidamente';const dt=h.toDate?h.toDate():new Date(h.seconds*1000);return 'hasta el '+dt.toLocaleString('es-AR');}
+function stopChatListeners(){
+  ['msgsUnsub','presUnsub','modUnsub'].forEach(k=>{if(G[k]){try{G[k]();}catch(e){}G[k]=null;}});
+  if(G.onlineTimer){clearInterval(G.onlineTimer);G.onlineTimer=null;}
+  _cache=[];_presDocs=[];G.notifReady=false;G.msgsCount=0;
+  document.querySelectorAll('#chat-msgs .cmsg').forEach(el=>el.remove());
+}
 function applyBanUI(d){
-  const active=banActive(d);
-  G.banned=active;
-  const banEl=document.getElementById('chat-ban'), live=document.getElementById('chat-live');
-  const inp=document.getElementById('chat-in'), snd=document.getElementById('chat-send');
-  if(active){
-    if(banEl){ banEl.style.display='block'; banEl.innerHTML='🚫 Tu acceso al chat está suspendido '+fmtBanUntil(d)+'.'+((d&&d.motivo)?' <span style="color:var(--t3)">Motivo: '+esc(d.motivo)+'</span>':''); }
-    if(live) live.style.display='none';
-    if(inp) inp.disabled=true; if(snd) snd.disabled=true;
+  const banned=banActive(d),old=G.banned;G.banReady=true;G.banned=banned;
+  const lock=document.getElementById('chat-lockout'),msgs=document.getElementById('chat-msgs'),footer=document.getElementById('chat-footer');
+  if(banned){
+    stopPresence();stopChatListeners();
+    if(lock)lock.style.display='flex';
+    const title=document.getElementById('chat-lockout-title'),desc=document.getElementById('chat-lockout-desc');
+    if(title)title.textContent='🚫 Acceso al chat suspendido';
+    if(desc)desc.textContent='No podés leer ni participar '+fmtBanUntil(d)+(d?.motivo?'. Motivo: '+d.motivo:'')+'.';
+    if(msgs)msgs.style.display='none';if(footer)footer.style.display='none';
   }else{
-    if(banEl) banEl.style.display='none';
-    if(live) live.style.display='block';
-    if(inp) inp.disabled=false; if(snd) snd.disabled=false;
+    if(lock)lock.style.display='none';if(msgs)msgs.style.display='block';if(footer)footer.style.display='block';
+    if(old||!G.msgsUnsub){subscribeMessages();subscribeOnline();subscribeMods();startPresence();}
   }
+  if(G.banExpiryTimer)clearTimeout(G.banExpiryTimer);
+  if(banned&&d?.ban_hasta){const h=d.ban_hasta,until=h.toDate?h.toDate().getTime():h.seconds*1000;
+    if(until>Date.now())G.banExpiryTimer=setTimeout(()=>applyBanUI(d),Math.min(until-Date.now()+150,2147483000));}
 }
 function subscribeBan(){
-  if(G.banUnsub){ try{G.banUnsub();}catch(e){} G.banUnsub=null; }
-  const a=getApodo(); if(!a){ applyBanUI(null); return; }
-  try{
-    G.banUnsub=db.collection(BAN_COL).doc(a).onSnapshot(snap=>{ applyBanUI(snap.exists?snap.data():null); },err=>{ console.warn('ban',err); });
-  }catch(e){}
+  if(G.banUnsub){G.banUnsub();G.banUnsub=null;}
+  G.banned=true;G.banReady=false;
+  if(!auth?.currentUser)return;
+  G.banUnsub=db.collection(BAN_COL).doc(auth.currentUser.uid).onSnapshot(
+    snap=>applyBanUI(snap.exists?snap.data():null),
+    e=>{console.error('ban',e);G.banned=true;G.banReady=false;stopPresence();stopChatListeners();
+      const desc=document.getElementById('chat-lockout-desc');if(desc)desc.textContent='No se pudo verificar tu acceso; intentá nuevamente más tarde.';});
 }
 
 // ===== ENVÍO + ANTI-SPAM =====
@@ -402,7 +413,7 @@ async function sendChat(){
   const txt=ta.value.trim();
   if(!txt) return;
   const a=ensureApodo(); if(!a){ showToast('Elegí un apodo para escribir','r'); return; }
-  if(G.banned){ showToast('Tu acceso al chat está suspendido','r'); return; }
+  if(G.banned||!G.authReady||!G.banReady||!auth?.currentUser){showToast('Acceso no habilitado','r');return;}
   const now=Date.now();
   // cooldown 3s
   if(now-G.lastSend<COOLDOWN_MS){ showToast('Esperá un segundo entre mensajes','r'); return; }
@@ -411,7 +422,7 @@ async function sendChat(){
   if(G.sendTimes.length>=RATE_MAX){ showToast('Demasiados mensajes, esperá un momento','r'); return; }
   const snd=document.getElementById('chat-send'); if(snd) snd.disabled=true;
   const payload={
-    apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
+    uid:auth.currentUser.uid, apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
     admin:G.isAdmin===true, moderador:G.mods.has(a),
     timestamp:FV.serverTimestamp()
   };
@@ -613,9 +624,11 @@ async function adminDeleteMsgInline(id){
   try{ await db.collection(CHAT_COL).doc(id).delete(); }
   catch(e){ console.error('del inline',e); showToast('No se pudo eliminar','r'); }
 }
-function adminBanInline(encA){
-  if(!G.isAdmin) return;
-  const a=decodeURIComponent(encA); if(!a||a==='AdminRobos') return;
+function adminBanInline(encUid,encA){
+  if(!G.isAdmin)return;
+  const uid=decodeURIComponent(encUid||''),a=decodeURIComponent(encA||'');
+  if(!uid){showToast('Mensaje antiguo sin UID. No se puede aplicar un ban persistente desde este mensaje.','r');return;}
+  if(!a||a==='AdminRobos'||uid===auth?.currentUser?.uid)return;
   const prev=document.getElementById('chat-ban-modal'); if(prev) prev.remove();
   const ov=document.createElement('div'); ov.className='movl'; ov.id='chat-ban-modal'; ov.style.display='flex';
   ov.onclick=e=>{ if(e.target===ov) ov.remove(); };
@@ -628,7 +641,7 @@ function adminBanInline(encA){
     '<div style="display:flex;gap:9px;margin-top:4px"><button onclick="document.getElementById(\'chat-ban-modal\').remove()" style="flex:1;padding:12px;border-radius:12px;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:12px;font-weight:700;cursor:pointer">Cancelar</button>'+
     '<button onclick="banInlineConfirm(\''+encodeURIComponent(a)+'\')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Confirmar ban</button></div>';
   document.body.appendChild(ov);
-  ov.dataset.ms=String(24*3600e3);
+  ov.dataset.ms=String(24*3600e3);ov.dataset.uid=uid;ov.dataset.apodo=a;
 }
 function banInlinePick(btn){
   const wrap=document.getElementById('chat-ban-dur'); if(!wrap) return;
@@ -638,12 +651,14 @@ function banInlinePick(btn){
 }
 async function banInlineConfirm(encA){
   if(!G.isAdmin) return;
-  const a=decodeURIComponent(encA); const ov=document.getElementById('chat-ban-modal'); if(!ov) return;
+  const ov=document.getElementById('chat-ban-modal');if(!ov)return;const uid=ov.dataset.uid,a=ov.dataset.apodo;if(!uid)return;
   const ms=ov.dataset.ms; const motivo=(document.getElementById('chat-ban-motivo')?.value||'').trim();
   let ban_hasta=null;
   if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); }
   try{
-    await db.collection(BAN_COL).doc(a).set({apodo:a,motivo:motivo,ban_hasta:ban_hasta,baneado_por:'AdminRobos',timestamp:FV.serverTimestamp()});
+    await db.collection(BAN_COL).doc(uid).set({uid,apodo:a,motivo,ban_hasta,baneado_por:'AdminRobos',timestamp:FV.serverTimestamp()});
+    const active=await db.collection(PRES_COL).where('uid','==',uid).get();
+    await Promise.all(active.docs.map(p=>p.ref.update({activo:false})));
     ov.remove(); showToast('Usuario baneado 🚫','g');
   }catch(e){ console.error('ban inline',e); showToast('No se pudo banear','r'); }
 }
@@ -651,15 +666,22 @@ async function banInlineConfirm(encA){
 // ===== INIT =====
 window.addEventListener('load',()=>{
   if(!db){ showToast('Sin conexión a la base','r'); return; }
-  if(auth){ try{ auth.onAuthStateChanged(u=>{ setAdminMode(!!(u && u.email===ADMIN_EMAIL)); }); }catch(e){ console.warn('authState',e); } }
+  if(auth)auth.onAuthStateChanged(async u=>{
+    if(!u){
+      G.authReady=false;G.banReady=false;G.banned=true;stopPresence();stopChatListeners();
+      if(G.banUnsub){G.banUnsub();G.banUnsub=null;}
+      try{await auth.signInAnonymously();}catch(e){console.error('anonymous auth',e);
+        const desc=document.getElementById('chat-lockout-desc');if(desc)desc.textContent='No se pudo iniciar sesión. Se requiere habilitar Anonymous en Firebase Authentication.';}
+      return;
+    }
+    G.uid=u.uid;G.authReady=true;G.banReady=false;G.banned=true;
+    setAdminMode(!!(u.email===ADMIN_EMAIL));subscribeBan();
+  });
+  window.addEventListener('beforeunload',()=>{if(db&&G.sid)db.collection(PRES_COL).doc(G.sid).update({activo:false}).catch(()=>{});});
   // No se fuerza el prompt de apodo al cargar (evita bloquear y pisar la resolución de auth);
   // se pide al enfocar el input o al enviar.
   refreshApodoLabels();
-  subscribeMods();
-  subscribeMessages();
-  subscribeOnline();
-  subscribeBan();
-  startPresence();
+  // Iniciar suscripciones solo después de autenticación y verificación del UID.
   onChatInput();
   // Alertas ON por defecto (el sonido no necesita permiso); solo off si el user las silenció.
   G.notifOn = (function(){ try{ return localStorage.getItem(NOTIF_ON_LS)!=='0'; }catch(e){ return true; } })();
