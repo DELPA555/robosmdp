@@ -62,20 +62,25 @@ permitir lectura/escritura automáticamente.
 
 ---
 
-## 4. ⚠️ Requisito en Firebase Console (lo tenés que hacer vos)
+## 4. ✅ Requisito en Firebase Console
 
-**Habilitar el proveedor Anonymous:** Authentication → Sign-in method → **Anonymous** → Habilitar.
-Sin esto, el nuevo chat muestra "No se pudo iniciar el chat" y nadie puede entrar.
-No lo activo yo: es un cambio de configuración externa que requiere tu autorización.
+**Habilitar el proveedor Anonymous:** Authentication → Sign-in method → **Anonymous**.
+**Confirmado habilitado por el usuario (16-oct-2026).** Sin esto, el chat nuevo muestra
+"No se pudo iniciar el chat" y nadie puede entrar.
 
 ---
 
-## 5. Reglas de Firestore (NO desplegadas)
+## 5. Reglas de Firestore (FINALES — listas para publicar, NO publicadas)
 
-`firestore.rules` contiene **solo** las reglas del chat y un bloque placeholder. Firestore es
-*deny-by-default*: si se publica sin las reglas de las demás colecciones, se rompe todo el resto
-del sitio. Por eso **necesito que me pases tus reglas actuales** (Firebase Console → Firestore →
-Reglas) para integrarlas, o las integrás vos siguiendo los comentarios del archivo.
+`firestore.rules` ya es el **archivo completo y final**: trae las reglas reales de todas las
+colecciones del proyecto (reportes, basura, pozos, comentarios, foro, rastreo, mascotas,
+patentes, abandonados, luminarias, objetos, etc., **sin cambios**) con los 4 bloques del chat
+reemplazados por la versión por UID. Reutiliza tus helpers existentes `isAdmin()`,
+`reservedName()` y `honestAuthor()`, y agrega `isSignedIn()`, `isBanned()` e `isMod()`.
+
+Para publicar: copiá el contenido de `firestore.rules` en Firebase Console → Firestore Database →
+Reglas → **Publicar** (o `firebase deploy --only firestore:rules`). **Hacelo recién tras el paso 2
+del orden de abajo.**
 
 Lo que hacen las reglas del chat:
 - Leer/escribir chat: solo autenticado y **no baneado**.
