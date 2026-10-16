@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Chat vecinal — Robos MDP · Mar del Plata</title>
+<meta name="description" content="Chat vecinal en tiempo real de Robos MDP: hablá con otros vecinos de Mar del Plata sobre seguridad y lo que pasa en el barrio, en vivo.">
+<meta name="theme-color" content="#0a0f1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1c;--bg-2:#0d1424;
+  --surface:#141d30;--surface-2:#1a2438;
+  --line:rgba(148,163,184,.10);--line-2:rgba(148,163,184,.16);
+  --rgb-deep:15,23,42;--rgb-slate:30,41,59;--rgb-line:148,163,184;
+  --bg-overlay:#0a0e1a;
+  --t0:#f1f5f9;--t1:#e2e8f0;--t2:#cbd5e1;--t3:#94a3b8;
+  --accent:#0ea5e9;--accent-2:#0284c7;
+}
+html{height:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg-overlay);color:var(--t1);-webkit-font-smoothing:antialiased;overflow:hidden;height:100dvh;height:100vh}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif}
+.ns::-webkit-scrollbar{width:7px}
+.ns::-webkit-scrollbar-thumb{background:rgba(var(--rgb-line),.25);border-radius:999px}
+.ns{-webkit-overflow-scrolling:touch;overflow-y:auto}
+#toast-c{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--surface-2);color:var(--t1);border:1px solid var(--line-2);padding:12px 16px;border-radius:13px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:9px;animation:tin .38s cubic-bezier(.16,1,.3,1);font-size:13px;font-weight:600;border-left:4px solid}
+@keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+/* Layout tipo WhatsApp */
+#chat-root{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg-overlay);background-image:radial-gradient(900px circle at 50% -8%,rgba(14,165,233,.14),transparent 55%),radial-gradient(700px circle at 90% 10%,rgba(2,132,199,.06),transparent 50%)}
+#chat-header{flex-shrink:0;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;align-items:center;gap:11px;background:rgba(var(--rgb-deep),.78);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.hlogo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 6px 16px rgba(14,165,233,.3);flex-shrink:0}
+#chat-msgs{flex:1;min-height:0;padding:16px 12px 10px;display:flex;flex-direction:column;gap:9px}
+.cmsg{display:flex;gap:9px;max-width:85%;align-items:flex-start}
+.cmsg.mine{align-self:flex-end;flex-direction:row-reverse}
+.cbubble{background:rgba(var(--rgb-slate),.55);border:1px solid rgba(var(--rgb-line),.14);border-radius:15px;padding:8px 12px;min-width:0}
+.cmsg.mine .cbubble{background:rgba(14,165,233,.16);border-color:rgba(14,165,233,.3)}
+.cname{font-size:11px;font-weight:800;line-height:1;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.ctext{font-size:13.5px;color:var(--t1);line-height:1.45;white-space:pre-wrap;word-break:break-word;margin-top:3px}
+.ctime{font-size:9px;color:var(--t3);font-weight:600;margin-top:4px;font-family:'Space Mono',monospace}
+.badge{font-size:8.5px;font-weight:800;padding:1px 6px;border-radius:999px;text-transform:uppercase;letter-spacing:.02em;line-height:1.5}
+.badge-admin{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+.badge-mod{background:rgba(59,130,246,.2);color:#93c5fd;border:1px solid rgba(59,130,246,.4)}
+#chat-footer{flex-shrink:0;border-top:1px solid rgba(var(--rgb-line),.1);background:rgba(var(--rgb-deep),.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+#chat-who{font-size:10px;color:var(--t3);margin-bottom:7px}
+.inrow{display:flex;gap:9px;align-items:flex-end}
+#chat-in{flex:1;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:14px;padding:11px 13px;font-size:14px;font-weight:500;color:var(--t1);outline:none;resize:none;font-family:inherit;max-height:120px;line-height:1.4}
+#chat-in:focus{border-color:rgba(14,165,233,.55)}
+#chat-send{flex-shrink:0;width:46px;height:46px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(14,165,233,.35)}
+#chat-send:disabled{opacity:.45;cursor:not-allowed}
+#chat-count{font-size:10px;color:var(--t3);text-align:right;margin-top:5px;font-family:'Space Mono',monospace}
+#chat-count.over{color:#ef4444;font-weight:700}
+#chat-ban{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);border-radius:13px;padding:11px 14px;font-size:12px;font-weight:600;color:#fca5a5;line-height:1.45}
+.online-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:odot 2s ease-out infinite}
+@keyframes odot{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
+.flink{text-decoration:none}
+</style>
+</head>
+<body>
+
+<div id="chat-root">
+  <header id="chat-header">
+    <div class="hlogo">💬</div>
+    <div style="min-width:0;flex:1">
+      <h2 style="font-size:15px;font-weight:700;color:var(--t0);letter-spacing:-.02em;line-height:1.1">Chat Vecinal</h2>
+      <p style="font-size:10px;font-weight:600;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px"><span class="online-dot"></span><span id="chat-online">0 vecinos en línea</span></p>
+    </div>
+    <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
+  </header>
+
+  <div id="chat-msgs" class="ns">
+    <div id="chat-loadmore" style="display:none;text-align:center;margin-bottom:4px"><button onclick="loadMoreMsgs()" style="background:rgba(var(--rgb-slate),.6);border:1px solid rgba(var(--rgb-line),.18);border-radius:999px;padding:7px 16px;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;cursor:pointer">↑ Cargar mensajes anteriores</button></div>
+    <div id="chat-empty" style="text-align:center;padding:40px 10px;color:#475569;font-size:12px;font-weight:700;display:none"><div style="font-size:34px;margin-bottom:8px">💬</div>Todavía no hay mensajes. ¡Rompé el hielo!</div>
+  </div>
+
+  <footer id="chat-footer">
+    <div id="chat-ban"></div>
+    <div id="chat-live">
+      <div id="chat-who" class="apodo-who"></div>
+      <div class="inrow">
+        <textarea id="chat-in" rows="1" maxlength="280" placeholder="Escribí un mensaje..." oninput="onChatInput()" onkeydown="onChatKey(event)"></textarea>
+        <button id="chat-send" onclick="sendChat()" title="Enviar"><i data-lucide="send" style="width:19px;height:19px"></i></button>
+      </div>
+      <div id="chat-count">0 / 280</div>
+    </div>
+  </footer>
+</div>
+
+<div id="toast-c"></div>
+
+<script>
+// ===== FIREBASE (misma config del sitio — NO modificar) =====
+const FB_CONFIG={
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
+};
+let db=null;
+if(window.firebase){ firebase.initializeApp(FB_CONFIG); db=firebase.firestore(); }
+const FV=firebase.firestore.FieldValue;
+
+const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderadores', BAN_COL='chat_bans';
+const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
+
+const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUnsub:null,
+  mods:new Set(), lastSend:0, sendTimes:[], banned:false, sid:null, msgsCount:0 };
+
+// ===== UTILS =====
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function safeIcons(){ try{ if(window.lucide&&lucide.createIcons) lucide.createIcons(); }catch(e){} }
+function tAgo(date){
+  const d=Math.floor((Date.now()-date.getTime())/1000);
+  if(d<0||d<45) return 'recién';
+  if(d<3600) return 'hace '+Math.floor(d/60)+' min';
+  if(d<86400) return 'hace '+Math.floor(d/3600)+' h';
+  return 'hace '+Math.floor(d/86400)+' d';
+}
+function msgDate(x){ const v=x&&x.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); return new Date(); }
+function showToast(msg,type){
+  const c=document.getElementById('toast-c'),t=document.createElement('div');
+  t.className='toast'; t.style.borderLeftColor=type==='r'?'#ef4444':'#22c55e';
+  t.innerHTML='<i data-lucide="'+(type==='r'?'alert-circle':'check-circle')+'" style="width:16px;height:16px;color:'+(type==='r'?'#ef4444':'#22c55e')+'"></i> '+esc(msg);
+  c.appendChild(t); safeIcons(); setTimeout(()=>t.remove(),4000);
+}
+
+// ===== APODO (compartido con foro/comentarios: localStorage rmdp_apodo) =====
+const APODO_LS='rmdp_apodo';
+function isReservedName(s){
+  const n=String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  return !!n && (n.indexOf('admin')>=0||n.indexOf('robosmdp')>=0||n.indexOf('verificad')>=0||n.indexOf('oficial')>=0||n.indexOf('moderador')>=0);
+}
+function getApodo(){ try{ return (localStorage.getItem(APODO_LS)||'').trim(); }catch(e){ return ''; } }
+function setApodo(n){ n=String(n||'').trim().slice(0,40); if(isReservedName(n)) return; try{ localStorage.setItem(APODO_LS,n); }catch(e){} }
+function promptApodo(initial){
+  for(let i=0;i<4;i++){
+    const a=(window.prompt(i===0?'¿Cómo querés que te llamen en el chat?':'Ese nombre está reservado. Elegí otro:',initial||'')||'').trim().slice(0,40);
+    if(!a) return '';
+    if(isReservedName(a)){ showToast('Ese nombre está reservado','r'); initial=''; continue; }
+    return a;
+  }
+  return '';
+}
+function ensureApodo(){ let a=getApodo(); if(!a){ a=promptApodo(''); if(a){ setApodo(a); onApodoChanged(); } } return a||''; }
+function apodoWhoHTML(){
+  const a=getApodo();
+  return (a?'Escribís como <strong style="color:var(--t2)">'+esc(a)+'</strong> · ':'')+
+    '<a onclick="changeApodo()" style="color:#38bdf8;cursor:pointer;text-decoration:underline">'+(a?'Cambiar':'Elegí un apodo')+'</a>';
+}
+function refreshApodoLabels(){ document.querySelectorAll('.apodo-who').forEach(el=>{ el.innerHTML=apodoWhoHTML(); }); }
+function changeApodo(){ const a=promptApodo(getApodo()); if(a){ setApodo(a); onApodoChanged(); } }
+function chatColor(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
+function chatAvatar(name,size){ size=size||36; const n=(String(name||'').trim())||'?'; const ini=n.charAt(0).toUpperCase(); return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+chatColor(n)+';color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:'+Math.round(size*.42)+'px;flex-shrink:0;font-family:\'Space Grotesk\',sans-serif;line-height:1">'+esc(ini)+'</div>'; }
+
+// Cuando cambia el apodo: refrescar etiquetas, presencia y chequeo de ban.
+function onApodoChanged(){
+  refreshApodoLabels();
+  pushPresence();
+  subscribeBan();
+  renderFromCache();
+}
+
+// ===== MENSAJES (tiempo real) =====
+let _cache=[]; // docs ordenados asc
+function nearBottom(){ const el=document.getElementById('chat-msgs'); if(!el) return true; return (el.scrollHeight-el.scrollTop-el.clientHeight)<120; }
+function scrollBottom(){ const el=document.getElementById('chat-msgs'); if(el) el.scrollTop=el.scrollHeight; }
+function subscribeMessages(){
+  if(G.msgsUnsub){ try{G.msgsUnsub();}catch(e){} }
+  try{
+    G.msgsUnsub=db.collection(CHAT_COL).orderBy('timestamp','desc').limit(G.limit).onSnapshot(snap=>{
+      const stick=nearBottom();
+      const grew=snap.size>G.msgsCount;
+      G.msgsCount=snap.size;
+      _cache=snap.docs.map(d=>({id:d.id,...d.data()})).reverse();
+      const lm=document.getElementById('chat-loadmore'); if(lm) lm.style.display=(snap.size>=G.limit)?'block':'none';
+      renderMessages(stick||grew);
+    },err=>{ console.warn('chat msgs',err); });
+  }catch(e){ console.warn('subscribeMessages',e); }
+}
+function loadMoreMsgs(){ G.limit+=CHAT_PAGE; subscribeMessages(); }
+function renderFromCache(){ renderMessages(false); }
+function renderMessages(doScroll){
+  const el=document.getElementById('chat-msgs'); if(!el) return;
+  const empty=document.getElementById('chat-empty');
+  const me=getApodo();
+  // limpiar solo las burbujas (conservar loadmore + empty)
+  [...el.querySelectorAll('.cmsg')].forEach(n=>n.remove());
+  if(empty) empty.style.display=_cache.length?'none':'block';
+  const frag=document.createDocumentFragment();
+  _cache.forEach(m=>{
+    const mine=!!me && m.apodo===me;
+    const d=msgDate(m);
+    const isMod=!!m.moderador || G.mods.has(m.apodo);
+    const isAdm=!!m.admin;
+    const badge=isAdm?'<span class="badge badge-admin">✓ AdminRobos</span>':(isMod?'<span class="badge badge-mod">🛡️ Mod</span>':'');
+    const div=document.createElement('div');
+    div.className='cmsg'+(mine?' mine':'');
+    div.innerHTML=chatAvatar(m.apodo,34)+
+      '<div class="cbubble">'+
+      '<div class="cname" style="color:'+chatColor(m.apodo||'?')+'">'+esc(m.apodo||'Vecino anónimo')+badge+'</div>'+
+      '<div class="ctext">'+esc(m.texto||'')+'</div>'+
+      '<div class="ctime">'+tAgo(d)+'</div>'+
+      '</div>';
+    frag.appendChild(div);
+  });
+  const empt=document.getElementById('chat-empty');
+  el.insertBefore(frag, empt?empt.nextSibling:null);
+  if(doScroll) requestAnimationFrame(scrollBottom);
+}
+
+// ===== PRESENCIA / EN LÍNEA =====
+function getSid(){
+  if(G.sid) return G.sid;
+  try{ G.sid=sessionStorage.getItem('rmdp_chat_sid'); }catch(e){}
+  if(!G.sid){ G.sid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():('s'+Date.now()+Math.random().toString(16).slice(2)); try{ sessionStorage.setItem('rmdp_chat_sid',G.sid); }catch(e){} }
+  return G.sid;
+}
+function pushPresence(){
+  if(!db) return; const a=getApodo(); if(!a) return;
+  try{ db.collection(PRES_COL).doc(getSid()).set({apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}); }catch(e){}
+}
+function startPresence(){
+  pushPresence();
+  setInterval(pushPresence,30000);
+  window.addEventListener('beforeunload',()=>{ try{ db.collection(PRES_COL).doc(getSid()).set({activo:false},{merge:true}); }catch(e){} });
+}
+let _presDocs=[];
+function presTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toDate().getTime(); if(v&&typeof v.seconds==='number') return v.seconds*1000; return 0; }
+function recomputeOnline(){
+  const now=Date.now();
+  const seen=new Set();
+  let n=0;
+  _presDocs.forEach(p=>{ if(p.activo===false) return; if((now-presTime(p))>ONLINE_TTL) return; const key=p.apodo||p._id; if(seen.has(key)) return; seen.add(key); n++; });
+  n=Math.max(n,1); // uno mismo siempre cuenta
+  const el=document.getElementById('chat-online'); if(el) el.textContent=n+' '+(n===1?'vecino':'vecinos')+' en línea';
+}
+function subscribeOnline(){
+  try{
+    db.collection(PRES_COL).onSnapshot(snap=>{ _presDocs=snap.docs.map(d=>({_id:d.id,...d.data()})); recomputeOnline(); },err=>{ console.warn('presencia',err); });
+  }catch(e){ console.warn('subscribeOnline',e); }
+  setInterval(recomputeOnline,15000);
+}
+
+// ===== MODERADORES =====
+function subscribeMods(){
+  try{
+    G.modUnsub=db.collection(MOD_COL).onSnapshot(snap=>{ G.mods=new Set(snap.docs.map(d=>d.id)); renderFromCache(); },err=>{ console.warn('mods',err); });
+  }catch(e){}
+}
+
+// ===== BANS =====
+function banActive(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
+function fmtBanUntil(d){ const h=d&&d.ban_hasta; if(h==null) return 'indefinidamente'; const dt=(h&&h.toDate)?h.toDate():(h&&h.seconds?new Date(h.seconds*1000):null); if(!dt) return 'indefinidamente'; return 'hasta el '+dt.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
+function applyBanUI(d){
+  const active=banActive(d);
+  G.banned=active;
+  const banEl=document.getElementById('chat-ban'), live=document.getElementById('chat-live');
+  const inp=document.getElementById('chat-in'), snd=document.getElementById('chat-send');
+  if(active){
+    if(banEl){ banEl.style.display='block'; banEl.innerHTML='🚫 Tu acceso al chat está suspendido '+fmtBanUntil(d)+'.'+((d&&d.motivo)?' <span style="color:var(--t3)">Motivo: '+esc(d.motivo)+'</span>':''); }
+    if(live) live.style.display='none';
+    if(inp) inp.disabled=true; if(snd) snd.disabled=true;
+  }else{
+    if(banEl) banEl.style.display='none';
+    if(live) live.style.display='block';
+    if(inp) inp.disabled=false; if(snd) snd.disabled=false;
+  }
+}
+function subscribeBan(){
+  if(G.banUnsub){ try{G.banUnsub();}catch(e){} G.banUnsub=null; }
+  const a=getApodo(); if(!a){ applyBanUI(null); return; }
+  try{
+    G.banUnsub=db.collection(BAN_COL).doc(a).onSnapshot(snap=>{ applyBanUI(snap.exists?snap.data():null); },err=>{ console.warn('ban',err); });
+  }catch(e){}
+}
+
+// ===== ENVÍO + ANTI-SPAM =====
+function onChatInput(){
+  const ta=document.getElementById('chat-in'), c=document.getElementById('chat-count');
+  if(!ta) return;
+  ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,120)+'px';
+  if(c){ const n=ta.value.length; c.textContent=n+' / '+CHAT_MAX_LEN; c.classList.toggle('over',n>=CHAT_MAX_LEN); }
+}
+function onChatKey(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChat(); } }
+async function sendChat(){
+  if(!db) return;
+  const ta=document.getElementById('chat-in'); if(!ta) return;
+  const txt=ta.value.trim();
+  if(!txt) return;
+  const a=ensureApodo(); if(!a){ showToast('Elegí un apodo para escribir','r'); return; }
+  if(G.banned){ showToast('Tu acceso al chat está suspendido','r'); return; }
+  const now=Date.now();
+  // cooldown 3s
+  if(now-G.lastSend<COOLDOWN_MS){ showToast('Esperá un segundo entre mensajes','r'); return; }
+  // rate: máx 10 en 60s
+  G.sendTimes=G.sendTimes.filter(t=>now-t<RATE_WIN_MS);
+  if(G.sendTimes.length>=RATE_MAX){ showToast('Demasiados mensajes, esperá un momento','r'); return; }
+  const snd=document.getElementById('chat-send'); if(snd) snd.disabled=true;
+  try{
+    await db.collection(CHAT_COL).add({
+      apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
+      admin:false, moderador:G.mods.has(a),
+      timestamp:FV.serverTimestamp()
+    });
+    G.lastSend=now; G.sendTimes.push(now);
+    ta.value=''; onChatInput(); ta.focus();
+    requestAnimationFrame(scrollBottom);
+  }catch(e){ console.error('sendChat',e); showToast('No se pudo enviar (¿reglas Firestore?)','r'); }
+  finally{ if(snd) snd.disabled=G.banned; }
+}
+
+// ===== INIT =====
+window.addEventListener('load',()=>{
+  if(!db){ showToast('Sin conexión a la base','r'); return; }
+  getApodo()||ensureApodo();
+  refreshApodoLabels();
+  subscribeMods();
+  subscribeMessages();
+  subscribeOnline();
+  subscribeBan();
+  startPresence();
+  onChatInput();
+  safeIcons();
+  document.getElementById('chat-in')&&document.getElementById('chat-in').addEventListener('focus',()=>{ if(!getApodo()) ensureApodo(); });
+});
+</script>
+</body>
+</html>

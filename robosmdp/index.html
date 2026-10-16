@@ -419,17 +419,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
     </div>
-    <!-- Contador de visitas -->
-    <div id="ls-visit-card" class="scard" style="display:none;align-items:center;justify-content:space-between;text-align:left;padding:15px 18px;margin-bottom:18px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:44px;height:44px;border-radius:12px;background:rgba(91,141,239,.12);border:1px solid rgba(91,141,239,.28);display:flex;align-items:center;justify-content:center"><i data-lucide="users" style="width:21px;height:21px;color:#93b4f5"></i></div>
-        <div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)">Visitas</div>
-          <div style="font-size:9px;font-weight:700;color:#64748b;margin-top:3px"><span id="ls-visit-today" style="color:#a5b4fc">0</span> hoy</div>
-        </div>
-      </div>
-      <div class="n" id="ls-visit-total" style="color:#a5b4fc;font-size:26px">0</div>
-    </div>
+    <!-- Contador de visitas: oculto de la landing (el listener sigue vivo para el panel admin) -->
     <a href="https://seguridad.gba.gob.ar/#/home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:14px auto 0;padding:16px 18px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line-2);color:#dbe6fb;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.01em;transition:background .2s,border-color .2s" onmouseover="this.style.background='var(--surface-hi)'" onmouseout="this.style.background='var(--surface-2)'">
       <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93b4f5"></i>
       Denuncia policial online
@@ -564,6 +554,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <button onclick="openObjetos()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">📦</span>Objetos perdidos / encontrados</button>
       <button onclick="openMascotas()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">🐾</span>Mascotas perdidas / encontradas</button>
       <button onclick="openForo()" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s" onmouseover="this.style.background='var(--surface-2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--surface)';this.style.transform='translateY(0)'"><span style="font-size:16px">💬</span>Foro vecinal</button>
+      <a href="/chat" style="width:100%;max-width:380px;margin:0 auto;padding:16px 24px;border-radius:14px;border:1px solid rgba(14,165,233,.42);background:rgba(14,165,233,.12);color:#7dd3fc;font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(14,165,233,.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(14,165,233,.12)';this.style.transform='translateY(0)'"><span style="font-size:16px">💬</span>Chat vecinal en vivo</a>
       </div><!-- /.sec-grid -->
       <p style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.18em;margin-top:8px">Contacto &amp; Redes</p>
       <div style="display:flex;gap:13px">
@@ -770,6 +761,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <button onclick="openObjetos()" style="width:100%;padding:13px;margin-bottom:8px;background:#f97316;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(249,115,22,.26)"><span style="font-size:13px">📦</span>Objetos</button>
       <button onclick="openMascotas()" style="width:100%;padding:13px;margin-bottom:8px;background:#10b981;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(16,185,129,.26)"><span style="font-size:13px">🐾</span>Mascotas</button>
       <button onclick="openForo()" style="width:100%;padding:13px;margin-bottom:8px;background:#6366f1;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(99,102,241,.26)"><span style="font-size:13px">💬</span>Foro vecinal</button>
+      <a href="/chat" style="width:100%;padding:13px;margin-bottom:8px;background:#0ea5e9;border:none;border-radius:13px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 16px rgba(14,165,233,.26)"><span style="font-size:13px">💬</span>Chat vecinal</a>
       <div style="display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;margin-bottom:9px">
         <a href="#" onclick="goLandingTo('acerca');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Acerca de</a>
         <a href="#" onclick="goLandingTo('como-reportar');return false" style="color:#64748b;font-size:9px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.04em">Cómo reportar</a>
@@ -1128,6 +1120,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
         <button id="adm-tab-mascotas" onclick="switchAdmTab('mascotas')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🐾 Mascotas</button>
         <button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
         <button id="adm-tab-rastreo" onclick="switchAdmTab('rastreo')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🛡️ Rastreo</button>
+        <button id="adm-tab-chat" onclick="switchAdmTab('chat')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Chat</button>
       </div>
       <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
         <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
@@ -2049,6 +2042,7 @@ function applyHashRoute(){
   const h=(window.location.hash||'').replace('#','').toLowerCase();
   if(!h) return false;
   if(h==='foro'){ window.location.replace('./foro.html'); return true; }
+  if(h==='chat'){ window.location.replace('/chat'); return true; }
   if(HASH_TABS[h]){ enterApp(HASH_TABS[h]); return true; }
   if(h==='patentes'){ openPatentes(); return true; }
   if(h==='objetos'){ openObjetos(); return true; }
@@ -3114,6 +3108,7 @@ function renderAdm(){
   if(admTab==='mascotas'){ renderMascotasAdmin(); return; }
   if(admTab==='foro'){ renderForoAdmin(); return; }
   if(admTab==='rastreo'){ renderRastreoAdmin(); return; }
+  if(admTab==='chat'){ renderChatAdmin(); return; }
   const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
   const q=(document.getElementById('adm-q')?.value||'').toLowerCase();
   if(!list||!grid) return;
@@ -3150,12 +3145,12 @@ let admTab='robos';
 
 function switchAdmTab(tab){
   admTab=tab; G.admCatF=null;
-  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',mascotas:'#10b981',foro:'#6366f1',rastreo:'#0ea5e9'};
-  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','mascotas','foro','rastreo'].forEach(t=>{
+  const colors={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6',avisos:'#6366f1',patentes:'#6366f1',objetos:'#f97316',mascotas:'#10b981',foro:'#6366f1',rastreo:'#0ea5e9',chat:'#06b6d4'};
+  ['robos','basura','pozos','abandonados','luminarias','avisos','patentes','objetos','mascotas','foro','rastreo','chat'].forEach(t=>{
     const btn=document.getElementById('adm-tab-'+t);
     if(btn){btn.style.background=t===tab?colors[t]:'transparent';btn.style.color=t===tab?'#fff':'var(--t3)';}
   });
-  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='mascotas'||tab==='foro'||tab==='rastreo');
+  const noGrid=(tab==='avisos'||tab==='patentes'||tab==='objetos'||tab==='mascotas'||tab==='foro'||tab==='rastreo'||tab==='chat');
   const fbox=document.getElementById('adm-q'); if(fbox&&fbox.parentElement) fbox.parentElement.style.display=noGrid?'none':'block';
   const exrow=document.getElementById('adm-export-row'); if(exrow) exrow.style.display=noGrid?'none':'flex';
   if(tab==='patentes') loadPatentes();
@@ -3163,6 +3158,7 @@ function switchAdmTab(tab){
   if(tab==='mascotas') loadMascotas();
   if(tab==='foro') loadForoAdmin();
   if(tab==='rastreo') loadRastreoAdmin();
+  if(tab==='chat') loadChatAdmin();
   renderAdm();
 }
 
@@ -4673,6 +4669,123 @@ async function delReply(tid,rid){
     await db.collection(FORO_COL).doc(tid).update({respuestas_count:firebase.firestore.FieldValue.increment(-1)});
     const t=(G.foro||[]).find(x=>x.id===tid); if(t&&t.respuestas_count) t.respuestas_count--;
   }catch(e){ console.error('delReply',e); showToast('Error al eliminar','r'); }
+}
+
+// ===== CHAT VECINAL — moderación (panel admin) =====
+const CHATA_MSG='chat_publico', CHATA_PRES='chat_presencia', CHATA_MOD='chat_moderadores', CHATA_BAN='chat_bans', CHATA_TTL=90000;
+const _chatA={ msgs:[], pres:[], mods:[], bans:[], query:'', subbed:false };
+function chatMsgDate(x){ const v=x&&x.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); return new Date(0); }
+function chatColorA(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
+function loadChatAdmin(){
+  if(_chatA.subbed) { if(admTab==='chat') renderChatAdmin(); return; }
+  _chatA.subbed=true;
+  try{
+    db.collection(CHATA_MSG).orderBy('timestamp','desc').limit(200).onSnapshot(s=>{ _chatA.msgs=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin msgs',e));
+    db.collection(CHATA_PRES).onSnapshot(s=>{ _chatA.pres=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin pres',e));
+    db.collection(CHATA_MOD).onSnapshot(s=>{ _chatA.mods=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin mods',e));
+    db.collection(CHATA_BAN).onSnapshot(s=>{ _chatA.bans=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin bans',e));
+  }catch(e){ console.warn('loadChatAdmin',e); }
+}
+function onChatAdminSearch(){ _chatA.query=(document.getElementById('chata-q')?.value||'').toLowerCase().trim(); renderChatAdmin(); }
+function chatPresTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toDate().getTime(); if(v&&typeof v.seconds==='number') return v.seconds*1000; return 0; }
+function chatOnlineUsers(){
+  const now=Date.now(), seen=new Set(), out=[];
+  _chatA.pres.slice().sort((a,b)=>chatPresTime(b)-chatPresTime(a)).forEach(p=>{ if(p.activo===false) return; if((now-chatPresTime(p))>CHATA_TTL) return; const a=p.apodo||''; if(!a||seen.has(a)) return; seen.add(a); out.push(a); });
+  return out;
+}
+function chatBanActiveDoc(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
+function isMod(apodo){ return _chatA.mods.some(m=>m.id===apodo||m.apodo===apodo); }
+function renderChatAdmin(){
+  const list=document.getElementById('adm-list'),grid=document.getElementById('adm-stats');
+  if(!list) return; if(grid) grid.innerHTML='';
+  const online=chatOnlineUsers();
+  const activeBans=_chatA.bans.filter(b=>chatBanActiveDoc(b));
+  const q=_chatA.query;
+  let msgs=_chatA.msgs.slice();
+  if(q) msgs=msgs.filter(m=>String(m.apodo||'').toLowerCase().includes(q)||String(m.texto||'').toLowerCase().includes(q));
+  const box=(title,body)=>'<div style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.5),rgba(var(--rgb-deep),.6));border:1px solid rgba(var(--rgb-line),.14);border-radius:16px;padding:12px 14px;margin-bottom:10px"><p style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px">'+title+'</p>'+body+'</div>';
+  const modBtn=a=>isMod(a)?'<button onclick="admChatToggleMod(\''+encodeURIComponent(a)+'\',false)" style="padding:4px 9px;background:rgba(59,130,246,.16);color:#93c5fd;border:1px solid rgba(59,130,246,.35);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer">🛡️ Quitar mod</button>':'<button onclick="admChatToggleMod(\''+encodeURIComponent(a)+'\',true)" style="padding:4px 9px;background:rgba(var(--rgb-line),.12);color:var(--t2);border:1px solid rgba(var(--rgb-line),.22);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer">🛡️ Hacer mod</button>';
+  const banBtn=a=>'<button onclick="admChatOpenBan(\''+encodeURIComponent(a)+'\')" style="padding:4px 9px;background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer">🚫 Banear</button>';
+  const delAllBtn=a=>'<button onclick="admChatDeleteAll(\''+encodeURIComponent(a)+'\')" title="Eliminar todos los mensajes de este usuario" style="padding:4px 9px;background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer">🗑️ Todos</button>';
+  // Buscador
+  let html='<div style="position:relative;margin-bottom:12px"><input id="chata-q" oninput="onChatAdminSearch()" value="'+esc(q)+'" placeholder="Buscar mensajes por apodo o texto..." style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;color:var(--t1);outline:none"></div>';
+  // Usuarios en línea
+  html+=box('👥 En línea ('+online.length+')', online.length?('<div style="display:flex;flex-direction:column;gap:7px">'+online.map(a=>'<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:var(--t1);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px"></span>'+esc(a)+(isMod(a)?' <span style="font-size:8.5px;color:#93c5fd">🛡️</span>':'')+'</span><span style="display:flex;gap:5px;flex-shrink:0">'+modBtn(a)+banBtn(a)+'</span></div>').join('')+'</div>'):'<p style="font-size:11px;color:#475569">Nadie conectado ahora.</p>');
+  // Baneados
+  if(activeBans.length){
+    html+=box('🚫 Usuarios baneados ('+activeBans.length+')','<div style="display:flex;flex-direction:column;gap:7px">'+activeBans.map(b=>{ const until=(b.ban_hasta&&b.ban_hasta.toDate)?b.ban_hasta.toDate().toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:#fca5a5;min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.apodo||b.id)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600">'+(b.ban_hasta==null?'Permanente':'Hasta '+until)+(b.motivo?' · '+esc(b.motivo):'')+'</span></span><button onclick="admChatUnban(\''+encodeURIComponent(b.apodo||b.id)+'\')" style="padding:4px 10px;background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0">✅ Levantar</button></div>'; }).join('')+'</div>');
+  }
+  // Mensajes
+  html+=box('💬 Últimos mensajes ('+msgs.length+')', msgs.length?('<div style="display:flex;flex-direction:column;gap:7px">'+msgs.map(m=>{ const d=chatMsgDate(m), f=d.getTime()>0?tAgo(d):'recién'; return '<div style="background:rgba(var(--rgb-deep),.5);border:1px solid rgba(var(--rgb-line),.12);border-radius:12px;padding:9px 11px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px"><span style="font-size:11px;font-weight:800;color:'+chatColorA(m.apodo)+';min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.apodo||'Vecino anónimo')+(m.admin?' <span style="font-size:8px;color:#fca5a5">✓Admin</span>':(m.moderador||isMod(m.apodo)?' <span style="font-size:8px;color:#93c5fd">🛡️</span>':''))+'</span><span style="display:flex;gap:4px;flex-shrink:0"><span style="font-size:9px;color:var(--t3);margin-right:3px">'+f+'</span><button onclick="admChatDelMsg(\''+m.id+'\')" title="Eliminar mensaje" style="padding:3px 7px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:10px;cursor:pointer">🗑️</button></span></div><p style="font-size:12.5px;color:var(--t1);line-height:1.4;word-break:break-word">'+esc(m.texto||'')+'</p><div style="display:flex;gap:5px;margin-top:7px">'+modBtn(m.apodo)+banBtn(m.apodo)+delAllBtn(m.apodo)+'</div></div>'; }).join('')+'</div>'):'<p style="font-size:11px;color:#475569">Sin mensajes.</p>');
+  list.innerHTML=html;
+  safeIcons();
+}
+async function admChatDelMsg(id){
+  if(!id||!confirm('¿Eliminar este mensaje?')) return;
+  try{ await db.collection(CHATA_MSG).doc(id).delete(); showToast('Mensaje eliminado','r'); }
+  catch(e){ console.error('admChatDelMsg',e); showToast('Error al eliminar','r'); }
+}
+async function admChatDeleteAll(encA){
+  const a=decodeURIComponent(encA); if(!a) return;
+  if(!confirm('¿Eliminar TODOS los mensajes de "'+a+'"? Esta acción no se puede deshacer.')) return;
+  try{
+    const snap=await db.collection(CHATA_MSG).where('apodo','==',a).get();
+    if(snap.empty){ showToast('Sin mensajes de ese usuario','r'); return; }
+    let batch=db.batch(), n=0, tot=0;
+    for(const doc of snap.docs){ batch.delete(doc.ref); n++; tot++; if(n>=450){ await batch.commit(); batch=db.batch(); n=0; } }
+    if(n>0) await batch.commit();
+    showToast(tot+' mensaje'+(tot===1?'':'s')+' eliminado'+(tot===1?'':'s'),'r');
+  }catch(e){ console.error('admChatDeleteAll',e); showToast('Error al eliminar','r'); }
+}
+async function admChatToggleMod(encA,make){
+  const a=decodeURIComponent(encA); if(!a) return;
+  try{
+    if(make){ await db.collection(CHATA_MOD).doc(a).set({apodo:a,desde:firebase.firestore.FieldValue.serverTimestamp(),por:'AdminRobos'}); showToast(a+' ahora es moderador 🛡️','g'); }
+    else{ await db.collection(CHATA_MOD).doc(a).delete(); showToast('Moderador quitado','r'); }
+  }catch(e){ console.error('admChatToggleMod',e); showToast('Error (¿reglas Firestore?)','r'); }
+}
+async function admChatUnban(encA){
+  const a=decodeURIComponent(encA); if(!a) return;
+  try{ await db.collection(CHATA_BAN).doc(a).delete(); showToast('Ban levantado ✅','g'); }
+  catch(e){ console.error('admChatUnban',e); showToast('Error al levantar ban','r'); }
+}
+function admChatOpenBan(encA){
+  const a=decodeURIComponent(encA); if(!a) return;
+  const prev=document.getElementById('chata-ban-modal'); if(prev) prev.remove();
+  const ov=document.createElement('div');
+  ov.id='chata-ban-modal';
+  ov.style.cssText='position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);padding:16px';
+  ov.onclick=e=>{ if(e.target===ov) ov.remove(); };
+  const opts=[['1 hora',3600e3],['6 horas',6*3600e3],['24 horas',24*3600e3],['7 días',7*24*3600e3],['30 días',30*24*3600e3],['Indefinido',null]];
+  ov.innerHTML='<div style="background:var(--bg-2);border:1px solid rgba(var(--rgb-line),.2);border-radius:20px;max-width:380px;width:100%;padding:20px 22px;box-shadow:0 30px 70px rgba(0,0,0,.6)">'+
+    '<p style="font-size:15px;font-weight:800;color:var(--t0);margin-bottom:3px">🚫 Banear a "'+esc(a)+'"</p>'+
+    '<p style="font-size:11px;color:var(--t3);margin-bottom:14px">Elegí la duración del ban.</p>'+
+    '<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Duración</p>'+
+    '<div id="chata-ban-dur" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px">'+opts.map((o,i)=>'<button data-ms="'+(o[1]==null?'null':o[1])+'" onclick="admChatBanPick(this)" style="padding:9px 6px;border-radius:11px;border:1px solid '+(i===2?'#0ea5e9':'rgba(var(--rgb-line),.2)')+';background:'+(i===2?'rgba(14,165,233,.16)':'rgba(var(--rgb-deep),.6)')+';color:'+(i===2?'#7dd3fc':'var(--t2)')+';font-size:11px;font-weight:700;cursor:pointer">'+o[0]+'</button>').join('')+'</div>'+
+    '<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Motivo (opcional)</p>'+
+    '<input id="chata-ban-motivo" maxlength="120" placeholder="Ej: spam / insultos" style="width:100%;background:rgba(var(--rgb-deep),.65);border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;padding:10px 12px;font-size:13px;color:var(--t1);outline:none;margin-bottom:16px">'+
+    '<div style="display:flex;gap:9px"><button onclick="document.getElementById(\'chata-ban-modal\').remove()" style="flex:1;padding:12px;border-radius:12px;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:12px;font-weight:700;cursor:pointer">Cancelar</button>'+
+    '<button onclick="admChatConfirmBan(\''+encodeURIComponent(a)+'\')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Confirmar ban</button></div>'+
+    '</div>';
+  document.body.appendChild(ov);
+  ov.dataset.ms=String(24*3600e3); // default 24h
+}
+function admChatBanPick(btn){
+  const wrap=document.getElementById('chata-ban-dur'); if(!wrap) return;
+  [...wrap.children].forEach(b=>{ b.style.borderColor='rgba(var(--rgb-line),.2)'; b.style.background='rgba(var(--rgb-deep),.6)'; b.style.color='var(--t2)'; });
+  btn.style.borderColor='#0ea5e9'; btn.style.background='rgba(14,165,233,.16)'; btn.style.color='#7dd3fc';
+  const ov=document.getElementById('chata-ban-modal'); if(ov) ov.dataset.ms=btn.dataset.ms;
+}
+async function admChatConfirmBan(encA){
+  const a=decodeURIComponent(encA); if(!a) return;
+  const ov=document.getElementById('chata-ban-modal'); if(!ov) return;
+  const ms=ov.dataset.ms; const motivo=(document.getElementById('chata-ban-motivo')?.value||'').trim();
+  let ban_hasta=null;
+  if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); }
+  try{
+    await db.collection(CHATA_BAN).doc(a).set({apodo:a,motivo:motivo,ban_hasta:ban_hasta,baneado_por:'AdminRobos',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    ov.remove(); showToast('Usuario baneado 🚫','r');
+  }catch(e){ console.error('admChatConfirmBan',e); showToast('Error al banear (¿reglas Firestore?)','r'); }
 }
 
 // ===== RASTREO MDP — pre-registros (panel admin) =====
