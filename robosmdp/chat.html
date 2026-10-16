@@ -863,7 +863,6 @@ window.addEventListener('load',()=>{
   if(!db){ showToast('Sin conexión a la base','r'); return; }
   if(auth){
     auth.onAuthStateChanged(async u=>{
-      console.log('Auth state:', u&&u.uid, u&&u.email, u&&u.isAnonymous);
       if(!u){
         // Sin sesión activa → resetear estado (fail-closed) e ingresar de forma anónima.
         G.authReady=false; G.banReady=false; G.banned=true; G.uid=null;
