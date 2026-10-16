@@ -1,0 +1,38 @@
+/* ROBOS MDP — Chat vecinal Premium V5. Solo capa visual, Firebase intacto. */
+:root{--accent:#34bca9;--accent-2:#148a91;--bg-overlay:#080f19;--bg-2:#141e2a;--surface:#172433;--surface-2:#202f40;--line-2:rgba(169,205,230,.17)}
+body{background:#070e17;background-image:radial-gradient(ellipse at 9% 10%,rgba(14,106,117,.16),transparent 41%),radial-gradient(ellipse at 90% 91%,rgba(184,37,65,.11),transparent 40%);font-feature-settings:'cv11','ss01'}
+#chat-root{max-width:1040px;margin:0 auto;left:0;right:0;box-shadow:0 0 0 1px rgba(172,199,226,.15),0 30px 100px rgba(0,0,0,.35);background:linear-gradient(180deg,#101b29,#0d1623);background-image:radial-gradient(800px circle at 80% -14%,rgba(30,164,145,.09),transparent 61%)}
+#chat-header{padding:15px 21px;padding-top:calc(15px + env(safe-area-inset-top));background:rgba(21,32,46,.94);border-bottom-color:rgba(162,196,220,.15);gap:13px}
+#chat-header .hlogo{width:46px;height:46px;border-radius:14px;font-size:22px;background:linear-gradient(128deg,#1b9e9d,#207276);border:1px solid rgba(122,236,210,.3);box-shadow:0 9px 29px rgba(16,120,123,.18)}
+#chat-header h2{font-family:'Space Grotesk',Inter,sans-serif;letter-spacing:-.05em!important;font-size:20px!important}
+#chat-header p{letter-spacing:.02em}
+#chat-header>a.flink{background:rgba(43,59,78,.66)!important;border-color:rgba(181,206,227,.17)!important;color:#d3e0ed!important;text-decoration:none;transition:background-color .18s,border-color .18s}
+#chat-header>a.flink:hover{background:rgba(55,76,96,.9)!important;border-color:rgba(181,206,227,.4)!important}
+#chat-admin-btn{padding:11px 13px;border:1px solid rgba(170,198,220,.2);background:#223042;border-radius:11px;color:#b5c6d5}
+#chat-msgs{padding:25px clamp(14px,4vw,45px) 20px;gap:12px;scrollbar-color:rgba(155,190,220,.3) transparent}
+.cmsg{max-width:min(82%,680px)}
+.cbubble{border-radius:16px;border-top-left-radius:5px;padding:12px 15px;background:rgba(38,55,73,.68);border:1px solid rgba(174,199,222,.15);box-shadow:0 5px 20px rgba(4,10,18,.1)}
+.cmsg.mine .cbubble{border-radius:16px;border-top-right-radius:5px;background:linear-gradient(145deg,rgba(21,120,113,.32),rgba(24,92,94,.18));border-color:rgba(95,210,185,.29)}
+.cname{font-size:12px;letter-spacing:-.01em}.ctext{font-size:14px;line-height:1.58;margin-top:7px}.ctime{margin-top:8px}
+#chat-empty{background:rgba(28,45,62,.34);border:1px dashed rgba(150,183,205,.17);max-width:350px;border-radius:18px;margin:10vh auto!important;padding:35px 20px!important;color:#a4b9c8!important}
+#chat-footer{padding:15px 22px;padding-bottom:calc(15px + env(safe-area-inset-bottom));border-color:rgba(170,198,220,.14);background:rgba(17,29,43,.96)}
+#chat-who{color:#b0c3d1;font-size:11px}#chat-in{min-height:48px;background:rgba(34,49,66,.84);border-color:rgba(171,198,226,.2);border-radius:14px;padding:14px 16px;box-shadow:inset 0 1px 3px rgba(0,0,0,.1)}
+#chat-in:focus{border-color:rgba(95,225,188,.58);box-shadow:0 0 0 3px rgba(95,225,188,.08)}
+#chat-send{width:49px;height:49px;border-radius:14px;background:linear-gradient(125deg,#23bfa4,#138e89);box-shadow:0 9px 20px rgba(16,153,127,.23)}
+#chat-send:not(:disabled):hover{filter:brightness(1.08);transform:translateY(-1px)}
+#chat-count{font-size:9px;color:#94a8ba}
+#reply-preview{background:rgba(34,59,72,.64);border-color:rgba(84,203,182,.38)}
+.mbox{background:#142030;border:1px solid rgba(161,195,220,.19);box-shadow:0 36px 100px rgba(0,0,0,.5)}
+:where(button,a,input,textarea):focus-visible{outline:2px solid #8ef1d3;outline-offset:2px}
+@media(max-width:680px){
+ #chat-root{max-width:none;box-shadow:none}
+ #chat-header{padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));gap:8px}
+ #chat-header .hlogo{height:38px;width:38px;border-radius:11px;font-size:18px}
+ #chat-header h2{font-size:16px!important}
+ #chat-header>a.flink{padding:9px!important;font-size:10px!important}
+ #chat-admin-btn{padding:8px!important;font-size:9px!important}
+ #chat-msgs{padding:13px 10px}
+ .cmsg{max-width:93%}.cbubble{padding:10px 12px}.ctext{font-size:13.5px}
+ #chat-footer{padding:10px 10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){.online-dot,#chat-root *,#chat-root *:before{animation:none!important;transition:none!important}}

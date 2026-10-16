@@ -1,0 +1,8 @@
+/* Diseño coherente para Foro y Rastreo: estilos no estructurales */
+:root{--premium-accent:#f04c60}
+body{font-feature-settings:'cv11','ss01';text-rendering:optimizeLegibility}
+:where(button,a,input,select,textarea){transition:background-color .18s,border-color .18s,box-shadow .18s,color .18s}
+:where(button,a,summary,input,select,textarea):focus-visible{outline:2px solid #fe7789!important;outline-offset:2px!important}
+:where(.mbox,.card,.thread-card,.form-card,.form-body){box-shadow:0 12px 36px rgba(2,7,16,.08)}
+:where(input,select,textarea):focus{box-shadow:0 0 0 3px rgba(239,65,81,.1)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

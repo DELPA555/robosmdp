@@ -1,0 +1,5 @@
+# ROBOS MDP — Configuración de deploy GitHub/Netlify
+[build]
+  publish = "robosmdp"
+[functions]
+  directory = "netlify/functions"

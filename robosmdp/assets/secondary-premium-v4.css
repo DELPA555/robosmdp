@@ -1,0 +1,24 @@
+/* ROBOS MDP — Secondary pages premium visual layer, no logic changes */
+:root{--v4-border:rgba(175,200,229,.17);--v4-red:#ed3449;--v4-surface:#182537}
+:where(a,button,input,textarea,select):focus-visible{outline:2px solid #fb667a!important;outline-offset:3px!important}
+#foro-p,#foro-thread-p{background:#0b121e!important;background-image:radial-gradient(650px circle at 75% -10%,rgba(212,45,70,.095),transparent 75%)!important}
+#foro-p>header,#foro-thread-p>header{border-bottom:1px solid var(--v4-border)!important;background:linear-gradient(110deg,#101927,#141e2c)!important;box-shadow:0 4px 21px rgba(0,0,0,.1)}
+#foro-p>header img,#foro-thread-p>header img{border-radius:11px!important;box-shadow:0 0 0 3px rgba(225,55,76,.1)}
+#foro-p>header h2,#foro-thread-p>header h2{font-family:'Space Grotesk','Inter',sans-serif!important;letter-spacing:-.04em!important}
+#foro-p>.ns,#foro-thread-p>.ns{padding-top:36px!important}
+#foro-p #foro-search{border:1px solid var(--v4-border)!important;border-radius:13px!important;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+#foro-list>div,#foro-thread-body>div,#foro-reply-list>div{background:linear-gradient(140deg,#141e2b,#1a2838)!important;border:1px solid var(--v4-border)!important;border-radius:16px!important;box-shadow:0 4px 18px rgba(0,0,0,.055)}
+#foro-reply-box{border:1px solid var(--v4-border)!important;border-radius:17px!important}
+#foro-p button,#foro-thread-p button{transition:background-color .16s ease,border-color .16s ease,transform .16s ease}
+#foro-p button:hover,#foro-thread-p button:hover{filter:brightness(1.08)}
+body:has(.nav){background:#0b111b!important}
+.nav{border-bottom:1px solid var(--v4-border)!important;background:rgba(11,18,29,.95)!important;box-shadow:0 5px 30px rgba(0,0,0,.14)}
+.nav-logo{letter-spacing:-.04em;font-weight:800}
+.hero-inner{padding-top:90px!important;padding-bottom:80px!important}
+.hero-h1{font-family:'Space Grotesk',sans-serif!important;letter-spacing:-.065em;line-height:1.05}
+.hero-desc{color:#b4c3d4;line-height:1.75}
+.hcount{border:1px solid var(--v4-border)!important;border-radius:14px!important;background:linear-gradient(160deg,#142132,#1a2a3e)!important}
+.how-card,.vehicle-card,.faq-item,.diff-card{border-radius:16px!important}
+.cta-final{background:radial-gradient(ellipse at center,rgba(204,41,64,.075),transparent 70%)}
+@media(max-width:700px){#foro-p>.ns,#foro-thread-p>.ns{padding-top:18px!important}.hero-inner{padding-top:72px!important;padding-bottom:54px!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
