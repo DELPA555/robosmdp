@@ -3,7 +3,36 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function isAdmin() {
-      return request.auth != null && request.auth.token.email == 'admin@robosmdp.com.ar';
+      // Admin por email (cuenta existente) O por custom claim admin==true.
+      return request.auth != null && (
+        request.auth.token.email == 'admin@robosmdp.com.ar'
+        || request.auth.token.admin == true
+      );
+    }
+
+    // Autor del doc (si en el futuro los docs guardan el uid del creador).
+    function isAuthor() {
+      return request.auth != null
+          && 'uid' in resource.data
+          && resource.data.uid == request.auth.uid;
+    }
+
+    // Alta de reportes de mapa: descripción 1..500 + coordenadas numéricas.
+    function validReportCreate() {
+      let d = request.resource.data;
+      return d.description is string && d.description.size() > 0 && d.description.size() <= 500
+          && d.lat is number && d.lng is number;
+    }
+
+    // Updates permitidos en reportes: admin/autor, o cambios anónimos acotados
+    // que la app ya hace: sumar "me preocupa" (+1) o alternar "resolved".
+    function reportUpdateOK() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      return isAdmin() || isAuthor()
+          || (changed.hasOnly(['concerns'])
+              && request.resource.data.concerns == resource.data.get('concerns', 0) + 1)
+          || (changed.hasOnly(['resolved'])
+              && request.resource.data.resolved is bool);
     }
 
     function reservedName(a) {
@@ -40,65 +69,116 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/chat_moderadores/$(request.auth.uid));
     }
 
+    // ===========================================================
+    //  COLECCIONES PÚBLICAS ENDURECIDAS (antes: todo abierto)
+    //  read: libre · create: validado (sin auth) · update: admin/autor
+    //  + cambios anónimos acotados · delete: solo admin.
+    // ===========================================================
+
+    // --- Reportes de mapa (misma forma: description/lat/lng) ---
     match /artifacts/{appId}/public/data/reports/{rid} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
+      allow create: if validReportCreate();
+      allow update: if reportUpdateOK();
+      allow delete: if isAdmin();
     }
     match /reportes/{docId} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
+      allow create: if validReportCreate();
+      allow update: if reportUpdateOK();
+      allow delete: if isAdmin();
     }
     match /basura/{docId} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
+      allow create: if validReportCreate();
+      allow update: if reportUpdateOK();
+      allow delete: if isAdmin();
     }
     match /pozos/{docId} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
-    }
-    match /pageCounters/{docId} {
-      allow read: if true;
-      allow write: if true;
-    }
-    match /stats/visitas {
-      allow read: if true;
-      allow write: if true;
-    }
-    match /notificaciones_resolucion/{docId} {
-      allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
-    }
-    match /subscripciones_push/{docId} {
-      allow read: if true;
-      allow write: if true;
-    }
-    match /patentes/{docId} {
-      allow read: if true;
-      allow write: if true;
+      allow create: if validReportCreate();
+      allow update: if reportUpdateOK();
+      allow delete: if isAdmin();
     }
     match /abandonados/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if validReportCreate();
+      allow update: if reportUpdateOK();
+      allow delete: if isAdmin();
     }
     match /luminarias/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if validReportCreate();
+      allow update: if reportUpdateOK();
+      allow delete: if isAdmin();
     }
+
+    // --- Patentes: alta validada; update público SOLO para marcar resuelto=true ---
+    match /patentes/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.patente is string
+                  && request.resource.data.patente.size() > 0
+                  && request.resource.data.patente.size() <= 20
+                  && (!('descripcion' in request.resource.data)
+                      || (request.resource.data.descripcion is string
+                          && request.resource.data.descripcion.size() <= 500));
+      allow update: if isAdmin() || isAuthor()
+                  || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resuelto'])
+                      && request.resource.data.resuelto == true);
+      allow delete: if isAdmin();
+    }
+
+    // --- Objetos perdidos: alta validada; update público SOLO para resuelto=true ---
     match /objetos_perdidos/{docId} {
       allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
+      allow create: if request.resource.data.descripcion is string
+                  && request.resource.data.descripcion.size() > 0
+                  && request.resource.data.descripcion.size() <= 500;
+      allow update: if isAdmin() || isAuthor()
+                  || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resuelto'])
+                      && request.resource.data.resuelto == true);
+      allow delete: if isAdmin();
+    }
+
+    // --- Avisos de resolución (foto que manda un vecino): alta validada; el
+    //     admin los procesa (update) y los borra. ---
+    match /notificaciones_resolucion/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.reportId is string
+                  && request.resource.data.reportType is string
+                  && (!('reportDescription' in request.resource.data)
+                      || (request.resource.data.reportDescription is string
+                          && request.resource.data.reportDescription.size() <= 500));
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- Suscripciones push: cada navegador crea/actualiza SU doc (por id de
+    //     localStorage) solo con campos de zona. read = admin (contienen tokens,
+    //     NO deben ser legibles por cualquiera; el server los lee con Admin SDK). ---
+    match /subscripciones_push/{docId} {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.token is string
+                  && request.resource.data.lat is number
+                  && request.resource.data.lng is number
+                  && request.resource.data.radius is number;
+      allow update: if isAdmin()
+                  || request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['lat','lng','radius','updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // --- Contadores (incrementos públicos por diseño; hoy sin uso desde el
+    //     cliente). Se dejan escribibles para no romper incrementos; borrado admin. ---
+    match /pageCounters/{docId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin();
+    }
+    match /stats/visitas {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin();
     }
     match /artifacts/{aid}/public/data/reports/{rid}/comentarios/{cid} {
       allow read: if true;
