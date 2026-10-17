@@ -216,7 +216,7 @@ h1,h2,h3,.disp{font-family:var(--disp);letter-spacing:-.02em}
    REDISEÑO DESKTOP (aditivo — no toca mobile ni el JS/ids)
    ============================================================ */
 /* Números y stats en Space Mono (todos los tamaños) */
-.scard .n,#ls-visit-total,#land-minimap-count,#acerca-total{font-family:var(--mono)!important;font-weight:700}
+.scard .n,#land-minimap-count,#acerca-total{font-family:var(--mono)!important;font-weight:700}
 /* Banners: siempre visibles, bien altos y centrados (prioridad de negocio) */
 .pub-slot{min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ad-slot{min-height:60px}
@@ -483,17 +483,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <ins class="adsbygoogle" data-ad-client="ca-pub-1368822578971413" data-ad-format="auto" data-full-width-responsive="true" style="display:block"></ins>
 <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
 </div>
-</div>
-<!-- Contador de visitas -->
-<div class="scard" id="ls-visit-card" style="display:none;align-items:center;justify-content:space-between;text-align:left;padding:15px 18px;margin-bottom:18px">
-<div style="display:flex;align-items:center;gap:12px">
-<div style="width:44px;height:44px;border-radius:12px;background:rgba(91,141,239,.12);border:1px solid rgba(91,141,239,.28);display:flex;align-items:center;justify-content:center"><i data-lucide="users" style="width:21px;height:21px;color:#93b4f5"></i></div>
-<div>
-<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)">Visitas</div>
-<div style="font-size:9px;font-weight:700;color:#64748b;margin-top:3px"><span id="ls-visit-today" style="color:#a5b4fc">0</span> hoy</div>
-</div>
-</div>
-<div class="n" id="ls-visit-total" style="color:#a5b4fc;font-size:26px">0</div>
 </div>
 <a href="https://seguridad.gba.gob.ar/#/home" onmouseout="this.style.background='var(--surface-2)'" onmouseover="this.style.background='var(--surface-hi)'" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:380px;margin:14px auto 0;padding:16px 18px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line-2);color:#dbe6fb;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.01em;transition:background .2s,border-color .2s" target="_blank">
 <i data-lucide="shield-alert" style="width:18px;height:18px;color:#93b4f5"></i>
@@ -1979,7 +1968,6 @@ window.onload=()=>{
   buildCats();
   setDates();
   G.zone=loadZone(); syncZoneBtn();
-  initVisitCounter();
   // Toast tiempo real: escuchar reportes nuevos. Se engancha tras la carga inicial
   // (umbral = ahora) para no notificar los reportes historicos.
   setTimeout(attachRealtime,6000);
@@ -2749,63 +2737,6 @@ function renderLandMiniMap(){
   setTimeout(()=>{try{G.miniMap.invalidateSize();}catch(e){}},80);
 }
 
-// ===== CONTADOR DE VISITAS =====
-let _visTotal=0,_visToday=0;
-const VISIT_BASE=20000000; // base fija sumada SOLO en la visualización del total histórico (no se guarda en Firestore)
-const VISIT_BASE_HOY=40000; // base fija sumada SOLO en la visualización de las visitas de hoy (no se guarda en Firestore)
-function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function renderVisits(total,today){
-  _visTotal=total; _visToday=today;
-  setT('ls-visit-total',((total||0)+VISIT_BASE).toLocaleString('es-AR'));
-  const lt=document.getElementById('ls-visit-today'); if(lt) lt.textContent=((today||0)+VISIT_BASE_HOY).toLocaleString('es-AR');
-  const at=document.getElementById('adm-visit-total'); if(at) at.textContent=((total||0)+VISIT_BASE).toLocaleString('es-AR');
-  const ah=document.getElementById('adm-visit-today'); if(ah) ah.textContent=((today||0)+VISIT_BASE_HOY).toLocaleString('es-AR');
-  const card=document.getElementById('ls-visit-card'); if(card&&card.style.display==='none'){card.style.display='flex';card.classList.add('land-show');}
-}
-function visitsAdminCard(){
-  return '<div style="background:linear-gradient(160deg,rgba(99,102,241,.18),rgba(var(--rgb-deep),.78));border:1px solid rgba(99,102,241,.32);border-radius:18px;padding:14px;text-align:center">'+
-    '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,.22);font-size:18px">👥</div>'+
-    '<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase">Visitas</p>'+
-    '<p style="font-size:22px;font-weight:700;color:#a5b4fc"><span id="adm-visit-total">'+((_visTotal||0)+VISIT_BASE).toLocaleString('es-AR')+'</span></p>'+
-    '<p style="font-size:9px;font-weight:700;color:#64748b;margin-top:2px"><span id="adm-visit-today">'+((_visToday||0)+VISIT_BASE_HOY).toLocaleString('es-AR')+'</span> hoy</p></div>';
-}
-function initVisitCounter(){
-  const counted=sessionStorage.getItem('visitCounted');
-  if(db&&firebase&&firebase.firestore){
-    const ref=db.collection('stats').doc('visitas');
-    if(!counted){
-      const today=todayStr();
-      db.runTransaction(tx=>tx.get(ref).then(snap=>{
-        const d=snap.exists?snap.data():{};
-        const total=(d.total||0)+1;
-        const total_hoy=(d.fecha_ultima===today)?((d.total_hoy||0)+1):1;
-        tx.set(ref,{total,total_hoy,fecha_ultima:today},{merge:true});
-      })).then(()=>sessionStorage.setItem('visitCounted','1')).catch(e=>console.warn('visitas tx',e));
-    }
-    ref.onSnapshot(snap=>{const d=snap.data()||{};renderVisits(d.total||0,d.total_hoy||0);},
-      e=>{console.warn('visitas onSnapshot',e);restVisits(counted);});
-  }else{
-    restVisits(counted);
-  }
-}
-async function restVisits(counted){
-  const url='https://firestore.googleapis.com/v1/projects/'+FB_CONFIG.projectId+'/databases/(default)/documents/stats/visitas?key='+FB_CONFIG.apiKey;
-  try{
-    const r=await fetch(url); const j=await r.json(); const f=j.fields||{};
-    let total=parseInt(f.total?.integerValue||f.total?.doubleValue||0)||0;
-    let total_hoy=parseInt(f.total_hoy?.integerValue||f.total_hoy?.doubleValue||0)||0;
-    const fecha=f.fecha_ultima?.stringValue||''; const today=todayStr();
-    if(!counted){
-      total+=1; total_hoy=(fecha===today)?total_hoy+1:1;
-      const mask='updateMask.fieldPaths=total&updateMask.fieldPaths=total_hoy&updateMask.fieldPaths=fecha_ultima';
-      await fetch(url+'&'+mask,{method:'PATCH',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({fields:{total:{integerValue:String(total)},total_hoy:{integerValue:String(total_hoy)},fecha_ultima:{stringValue:today}}})});
-      sessionStorage.setItem('visitCounted','1');
-    }
-    renderVisits(total,total_hoy);
-  }catch(e){console.warn('visitas REST',e);}
-}
-
 // ===== FILTERS =====
 function setF(f){
   G.filter=f;
@@ -3238,7 +3169,7 @@ function renderAdm(){
       '<div style="width:36px;height:36px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;background:'+c.color+'22;color:'+c.color+'"><i data-lucide="'+c.icon+'" style="width:16px;height:16px"></i></div>'+
       '<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase">'+c.label+'</p>'+
       '<p style="font-size:22px;font-weight:700;color:var(--t0)">'+(counts[c.id]||0)+'</p></div>';
-  }).join('')+visitsAdminCard();
+  }).join('');
   const filtered=admFilteredData();
   list.innerHTML=filtered.map(r=>{
     const cat=cats.find(c=>c.id===r.type)||cats[cats.length-1];
