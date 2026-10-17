@@ -1194,63 +1194,65 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 </div>
 <!-- ADMIN PANEL -->
 <div id="admin-p">
-<header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
-<div style="display:flex;align-items:center;gap:12px">
-<div style="width:42px;height:42px;background:#ef4444;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
-<div>
-<h2 style="font-size:16px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
-<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Administrador activo • MDP</p>
-</div>
-</div>
-<div style="display:flex;gap:8px">
-<button onclick="closeAP()" style="padding:8px 16px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2)">Cerrar</button>
-<button onclick="doLogout()" style="padding:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:12px;cursor:pointer;display:flex"><i data-lucide="log-out" style="width:16px;height:16px;color:#ef4444"></i></button>
-</div>
-</header>
-<div class="ns" style="padding:20px 22px">
-<div style="max-width:900px;margin:0 auto">
-<div id="adm-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px"></div>
-<div style="background:var(--surface);padding:16px 20px;border-radius:20px;border:1px solid rgba(var(--rgb-line),.14);margin-bottom:18px">
-<p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Filtrar reportes</p>
-<input id="adm-q" oninput="renderAdm()" placeholder="Buscar por patente o texto..." style="width:100%;padding:10px 14px;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;font-size:12px;font-weight:600;color:var(--t1);outline:none" type="text"/>
-</div>
-<div style="background:rgba(var(--rgb-deep),.6);padding:5px;border-radius:14px;border:1px solid rgba(var(--rgb-line),.12);display:flex;gap:3px;margin-bottom:14px">
-<button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Robos</button>
-<button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
-<button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
-<button id="adm-tab-abandonados" onclick="switchAdmTab('abandonados')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Autos</button>
-<button id="adm-tab-luminarias" onclick="switchAdmTab('luminarias')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💡</button>
-<button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
-<button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
-<button id="adm-tab-objetos" onclick="switchAdmTab('objetos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">📦 Objetos</button>
-<button id="adm-tab-mascotas" onclick="switchAdmTab('mascotas')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🐾 Mascotas</button>
-<button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
-<button id="adm-tab-rastreo" onclick="switchAdmTab('rastreo')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🛡️ Rastreo</button>
-<button id="adm-tab-chat" onclick="switchAdmTab('chat')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Chat</button>
-</div>
-<div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
-<button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
-<button onclick="exportPDF()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-text" style="width:14px;height:14px"></i>Exportar PDF</button>
-</div>
-<div id="adm-list" style="display:flex;flex-direction:column;gap:8px"></div>
-</div>
-</div>
-<div id="adm-detail" style="position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(var(--rgb-deep),.82);backdrop-filter:blur(8px);padding:16px">
-<div style="background:var(--bg-2);border:1px solid rgba(var(--rgb-line),.12);width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.55)">
-<div style="padding:20px 24px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.6)">
-<div style="display:flex;align-items:center;gap:10px">
-<div style="padding:8px;background:rgba(var(--rgb-slate),.7);border-radius:11px;border:1px solid rgba(var(--rgb-line),.16)"><i data-lucide="file-search" style="width:17px;height:17px;color:var(--t2)"></i></div>
-<div><h3 style="font-size:14px;font-weight:700;color:var(--t0);text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
-</div>
-<button onclick="closeAD()" style="padding:8px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:var(--t3)"></i></button>
-</div>
-<div class="ns" id="adm-detail-body" style="padding:20px 24px"></div>
-<div style="padding:16px 24px;border-top:1px solid rgba(var(--rgb-line),.1);background:rgba(var(--rgb-deep),.6);display:flex;justify-content:space-between;align-items:center">
-<p style="font-size:9px;font-weight:700;color:#475569">ID: <span id="adm-did"></span></p>
-<button onclick="delR()" style="padding:10px 16px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Eliminar</button>
-</div>
-</div>
-</div>
+  <header style="padding:16px 22px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;background:#ef4444;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(239,68,68,.26)"><i data-lucide="shield" style="width:19px;height:19px;color:#fff"></i></div>
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:-.02em">Panel de Gestión Maestro</h2>
+        <p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">Administrador activo • MDP</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+      <button onclick="generarInformeMunicipal()" style="padding:8px 14px;background:linear-gradient(135deg,#E8192C,#b30f1e);border:none;border-radius:12px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;cursor:pointer;color:#fff;box-shadow:0 6px 16px rgba(232,25,44,.32)">📄 Generar informe municipal</button>
+      <button onclick="descargarUltimoInforme()" style="padding:8px 12px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2)">📥 Último informe auto</button>
+      <button onclick="closeAP()" style="padding:8px 16px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2)">Cerrar</button>
+      <button onclick="doLogout()" style="padding:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:12px;cursor:pointer;display:flex"><i data-lucide="log-out" style="width:16px;height:16px;color:#ef4444"></i></button>
+    </div>
+  </header>
+  <div class="ns" style="padding:20px 22px">
+    <div style="max-width:900px;margin:0 auto">
+      <div id="adm-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px"></div>
+      <div style="background:var(--surface);padding:16px 20px;border-radius:20px;border:1px solid rgba(var(--rgb-line),.14);margin-bottom:18px">
+        <p style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Filtrar reportes</p>
+        <input id="adm-q" type="text" oninput="renderAdm()" placeholder="Buscar por patente o texto..." style="width:100%;padding:10px 14px;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;font-size:12px;font-weight:600;color:var(--t1);outline:none">
+      </div>
+      <div style="background:rgba(var(--rgb-deep),.6);padding:5px;border-radius:14px;border:1px solid rgba(var(--rgb-line),.12);display:flex;gap:3px;margin-bottom:14px">
+        <button id="adm-tab-robos" onclick="switchAdmTab('robos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Robos</button>
+        <button id="adm-tab-basura" onclick="switchAdmTab('basura')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Basura</button>
+        <button id="adm-tab-pozos" onclick="switchAdmTab('pozos')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Pozos</button>
+        <button id="adm-tab-abandonados" onclick="switchAdmTab('abandonados')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">Autos</button>
+        <button id="adm-tab-luminarias" onclick="switchAdmTab('luminarias')" style="flex:1;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💡</button>
+        <button id="adm-tab-avisos" onclick="switchAdmTab('avisos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s;position:relative">🔔 Avisos<span id="adm-avisos-badge" style="display:none;position:absolute;top:-6px;right:-3px;min-width:18px;height:18px;padding:0 4px;background:#ef4444;color:#fff;border-radius:999px;font-size:9px;line-height:18px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4)"></span></button>
+        <button id="adm-tab-patentes" onclick="switchAdmTab('patentes')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🔖 Patentes</button>
+        <button id="adm-tab-objetos" onclick="switchAdmTab('objetos')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">📦 Objetos</button>
+        <button id="adm-tab-mascotas" onclick="switchAdmTab('mascotas')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🐾 Mascotas</button>
+        <button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
+        <button id="adm-tab-rastreo" onclick="switchAdmTab('rastreo')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🛡️ Rastreo</button>
+        <button id="adm-tab-chat" onclick="switchAdmTab('chat')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Chat</button>
+      </div>
+      <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
+        <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
+        <button onclick="exportPDF()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-text" style="width:14px;height:14px"></i>Exportar PDF</button>
+      </div>
+      <div id="adm-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+  <div id="adm-detail" style="position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;background:rgba(var(--rgb-deep),.82);backdrop-filter:blur(8px);padding:16px">
+    <div style="background:var(--bg-2);border:1px solid rgba(var(--rgb-line),.12);width:100%;max-width:580px;border-radius:26px;overflow:hidden;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.55)">
+      <div style="padding:20px 24px;border-bottom:1px solid rgba(var(--rgb-line),.1);display:flex;justify-content:space-between;align-items:center;background:rgba(var(--rgb-deep),.6)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="padding:8px;background:rgba(var(--rgb-slate),.7);border-radius:11px;border:1px solid rgba(var(--rgb-line),.16)"><i data-lucide="file-search" style="width:17px;height:17px;color:var(--t2)"></i></div>
+          <div><h3 style="font-size:14px;font-weight:700;color:var(--t0);text-transform:uppercase;line-height:1">Detalle del Reporte</h3></div>
+        </div>
+        <button onclick="closeAD()" style="padding:8px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:11px;cursor:pointer"><i data-lucide="x" style="width:16px;height:16px;color:var(--t3)"></i></button>
+      </div>
+      <div id="adm-detail-body" class="ns" style="padding:20px 24px"></div>
+      <div style="padding:16px 24px;border-top:1px solid rgba(var(--rgb-line),.1);background:rgba(var(--rgb-deep),.6);display:flex;justify-content:space-between;align-items:center">
+        <p style="font-size:9px;font-weight:700;color:#475569">ID: <span id="adm-did"></span></p>
+        <button onclick="delR()" style="padding:10px 16px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px"><i data-lucide="trash-2" style="width:12px;height:12px"></i>Eliminar</button>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- MODAL AVISO DE RESOLUCION (publico) -->
 <div class="movl" id="resnotif-m" onclick="if(event.target===this)closeResolveNotif()">
@@ -2913,9 +2915,34 @@ const VAPID_KEY='BFPBiqqRaMEsxPOE1vYMAOSEOXFm7fumHb0y7-m9CEsn2r374isYgv0UYeZzFRx
 function getMessaging(){ try{ if(window.firebase&&firebase.messaging) return firebase.messaging(); }catch(e){ console.warn('messaging no disponible',e); } return null; }
 function syncPushToggle(){ const cb=document.getElementById('zone-push'); if(cb) cb.checked=!!localStorage.getItem(PUSH_DOC_LS); }
 async function togglePush(on){ if(on) await enablePush(); else await disablePush(); }
+function isCapacitor(){ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
+
 async function enablePush(){
   const cb=document.getElementById('zone-push');
   if(!G.zone){ showToast('Primero marcá y guardá tu zona','r'); if(cb)cb.checked=false; return; }
+  if(isCapacitor()){
+    try{
+      const { PushNotifications } = window.Capacitor.Plugins;
+      if(!PushNotifications){ throw new Error('Plugin no disponible'); }
+      const permResult = await PushNotifications.requestPermissions();
+      if(permResult.receive !== 'granted'){
+        showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return;
+      }
+      await PushNotifications.register();
+      const token = await new Promise((resolve, reject) => {
+        const regHandler = PushNotifications.addListener('registration', (t) => { regHandler.remove(); resolve(t.value); });
+        const errHandler = PushNotifications.addListener('registrationError', (err) => { errHandler.remove(); reject(err); });
+        setTimeout(() => reject(new Error('timeout')), 15000);
+      });
+      if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
+      const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'android',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+      let docId=localStorage.getItem(PUSH_DOC_LS);
+      if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
+      else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
+      showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
+    }catch(e){ console.error('enablePush(native)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
+    return;
+  }
   const m=getMessaging();
   if(!m||!('Notification'in window)){ showToast('Tu navegador no soporta notificaciones','r'); if(cb)cb.checked=false; return; }
   try{
@@ -2923,12 +2950,12 @@ async function enablePush(){
     if(perm!=='granted'){ showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return; }
     const token=await m.getToken({vapidKey:VAPID_KEY});
     if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
-    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'web',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
     let docId=localStorage.getItem(PUSH_DOC_LS);
     if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
     else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
     showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
-  }catch(e){ console.error('enablePush',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
+  }catch(e){ console.error('enablePush(web)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
 }
 async function disablePush(){
   const docId=localStorage.getItem(PUSH_DOC_LS);
@@ -3320,6 +3347,167 @@ function exportPDF(){
   });
   doc.save(tab+'_mdp_'+todayStr()+'.pdf');
   showToast('PDF exportado ('+rows.length+' reportes)','g');
+}
+
+// ============================================================================
+//  INFORME MUNICIPAL (PDF formal A4). Usa jsPDF + autoTable (ya cargados).
+//  Datos: G.data (o un snapshot pasado por dataOverride, ej. informe automático).
+// ============================================================================
+const INF_MODS=['robos','basura','pozos','abandonados','luminarias'];
+const INF_LABEL={robos:'Robos y hurtos',basura:'Basura acumulada',pozos:'Pozos en la calzada',abandonados:'Vehículos abandonados',luminarias:'Problemas de luminarias'};
+const INF_MUNI=['basura','pozos','abandonados','luminarias']; // dependen de acción municipal (tienen "resuelto")
+
+function infCap(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
+function infImgDataURL(src){
+  return new Promise(res=>{
+    const img=new Image(); img.crossOrigin='anonymous';
+    img.onload=()=>{ try{ const c=document.createElement('canvas'); c.width=img.naturalWidth||192; c.height=img.naturalHeight||192; c.getContext('2d').drawImage(img,0,0); res(c.toDataURL('image/png')); }catch(e){ res(null); } };
+    img.onerror=()=>res(null); img.src=src;
+  });
+}
+
+async function generarInformeMunicipal(dataOverride, meta){
+  if(!window.jspdf||!window.jspdf.jsPDF){ showToast('PDF no disponible, reintentá','r'); return; }
+  const data = dataOverride || G.data || {};
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
+  const RED=[232,25,44], DARK=[33,40,52], GRAY=[100,116,139], ROW=[245,247,250];
+  const M=48, CW=W-M*2;
+  const now = meta&&meta.generado_at ? new Date(meta.generado_at) : new Date();
+  const mesAnio = (meta&&meta.mes) ? (meta.mes+' '+(meta.año||'')) : infCap(now.toLocaleDateString('es-AR',{month:'long',year:'numeric'}));
+  const fechaGen = now.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+
+  // ---- helpers de layout ----
+  function title(t,y,size){ doc.setFont('helvetica','bold'); doc.setFontSize(size||15); doc.setTextColor(...RED); doc.text(t,M,y); return y+ (size||15)*0.4+8; }
+  function para(t,y,size){ doc.setFont('helvetica','normal'); doc.setFontSize(size||10.5); doc.setTextColor(...DARK); const ls=doc.splitTextToSize(t,CW); doc.text(ls,M,y,{lineHeightFactor:1.5}); return y + ls.length*(size||10.5)*1.5 + 6; }
+  function sep(y){ doc.setDrawColor(...RED); doc.setLineWidth(1.4); doc.line(M,y,W-M,y); return y+16; }
+  function table(opts){ doc.autoTable(Object.assign({ styles:{fontSize:8.5,cellPadding:4,overflow:'linebreak',textColor:DARK,lineColor:[226,232,240],lineWidth:.4}, headStyles:{fillColor:RED,textColor:[255,255,255],fontStyle:'bold',fontSize:8.5}, alternateRowStyles:{fillColor:ROW}, margin:{left:M,right:M,top:52,bottom:40} }, opts)); return doc.lastAutoTable.finalY; }
+
+  // ---- cálculos ----
+  const per={}; INF_MODS.forEach(m=>{ const arr=(data[m]||[]); const resueltos=INF_MUNI.includes(m)?arr.filter(r=>r.resolved).length:0; per[m]={total:arr.length,resueltos,pendientes:arr.length-resueltos}; });
+  const totalGeneral=INF_MODS.reduce((s,m)=>s+per[m].total,0);
+  const muniTotal=INF_MUNI.reduce((s,m)=>s+per[m].total,0);
+  const muniResueltos=INF_MUNI.reduce((s,m)=>s+per[m].resueltos,0);
+  const pctResol=muniTotal>0?Math.round(muniResueltos/muniTotal*100):0;
+
+  // ==================== PORTADA ====================
+  const logo=await infImgDataURL('./assets/logo-robos.png');
+  let y=120;
+  if(logo){ try{ doc.addImage(logo,'PNG',W/2-38,y,76,76); }catch(e){} y+=96; } else { y+=20; }
+  doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...DARK);
+  doc.text('INFORME CIUDADANO DE',W/2,y,{align:'center'}); y+=26;
+  doc.text('SEGURIDAD URBANA',W/2,y,{align:'center'}); y+=34;
+  doc.setFontSize(14); doc.setTextColor(...RED); doc.text('Mar del Plata — '+mesAnio,W/2,y,{align:'center'}); y+=30;
+  doc.setDrawColor(...RED); doc.setLineWidth(2); doc.line(W/2-90,y,W/2+90,y); y+=26;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10.5); doc.setTextColor(...GRAY);
+  doc.text('Elaborado por Robos MDP · robosmdp.com.ar',W/2,y,{align:'center'}); y+=18;
+  doc.text('Fecha de generación: '+fechaGen,W/2,y,{align:'center'});
+  doc.setFontSize(8.5); doc.setTextColor(150,160,175);
+  doc.text('Documento elaborado a partir de reportes ciudadanos. No constituye denuncia policial formal.',W/2,H-70,{align:'center',maxWidth:CW});
+
+  // ==================== RESUMEN EJECUTIVO ====================
+  doc.addPage(); y=64;
+  y=title('Resumen ejecutivo',y);
+  y=para('Robos MDP es el mapa colaborativo de seguridad y problemas urbanos de Mar del Plata: una plataforma vecinal, independiente y sin fines de lucro donde los propios habitantes reportan, en tiempo real, robos, basura acumulada, pozos en la calzada, vehículos abandonados y fallas de alumbrado público. Este informe reúne y ordena esa información ciudadana con el objeto de aportar a la Municipalidad un panorama transparente de los problemas que la comunidad releva a diario en la vía pública.',y);
+  y+=4;
+  const rt=[['Módulo','Reportes','Resueltos','Pendientes']];
+  INF_MODS.forEach(m=>{ const p=per[m]; rt.push([INF_LABEL[m], String(p.total), INF_MUNI.includes(m)?String(p.resueltos):'—', INF_MUNI.includes(m)?String(p.pendientes):String(p.total)]); });
+  rt.push(['TOTAL GENERAL', String(totalGeneral), String(muniResueltos), String(totalGeneral-muniResueltos)]);
+  y=table({ startY:y, head:[rt[0]], body:rt.slice(1),
+    columnStyles:{0:{cellWidth:CW-210,fontStyle:'normal'},1:{cellWidth:70,halign:'center'},2:{cellWidth:70,halign:'center'},3:{cellWidth:70,halign:'center'}},
+    didParseCell:(d)=>{ if(d.row.index===rt.length-2 && d.section==='body'){ d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[233,236,241]; } } });
+  y+=18;
+  y=para('Sobre los módulos que dependen de una intervención municipal (basura, pozos, vehículos abandonados y luminarias), el porcentaje de resolución registrado por la comunidad es del '+pctResol+'%. En total, los vecinos publicaron '+totalGeneral+' reportes ciudadanos en la plataforma. Estos datos reflejan lo que la comunidad observa y reporta; su seguimiento permite priorizar recursos, anticipar focos recurrentes y mejorar la respuesta del organismo correspondiente.',y);
+
+  // ==================== ESTADÍSTICAS ====================
+  doc.addPage(); y=64;
+  y=title('Estadísticas del período',y);
+  // 6 meses
+  const months=[]; for(let i=5;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); months.push({key:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'), label:d.toLocaleDateString('es-AR',{month:'short'})+' '+String(d.getFullYear()).slice(2)}); }
+  const monthHead=['Módulo'].concat(months.map(m=>m.label));
+  const monthBody=INF_MODS.map(m=>{ const arr=data[m]||[]; const row=[INF_LABEL[m]]; months.forEach(mo=>{ const n=arr.filter(r=>{ const d=getReportDate(r); return d&&d.getTime()>0 && (d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))===mo.key; }).length; row.push(String(n)); }); return row; });
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...DARK); doc.text('Reportes por módulo — últimos 6 meses',M,y); y+=10;
+  y=table({ startY:y, head:[monthHead], body:monthBody, styles:{fontSize:8,cellPadding:3,textColor:DARK}, columnStyles:{0:{cellWidth:CW-6*40}}, });
+  y+=18;
+  // Top 5 robos
+  const robos=data.robos||[]; const cnt={}; robos.forEach(r=>{ cnt[r.type]=(cnt[r.type]||0)+1; });
+  const top5=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([id,n])=>{ const c=(CATS.robos||[]).find(x=>x.id===id); return [c?c.label:(id||'Otro'), String(n)]; });
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...DARK); doc.text('Top 5 categorías más reportadas (Robos)',M,y); y+=10;
+  y=table({ startY:y, head:[['Categoría','Reportes']], body:top5.length?top5:[['Sin datos','0']], columnStyles:{0:{cellWidth:CW-90},1:{cellWidth:90,halign:'center'}} });
+  y+=18;
+  // día de semana + franja horaria
+  const DOW=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']; const dow=[0,0,0,0,0,0,0];
+  const franjas=[['Madrugada (00–06)',0],['Mañana (06–12)',0],['Tarde (12–18)',0],['Noche (18–24)',0]]; let conHora=0;
+  INF_MODS.forEach(m=>{ (data[m]||[]).forEach(r=>{ const d=getReportDate(r); if(d&&d.getTime()>0) dow[d.getDay()]++; if(typeof r.incidentTime==='string' && /^\d{1,2}:/.test(r.incidentTime.trim())){ conHora++; const h=+r.incidentTime.trim().slice(0,2); franjas[h<6?0:h<12?1:h<18?2:3][1]++; } }); });
+  const maxDow=dow.indexOf(Math.max(...dow)); const maxFr=franjas.reduce((a,b)=>b[1]>a[1]?b:a,franjas[0]);
+  y=para('Día de la semana con más reportes: '+(Math.max(...dow)>0?DOW[maxDow]+' ('+dow[maxDow]+' reportes)':'sin datos suficientes')+'.',y);
+  y=para('Franja horaria con más incidentes: '+(conHora>0?maxFr[0]+' ('+maxFr[1]+' de '+conHora+' reportes con horario informado)':'sin datos de horario suficientes')+'.',y);
+
+  // ==================== PENDIENTES ====================
+  doc.addPage(); y=64;
+  y=title('Reportes pendientes de resolución',y);
+  y=para('Se listan los reportes de basura, pozos, vehículos abandonados y luminarias aún no resueltos, ordenados por antigüedad. Son los que dependen de una intervención del organismo correspondiente.',y,10);
+  const pend=[];
+  INF_MUNI.forEach(m=>{ (data[m]||[]).filter(r=>!r.resolved).forEach(r=>{ const d=getReportDate(r); const dias=d&&d.getTime()>0?Math.max(0,Math.floor((now-d)/864e5)):0; const cat=(CATS[m]||[]).find(x=>x.id===r.type); const ubic=r.barrio||r.address||r.direccion||(r.lat?r.lat.toFixed(4)+', '+r.lng.toFixed(4):'—'); pend.push({m,cat:cat?cat.label:(r.type||''),desc:(r.description||'').slice(0,90),ubic:String(ubic).slice(0,40),fecha:d&&d.getTime()>0?d.toLocaleDateString('es-AR'):'—',dias}); }); });
+  pend.sort((a,b)=>b.dias-a.dias);
+  const pendTop=pend.slice(0,50);
+  y=table({ startY:y+2, head:[['Módulo','Categoría','Descripción','Ubicación','Fecha','Días']],
+    body: pendTop.length?pendTop.map(p=>[MOD_SHORT[p.m],p.cat,p.desc,p.ubic,p.fecha,String(p.dias)]):[['—','—','Sin reportes pendientes','—','—','—']],
+    columnStyles:{0:{cellWidth:56},1:{cellWidth:70},2:{cellWidth:CW-56-70-90-56-38},3:{cellWidth:90},4:{cellWidth:56,halign:'center'},5:{cellWidth:38,halign:'center'}} });
+  y=doc.lastAutoTable.finalY+12;
+  if(y>H-70){ doc.addPage(); y=64; }
+  doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(...GRAY);
+  doc.text(doc.splitTextToSize('Estos reportes fueron cargados por vecinos y están pendientes de atención por parte del organismo correspondiente. Se muestran los 50 más antiguos sin resolver.',CW),M,y,{lineHeightFactor:1.4});
+
+  // ==================== CIERRE ====================
+  doc.addPage(); y=64;
+  y=title('Sobre la plataforma y propuesta de colaboración',y);
+  y=para('Robos MDP es una plataforma ciudadana e independiente que reúne a la comunidad de Mar del Plata en torno a la seguridad y el cuidado del espacio público. Con más de 251.000 vecinos alcanzados y del orden de 40 millones de impresiones mensuales en redes, se ha convertido en un canal de referencia por el que los marplatenses visibilizan, en tiempo real, lo que ocurre en sus barrios.',y);
+  y=para('Ponemos esta información a disposición de la Municipalidad de Mar del Plata y proponemos una colaboración institucional: compartir de forma periódica estos informes, coordinar la derivación de reportes a las áreas competentes y trabajar juntos en la mejora del espacio público. La comunidad ya está relevando los problemas; una articulación con el municipio potenciaría la capacidad de respuesta.',y);
+  y+=6; y=sep(y);
+  y=para('Contacto: robosmdp.com.ar · WhatsApp +54 223 599-4909 · Instagram @robos.mdp',y,10.5);
+  y+=4;
+  doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(...GRAY);
+  doc.text(doc.splitTextToSize('Los datos presentados son reportes ciudadanos y no constituyen denuncias policiales formales.',CW),M,y,{lineHeightFactor:1.4});
+
+  // ==================== HEADER + FOOTER en cada página ====================
+  const tot=doc.getNumberOfPages();
+  for(let i=1;i<=tot;i++){
+    doc.setPage(i);
+    // header
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...RED);
+    doc.text('ROBOS MDP — Informe Ciudadano '+mesAnio, M, 30);
+    doc.setFont('helvetica','normal'); doc.setTextColor(...GRAY);
+    doc.text('Pág. '+i+'/'+tot, W-M, 30, {align:'right'});
+    doc.setDrawColor(230,232,238); doc.setLineWidth(.5); doc.line(M,36,W-M,36);
+    // footer
+    doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+    doc.text('robosmdp.com.ar  |  Datos generados por la comunidad vecinal de Mar del Plata', M, H-18);
+  }
+
+  const nombre='informe-municipal-robosmdp-'+(now.getFullYear())+'-'+String(now.getMonth()+1).padStart(2,'0')+'.pdf';
+  console.log('[informe] '+tot+' páginas · total '+totalGeneral+' reportes · pendientes '+pend.length);
+  doc.save(nombre);
+  showToast('Informe municipal generado ('+tot+' páginas)','g');
+}
+
+// Descarga el último informe automático guardado por la función mensual.
+// Soporta pdf_base64 (si existiera) o un snapshot de datos → regenera client-side.
+async function descargarUltimoInforme(){
+  if(!db){ showToast('Sin conexión a la base','r'); return; }
+  try{
+    const snap=await db.collection('stats').doc('ultimo_informe').get();
+    if(!snap.exists){ showToast('Todavía no hay informe automático generado','r'); return; }
+    const d=snap.data()||{};
+    if(d.pdf_base64){
+      const a=document.createElement('a'); a.href='data:application/pdf;base64,'+d.pdf_base64;
+      a.download='informe-municipal-robosmdp-'+(d.año||'')+'-'+(d.mes||'')+'.pdf'; document.body.appendChild(a); a.click(); a.remove();
+      showToast('Informe automático descargado','g'); return;
+    }
+    if(d.data){ await generarInformeMunicipal(d.data, {mes:d.mes, año:d.año, generado_at:d.generado_at}); return; }
+    showToast('El informe guardado no tiene datos','r');
+  }catch(e){ console.error('descargarUltimoInforme',e); showToast('No se pudo leer el informe automático','r'); }
 }
 
 async function toggleRes(id){
@@ -3994,7 +4182,7 @@ function goLandingTo(id){
 // ===========================================================================
 const ADS = {
   'pub-landing-1': { imagen: './assets/banner-nikro.jpg', link: 'https://wa.me/5492236811111?text=Hola!%20Te%20escribo%20desde%20la%20p%C3%A1gina%20de%20Robos%20MDP', titulo: 'Nikro - Protección Inteligente' },
-  'pub-sidebar-robos': null,
+  'pub-sidebar-robos': { imagen: './assets/sponsor-francotirador.jpg', link: 'https://wa.me/5492235226526?text=Hola!%20Me%20comunico%20desde%20Robos%20MDP', titulo: 'Armería El Francotirador - Mar del Plata' },
   'pub-sidebar-basura': null,
   'pub-sidebar-pozos': null,
   'pub-sidebar-abandonados': null,
