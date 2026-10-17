@@ -464,7 +464,7 @@ function showStatusScreen(mode,title,desc,metaHTML){
   const spin=document.getElementById('lk-spin'), emoji=document.getElementById('lk-emoji');
   const tEl=document.getElementById('chat-lockout-title'), dEl=document.getElementById('chat-lockout-desc'), mEl=document.getElementById('chat-lockout-meta');
   if(!lock) return;
-  if(mode==='open'){ lock.style.display='none'; if(msgs)msgs.style.display='block'; if(footer)footer.style.display='block'; return; }
+  if(mode==='open'){ lock.style.display='none'; if(msgs)msgs.style.display='flex'; if(footer)footer.style.display='block'; return; }
   lock.style.display='flex';
   lock.classList.toggle('suspended', mode==='suspended');
   if(spin) spin.style.display=(mode==='loading')?'block':'none';
