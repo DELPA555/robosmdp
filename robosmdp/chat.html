@@ -132,13 +132,13 @@ img.cmedia{cursor:zoom-in;object-fit:cover}
 
 <div id="chat-root">
   <header id="chat-header">
-    <div class="hlogo">💬</div>
+    <div class="hlogo" onclick="chatLogoTap()">💬</div>
     <div style="min-width:0;flex:1">
       <h2 style="font-size:15px;font-weight:700;color:var(--t0);letter-spacing:-.02em;line-height:1.1">Chat Vecinal</h2>
       <p style="font-size:10px;font-weight:600;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px"><span class="online-dot"></span><span id="chat-online">0 vecinos en línea</span></p>
     </div>
     <button id="chat-notif-btn" onclick="toggleNotif()" title="Notificaciones">🔕</button>
-    <button id="chat-admin-btn" onclick="openAdminLogin()" title="Acceso administrador">🔐 Login admin</button>
+    <button id="chat-admin-btn" onclick="openAdminLogin()" title="Acceso administrador" style="display:none">🔐 Login admin</button>
     <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
   </header>
 
@@ -232,7 +232,8 @@ const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUns
   mods:new Set(), lastSend:0, sendTimes:[], banned:true, authReady:false, banReady:false,
   uid:null, sid:null, presTimer:null, onlineTimer:null, banExpiryTimer:null,
   msgsCount:0, isAdmin:false, replyTo:null, mentionStart:-1,
-  notifOn:false, notifReady:false, hasSent:false, ipSent:false, pendingMedia:null };
+  notifOn:false, notifReady:false, hasSent:false, ipSent:false, pendingMedia:null,
+  adminTaps:0, adminTapStart:0 };
 // Envío de imágenes/videos: SOLO admin. Límites de tamaño.
 const MEDIA_MAX_VIDEO=60*1024*1024, IMG_MAX_DIM=1280, IMG_QUALITY=0.82;
 
@@ -764,6 +765,13 @@ function maybeNotify(m){
 }
 
 // ===== LOGIN ADMIN =====
+// Acceso admin oculto: TRIPLE click/tap sobre el logo del header, los 3 en menos de 600ms.
+function chatLogoTap(){
+  const now=Date.now();
+  if(G.adminTaps===0||now-G.adminTapStart>600){ G.adminTaps=1; G.adminTapStart=now; return; }
+  G.adminTaps++;
+  if(G.adminTaps>=3){ G.adminTaps=0; openAdminLogin(); }
+}
 function openAdminLogin(){
   if(G.isAdmin){ adminLogout(); return; }
   if(!auth){ showToast('Login no disponible','r'); return; }
