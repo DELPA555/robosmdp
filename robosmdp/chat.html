@@ -461,14 +461,13 @@ function subscribeMods(){
 // ===========================================================
 //  ANTI-EVASIÓN DE BANEO ("anti-Jorgito") — 3 capas
 //  C1 huella de dispositivo · C2 gate localStorage · C3 apodo baneado
-//  IMPORTANTE: C1 y C3 consultan OTROS documentos de chat_bans (operación `list`).
-//  Con las reglas actuales `list` en chat_bans es solo-admin, así que para un
-//  usuario anónimo esas consultas dan permission-denied: quedan en modo FAIL-OPEN
-//  (no bloquean ni rompen el chat). La defensa que SÍ funciona sin tocar reglas es
-//  C2 + el ban por UID: cuando el navegador del baneado recibe su ban por UID se
-//  sella el gate local, que sigue bloqueando aunque cierre sesión, cambie de apodo
-//  o recargue. Para que C1/C3 (otro dispositivo/navegador) bloqueen, hay que abrir
-//  `list` en chat_bans (ver nota de reglas en el resumen).
+//  C1 y C3 usan docs ESPEJO con ID determinístico (chat_bans_fp/{huella} y
+//  chat_bans_nick/{apodo}) que se leen con get() — no exponen el resto de bans.
+//  REQUIEREN que firestore.rules esté PUBLICADO (bloques chat_bans_fp / chat_bans_nick).
+//  Mientras no lo esté, los get() dan permission-denied y quedan en modo FAIL-OPEN
+//  (no bloquean ni rompen el chat). La defensa que funciona aun sin publicar reglas
+//  es C2 + el ban por UID: al recibir su ban por UID el navegador sella el gate local,
+//  que sigue bloqueando aunque cierre sesión, cambie de apodo o recargue.
 // ===========================================================
 
 // --- CAPA 1: huella de dispositivo (FingerprintJS v4) ---
@@ -537,14 +536,16 @@ async function checkFingerprintBan(){
   if(G.fpChecked || !G.fp || G.isAdmin) return;
   G.fpChecked=true;
   try{
-    const qs=await db.collection(BAN_COL).where('fingerprint','==',G.fp).get();
-    let hit=null;
-    qs.forEach(doc=>{ const d=doc.data(); if(!hit && banActive(d)) hit=d; });
-    if(hit) applyExternalBan(hit);
+    const snap=await db.collection('chat_bans_fp').doc(G.fp).get();
+    if(snap.exists){
+      const d=snap.data();
+      if(banActive(d)) applyExternalBan(d);
+      else { try{ db.collection('chat_bans_fp').doc(G.fp).delete().catch(()=>{}); }catch(_){} } // ban vencido: limpiar espejo (solo admin)
+    }
   }catch(e){
-    // Reglas actuales (list = solo admin) ⇒ permission-denied: fail-open, no bloquea.
+    // Si las reglas de chat_bans_fp aún no están publicadas ⇒ permission-denied: fail-open.
     G.fpChecked=false;
-    console.warn('checkFingerprintBan: requiere abrir `list` en chat_bans',e);
+    console.warn('checkFingerprintBan (chat_bans_fp): ¿reglas publicadas?',e);
   }
 }
 
@@ -553,15 +554,16 @@ async function checkApodoBan(apodo){
   const a=String(apodo||'').trim();
   if(!a || G.isAdmin) return false;
   try{
-    const qs=await db.collection(BAN_COL).where('apodo_baneado','==',a).get();
-    let hit=null;
-    qs.forEach(doc=>{ const d=doc.data(); if(!hit && banActive(d)) hit=d; });
-    if(hit){
-      showToast('Este nombre de usuario no está disponible.','r',6000);
-      applyExternalBan(hit);
-      return true;
+    const snap=await db.collection('chat_bans_nick').doc(a.toLowerCase().trim()).get();
+    if(snap.exists){
+      const d=snap.data();
+      if(banActive(d)){
+        showToast('Este nombre de usuario no está disponible.','r',6000);
+        applyExternalBan(d);
+        return true;
+      }
     }
-  }catch(e){ console.warn('checkApodoBan: requiere abrir `list` en chat_bans',e); }
+  }catch(e){ console.warn('checkApodoBan (chat_bans_nick): ¿reglas publicadas?',e); }
   return false;
 }
 
@@ -990,6 +992,10 @@ async function banInlineConfirm(){
   if(fp) banDoc.fingerprint=fp;          // CAPA 1
   try{
     await db.collection(BAN_COL).doc(uid).set(banDoc);
+    // CAPA 1/3: docs espejo con ID determinístico (se leen con get(), sin exponer el resto de bans).
+    if(fp){ try{ await db.collection('chat_bans_fp').doc(fp).set({uid:uid,ban_hasta:ban_hasta,baneado_en:FV.serverTimestamp()}); }catch(_){} }
+    const nick=(apodoReal||a||'').toLowerCase().trim();
+    if(nick){ try{ await db.collection('chat_bans_nick').doc(nick).set({uid:uid,ban_hasta:ban_hasta,baneado_en:FV.serverTimestamp()}); }catch(_){} }
     // Sacarlo YA de los conectados: marcar sus presencias como inactivas.
     try{ await Promise.all(presDocs.map(p=>p.ref.update({activo:false}).catch(()=>{}))); }catch(_){}
     ov.remove(); showToast('Usuario baneado 🚫','g');

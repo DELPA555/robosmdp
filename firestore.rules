@@ -292,5 +292,22 @@ service cloud.firestore {
       allow list: if isAdmin();
       allow write: if isAdmin();
     }
+
+    // Espejo de baneo por huella de dispositivo (FingerprintJS).
+    // ID del doc = visitorId. Lectura por get() para firmados — no hay datos
+    // sensibles, solo uid + ban_hasta. Lista solo admin; escritura solo admin.
+    match /chat_bans_fp/{fingerprint} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Espejo de baneo por apodo (nick en minúsculas).
+    // ID del doc = apodo.toLowerCase(). Lectura por get() para firmados.
+    match /chat_bans_nick/{nick} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow write: if isAdmin();
+    }
   }
 }
