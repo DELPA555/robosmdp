@@ -13,6 +13,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Anti-evasión de baneo: huella de dispositivo (FingerprintJS v4, OSS) -->
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -224,6 +226,9 @@ const FV=firebase.firestore.FieldValue;
 const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
 const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderadores', BAN_COL='chat_bans';
+// CAPA 2 (anti-evasión): gate local de baneo. Sobrevive a cerrar sesión, cambiar
+// de apodo o recargar en el MISMO navegador — no requiere tocar reglas de Firebase.
+const BAN_LS='chat_ban';
 const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
 
 // banned arranca en true (fail-closed): nadie lee/escribe hasta verificar auth + ban.
@@ -233,7 +238,8 @@ const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUns
   uid:null, sid:null, presTimer:null, onlineTimer:null, banExpiryTimer:null,
   msgsCount:0, isAdmin:false, replyTo:null, mentionStart:-1,
   notifOn:false, notifReady:false, hasSent:false, ipSent:false, pendingMedia:null,
-  adminTaps:0, adminTapStart:0 };
+  adminTaps:0, adminTapStart:0,
+  fp:null, fpReady:false, fpChecked:false, extBan:false };
 // Envío de imágenes/videos: SOLO admin. Límites de tamaño.
 const MEDIA_MAX_VIDEO=60*1024*1024, IMG_MAX_DIM=1280, IMG_QUALITY=0.82;
 
@@ -293,6 +299,7 @@ function onApodoChanged(){
   refreshApodoLabels();
   if(!G.banned && G.authReady && G.banReady) pushPresence();
   renderFromCache();
+  checkApodoBan(getApodo());   // CAPA 3: ¿ese apodo está baneado?
 }
 
 // ===== MENSAJES (tiempo real) =====
@@ -400,7 +407,9 @@ function getSid(){
 function pushPresence(){
   if(!db || !auth || !auth.currentUser || G.banned || !G.authReady || !G.banReady) return;
   const a=getApodo(); if(!a) return;
-  try{ db.collection(PRES_COL).doc(getSid()).set({uid:auth.currentUser.uid,apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true},{merge:true}).catch(()=>{}); }catch(e){}
+  const data={uid:auth.currentUser.uid,apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true};
+  if(G.fp) data.fingerprint=G.fp;   // CAPA 1: huella del dispositivo (para banear por huella)
+  try{ db.collection(PRES_COL).doc(getSid()).set(data,{merge:true}).catch(()=>{}); }catch(e){}
 }
 function stopPresence(){
   if(G.presTimer){ clearInterval(G.presTimer); G.presTimer=null; }
@@ -449,6 +458,113 @@ function subscribeMods(){
   }catch(e){}
 }
 
+// ===========================================================
+//  ANTI-EVASIÓN DE BANEO ("anti-Jorgito") — 3 capas
+//  C1 huella de dispositivo · C2 gate localStorage · C3 apodo baneado
+//  IMPORTANTE: C1 y C3 consultan OTROS documentos de chat_bans (operación `list`).
+//  Con las reglas actuales `list` en chat_bans es solo-admin, así que para un
+//  usuario anónimo esas consultas dan permission-denied: quedan en modo FAIL-OPEN
+//  (no bloquean ni rompen el chat). La defensa que SÍ funciona sin tocar reglas es
+//  C2 + el ban por UID: cuando el navegador del baneado recibe su ban por UID se
+//  sella el gate local, que sigue bloqueando aunque cierre sesión, cambie de apodo
+//  o recargue. Para que C1/C3 (otro dispositivo/navegador) bloqueen, hay que abrir
+//  `list` en chat_bans (ver nota de reglas en el resumen).
+// ===========================================================
+
+// --- CAPA 1: huella de dispositivo (FingerprintJS v4) ---
+async function initFingerprint(){
+  try{
+    if(window.FingerprintJS){
+      const agent=await FingerprintJS.load();
+      const r=await agent.get();
+      G.fp=(r&&r.visitorId)||null;
+    }
+  }catch(e){ console.warn('fingerprint',e); }
+  G.fpReady=true;
+  // Si ya hay presencia activa, estampar la huella; y comprobar ban por huella.
+  if(!G.banned && G.authReady && G.banReady) pushPresence();
+  maybeCheckFingerprintBan();
+}
+
+// --- CAPA 2: gate de baneo en localStorage ---
+function readLocalBan(){ try{ return JSON.parse(localStorage.getItem(BAN_LS)||'null'); }catch(e){ return null; } }
+function writeLocalBan(o){ try{ localStorage.setItem(BAN_LS, JSON.stringify(o)); }catch(e){} }
+function clearLocalBan(){ try{ localStorage.removeItem(BAN_LS); }catch(e){} }
+function localBanActive(){
+  const b=readLocalBan();
+  if(!b||!b.banned) return false;
+  if(!b.until) return true;                 // indefinido
+  if(Number(b.until)>Date.now()) return true;
+  clearLocalBan(); return false;            // venció → se limpia
+}
+// Sella el gate local a partir de un doc de ban (por UID o por huella).
+function persistLocalBan(d){
+  const t=banTime(d&&d.ban_hasta);          // null ⇒ indefinido
+  writeLocalBan({ banned:true, until:(t!=null?t:null), fingerprint:G.fp||null });
+}
+// Doc sintético para pintar la pantalla de suspensión desde el gate local.
+function localBanDoc(){
+  const b=readLocalBan(); if(!b) return null;
+  return { ban_hasta:(b.until?firebase.firestore.Timestamp.fromMillis(Number(b.until)):null) };
+}
+// ¿Bloqueado por una capa local/huella (más allá del ban por UID)?
+function isLocallyBlocked(){ return (G.extBan===true || localBanActive()) && !G.isAdmin; }
+
+// Pantalla de suspensión reutilizable (ban por UID, por huella o gate local).
+function showSuspendedScreen(d){
+  const meta='<div class="lk-row"><b>Duración</b><span>'+esc(fmtBanUntil(d))+'</span></div>'+
+    ((d&&d.motivo)?'<div class="lk-row"><b>Motivo</b><span>'+esc(d.motivo)+'</span></div>':'')+
+    '<p class="lk-note">Cambiar de apodo, recargar la página, cerrar sesión o abrir otra pestaña no modifica esta suspensión. El acceso se restablece automáticamente cuando termina.</p>';
+  showStatusScreen('suspended','🚫 Acceso al chat suspendido',
+    'Tu acceso al Chat Vecinal de Robos MDP ha sido suspendido. No podés leer ni enviar mensajes.', meta);
+}
+// Aplica una suspensión que NO viene del ban por UID (huella o gate local).
+function applyExternalBan(d){
+  if(G.isAdmin) return;
+  G.extBan=true; G.banReady=true; G.banned=true;
+  persistLocalBan(d);
+  stopPresence(); stopChatListeners();
+  showSuspendedScreen(d||localBanDoc());
+}
+
+// --- CAPA 1 (lado cliente): al cargar, bloquear si la huella está baneada ---
+function maybeCheckFingerprintBan(){
+  if(G.fpChecked || !G.fpReady || !G.fp) return;
+  if(!G.authReady || !auth || !auth.currentUser || G.isAdmin) return;
+  checkFingerprintBan();
+}
+async function checkFingerprintBan(){
+  if(G.fpChecked || !G.fp || G.isAdmin) return;
+  G.fpChecked=true;
+  try{
+    const qs=await db.collection(BAN_COL).where('fingerprint','==',G.fp).get();
+    let hit=null;
+    qs.forEach(doc=>{ const d=doc.data(); if(!hit && banActive(d)) hit=d; });
+    if(hit) applyExternalBan(hit);
+  }catch(e){
+    // Reglas actuales (list = solo admin) ⇒ permission-denied: fail-open, no bloquea.
+    G.fpChecked=false;
+    console.warn('checkFingerprintBan: requiere abrir `list` en chat_bans',e);
+  }
+}
+
+// --- CAPA 3: bloquear reutilización de un apodo baneado ---
+async function checkApodoBan(apodo){
+  const a=String(apodo||'').trim();
+  if(!a || G.isAdmin) return false;
+  try{
+    const qs=await db.collection(BAN_COL).where('apodo_baneado','==',a).get();
+    let hit=null;
+    qs.forEach(doc=>{ const d=doc.data(); if(!hit && banActive(d)) hit=d; });
+    if(hit){
+      showToast('Este nombre de usuario no está disponible.','r',6000);
+      applyExternalBan(hit);
+      return true;
+    }
+  }catch(e){ console.warn('checkApodoBan: requiere abrir `list` en chat_bans',e); }
+  return false;
+}
+
 // ===== BANS POR UID DE FIREBASE =====
 function banTime(h){ if(h==null) return null; return (h&&h.toDate)?h.toDate().getTime():(h&&typeof h.seconds==='number'?h.seconds*1000:null); }
 function banActive(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=banTime(h); return t!=null && t>Date.now(); }
@@ -485,16 +601,18 @@ function applyBanUI(d){
   if(banned){
     stopPresence();
     stopChatListeners();
-    const meta='<div class="lk-row"><b>Duración</b><span>'+esc(fmtBanUntil(d))+'</span></div>'+
-      ((d&&d.motivo)?'<div class="lk-row"><b>Motivo</b><span>'+esc(d.motivo)+'</span></div>':'')+
-      '<p class="lk-note">Cambiar de apodo, recargar la página o abrir otra pestaña no modifica esta suspensión. El acceso se restablece automáticamente cuando termina.</p>';
-    showStatusScreen('suspended','🚫 Acceso al chat suspendido',
-      'Tu acceso al Chat Vecinal de Robos MDP ha sido suspendido. No podés leer ni enviar mensajes.', meta);
+    persistLocalBan(d);   // CAPA 2: sellar el gate local (sobrevive a signout/cambio de apodo/recarga)
+    showSuspendedScreen(d);
     // Programar restablecimiento automático al vencer una sanción temporal.
     const t=d?banTime(d.ban_hasta):null;
     if(t!=null && t>Date.now()){
       G.banExpiryTimer=setTimeout(()=>applyBanUI(d), Math.min(t-Date.now()+200, 2147483000));
     }
+  }else if(isLocallyBlocked()){
+    // No hay ban por UID para esta sesión, pero una capa local/huella sigue activa
+    // (ej.: cerró sesión y volvió con otro UID). No se abre el chat.
+    stopPresence(); stopChatListeners();
+    showSuspendedScreen(localBanDoc());
   }else{
     showStatusScreen('open');
     // (Re)iniciar suscripciones al recuperar acceso o al verificar que no hay ban.
@@ -807,6 +925,7 @@ function setAdminMode(on){
   const btn=document.getElementById('chat-admin-btn');
   const adj=document.getElementById('btn-adjuntar');
   if(on){
+    G.extBan=false; clearLocalBan();   // el admin nunca queda bloqueado por capas anti-evasión
     try{ localStorage.setItem(APODO_LS,'AdminRobos'); }catch(e){}
     if(btn){ btn.textContent='✓ Admin'; btn.classList.add('is-admin'); btn.title='Sesión admin activa — tocá para cerrar sesión'; }
     if(adj) adj.style.display='flex';   // enviar imágenes/videos: solo admin
@@ -858,10 +977,21 @@ async function banInlineConfirm(){
   const ms=ov.dataset.ms; const motivo=(document.getElementById('chat-ban-motivo')?.value||'').trim();
   let ban_hasta=null, dur='indefinido';
   if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); dur=ms; }
+  // CAPA 1/3: leer la presencia del objetivo para capturar su huella y su apodo real.
+  let fp=null, apodoReal=a, presDocs=[];
   try{
-    await db.collection(BAN_COL).doc(uid).set({uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,duracion_ms:dur,baneado_por:'AdminRobos',timestamp:FV.serverTimestamp()});
+    const ps=await db.collection(PRES_COL).where('uid','==',uid).get();
+    presDocs=ps.docs;
+    ps.forEach(p=>{ const pd=p.data()||{}; if(!fp && pd.fingerprint) fp=pd.fingerprint; if(pd.apodo) apodoReal=pd.apodo; });
+  }catch(_){}
+  const banDoc={uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,duracion_ms:dur,
+    baneado_por:'AdminRobos',timestamp:FV.serverTimestamp(),
+    apodo_baneado:(apodoReal||a||'')};   // CAPA 3
+  if(fp) banDoc.fingerprint=fp;          // CAPA 1
+  try{
+    await db.collection(BAN_COL).doc(uid).set(banDoc);
     // Sacarlo YA de los conectados: marcar sus presencias como inactivas.
-    try{ const ps=await db.collection(PRES_COL).where('uid','==',uid).get(); await Promise.all(ps.docs.map(p=>p.ref.update({activo:false}).catch(()=>{}))); }catch(_){}
+    try{ await Promise.all(presDocs.map(p=>p.ref.update({activo:false}).catch(()=>{}))); }catch(_){}
     ov.remove(); showToast('Usuario baneado 🚫','g');
   }catch(e){ console.error('ban inline',e); showToast('No se pudo banear','r'); }
 }
@@ -869,6 +999,9 @@ async function banInlineConfirm(){
 // ===== INIT =====
 window.addEventListener('load',()=>{
   if(!db){ showToast('Sin conexión a la base','r'); return; }
+  initFingerprint();   // CAPA 1: calcular la huella del dispositivo (async)
+  // CAPA 2: gate local inmediato — bloquear ANTES de hablar con Firebase.
+  if(localBanActive()){ G.banned=true; G.banReady=true; showSuspendedScreen(localBanDoc()); }
   if(auth){
     auth.onAuthStateChanged(async u=>{
       if(!u){
@@ -876,7 +1009,7 @@ window.addEventListener('load',()=>{
         G.authReady=false; G.banReady=false; G.banned=true; G.uid=null;
         stopPresence(); stopChatListeners();
         if(G.banUnsub){ try{G.banUnsub();}catch(e){} G.banUnsub=null; }
-        showStatusScreen('loading','Verificando acceso…','Conectando con el chat vecinal de forma segura.');
+        if(!isLocallyBlocked()) showStatusScreen('loading','Verificando acceso…','Conectando con el chat vecinal de forma segura.');
         try{ await auth.signInAnonymously(); }
         catch(e){ console.error('anon auth',e);
           showStatusScreen('error','No se pudo iniciar el chat',
@@ -888,6 +1021,7 @@ window.addEventListener('load',()=>{
       setAdminMode(u.email===ADMIN_EMAIL);
       if(!G.isAdmin) reportChatIp(u.uid, getSid());   // IP/geo al servidor (solo visible para el admin)
       subscribeBan();   // applyBanUI abrirá (o no) las suscripciones según el estado de la sanción
+      maybeCheckFingerprintBan();   // CAPA 1: ban por huella (otro UID/mismo dispositivo)
     });
     window.addEventListener('beforeunload',()=>{ try{ if(db&&G.sid) db.collection(PRES_COL).doc(G.sid).update({activo:false}).catch(()=>{}); }catch(e){} });
   }else{
