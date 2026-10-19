@@ -2862,12 +2862,9 @@ async function enablePush(){
       if(permResult.receive !== 'granted'){
         showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return;
       }
-      await PushNotifications.register();
-      const token = await new Promise((resolve, reject) => {
-        const regHandler = PushNotifications.addListener('registration', (t) => { regHandler.remove(); resolve(t.value); });
-        const errHandler = PushNotifications.addListener('registrationError', (err) => { errHandler.remove(); reject(err); });
-        setTimeout(() => reject(new Error('timeout')), 15000);
-      });
+      // Instalar listeners ANTES de registrar: el evento de Android puede
+      // llegar inmediatamente y se perdía con el orden anterior.
+      const token=await getPushTokenForUnsubscribe(true);
       if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
       const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'android',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
       let docId=localStorage.getItem(PUSH_DOC_LS);
@@ -2894,9 +2891,9 @@ async function enablePush(){
   }catch(e){ console.error('enablePush(web)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
 }
 // En suscripciones antiguas, el token puede no estar guardado localmente.
-async function getPushTokenForUnsubscribe(){
+async function getPushTokenForUnsubscribe(forceRefresh=false){
   const cached=localStorage.getItem(PUSH_TOKEN_LS);
-  if(cached)return cached;
+  if(cached&&!forceRefresh)return cached;
   if(!isCapacitor()){
     const messaging=getMessaging();
     return messaging?await messaging.getToken({vapidKey:VAPID_KEY}):'';
