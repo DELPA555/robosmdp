@@ -146,7 +146,9 @@ Usar este formato para cada entrada nueva:
 - Rama: `integration/mejoras-robosmdp-20261018`, a partir de seguridad PR #3, incorporando los archivos y parches de PR #4, #5 y #6.
 - Código combinado: `robosmdp/index.html` preserva los cambios de las cuatro solicitudes. `firestore.rules` conserva privacidad de chat y suma permisos privados comerciales; tests y `_redirects` integrados.
 - Archivos de verificación: `scripts/integration.test.mjs`, `.github/workflows/integration-checks.yml`, `docs/INTEGRACION-VALIDACION.md`, `scripts/push-delivery-cleanup.test.mjs`.
+- Tests ampliados: reglas de Firebase para categorías válidas/heredadas y control de cinco categorías en `scripts/integration.test.mjs`. Esperando comprobación final de CI.
 - Resultado: rama de integración preparada; **NO DESPLEGADA** a Firebase, Netlify de producción ni Play Store.
+- Alertas adicionales: selección de cinco categorías por zona con valores por defecto para usuarios previos; Android registra listeners FCM antes de solicitar el token; limpieza diaria automatizada de marcadores expirados.
 - Pruebas: comprobada sintaxis del JS principal durante la fusión; falta confirmar el resultado completo de GitHub Actions y la ejecución integrada en Netlify/Android.
 - Pendientes indispensables: migración de IP/huellas heredadas, publicación coordinada de reglas Firebase, prueba funcional admin/vecino. La retención de marcadores push se implementó con función programada diaria `netlify/functions/push-delivery-cleanup.mjs` y test `scripts/push-delivery-cleanup.test.mjs` (verificar ejecución tras desplegar). Ver guía `docs/INTEGRACION-VALIDACION.md`.
 - Importante: no fusionar primero PR individuales a producción sin resolver cambios compartidos. Se recomienda utilizar la rama integrada validada como candidato final tras completar el checklist.
