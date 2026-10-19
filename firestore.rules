@@ -21,7 +21,9 @@ service cloud.firestore {
     function validReportCreate() {
       let d = request.resource.data;
       return d.description is string && d.description.size() > 0 && d.description.size() <= 500
-          && d.lat is number && d.lng is number;
+          && d.lat is number && d.lng is number
+          // No permitir que una publicación nueva ya figure resuelta por decisión anónima.
+          && (isAdmin() || !('resolved' in d) || d.resolved == false);
     }
 
     // Updates permitidos en reportes: admin/autor, o cambios anónimos acotados
