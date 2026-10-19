@@ -28,7 +28,8 @@ service cloud.firestore {
     // que la app ya hace: sumar "me preocupa" (+1). Resolver: solo admin.
     function reportUpdateOK() {
       let changed = request.resource.data.diff(resource.data).affectedKeys();
-      return isAdmin() || isAuthor()
+      return isAdmin()
+          || (isAuthor() && !changed.hasAny(['resolved']))
           || (changed.hasOnly(['concerns'])
               && request.resource.data.concerns == resource.data.get('concerns', 0) + 1);
     }
