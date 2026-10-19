@@ -114,6 +114,15 @@ Usar este formato para cada entrada nueva:
 - Estado de ambos: **EN REVISIÓN / NO DESPLEGADO**.
 - Atención: múltiples ramas tocan `index.html`, `CLAUDE.md`; dos tocan `firestore.rules`. No sobrescribir el desarrollo ajeno; integrar y verificar reglas Firebase antes de desplegar.
 
+### 2026-10-18 — PUSH-01 Corrección de baja y duplicados (en revisión)
+- Responsable: ChatGPT.
+- Alcance: cancelación real de suscripciones mediante Netlify y token FCM; deduplicación atómica por reporte/token; no adelantar checkpoint cuando una consulta o entrega falla; pruebas sin datos reales.
+- Archivos: `netlify/functions/push-unsubscribe.mjs`, `netlify/functions/notify-zone.mjs`, `robosmdp/index.html`, `scripts/push-notifications.test.mjs`, `.github/workflows/push-checks.yml`, `docs/PUSH-CONFIABILIDAD-DESPLIEGUE.md`, `CLAUDE.md`.
+- Estado: **EN REVISIÓN, NO DESPLEGADO**. Faltan pruebas integradas de Netlify, web/Android y política de eliminación TTL de `push_delivery_log`.
+- GitHub Actions: la primera ejecución de los tests automáticos salió satisfactoria (https://github.com/DELPA555/robosmdp/actions/runs/39188793322). Confirmar nuevamente la última ejecución antes de fusionar.
+- Rama: `fix/push-cancelacion-deduplicacion-20261018`.
+- Conflictos: la rama también modifica `robosmdp/index.html`; reconciliar con PR #3 y PR #4 preservando todos los cambios. No fusionar directamente al `main` hasta finalizar integración.
+
 ## 7. Checklist de cierre de cualquier modificación
 
 - [ ] Se consultó este `CLAUDE.md` y el código vigente antes de empezar.

@@ -1,0 +1,27 @@
+name: Comprobación de notificaciones
+
+on:
+  pull_request:
+  push:
+    branches:
+      - fix/push-cancelacion-deduplicacion-20261018
+
+permissions:
+  contents: read
+
+jobs:
+  test-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Sintaxis de las funciones
+        run: |
+          node --check netlify/functions/notify-zone.mjs
+          node --check netlify/functions/push-unsubscribe.mjs
+          node --check scripts/push-notifications.test.mjs
+      - name: Probar baja y notificaciones duplicadas
+        run: node --test scripts/push-notifications.test.mjs
