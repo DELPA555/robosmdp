@@ -114,6 +114,15 @@ Usar este formato para cada entrada nueva:
 - Estado de ambos: **EN REVISIÓN / NO DESPLEGADO**.
 - Atención: múltiples ramas tocan `index.html`, `CLAUDE.md`; dos tocan `firestore.rules`. No sobrescribir el desarrollo ajeno; integrar y verificar reglas Firebase antes de desplegar.
 
+### 2026-10-18 — COM-01 Panel privado de campañas y patrocinadores
+- Responsable: ChatGPT.
+- Archivos modificados: `robosmdp/admin-sponsors.html`, `robosmdp/assets/sponsor-admin.mjs`, `robosmdp/assets/sponsor-utils.mjs`, `robosmdp/index.html`, `robosmdp/_redirects`, `firestore.rules`, `firestore/tests/chat-rules.test.mjs`, `scripts/sponsor-utils.test.mjs`, `.github/workflows/sponsors-checks.yml`, `docs/SPONSORS-DESPLIEGUE.md`, `CLAUDE.md`.
+- Resultado: gestión privada de campañas con períodos, importes, pagos registrados, saldos, estado y vencimientos, además de exportación CSV y filtros.
+- Pruebas: pruebas de lógica y permisos de Firestore incorporadas en GitHub Actions; consultar el último resultado antes de fusionar.
+- Rama y PR: `feat/panel-sponsors-20261018`.
+- Estado: **EN REVISIÓN / NO DESPLEGADO**. No incluye impresiones ni clics reales; nunca deben mostrarse cifras fabricadas.
+- Riesgos: antes de publicar, combinar reglas con PR #3 sin sobrescribir su protección de IP y estados. También comparte `robosmdp/index.html` y `CLAUDE.md` con las PR #3, #4 y #5. No borrar datos comerciales.
+
 ## 7. Checklist de cierre de cualquier modificación
 
 - [ ] Se consultó este `CLAUDE.md` y el código vigente antes de empezar.

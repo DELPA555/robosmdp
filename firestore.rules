@@ -113,6 +113,12 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Contratos comerciales internos: datos y montos solo administradores.
+    // El portal público nunca consulta esta colección.
+    match /campanias_publicitarias/{id} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
     // --- Patentes: alta validada; update público SOLO para marcar resuelto=true ---
     match /patentes/{docId} {
       allow read: if true;

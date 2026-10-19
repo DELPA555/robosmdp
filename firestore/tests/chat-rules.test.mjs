@@ -23,7 +23,7 @@ import {
   assertFails,
 } from '@firebase/rules-unit-testing';
 import {
-  doc, getDoc, getDocs, setDoc, deleteDoc, collection, serverTimestamp, Timestamp,
+  doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -149,4 +149,24 @@ test('Admin puede marcar inactiva la presencia de un usuario baneado', async () 
   const admin = adminCtx();
   await assertSucceeds(setDoc(doc(admin, 'chat_presencia', 'sv'),
     { uid: 'vecino5', apodo: 'V', activo: false, ultimo_ping: serverTimestamp() }, { merge: true }));
+});
+
+
+test('campañas publicitarias: acceso y escritura exclusivos del administrador',async()=>{
+  const vecino=anon('lector-comercial');
+  const admin=adminCtx();
+  const values={
+    cliente:'Anunciante de prueba',plan:'Campaña mensual',
+    inicio:'2026-10-18',fin:'2026-11-18',
+    importe_total:100000,cobrado_total:50000,estado:'activa'
+  };
+  await assertFails(setDoc(doc(vecino,'campanias_publicitarias','c0'),values));
+  await assertSucceeds(setDoc(doc(admin,'campanias_publicitarias','c1'),values));
+  await assertFails(getDoc(doc(vecino,'campanias_publicitarias','c1')));
+  await assertFails(getDocs(collection(vecino,'campanias_publicitarias')));
+  await assertFails(updateDoc(doc(vecino,'campanias_publicitarias','c1'),{cobrado_total:0}));
+  await assertFails(deleteDoc(doc(vecino,'campanias_publicitarias','c1')));
+  await assertSucceeds(getDoc(doc(admin,'campanias_publicitarias','c1')));
+  await assertSucceeds(updateDoc(doc(admin,'campanias_publicitarias','c1'),{cobrado_total:100000}));
+  await assertSucceeds(deleteDoc(doc(admin,'campanias_publicitarias','c1')));
 });
