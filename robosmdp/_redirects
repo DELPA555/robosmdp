@@ -4,5 +4,6 @@
 /chat       /chat.html      200
 /seguimiento /seguimiento.html 200
 /admin-sponsors /admin-sponsors.html 200
+/admin-analitica /admin-analitica.html 200
 /mascotas   /index.html     200
 /*          /index.html     200

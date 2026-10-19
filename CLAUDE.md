@@ -153,6 +153,15 @@ Usar este formato para cada entrada nueva:
 - Pendientes indispensables: migración de IP/huellas heredadas, publicación coordinada de reglas Firebase, prueba funcional admin/vecino. La retención de marcadores push se implementó con función programada diaria `netlify/functions/push-delivery-cleanup.mjs` y test `scripts/push-delivery-cleanup.test.mjs` (verificar ejecución tras desplegar). Ver guía `docs/INTEGRACION-VALIDACION.md`.
 - Importante: no fusionar primero PR individuales a producción sin resolver cambios compartidos. Se recomienda utilizar la rama integrada validada como candidato final tras completar el checklist.
 
+### 2026-10-18 — OPER-01 Tablero operativo por barrios y reportes
+- Responsable: ChatGPT. Rama `feat/tablero-operativo-reportes-20261018`, basada en PR #7.
+- Componentes: `robosmdp/admin-analitica.html`, `robosmdp/assets/admin-analytics.mjs`, `robosmdp/assets/analytics-utils.mjs`, ruta `/admin-analitica`, enlace en panel admin y CSV agregado.
+- Alcance: cálculo sobre documentos reales de cinco colecciones; pendientes, resueltos, reportes de más de 30 días, barrios más reportados, evolución mensual y pendientes antiguos.
+- Veracidad: muestra de hasta 1.200 documentos por sección; se advierten límites o errores de consulta y se evita presentar cifras parciales como totales oficiales.
+- Pruebas: `scripts/analytics.test.mjs` y `.github/workflows/analytics-checks.yml`. Verificar último resultado en Actions.
+- Estado: **EN REVISIÓN / NO DESPLEGADO**; requiere verificación con cuenta admin, datos de prueba y conciliación con la PR #7 y GPS PR #8.
+- Guía: `docs/TABLERO-OPERATIVO-VALIDACION.md`.
+
 ## 7. Checklist de cierre de cualquier modificación
 
 - [ ] Se consultó este `CLAUDE.md` y el código vigente antes de empezar.
