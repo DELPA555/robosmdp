@@ -46,3 +46,14 @@ test('la función push utiliza idempotencia y evita adelantar estado al fallar',
  assert.ok(notifier.includes('releaseDelivery('));
  assert.ok(notifier.includes('if(failures)'));
 });
+
+
+test('alertas por categorías mantienen defaults y cinco opciones',()=>{
+  assert.match(index,/class="zone-push-cat"/);
+  assert.match(index,/const PUSH_DEFAULT_CATS=\['robos','basura','pozos'\]/);
+  assert.match(index,/categories:getPushCategories\(\)/);
+  assert.match(notifier,/categories\.includes\(tab\)/);
+  for(const item of ['robos','basura','pozos','abandonados','luminarias']){
+    assert.ok(notifier.includes("tab: '"+item+"'"));
+  }
+});
