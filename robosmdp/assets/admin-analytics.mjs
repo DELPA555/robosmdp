@@ -24,7 +24,7 @@ async function readCategory(key){
    if(cursor)q=q.startAfter(cursor);
    const snap=await q.get();
    if(snap.empty)break;
-   for(const doc of snap.docs)result.push({id:doc.id,category:key,...doc.data()});
+   for(const doc of snap.docs)result.push({...doc.data(),id:doc.id,category:key});
    if(snap.size<PAGE)break;
    cursor=snap.docs.at(-1);
  }
