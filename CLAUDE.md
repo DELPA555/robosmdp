@@ -66,7 +66,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | EN DESARROLLO | ChatGPT — PR #4 (fase 1) |
 | ADM-01 | ALTA | Administración | Centro de control unificado de reportes, chat, moderación, alertas, métricas y actividad; filtros por fecha/zona/estado y auditoría de acciones. | IDEA | Sin asignar |
 | MAP-01 | MEDIA | Mapas | Mapa de calor, tendencias por barrio/período e informes con explicación de límites y cobertura de los datos. | IDEA | Sin asignar |
-| PUSH-01 | MEDIA | Alertas | Varias zonas/categorías, horarios y deduplicación de notificaciones; reintentos/logs y control de tokens inválidos. | IDEA | Sin asignar |
+| PUSH-01 | MEDIA | Alertas | Varias zonas/categorías, horarios y deduplicación de notificaciones; reintentos/logs y control de tokens inválidos. | EN REVISIÓN | ChatGPT (deduplicación y baja web/Android) |
 | CHAT-01 | MEDIA | Chat | Denuncia de mensajes, silencio temporal, antispam del lado del servidor e historial de sanciones. | IDEA | Sin asignar |
 | APP-01 | MEDIA | Android | Auditar versión publicada, navegación, push, permisos, rendimiento móvil y comportamiento sin conexión. | IDEA | Sin asignar |
 | COM-01 | MEDIA | Sponsors | Administrar campañas, fechas, banners, clics/impresiones medidos e informes para anunciantes. | IDEA | Sin asignar |
@@ -104,6 +104,15 @@ Usar este formato para cada entrada nueva:
 - Tipo: **solo documentación en `main`**, sin cambios en la web, en datos, ni en reglas publicadas.
 - Estado: PR #3 de seguridad y PR #4 de seguimiento activos y **NO DESPLEGADOS**. Consultar sus diffs y ejecución CI antes de intervenir.
 - Notas para Claude Code: revisar PR #3 y #4 antes de tocar `index.html`, `chat.html`, Firestore o admin. Evitar trabajar sobre archivos y líneas de los dos PR sin coordinar. Al integrar, resolver `CLAUDE.md` preservando ambos historiales.
+
+### 2026-10-18 — PUSH-01 Corrección de baja y duplicados (en revisión)
+- Responsable: ChatGPT.
+- Alcance: cancelación real de suscripciones mediante Netlify y token FCM; deduplicación atómica por reporte/token; no adelantar checkpoint cuando una consulta o entrega falla; pruebas sin datos reales.
+- Archivos: `netlify/functions/push-unsubscribe.mjs`, `netlify/functions/notify-zone.mjs`, `robosmdp/index.html`, `scripts/push-notifications.test.mjs`, `.github/workflows/push-checks.yml`, `docs/PUSH-CONFIABILIDAD-DESPLIEGUE.md`, `CLAUDE.md`.
+- Estado: **EN REVISIÓN, NO DESPLEGADO**. Faltan pruebas integradas de Netlify, web/Android y política de eliminación TTL de `push_delivery_log`.
+- GitHub Actions: la primera ejecución de los tests automáticos salió satisfactoria (https://github.com/DELPA555/robosmdp/actions/runs/39188793322). Confirmar nuevamente la última ejecución antes de fusionar.
+- Rama: `fix/push-cancelacion-deduplicacion-20261018`.
+- Conflictos: la rama también modifica `robosmdp/index.html`; reconciliar con PR #3 y PR #4 preservando todos los cambios. No fusionar directamente al `main` hasta finalizar integración.
 
 ## 7. Checklist de cierre de cualquier modificación
 
