@@ -23,7 +23,11 @@ service cloud.firestore {
       return d.description is string && d.description.size() > 0 && d.description.size() <= 500
           && d.lat is number && d.lng is number
           // No permitir que una publicación nueva ya figure resuelta por decisión anónima.
-          && (isAdmin() || !('resolved' in d) || d.resolved == false);
+          && (isAdmin() || !('resolved' in d) || d.resolved == false)
+          // Los estados e historial de gestión pertenecen solo al administrador.
+          && (isAdmin() || !d.keys().hasAny([
+                'estado_gestion','estado_actualizado','historial_estado'
+             ]));
     }
 
     // Updates permitidos en reportes: admin/autor, o cambios anónimos acotados
@@ -31,7 +35,9 @@ service cloud.firestore {
     function reportUpdateOK() {
       let changed = request.resource.data.diff(resource.data).affectedKeys();
       return isAdmin()
-          || (isAuthor() && !changed.hasAny(['resolved']))
+          || (isAuthor() && !changed.hasAny([
+                'resolved','estado_gestion','estado_actualizado','historial_estado'
+             ]))
           || (changed.hasOnly(['concerns'])
               && request.resource.data.concerns == resource.data.get('concerns', 0) + 1);
     }
