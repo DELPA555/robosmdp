@@ -51,7 +51,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT |
 | SEG-04 | ALTA | Chat y baneos | Probar efectividad del ban por UID y capas adicionales (huella/apodo), levantamiento, vencimiento, corte de lectura y presencia; confirmar reglas publicadas. | PENDIENTE DE VERIFICACIÓN | Sin asignar |
 | OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | EN REVISIÓN | ChatGPT |
-| OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | IDEA | Sin asignar |
+| OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | EN REVISIÓN | ChatGPT (chequeo web horario; observabilidad integral pendiente) |
 | REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | IDEA | Sin asignar |
 | ADM-01 | ALTA | Administración | Centro de control unificado de reportes, chat, moderación, alertas, métricas y actividad; filtros por fecha/zona/estado y auditoría de acciones. | IDEA | Sin asignar |
 | MAP-01 | MEDIA | Mapas | Mapa de calor, tendencias por barrio/período e informes con explicación de límites y cobertura de los datos. | IDEA | Sin asignar |
@@ -91,12 +91,20 @@ Usar este formato para cada entrada nueva:
 ### 2026-10-18 — SEG-01/SEG-02/SEG-03/OPS-01: seguridad del chat y permisos de reportes
 - Responsable: ChatGPT.
 - Pedido y alcance: mantener IP, geolocalización e ISP visibles en el panel de administrador, resguardarlos en una colección privada, comprobar identidad y titularidad de sesión en la función Netlify, y evitar que vecinos marquen reportes como resueltos.
-- Archivos modificados: `firestore.rules`, `robosmdp/chat.html`, `robosmdp/index.html`, `netlify/functions/chat-ip.mjs`, `firestore/tests/chat-rules.test.mjs`, `scripts/migrate-chat-ip.mjs`, `docs/SEG-01-02-03-DESPLIEGUE.md`, `.github/workflows/security-checks.yml`, `CLAUDE.md`.
+- Archivos modificados: `firestore.rules`, `robosmdp/chat.html`, `robosmdp/index.html` (incluye aviso de privacidad), `netlify/functions/chat-ip.mjs`, `firestore/tests/chat-rules.test.mjs`, `scripts/migrate-chat-ip.mjs`, `docs/SEG-01-02-03-DESPLIEGUE.md`, `.github/workflows/security-checks.yml`, `.github/workflows/monitor-web.yml`, `CLAUDE.md`.
 - Resultado: cambios de código guardados en rama `fix/seguridad-privacidad-chat-20261018`, revisión por PR pendiente de publicación. Migración de IP existentes incluida como script manual en modo simulación predeterminado.
 - Pruebas realizadas y resultado: verificación estática de código. Se agregaron pruebas para Firestore y flujo de GitHub Actions; su ejecución correcta aún requiere confirmación.
-- Commit o PR: ver rama y PR `fix/seguridad-privacidad-chat-20261018` (agregar enlace al aprobar).
+- Commit o PR: https://github.com/DELPA555/robosmdp/pull/3
 - Estado de deploy: **NO DESPLEGADO**. No se tocaron datos ni reglas activas de Firebase, Netlify de producción ni Play Store.
 - Pendientes o riesgos: ejecutar test del emulador y validación real, luego aplicar el orden de migración y publicación indicado en `docs/SEG-01-02-03-DESPLIEGUE.md`. La colección pública antigua aún puede contener IP hasta ejecutar migración.
+
+### 2026-10-18 — OPS-02 Monitoreo horario de disponibilidad web (primera fase)
+- Responsable: ChatGPT.
+- Pedido: detectar automáticamente caídas o rutas erróneas del sitio.
+- Archivo: `.github/workflows/monitor-web.yml`.
+- Resultado: workflow programado cada hora (minuto 17) para las rutas Inicio, Chat, Foro y Rastreo. Verifica código HTTP y contenido de cada sección para detectar redireccionamientos incorrectos. Soporta ejecución manual.
+- Estado: **EN REVISIÓN / NO DESPLEGADO** hasta integrar la PR en `main`. No incluye todavía Firebase, mapas, push ni alertas externas; las notificaciones de fallos dependen de la configuración de GitHub Actions.
+- PR: https://github.com/DELPA555/robosmdp/pull/3
 
 ## 7. Checklist de cierre de cualquier modificación
 
