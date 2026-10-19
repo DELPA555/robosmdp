@@ -4,6 +4,12 @@
 **Estado:** EN REVISIÓN, **NO DESPLEGADO**.  
 **Objetivo:** probar juntos los cambios de PR #3 (seguridad), #4 (seguimiento), #5 (push) y #6 (sponsors).
 
+## Ampliaciones consolidadas en octubre de 2026
+- **LOC-01: GPS temporal voluntario en el chat.** Captura única solo después de aceptar y permitir geolocalización. El punto compartido dura 60 minutos, puede revocarse y solo lo leen el usuario que lo compartió y el administrador; las consultas administrativas listan únicamente puntos aún vigentes. `chat-location-cleanup.mjs` elimina posiciones vencidas cada hora. No existe rastreo continuo, obligatorio ni silencioso.
+- **OPER-01: tablero operativo.** Ruta `/admin-analitica`, con acceso administrado por Firebase, reportes por categoría y barrio, pendientes, resueltos, tendencias mensuales y descarga CSV de cifras agregadas. El panel indica limitaciones de consulta y no presenta muestras como estadísticas oficiales.
+- Pruebas: `scripts/chat-location.test.mjs` y `scripts/analytics.test.mjs`, reglas extendidas de Firestore, workflows `chat-location-checks.yml` y `analytics-checks.yml`. Se ejecutan también dentro de `integration-checks.yml`.
+- Guías adicionales: `docs/CHAT-GPS-CONSENTIMIENTO.md` y `docs/TABLERO-OPERATIVO-VALIDACION.md`.
+
 ## Incluido
 - Chat: IP/ISP/ubicación aproximada y huella de navegador conservadas para administración autorizada en `chat_ip_private`; lectura pública limitada a presencia sin esos campos; endpoint `chat-ip` con ID token de Firebase.
 - Ban y desban: protección por UID y capas adicionales de apodo/huella con revisión administrativa y levantamiento de espejos cuando correspondan.
@@ -28,8 +34,14 @@
 4. **Migrar los datos antiguos** con `scripts/migrate-chat-ip.mjs` en modo simulación y luego `--apply`, usando credencial de servicio en entorno autorizado, sin imprimir IP. Comprobar **0 documentos** de `chat_presencia` con `ip`, `ciudad`, `region`, `pais`, `isp` o `fingerprint` antes de publicar reglas.
 5. Publicar las **reglas completas de esta rama**, incluyendo chats, estados de reportes y colección privada de sponsors, después de probar en el emulador y contar con aprobación de producción.
 6. Verificar la ejecución diaria de `netlify/functions/push-delivery-cleanup.mjs`: purga los documentos de `push_delivery_log` cuyo `expiresAt` venció, sin tocar tokens ni suscripciones. Puede agregarse una política TTL de Firestore como respaldo opcional. Confirmar las pruebas antes de publicar.
-7. Prueba de humo real con dos cuentas de ensayo (vecino/admin), Android y navegador; revisar errores Netlify y permisos Firestore. Actualizar `CLAUDE.md` al verificar **DESPLEGADO**.
+7. Prueba de humo real con dos cuentas de ensayo (vecino/admin), Android y navegador; revisar errores Netlify y permisos Firestore. En Android validar permisos de ubicación del WebView/manifest nativo antes de considerar disponible GPS; comprobar aceptar, denegar y revocar sin dejar de usar el chat. Verificar también que una cuenta ajena no puede leer coordenadas. Actualizar `CLAUDE.md` al verificar **DESPLEGADO**.
 8. Si falla algo, coordinar rollback de Netlify y Firebase; **no** restaurar reglas que vuelvan a publicar IP y huellas sin validar la privacidad. No eliminar registros históricos comerciales automáticamente.
+
+## Protección especial de ubicación GPS
+- El usuario nunca debe compartir GPS sin una acción afirmativa separada del ingreso al chat.
+- Al cumplirse 60 minutos, la interfaz no debe mostrar la ubicación; la limpieza programada borra físicamente los documentos vencidos con una demora posible de hasta aproximadamente una hora, sujeta a ejecución de Netlify.
+- Mantener el aviso de privacidad y verificar consentimiento individual, permisos y cumplimiento normativo aplicable antes de habilitarlo en producción.
+- La ubicación por IP es una estimación distinta del GPS; no confundirlas al informar o mostrar un mapa.
 
 ## Límites actuales
 - El mapa de calor ya existía antes de estas mejoras: no se duplicó.
