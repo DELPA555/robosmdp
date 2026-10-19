@@ -10,6 +10,17 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 
 **IMPORTANTE:** este archivo no se actualiza solo. El asistente que haga un cambio debe editarlo y guardar esa actualización en GitHub. Una conversación aislada con cualquiera de las IA no equivale a un cambio en el repositorio.
 
+## Trabajos activos en ramas — consultar antes de editar (2026-10-18)
+
+> Estos cambios **NO están en producción ni fusionados a `main`**. Se registran aquí para que ChatGPT y Claude Code conozcan el trabajo en curso sin esperar al merge. **No repetir ni sobrescribir estas tareas.** El estado real se confirma en cada PR.
+
+| PR | Responsable | Descripción | Estado |
+| --- | --- | --- | --- |
+| [#3](https://github.com/DELPA555/robosmdp/pull/3) | ChatGPT | `fix/seguridad-privacidad-chat-20261018`: IP, ubicación, ISP y huella de dispositivo a `chat_ip_private` (lectura solo admin), función Netlify autenticada, separación de presencia pública, migración de campos históricos, protección de `resolved` al crear/actualizar, baneo/desbaneo y tests Firebase | EN REVISIÓN; NO DESPLEGADO. Tests automáticos del último commit aún por confirmar, migración y despliegue requieren coordinación/aprobación |
+| [#4](https://github.com/DELPA555/robosmdp/pull/4) | ChatGPT | `feat/seguimiento-reportes-v1-20261018`: comprobante al reportar, consulta pública por ID en `/seguimiento`, últimos diez comprobantes locales y pruebas JS | EN REVISIÓN; NO DESPLEGADO. GitHub Actions aprobó pruebas, Netlify informó vista previa correcta; falta prueba funcional integrada |
+
+**Importante al integrar:** ambos PR modifican `CLAUDE.md` y `robosmdp/index.html`. Al fusionar, conservar los dos cambios en frontend y las dos entradas del historial, resolviendo conflictos. No fusionar el PR #3 antes de migrar las IP/huellas históricas y probar la seguridad en producción. El PR #4 es independiente y **solo implementa la primera fase** del seguimiento (estados publicados/resueltos, no estados administrativos completos). Ver instrucciones de despliegue en cada rama.
+
 ## 2. Reglas de colaboración obligatorias para ambas IA
 
 1. **Al iniciar un trabajo:** leer este archivo y comprobar el estado más reciente de `main`, ramas y archivos afectados. No suponer que el contenido de conversaciones anteriores representa la versión actual.
@@ -46,13 +57,13 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 
 | ID | Prioridad | Área | Trabajo / criterio principal | Estado inicial | Responsable |
 | --- | --- | --- | --- | --- | --- |
-| SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | PENDIENTE | Sin asignar |
-| SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | PENDIENTE | Sin asignar |
-| SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | PENDIENTE | Sin asignar |
-| SEG-04 | ALTA | Chat y baneos | Probar efectividad del ban por UID y capas adicionales (huella/apodo), levantamiento, vencimiento, corte de lectura y presencia; confirmar reglas publicadas. | PENDIENTE DE VERIFICACIÓN | Sin asignar |
-| OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | PENDIENTE | Sin asignar |
-| OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | IDEA | Sin asignar |
-| REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | IDEA | Sin asignar |
+| SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | EN REVISIÓN | ChatGPT — PR #3 |
+| SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | EN REVISIÓN | ChatGPT — PR #3 |
+| SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT — PR #3 |
+| SEG-04 | ALTA | Chat y baneos | Probar efectividad del ban por UID y capas adicionales (huella/apodo), levantamiento, vencimiento, corte de lectura y presencia; confirmar reglas publicadas. | EN REVISIÓN | ChatGPT — PR #3 |
+| OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | EN REVISIÓN | ChatGPT — PR #3 |
+| OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | EN REVISIÓN | ChatGPT — PR #3 (monitoreo web parcial) |
+| REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | EN DESARROLLO | ChatGPT — PR #4 (fase 1) |
 | ADM-01 | ALTA | Administración | Centro de control unificado de reportes, chat, moderación, alertas, métricas y actividad; filtros por fecha/zona/estado y auditoría de acciones. | IDEA | Sin asignar |
 | MAP-01 | MEDIA | Mapas | Mapa de calor, tendencias por barrio/período e informes con explicación de límites y cobertura de los datos. | IDEA | Sin asignar |
 | PUSH-01 | MEDIA | Alertas | Varias zonas/categorías, horarios y deduplicación de notificaciones; reintentos/logs y control de tokens inválidos. | IDEA | Sin asignar |
@@ -87,6 +98,12 @@ Usar este formato para cada entrada nueva:
 - Pruebas: lectura de archivos del repositorio vía GitHub. **No se realizaron pruebas funcionales ni se cambiaron reglas en Firebase.**
 - Estado de deploy: archivo de documentación en GitHub; **sin cambio de comportamiento del sitio ni de Android**.
 - Pendientes: asignar responsables y completar las entradas históricas de los cambios de Claude que se quieran conservar; no inventar fechas o despliegues.
+
+### 2026-10-18 — DOC-002 Sincronización entre ramas en revisión
+- Responsable: ChatGPT.
+- Tipo: **solo documentación en `main`**, sin cambios en la web, en datos, ni en reglas publicadas.
+- Estado: PR #3 de seguridad y PR #4 de seguimiento activos y **NO DESPLEGADOS**. Consultar sus diffs y ejecución CI antes de intervenir.
+- Notas para Claude Code: revisar PR #3 y #4 antes de tocar `index.html`, `chat.html`, Firestore o admin. Evitar trabajar sobre archivos y líneas de los dos PR sin coordinar. Al integrar, resolver `CLAUDE.md` preservando ambos historiales.
 
 ## 7. Checklist de cierre de cualquier modificación
 
