@@ -906,6 +906,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase">Radio</span><span id="zone-radius-val" style="font-size:10px;font-weight:800;color:#a5b4fc">400 m</span></div>
 <input id="zone-radius" max="1000" min="200" oninput="setZoneRadius(this.value)" step="100" style="width:100%;accent-color:#6366f1" type="range" value="400"/>
 </div>
+<fieldset style="margin:8px 0 11px;padding:9px;border:1px solid rgba(var(--rgb-line),.2);border-radius:10px">
+<legend style="font-size:9px;font-weight:800;color:var(--t2);padding:0 4px">CATEGORÍAS DE ALERTA</legend>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="robos" onchange="updatePushCategories(this)" checked> 🚨 Robos</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="basura" onchange="updatePushCategories(this)" checked> 🗑️ Basura</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="pozos" onchange="updatePushCategories(this)" checked> ⚠️ Pozos</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="abandonados" onchange="updatePushCategories(this)"> 🚗 Autos abandonados</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="luminarias" onchange="updatePushCategories(this)"> 💡 Luminarias</label>
+</fieldset>
 <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:11px;cursor:pointer;font-size:10px;font-weight:600;color:var(--t2);line-height:1.4">
 <input id="zone-push" onchange="togglePush(this.checked)" style="width:15px;height:15px;accent-color:#6366f1;flex-shrink:0;margin-top:1px" type="checkbox"/>
 <span>🔔 Avisarme cuando haya algo nuevo en mi zona</span>
@@ -2844,10 +2852,52 @@ function removeZone(){
 }
 
 // ===== NOTIFICACIONES PUSH (opt-in) para "Mi zona" =====
-const PUSH_DOC_LS='rmdp_push_doc', PUSH_TOKEN_LS='rmdp_push_token';
+const PUSH_DOC_LS='rmdp_push_doc', PUSH_TOKEN_LS='rmdp_push_token',
+      PUSH_CATS_LS='rmdp_push_cats_v1';
+const PUSH_ALLOWED_CATS=['robos','basura','pozos','abandonados','luminarias'];
+const PUSH_DEFAULT_CATS=['robos','basura','pozos'];
 const VAPID_KEY='BFPBiqqRaMEsxPOE1vYMAOSEOXFm7fumHb0y7-m9CEsn2r374isYgv0UYeZzFRx0HdXeiYmA4Jr5moNGd6E0erY';
 function getMessaging(){ try{ if(window.firebase&&firebase.messaging) return firebase.messaging(); }catch(e){ console.warn('messaging no disponible',e); } return null; }
-function syncPushToggle(){ const cb=document.getElementById('zone-push'); if(cb) cb.checked=!!localStorage.getItem(PUSH_DOC_LS); }
+function readPushCategories(){
+  try{
+    const list=JSON.parse(localStorage.getItem(PUSH_CATS_LS)||'null');
+    if(Array.isArray(list) && list.length>0){
+      const valid=[...new Set(list.filter(c=>PUSH_ALLOWED_CATS.includes(c)))];
+      if(valid.length)return valid;
+    }
+  }catch(e){}
+  return PUSH_DEFAULT_CATS.slice();
+}
+function getPushCategories(){
+  return [...document.querySelectorAll('.zone-push-cat')].filter(x=>x.checked).map(x=>x.value);
+}
+function syncPushCategoryUI(){
+  const wanted=new Set(readPushCategories());
+  document.querySelectorAll('.zone-push-cat').forEach(cb=>{cb.checked=wanted.has(cb.value);});
+}
+async function updatePushCategories(changed){
+  let selected=getPushCategories();
+  if(!selected.length){
+    if(changed)changed.checked=true;
+    selected=getPushCategories();
+    showToast('Seleccioná al menos una categoría de alerta','r');
+  }
+  localStorage.setItem(PUSH_CATS_LS,JSON.stringify(selected));
+  const docId=localStorage.getItem(PUSH_DOC_LS);
+  if(docId && db){
+    try{
+      await db.collection('subscripciones_push').doc(docId).update({
+        categories:selected,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('Categorías de alertas actualizadas','g');
+    }catch(e){showToast('No se pudieron actualizar las alertas','r');}
+  }
+}
+function syncPushToggle(){
+  const cb=document.getElementById('zone-push');
+  if(cb)cb.checked=!!localStorage.getItem(PUSH_DOC_LS);
+  syncPushCategoryUI();
+}
 async function togglePush(on){ if(on) await enablePush(); else await disablePush(); }
 function isCapacitor(){ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
 
@@ -2866,7 +2916,7 @@ async function enablePush(){
       // llegar inmediatamente y se perdía con el orden anterior.
       const token=await getPushTokenForUnsubscribe(true);
       if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
-      const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'android',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+      const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,categories:getPushCategories(),platform:'android',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
       let docId=localStorage.getItem(PUSH_DOC_LS);
       if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
       else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
@@ -2882,7 +2932,7 @@ async function enablePush(){
     if(perm!=='granted'){ showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return; }
     const token=await m.getToken({vapidKey:VAPID_KEY});
     if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
-    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'web',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,categories:getPushCategories(),platform:'web',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
     let docId=localStorage.getItem(PUSH_DOC_LS);
     if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
     else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
@@ -2952,7 +3002,7 @@ async function disablePush(){
 // Si el usuario re-define su zona y tiene push activo, actualizar la suscripción.
 async function updatePushZone(){
   const docId=localStorage.getItem(PUSH_DOC_LS); if(!docId||!G.zone) return;
-  try{ await db.collection('subscripciones_push').doc(docId).set({lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){ console.warn('updatePushZone',e); }
+  try{ await db.collection('subscripciones_push').doc(docId).set({lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,categories:readPushCategories(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){ console.warn('updatePushZone',e); }
 }
 
 // ===== MODALS =====
