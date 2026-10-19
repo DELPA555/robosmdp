@@ -276,13 +276,13 @@ service cloud.firestore {
           || (isSignedIn() && !isBanned()
               && request.resource.data.uid == request.auth.uid
               && request.resource.data.keys().hasOnly(
-                  ['uid','apodo','ultimo_ping','activo','fingerprint']));
+                  ['uid','apodo','ultimo_ping','activo']));
       allow update: if isAdmin()
           || (isSignedIn() && !isBanned()
               && resource.data.uid == request.auth.uid
               && request.resource.data.uid == request.auth.uid
               && request.resource.data.diff(resource.data).affectedKeys()
-                  .hasOnly(['apodo','ultimo_ping','activo','fingerprint']));
+                  .hasOnly(['apodo','ultimo_ping','activo']));
       allow delete: if isAdmin()
           || (isSignedIn() && resource.data.uid == request.auth.uid);
     }
