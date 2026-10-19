@@ -174,6 +174,11 @@ test('presencia: el vecino no puede crear ni modificar IP', async()=>{
     uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),activo:true
   }));
   await assertFails(updateDoc(ref,{ip:'192.0.2.20'}));
+  await assertFails(updateDoc(ref,{fingerprint:'abcdefghijklmnop'}));
+  await assertFails(setDoc(doc(vecino,'chat_presencia','sesion-7-fp'),{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),
+    activo:true,fingerprint:'abcdefghijklmnop'
+  }));
 });
 
 test('reportes: ni visitantes ni autores pueden marcar resuelto', async()=>{
