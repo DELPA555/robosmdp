@@ -4953,7 +4953,11 @@ function chatIpLineHTML(geo){
   const parts=['📍 '+esc(loc)];
   if(geo.ip) parts.push('🌐 '+esc(geo.ip));
   if(geo.isp) parts.push('ISP: '+esc(geo.isp));
-  return '<span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+parts.join(' · ')+'</span>';
+  // Esta referencia es solo una zona estimada por la IP, nunca la posición GPS.
+  const zone=[geo.ciudad,geo.region,geo.pais].filter(Boolean).join(', ');
+  const link=zone?
+    ' · <a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(zone)+'" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc;text-decoration:underline" title="Buscar zona aproximada de la IP en Google Maps">🗺️ Zona estimada</a>':'';
+  return '<span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+parts.join(' · ')+link+'</span>';
 }
 function isModUid(uid){ return !!uid && _chatA.mods.some(m=>m.id===uid||m.uid===uid); }
 function renderChatAdmin(){
