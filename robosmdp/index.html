@@ -325,7 +325,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <button onclick="openPatentes()" type="button">Patentes</button>
 <button onclick="openObjetos()" type="button">Objetos</button>
 <button onclick="openMascotas()" type="button">Mascotas</button>
-<button onclick="openForo()" type="button">Foro vecinal</button><a class="pro-chat-menu" href="./chat.html">● Chat vecinal en vivo</a>
+<button onclick="openForo()" type="button">Foro vecinal</button><a href="/seguimiento">📋 Seguir mi reporte</a><a class="pro-chat-menu" href="./chat.html">● Chat vecinal en vivo</a>
 <a href="./rastreo.html">Rastreo MDP</a>
 <a href="#colaborar">Donaciones</a>
 <a href="https://wa.me/5491138574444" rel="noopener" target="_blank">Contacto</a>
@@ -391,6 +391,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <button onclick="openMascotas()" type="button"><span>♧</span> Mascotas <b>↗</b></button>
 <button onclick="openForo()" type="button"><span>◉</span> Foro vecinal <b>↗</b></button>
 <a href="./rastreo.html"><span>⌁</span> Rastreo MDP <b>↗</b></a>
+<a href="/seguimiento"><span>▤</span> Seguir mi reporte <b>↗</b></a>
 </div>
 <div class="pro-nav-note">Una iniciativa vecinal e independiente.<br/>Mar del Plata · Argentina</div>
 </aside>
@@ -3073,10 +3074,12 @@ async function subR(mod){
   // Geocoding inverso: guardar el barrio (no bloquea si falla/tarda)
   try{ const b=await reverseBarrio(data.lat,data.lng); if(b) data.barrio=b; }catch(e){}
   try{
-    await db.collection(MOD_CFG[mod].col).add(data);
+    const created=await db.collection(MOD_CFG[mod].col).add(data);
     gaEvent('submit_report',{report_type:mod});
     showToast('¡Reporte publicado! 🎉','g');
     closeM(mod); resetF(mod);
+    // Comprobante compartible: ID nativo de Firestore, sin datos personales nuevos.
+    if(window.RMDPTracking?.showReceipt) window.RMDPTracking.showReceipt(mod,created.id);
   }catch(e){showToast('Error al publicar. Intentá de nuevo.','r');sub.disabled=false;sub.textContent='PUBLICAR REPORTE';}
 }
 
@@ -3178,7 +3181,11 @@ function renderAdm(){
     const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' '+ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
     const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:5px 10px;background:'+(r.resolved?'rgba(34,197,94,.18)':'rgba(var(--rgb-line),.15)')+';color:'+(r.resolved?'#4ade80':'var(--t3)')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'';
     const delBtn='<button onclick="event.stopPropagation();delReport(\''+r.id+'\')" title="Eliminar" style="padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;line-height:1">🗑️</button>';
-    const actions='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+resBtn+delBtn+'</div>';
+    const state=r.resolved?'resuelto':(r.estado_gestion||'publicado');
+    const stateOptions=[['publicado','Publicado'],['revision','En revisión'],['derivado','Derivado por Robos MDP'],['resuelto','Resuelto']];
+    const stateControl='<select aria-label="Estado del reporte" title="Estado gestionado por Robos MDP" onchange="event.stopPropagation();updateReportState(\''+r.id+'\',this.value)" onclick="event.stopPropagation()" style="padding:6px 8px;border-radius:9px;background:rgba(var(--rgb-deep),.95);color:var(--t1);border:1px solid rgba(var(--rgb-line),.3);max-width:145px;font-size:10px;font-weight:700">'+
+      stateOptions.map(o=>'<option value="'+o[0]+'"'+(state===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>';
+    const actions='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+stateControl+delBtn+'</div>';
     return '<div onclick="openAD(\''+r.id+'\')" style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border-radius:18px;border:1px solid rgba(var(--rgb-line),.14);padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:11px">'+
       '<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">'+
       '<div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:18px;height:18px;color:#fff"></i></div>'+
@@ -3443,13 +3450,34 @@ async function descargarUltimoInforme(){
   }catch(e){ console.error('descargarUltimoInforme',e); showToast('No se pudo leer el informe automático','r'); }
 }
 
-async function toggleRes(id){
-  const col=MOD_CFG[admTab].col;
-  const r=G.data[admTab].find(x=>x.id===id); if(!r) return;
+// Estados administrados por Robos MDP; no reemplazan denuncias o expedientes oficiales.
+const REPORT_STATES=Object.freeze(['publicado','revision','derivado','resuelto']);
+async function updateReportState(id,state){
+  if(!G.isAdmin||!REPORT_STATES.includes(state)||!MOD_CFG[admTab])return;
+  const tab=admTab,r=(G.data[tab]||[]).find(x=>x.id===id);
+  if(!r)return;
+  const label={publicado:'Publicado',revision:'En revisión',derivado:'Derivado',resuelto:'Resuelto'}[state];
   try{
-    await db.collection(col).doc(id).update({resolved:!r.resolved});
-    showToast(r.resolved?'Marcado como pendiente':'Marcado como resuelto ✅','g');
-  }catch(e){showToast('Error al actualizar','r');}
+    const event={estado:state,fecha:firebase.firestore.Timestamp.now(),por:'Robos MDP'};
+    await db.collection(MOD_CFG[tab].col).doc(id).update({
+      estado_gestion:state,estado_actualizado:firebase.firestore.FieldValue.serverTimestamp(),
+      resolved:state==='resuelto',
+      historial_estado:firebase.firestore.FieldValue.arrayUnion(event)
+    });
+    r.estado_gestion=state;r.resolved=state==='resuelto';
+    r.historial_estado=[...(r.historial_estado||[]),event];
+    renderAdm();renderMk(tab);renderRL(tab);updSBStats(tab);updLandingStats(tab);
+    showToast('Estado actualizado: '+label,'g');
+  }catch(e){
+    console.warn('report state update',e?.code||'error');
+    showToast('No se pudo actualizar el estado','r');renderAdm();
+  }
+}
+
+async function toggleRes(id){
+  const r=(G.data[admTab]||[]).find(x=>x.id===id);
+  if(!r)return;
+  await updateReportState(id,r.resolved?'publicado':'resuelto');
 }
 
 async function publicToggleResolved(tab,id){
@@ -3602,9 +3630,15 @@ function renderAvisos(){
 async function confirmAviso(avisoId){
   const a=(G.avisos||[]).find(x=>x.id===avisoId); if(!a) return;
   try{
-    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({resolved:true});
+    const event={estado:'resuelto',fecha:firebase.firestore.Timestamp.now(),por:'Robos MDP'};
+    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({
+      resolved:true,estado_gestion:'resuelto',
+      estado_actualizado:firebase.firestore.FieldValue.serverTimestamp(),
+      historial_estado:firebase.firestore.FieldValue.arrayUnion(event)
+    });
     await db.collection(RESNOTIF_COL).doc(avisoId).update({status:'aprobado'});
-    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId); if(r) r.resolved=true;
+    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId);
+    if(r){r.resolved=true;r.estado_gestion='resuelto';r.historial_estado=[...(r.historial_estado||[]),event];}
     renderMk(a.reportType); renderRL(a.reportType); updSBStats(a.reportType); updLandingStats(a.reportType);
     showToast('Reporte marcado como resuelto ✅','g');
     loadAvisos();
@@ -5146,5 +5180,6 @@ function tAgo(date){
   return 'hace '+Math.floor(d/86400)+'d';
 }
 </script>
+<script defer src="/assets/report-tracking.js?v=1"></script>
 </body>
 </html>

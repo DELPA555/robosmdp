@@ -114,6 +114,16 @@ Usar este formato para cada entrada nueva:
 - Estado de ambos: **EN REVISIÓN / NO DESPLEGADO**.
 - Atención: múltiples ramas tocan `index.html`, `CLAUDE.md`; dos tocan `firestore.rules`. No sobrescribir el desarrollo ajeno; integrar y verificar reglas Firebase antes de desplegar.
 
+### 2026-10-18 — REP-01: Comprobante, consulta y estados internos (PR #4)
+- Responsable: ChatGPT.
+- Cambios: comprobante compartible para reportes de las cinco secciones; consulta pública por ID; historial local de diez comprobantes; selector de estados administrado por Robos MDP (Publicado, En revisión interna, Derivado por Robos MDP, Resuelto) y línea de tiempo con fecha.
+- Archivos: `robosmdp/seguimiento.html`, `robosmdp/assets/report-tracking.js`, `robosmdp/index.html`, `robosmdp/_redirects`, `scripts/report-tracking.test.mjs`, `.github/workflows/report-tracking.yml`, `CLAUDE.md`.
+- Seguridad: estados e historial requieren las reglas administrativas de la PR #3. No publicar este flujo sin esas reglas para impedir alteraciones de estado por terceros.
+- Pruebas: CI de Node completada correctamente. Revisada sintaxis del JS principal y del script de seguimiento; falta prueba integrada Firebase/Netlify/Android.
+- PR: https://github.com/DELPA555/robosmdp/pull/4
+- Estado: EN REVISIÓN / **NO DESPLEGADO**. Las declaraciones de derivación son gestiones internas y no afirman recepción municipal o policial.
+- Integración: PR #3 y #4 editan `index.html` y `CLAUDE.md`; fusionar ambas preservando cambios y verificando la migración de IP antes de publicar las reglas.
+
 ## 7. Checklist de cierre de cualquier modificación
 
 - [ ] Se consultó este `CLAUDE.md` y el código vigente antes de empezar.
