@@ -49,9 +49,11 @@ test('la limpieza solo elimina ubicaciones GPS vencidas, nunca otros datos',asyn
         assert.equal(JSON.parse(opts.body).structuredQuery.from[0].collectionId,
           'chat_location_private');
         return json([{document:{
-          name:'projects/robosmdp-d1ef3/databases/(default)/documents/chat_location_private/owner1'
+          name:'projects/robosmdp-d1ef3/databases/(default)/documents/chat_location_private/owner1',
+          updateTime:'2026-10-18T20:00:00.000Z'
         }},{document:{
-          name:'projects/robosmdp-d1ef3/databases/(default)/documents/chat_ip_private/protected'
+          name:'projects/robosmdp-d1ef3/databases/(default)/documents/chat_ip_private/protected',
+          updateTime:'2026-10-18T20:00:00.000Z'
         }}]);
       }
       if(url.endsWith(':batchWrite')){
@@ -64,6 +66,7 @@ test('la limpieza solo elimina ubicaciones GPS vencidas, nunca otros datos',asyn
     assert.equal((await res.json()).deleted,1);
     assert.deepEqual(writes.map(x=>x.delete),
       ['projects/robosmdp-d1ef3/databases/(default)/documents/chat_location_private/owner1']);
+    assert.equal(writes[0].currentDocument.updateTime,'2026-10-18T20:00:00.000Z');
   }finally{
     globalThis.fetch=originalFetch;
     if(originalSA==null)delete process.env.FIREBASE_SERVICE_ACCOUNT;
