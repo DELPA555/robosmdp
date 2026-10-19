@@ -47,14 +47,21 @@ do{
     const dest=BASE+'/chat_ip_private/'+encodeURIComponent(sid);
     const existing=await fetch(dest,{headers:{Authorization:'Bearer '+token}});
     if(existing.status!==200&&existing.status!==404)throw new Error('Verificación de registro '+existing.status);
-    if(existing.status===404){
-      const privateFields={
-        uid:fields.uid||{stringValue:''},
-        actualizado:{timestampValue:new Date().toISOString()}
-      };
-      for(const f of names)privateFields[f]=fields[f];
-      const mask=Object.keys(privateFields).map(f=>'updateMask.fieldPaths='+encodeURIComponent(f)).join('&');
-      await call(dest+'?'+mask,{
+    const existingFields=existing.status===200?(await existing.json()).fields||{}:{};
+    const privateFields={};
+    if(!Object.hasOwn(existingFields,'uid'))privateFields.uid=fields.uid||{stringValue:''};
+    if(!Object.hasOwn(existingFields,'actualizado')){
+      privateFields.actualizado={timestampValue:new Date().toISOString()};
+    }
+    // Conservar datos más recientes que ya estén en el documento privado.
+    // Copiar solamente campos heredados aún ausentes.
+    for(const f of names){
+      if(!Object.hasOwn(existingFields,f))privateFields[f]=fields[f];
+    }
+    if(Object.keys(privateFields).length){
+      const privateMask=Object.keys(privateFields)
+        .map(f=>'updateMask.fieldPaths='+encodeURIComponent(f)).join('&');
+      await call(dest+'?'+privateMask,{
         method:'PATCH',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({fields:privateFields})
       });
