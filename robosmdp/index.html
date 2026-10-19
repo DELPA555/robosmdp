@@ -5009,8 +5009,24 @@ async function admChatToggleMod(encUid,encA,make){
 }
 async function admChatUnban(encUid){
   const uid=decodeURIComponent(encUid||''); if(!uid) return;
-  try{ await db.collection(CHATA_BAN).doc(uid).delete(); showToast('Ban levantado ✅','g'); }
-  catch(e){ console.error('admChatUnban',e); showToast('Error al levantar ban','r'); }
+  try{
+    const ref=db.collection(CHATA_BAN).doc(uid), snap=await ref.get();
+    const ban=snap.exists?snap.data()||{}:{};
+    const mirrors=[];
+    const fp=ban.fingerprint;
+    const nick=String(ban.apodo_baneado||ban.apodo||'').toLowerCase().trim();
+    if(fp && /^[A-Za-z0-9_-]{8,128}$/.test(fp)){
+      mirrors.push(db.collection('chat_bans_fp').doc(fp));
+    }
+    if(nick && !nick.includes('/')) mirrors.push(db.collection('chat_bans_nick').doc(nick));
+    const batch=db.batch();batch.delete(ref);
+    for(const mirror of mirrors){
+      const other=await mirror.get();
+      if(other.exists && other.data()?.uid===uid)batch.delete(mirror);
+    }
+    await batch.commit();
+    showToast('Ban y bloqueos asociados levantados ✅','g');
+  }catch(e){ console.error('admChatUnban',e); showToast('Error al levantar ban','r'); }
 }
 function admChatOpenBan(encUid,encA){
   const uid=decodeURIComponent(encUid||''), a=decodeURIComponent(encA||''); if(!uid) return;
@@ -5046,7 +5062,17 @@ async function admChatConfirmBan(){
   let ban_hasta=null, dur='indefinido';
   if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); dur=ms; }
   try{
-    await db.collection(CHATA_BAN).doc(uid).set({uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,duracion_ms:dur,baneado_por:'AdminRobos',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    const fp=_chatA.ipRecords.find(p=>p.uid===uid && /^[A-Za-z0-9_-]{8,128}$/.test(String(p.fingerprint||'')))?.fingerprint||null;
+    const nick=a.toLowerCase().trim();
+    const stamp=firebase.firestore.FieldValue.serverTimestamp();
+    const doc={uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,
+      duracion_ms:dur,baneado_por:'AdminRobos',timestamp:stamp,apodo_baneado:a};
+    if(fp)doc.fingerprint=fp;
+    const batch=db.batch();
+    batch.set(db.collection(CHATA_BAN).doc(uid),doc);
+    if(fp)batch.set(db.collection('chat_bans_fp').doc(fp),{uid,ban_hasta,baneado_en:stamp});
+    if(nick && !nick.includes('/'))batch.set(db.collection('chat_bans_nick').doc(nick),{uid,ban_hasta,baneado_en:stamp});
+    await batch.commit();
     // Sacarlo YA de los conectados: marcar todas sus presencias como inactivas.
     try{ const ps=await db.collection(CHATA_PRES).where('uid','==',uid).get(); let batch=db.batch(),n=0; for(const d of ps.docs){ batch.update(d.ref,{activo:false}); if(++n>=450){ await batch.commit(); batch=db.batch(); n=0; } } if(n>0) await batch.commit(); }catch(_){}
     ov.remove(); showToast('Usuario baneado 🚫','r');
