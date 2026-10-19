@@ -52,7 +52,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | SEG-04 | ALTA | Chat y baneos | Probar efectividad del ban por UID y capas adicionales (huella/apodo), levantamiento, vencimiento, corte de lectura y presencia; confirmar reglas publicadas. | PENDIENTE DE VERIFICACIÓN | Sin asignar |
 | OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | PENDIENTE | Sin asignar |
 | OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | IDEA | Sin asignar |
-| REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | IDEA | Sin asignar |
+| REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | EN DESARROLLO | ChatGPT (comprobante y consulta v1) |
 | ADM-01 | ALTA | Administración | Centro de control unificado de reportes, chat, moderación, alertas, métricas y actividad; filtros por fecha/zona/estado y auditoría de acciones. | IDEA | Sin asignar |
 | MAP-01 | MEDIA | Mapas | Mapa de calor, tendencias por barrio/período e informes con explicación de límites y cobertura de los datos. | IDEA | Sin asignar |
 | PUSH-01 | MEDIA | Alertas | Varias zonas/categorías, horarios y deduplicación de notificaciones; reintentos/logs y control de tokens inválidos. | IDEA | Sin asignar |
@@ -87,6 +87,17 @@ Usar este formato para cada entrada nueva:
 - Pruebas: lectura de archivos del repositorio vía GitHub. **No se realizaron pruebas funcionales ni se cambiaron reglas en Firebase.**
 - Estado de deploy: archivo de documentación en GitHub; **sin cambio de comportamiento del sitio ni de Android**.
 - Pendientes: asignar responsables y completar las entradas históricas de los cambios de Claude que se quieran conservar; no inventar fechas o despliegues.
+
+### 2026-10-18 — REP-01 (fase 1) Comprobante y consulta de reportes
+- Responsable: ChatGPT.
+- Pedido y alcance: generar código de seguimiento al publicar reportes y permitir consultar su estado sin registrarse.
+- Archivos afectados: `robosmdp/seguimiento.html`, `robosmdp/assets/report-tracking.js`, `robosmdp/index.html`, `robosmdp/_redirects`, `scripts/report-tracking.test.mjs`, `.github/workflows/report-tracking.yml`, `CLAUDE.md`.
+- Resultado: cada nuevo reporte recibe su ID original de Firestore como comprobante y enlace compartible `/seguimiento?tipo=...&id=...`. La página obtiene un documento por ID y muestra Publicado/Resuelto; los últimos 10 comprobantes pueden conservarse localmente en ese navegador.
+- Alcance expresamente limitado: **fase 1**, todavía NO incluye los estados Recibido/En revisión/Derivado, seguimiento de trámites ante organismos, historial de cambios administrativos ni notificaciones por avance. No confundir reporte ciudadano con denuncia policial.
+- Pruebas: tests automatizados de enlaces, validación de IDs, historial y presencia de componentes; ejecución por GitHub Actions pendiente de confirmar.
+- Rama y PR: `feat/seguimiento-reportes-v1-20261018`; agregar enlace de PR al crearlo.
+- Estado de deploy: **NO DESPLEGADO**. No se modificaron datos o reglas de Firebase ni la versión Android.
+- Integración con otros trabajos: desarrollada en rama separada de `fix/seguridad-privacidad-chat-20261018`. Reconciliar `CLAUDE.md` preservando las dos entradas al fusionar PR, nunca reemplazar el registro del otro cambio.
 
 ## 7. Checklist de cierre de cualquier modificación
 
