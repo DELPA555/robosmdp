@@ -137,10 +137,10 @@ Usar este formato para cada entrada nueva:
 - Pedido: continuar todo lo propuesto conservando compatibilidad entre Claude Code y ChatGPT.
 - Rama: `integration/mejoras-robosmdp-20261018`, a partir de seguridad PR #3, incorporando los archivos y parches de PR #4, #5 y #6.
 - Código combinado: `robosmdp/index.html` preserva los cambios de las cuatro solicitudes. `firestore.rules` conserva privacidad de chat y suma permisos privados comerciales; tests y `_redirects` integrados.
-- Archivos de verificación: `scripts/integration.test.mjs`, `.github/workflows/integration-checks.yml`, `docs/INTEGRACION-VALIDACION.md`.
+- Archivos de verificación: `scripts/integration.test.mjs`, `.github/workflows/integration-checks.yml`, `docs/INTEGRACION-VALIDACION.md`, `scripts/push-delivery-cleanup.test.mjs`.
 - Resultado: rama de integración preparada; **NO DESPLEGADA** a Firebase, Netlify de producción ni Play Store.
 - Pruebas: comprobada sintaxis del JS principal durante la fusión; falta confirmar el resultado completo de GitHub Actions y la ejecución integrada en Netlify/Android.
-- Pendientes indispensables: migración de IP/huellas heredadas, reglas unificadas en Firebase, configuración de retención TTL de registros push y prueba funcional admin/vecino. Ver guía `docs/INTEGRACION-VALIDACION.md`.
+- Pendientes indispensables: migración de IP/huellas heredadas, publicación coordinada de reglas Firebase, prueba funcional admin/vecino. La retención de marcadores push se implementó con función programada diaria `netlify/functions/push-delivery-cleanup.mjs` y test `scripts/push-delivery-cleanup.test.mjs` (verificar ejecución tras desplegar). Ver guía `docs/INTEGRACION-VALIDACION.md`.
 - Importante: no fusionar primero PR individuales a producción sin resolver cambios compartidos. Se recomienda utilizar la rama integrada validada como candidato final tras completar el checklist.
 
 ## 7. Checklist de cierre de cualquier modificación
