@@ -8,7 +8,7 @@
 - Chat: IP/ISP/ubicación aproximada y huella de navegador conservadas para administración autorizada en `chat_ip_private`; lectura pública limitada a presencia sin esos campos; endpoint `chat-ip` con ID token de Firebase.
 - Ban y desban: protección por UID y capas adicionales de apodo/huella con revisión administrativa y levantamiento de espejos cuando correspondan.
 - Reportes: comprobante con ID real, pantalla `/seguimiento`, historial, estados administrados por Robos MDP. Los estados internos **no** implican actuación formal de la Municipalidad ni denuncia policial.
-- Alertas: baja validada en Netlify, reintentos y deduplicación de FCM por hash de token/reporte, sin registrar tokens en el historial de entregas.
+- Alertas: baja validada en Netlify, reintentos y deduplicación de FCM por hash de token/reporte, sin registrar tokens en el historial de entregas. Los vecinos pueden elegir categorías (robos, basura, pozos, vehículos abandonados y luminarias); las suscripciones antiguas conservan las primeras tres. En Android se registran los listeners antes de pedir el token FCM.
 - Campañas: página `/admin-sponsors`, datos privados, cobros declarados, vencimientos, CSV y prueba de permiso Firebase.
 - Monitor web horario de Inicio, Foro, Chat y Rastreo (se ejecuta únicamente cuando esté en `main`).
 - No se implementó rastreo GPS obligatorio o silencioso. El mapa admin de IP señala **zonas aproximadas**; ninguna IP identifica por sí sola un domicilio.
@@ -18,7 +18,7 @@
 2. Netlify Deploy Preview: abrir portada, mapa, chat y vistas nuevas. Verificar rutas con y sin barra.
 3. Cuenta anónima: enviar chat y reportes; no puede leer `chat_ip_private`, `campanias_publicitarias`, ni alterar estados administrativos.
 4. Cuenta admin: moderar chat, ver IP/ISP, banear/desbanear, editar reportes e importar/exportar campañas.
-5. Android Capacitor: experiencia móvil, notificaciones, baja de alertas y navegación.
+5. Android Capacitor: experiencia móvil, notificaciones, alta y baja de alertas, registro de token, selección de categorías y navegación.
 6. Revisar políticas de privacidad, conservación y acceso a los datos de conexión/IP/huella y notificación de proveedores externos.
 
 ## Orden obligatorio de publicación — sin saltos
