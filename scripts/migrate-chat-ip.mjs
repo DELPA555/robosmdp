@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 
 const PROJECT='robosmdp-d1ef3';
 const BASE=`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
-const SENSITIVE=['ip','ciudad','region','pais','isp'];
+const SENSITIVE=['ip','ciudad','region','pais','isp','fingerprint'];
 const apply=process.argv.includes('--apply');
 const encoded=s=>Buffer.from(s).toString('base64url');
 const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||'null');
