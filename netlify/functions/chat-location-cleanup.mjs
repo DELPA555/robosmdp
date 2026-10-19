@@ -38,13 +38,17 @@ async function expiredDocs(auth){
   return (Array.isArray(rows)?rows:[])
     .filter(x=>x.document?.name?.startsWith(
       'projects/'+PROJECT+'/databases/(default)/documents/chat_location_private/'))
-    .map(x=>x.document.name);
+    .map(x=>({name:x.document.name,updateTime:x.document.updateTime}))
+    .filter(x=>typeof x.updateTime==='string'&&x.updateTime.length>0);
 }
 async function erase(names,auth){
   if(!names.length)return;
   const r=await fetch(FS+':batchWrite',{method:'POST',
     headers:{Authorization:'Bearer '+auth,'Content-Type':'application/json'},
-    body:JSON.stringify({writes:names.map(name=>({delete:name}))})});
+    // Evitar borrar una ubicación que el usuario renovó luego de la consulta.
+    body:JSON.stringify({writes:names.map(doc=>({
+      delete:doc.name,currentDocument:{updateTime:doc.updateTime}
+    }))})});
   if(!r.ok)throw Error('batchWrite '+r.status);
   const j=await r.json();
   if((j.status||[]).some(v=>v?.code&&v.code!==0&&v.code!==5)){
