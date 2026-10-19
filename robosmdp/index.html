@@ -4882,7 +4882,7 @@ async function delReply(tid,rid){
 
 // ===== CHAT VECINAL — moderación (panel admin) =====
 const CHATA_MSG='chat_publico', CHATA_PRES='chat_presencia', CHATA_MOD='chat_moderadores', CHATA_BAN='chat_bans', CHATA_TTL=90000;
-const _chatA={ msgs:[], pres:[], mods:[], bans:[], query:'', subbed:false };
+const _chatA={ msgs:[], pres:[], ipRecords:[], mods:[], bans:[], query:'', subbed:false };
 function chatMsgDate(x){ const v=x&&x.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); return new Date(0); }
 function chatColorA(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
 function loadChatAdmin(){
@@ -4891,6 +4891,11 @@ function loadChatAdmin(){
   try{
     db.collection(CHATA_MSG).orderBy('timestamp','desc').limit(200).onSnapshot(s=>{ _chatA.msgs=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin msgs',e));
     db.collection(CHATA_PRES).onSnapshot(s=>{ _chatA.pres=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin pres',e));
+    // IP privadas solo para cuenta admin con reglas Firebase actualizadas.
+    db.collection('chat_ip_private').onSnapshot(s=>{
+      _chatA.ipRecords=s.docs.map(d=>({id:d.id,...d.data()}));
+      if(admTab==='chat') renderChatAdmin();
+    },e=>console.warn('chatAdmin IP privada: comprobar reglas',e.code||e.message));
     db.collection(CHATA_MOD).onSnapshot(s=>{ _chatA.mods=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin mods',e));
     db.collection(CHATA_BAN).onSnapshot(s=>{ _chatA.bans=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin bans',e));
   }catch(e){ console.warn('loadChatAdmin',e); }
@@ -4900,13 +4905,23 @@ function chatPresTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toD
 function chatBanActiveDoc(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
 // UIDs con sanción activa (para excluirlos de "en línea").
 function chatActiveBanUids(){ const s=new Set(); _chatA.bans.forEach(b=>{ if(chatBanActiveDoc(b)){ const u=b.uid||b.id; if(u) s.add(u); } }); return s; }
-// Campos de IP/geo que la Netlify Function chat-ip guarda en chat_presencia.
+// IP/geo ahora se almacenan en colección privada, de lectura exclusiva admin.
+// La presencia antigua con IP se admite solo como respaldo hasta su migración.
 function chatGeoOf(p){ return { ip:p.ip||'', ciudad:p.ciudad||'', region:p.region||'', pais:p.pais||'', isp:p.isp||'' }; }
 function chatHasGeo(p){ return !!(p.ip||p.ciudad||p.region||p.pais||p.isp); }
-// IP/geo más reciente registrada para un UID (p. ej. para mostrarla en un baneado
-// cuya presencia ya no está activa).
+function chatGeoFromSession(sid){
+  const p=_chatA.ipRecords.find(x=>x.id===sid);
+  return p&&chatHasGeo(p)?chatGeoOf(p):null;
+}
+// Datos de IP más recientes para el UID, incluido un usuario baneado.
 function chatIpInfo(uid){
   if(!uid) return null;
+  const records=_chatA.ipRecords.filter(p=>p.uid===uid&&chatHasGeo(p))
+    .sort((a,b)=>{
+      const tm=x=>x.actualizado?.toDate?.()?.getTime?.()||new Date(x.actualizado||0).getTime()||0;
+      return tm(b)-tm(a);
+    });
+  if(records.length) return chatGeoOf(records[0]);
   let best=null, bt=-1;
   _chatA.pres.forEach(p=>{ if((p.uid||'')!==uid || !chatHasGeo(p)) return; const t=chatPresTime(p); if(t>=bt){ bt=t; best=p; } });
   return best?chatGeoOf(best):null;
@@ -4921,7 +4936,7 @@ function chatOnlineUsers(){
     const uid=p.uid||'', t=chatPresTime(p);
     if(uid && banned.has(uid)) return;                 // un baneado nunca figura en línea
     const key=uid||('apodo:'+(p.apodo||p.id));
-    const geo=chatHasGeo(p)?chatGeoOf(p):null;
+    const geo=chatGeoFromSession(p.id)||(chatHasGeo(p)?chatGeoOf(p):null);
     const prev=byKey.get(key);
     if(prev){ prev.sessions++; if(t>prev.last){ prev.last=t; prev.apodo=p.apodo||prev.apodo; if(geo) prev.geo=geo; } else if(geo && !prev.geo){ prev.geo=geo; } return; }
     byKey.set(key,{ uid:uid, apodo:p.apodo||'(sin apodo)', last:t, sessions:1, legacy:!uid, geo:geo });
