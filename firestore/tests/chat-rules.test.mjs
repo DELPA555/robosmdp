@@ -259,3 +259,45 @@ test('push: se admiten categorías válidas y se rechazan categorías ajenas', a
   // Compatibilidad con usuarios anteriores sin campo categories.
   await assertSucceeds(setDoc(doc(db,'subscripciones_push','cat-heredadas'),base));
 });
+
+
+test('GPS chat: lectura solo propia o admin, nunca otros participantes',async()=>{
+  const owner=anon('vecino-gps-1'),other=anon('vecino-gps-2'),admin=adminCtx();
+  const expiry=Timestamp.fromDate(new Date(Date.now()+60*60*1000));
+  const point={lat:-38.0041,lng:-57.5575,accuracy:14,
+    shared_at:serverTimestamp(),expires_at:expiry};
+  await assertSucceeds(setDoc(doc(owner,'chat_location_private','vecino-gps-1'),point));
+  await assertSucceeds(getDoc(doc(owner,'chat_location_private','vecino-gps-1')));
+  await assertFails(getDoc(doc(other,'chat_location_private','vecino-gps-1')));
+  await assertFails(getDocs(collection(other,'chat_location_private')));
+  await assertSucceeds(getDocs(collection(admin,'chat_location_private')));
+  await assertSucceeds(getDoc(doc(admin,'chat_location_private','vecino-gps-1')));
+  await assertFails(setDoc(doc(other,'chat_location_private','vecino-gps-1'),point));
+  await assertFails(deleteDoc(doc(other,'chat_location_private','vecino-gps-1')));
+  await assertSucceeds(deleteDoc(doc(owner,'chat_location_private','vecino-gps-1')));
+});
+
+test('GPS chat: campos, precisión, coordenadas y vencimiento validados',async()=>{
+  const db=anon('gps-validation'),ref=doc(db,'chat_location_private','gps-validation');
+  const expiry=Timestamp.fromDate(new Date(Date.now()+60*60*1000));
+  const point={lat:-38,lng:-57.55,accuracy:30,
+    shared_at:serverTimestamp(),expires_at:expiry};
+  await assertFails(setDoc(ref,{...point,ip:'192.0.2.4'}));
+  await assertFails(setDoc(ref,{...point,lat:-150}));
+  await assertFails(setDoc(ref,{...point,accuracy:30000}));
+  await assertFails(setDoc(ref,{...point,expires_at:Timestamp.fromDate(new Date(Date.now()+3*60*60*1000))}));
+  await assertSucceeds(setDoc(ref,point));
+  await assertFails(updateDoc(ref,{accuracy:-1}));
+  await assertSucceeds(updateDoc(ref,{accuracy:60,shared_at:serverTimestamp()}));
+});
+
+test('GPS chat: un usuario baneado no puede publicar, pero puede revocar',async()=>{
+  const uid='gps-banned',user=anon(uid),ref=doc(user,'chat_location_private',uid);
+  await assertSucceeds(setDoc(ref,{
+    lat:-38,lng:-57.55,accuracy:10,shared_at:serverTimestamp(),
+    expires_at:Timestamp.fromDate(new Date(Date.now()+60*60*1000))
+  }));
+  await seedBan(uid,null);
+  await assertFails(updateDoc(ref,{lat:-37,shared_at:serverTimestamp()}));
+  await assertSucceeds(deleteDoc(ref));
+});

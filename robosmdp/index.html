@@ -1710,6 +1710,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <h3 style="font-size:14px;font-weight:700;color:var(--t0);margin:22px 0 8px">Política de privacidad</h3>
 <p><strong style="color:var(--t2)">Qué datos recopilamos:</strong> al crear un reporte se guarda la ubicación geográfica que indicás, una descripción del hecho y, opcionalmente, una foto. No solicitamos ni almacenamos tu nombre, correo, teléfono ni datos identificatorios para reportar: los reportes son anónimos.</p>
 <p style="margin-top:10px"><strong style="color:var(--t2)">Privacidad del chat vecinal:</strong> para permitir la moderación y prevenir abusos, el chat utiliza un identificador de sesión anónimo de Firebase y puede registrar apodo, dirección IP, ubicación geográfica aproximada, proveedor de conexión y una huella técnica del navegador. Estos datos técnicos se utilizan para seguridad y moderación; la IP y la ubicación no se publican en el chat y su consulta queda restringida a la administración autorizada. La ubicación aproximada puede ser consultada a un proveedor externo mediante una conexión cifrada. Podés solicitar información, rectificación o eliminación de tus datos mediante los canales de contacto indicados abajo.</p>
+<p style="margin-top:10px"><strong style="color:var(--t2)">GPS opcional del chat:</strong> únicamente si una persona acepta expresamente y autoriza el permiso del navegador, guardamos una ubicación GPS puntual con su precisión declarada. La ve la administración autorizada, no los demás participantes; deja de mostrarse después de 60 minutos y se elimina por una limpieza programada. La persona puede revocar y eliminar su ubicación desde el chat. No realizamos seguimiento continuo. Rechazar la función no limita el acceso al chat.</p>
 <p style="margin-top:10px"><strong style="color:var(--t2)">Cómo usamos los datos:</strong> la información de los reportes se muestra públicamente en el mapa y en los listados de la plataforma, ya que ese es justamente su propósito comunitario. También usamos métricas de uso agregadas y anónimas para mejorar el servicio.</p>
 <p style="margin-top:10px"><strong style="color:var(--t2)">No vendemos tus datos.</strong> No comercializamos ni cedemos información a terceros con fines de lucro. La plataforma puede mostrar publicidad (propia o de Google AdSense), pero eso no implica compartir datos personales identificatorios.</p>
 <p style="margin-top:10px">Si publicaste un reporte y querés que lo eliminemos, escribinos y lo resolvemos a la brevedad.</p>
@@ -5019,7 +5020,7 @@ async function delReply(tid,rid){
 
 // ===== CHAT VECINAL — moderación (panel admin) =====
 const CHATA_MSG='chat_publico', CHATA_PRES='chat_presencia', CHATA_MOD='chat_moderadores', CHATA_BAN='chat_bans', CHATA_TTL=90000;
-const _chatA={ msgs:[], pres:[], ipRecords:[], mods:[], bans:[], query:'', subbed:false };
+const _chatA={ msgs:[], pres:[], ipRecords:[], gps:[], mods:[], bans:[], query:'', subbed:false };
 function chatMsgDate(x){ const v=x&&x.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); return new Date(0); }
 function chatColorA(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
 function loadChatAdmin(){
@@ -5033,6 +5034,11 @@ function loadChatAdmin(){
       _chatA.ipRecords=s.docs.map(d=>({id:d.id,...d.data()}));
       if(admTab==='chat') renderChatAdmin();
     },e=>console.warn('chatAdmin IP privada: comprobar reglas',e.code||e.message));
+    // Solo administrador: GPS entregados expresamente, con caducidad inmediata en UI.
+    db.collection('chat_location_private').onSnapshot(s=>{
+      _chatA.gps=s.docs.map(d=>({id:d.id,...d.data()}));
+      if(admTab==='chat') renderChatAdmin();
+    },e=>console.warn('chatAdmin GPS permisos',e.code||e.message));
     db.collection(CHATA_MOD).onSnapshot(s=>{ _chatA.mods=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin mods',e));
     db.collection(CHATA_BAN).onSnapshot(s=>{ _chatA.bans=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin bans',e));
   }catch(e){ console.warn('loadChatAdmin',e); }
@@ -5112,6 +5118,27 @@ function renderChatAdmin(){
   const delAllBtn=a=>'<button onclick="admChatDeleteAll(\''+enc(a)+'\')" title="Eliminar todos los mensajes de este apodo" style="padding:4px 9px;background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer">🗑️ Todos</button>';
   // Buscador
   let html='<div style="position:relative;margin-bottom:12px"><input id="chata-q" oninput="onChatAdminSearch()" value="'+esc(q)+'" placeholder="Buscar mensajes por apodo o texto..." style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;color:var(--t1);outline:none"></div>';
+  // Ubicaciones compartidas VOLUNTARIAMENTE; la IP no es un punto GPS.
+  const gpsActive=_chatA.gps.filter(p=>{
+    const until=p.expires_at?.toMillis?.()||(p.expires_at?.seconds?1000*p.expires_at.seconds:0);
+    return until>Date.now()&&Number.isFinite(p.lat)&&Number.isFinite(p.lng)
+      && p.lat>=-90&&p.lat<=90&&p.lng>=-180&&p.lng<=180;
+  });
+  html+=box('📍 GPS voluntario activo ('+gpsActive.length+')',
+    gpsActive.length?gpsActive.map(p=>{
+      const owner=_chatA.pres.find(u=>u.uid===p.id);
+      const nick=esc(owner?.apodo||'Participante del chat');
+      const accuracy=Number.isFinite(p.accuracy)?' · Precisión declarada ±'+Math.round(p.accuracy)+' m':'';
+      const point=p.lat.toFixed(5)+','+p.lng.toFixed(5);
+      const map='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(point);
+      const until=p.expires_at?.toDate?.();
+      return '<div style="padding:8px 0;border-bottom:1px solid rgba(var(--rgb-line),.16);font-size:11px">'+
+        '<strong>'+nick+'</strong>'+uidChip(p.id)+'<br>'+
+        '<span style="color:var(--t3)">Compartida por el dispositivo'+esc(accuracy)+' · hasta '+esc(until?until.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'su vencimiento')+'</span><br>'+
+        '<a href="'+map+'" target="_blank" rel="noopener noreferrer" style="color:#86efac;font-weight:800">🗺️ Ver punto compartido en Maps</a>'+
+        '</div>';
+    }).join(''):
+    '<p style="color:var(--t3);font-size:11px">Nadie compartió GPS activo. Es completamente opcional para cada usuario.</p>');
   // Usuarios en línea (participantes autorizados y activos; baneados excluidos)
   html+=box('👥 En línea ('+online.length+')', online.length?('<div style="display:flex;flex-direction:column;gap:7px">'+online.map(u=>{ const act=u.last?tAgo(new Date(u.last)):''; const sess=u.sessions>1?(' · '+u.sessions+' sesiones'):''; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:var(--t1);min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px"></span>'+esc(u.apodo)+(isModUid(u.uid)?' <span style="font-size:8.5px;color:#93c5fd">🛡️</span>':'')+uidChip(u.uid)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+(act?'activo '+act:'')+sess+'</span>'+chatIpLineHTML(u.geo)+'</span><span style="display:flex;gap:5px;flex-shrink:0">'+modBtn(u.uid,u.apodo)+banBtn(u.uid,u.apodo)+'</span></div>'; }).join('')+'</div>'):'<p style="font-size:11px;color:#475569">Nadie conectado ahora.</p>');
   // Baneados (por UID: último apodo, UID, duración, motivo)
