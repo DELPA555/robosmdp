@@ -170,14 +170,26 @@ service cloud.firestore {
     //     localStorage) solo con campos de zona. read = admin (contienen tokens,
     //     NO deben ser legibles por cualquiera; el server los lee con Admin SDK). ---
     match /subscripciones_push/{docId} {
+      // Compatibilidad: suscripciones antiguas sin categorías conservan
+      // robos, basura y pozos; las nuevas deben contener 1..5 categorías válidas.
+      function validCategories() {
+        return !('categories' in request.resource.data)
+            || (request.resource.data.categories is list
+                && request.resource.data.categories.size() >= 1
+                && request.resource.data.categories.size() <= 5
+                && request.resource.data.categories.hasOnly(
+                     ['robos','basura','pozos','abandonados','luminarias']));
+      }
       allow read: if isAdmin();
       allow create: if request.resource.data.token is string
                   && request.resource.data.lat is number
                   && request.resource.data.lng is number
-                  && request.resource.data.radius is number;
+                  && request.resource.data.radius is number
+                  && validCategories();
       allow update: if isAdmin()
-                  || request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['lat','lng','radius','updatedAt']);
+                  || (request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['lat','lng','radius','categories','updatedAt'])
+                      && validCategories());
       allow delete: if isAdmin();
     }
 
