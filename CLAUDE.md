@@ -21,6 +21,8 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | [#5](https://github.com/DELPA555/robosmdp/pull/5) | ChatGPT | `fix/push-cancelacion-deduplicacion-20261018`: baja efectiva de alertas mediante token FCM y Netlify, historial de entregas sin duplicados, reintentos sin adelantar el checkpoint, pruebas | EN REVISIÓN; NO DESPLEGADO. CI aprobada; configurar caducidad del log y verificar Android/web |
 | [#6](https://github.com/DELPA555/robosmdp/pull/6) | ChatGPT | `feat/panel-sponsors-20261018`: panel privado de campañas y cobros, vencimientos, exportación CSV, reglas admin y pruebas | EN REVISIÓN; NO DESPLEGADO. Falta validar tests Firestore y fusionar reglas con PR #3 |
 | [#7](https://github.com/DELPA555/robosmdp/pull/7) | ChatGPT | `integration/mejoras-robosmdp-20261018`: integración de PR #3–#6, frontend, backend Netlify, reglas Firebase y pruebas conjuntas | EN REVISIÓN; NO DESPLEGADO. Candidato conjunto; migración IP/huellas, retención push y validación E2E pendientes |
+| [#8](https://github.com/DELPA555/robosmdp/pull/8) | ChatGPT | GPS voluntario temporal de chat; lectura privada por titular/admin, caducidad, revocación y pruebas | INTEGRADO EN CÓDIGO DE PR #7; NO DESPLEGADO. Mantener consentimiento y verificar permisos Android |
+| [#9](https://github.com/DELPA555/robosmdp/pull/9) | ChatGPT | Tablero `/admin-analitica`: KPI reales, barrios, pendientes, categorías y CSV con aviso de muestras | INTEGRADO EN CÓDIGO DE PR #7; NO DESPLEGADO. Validar cobertura y autenticación admin |
 
 **Importante al integrar:** las PR #3, #4, #5 y #6 modifican `CLAUDE.md` y `robosmdp/index.html`; también #3 y #6 modifican `firestore.rules`. Resolver conflictos conservando todas las mejoras. Los PR #5 y #6 tampoco están desplegados. Al fusionar, conservar los dos cambios en frontend y las dos entradas del historial, resolviendo conflictos. No fusionar el PR #3 antes de migrar las IP/huellas históricas y probar la seguridad en producción. El PR #4 incorporó una segunda fase con estados internos e historial administrativo; no implica confirmación de un trámite oficial. Requiere prueba funcional de punta a punta antes de publicar. Ver instrucciones de despliegue en cada rama.
 
@@ -121,6 +123,14 @@ Usar este formato para cada entrada nueva:
 - La integración preserva los cambios del archivo principal `index.html`, las reglas de Firebase, las rutas y los tests de los PR #3–#6.
 - Estado: **EN REVISIÓN / NO DESPLEGADO**. Quedan las pruebas E2E, la migración de IP/huellas, la configuración de TTL de entregas FCM y el despliegue coordinado.
 - Claude Code debe priorizar la lectura de PR #7 antes de añadir nuevas funciones que modifiquen los archivos compartidos.
+
+### 2026-10-18 — DOC-005 Localizador GPS y tablero consolidados
+- Responsable: ChatGPT. Actualización **exclusivamente documental** en `main`.
+- PR #8 y PR #9 ya incorporadas a los archivos de la **PR #7**, sin publicar web, reglas o datos reales. Las PR dependientes se conservan para su revisión individual.
+- GPS: captura única con consentimiento; solo titular/admin leen coordenadas, sin seguimiento permanente. Revocación y purga horaria.
+- Analítica: totales de los documentos efectivamente cargados, pendientes, resolución, barrios, tendencias y CSV, con advertencias de muestreo; no usa datos privados del chat.
+- Ramas: `integration/mejoras-robosmdp-20261018` es la candidata unificada. Revisar `docs/INTEGRACION-VALIDACION.md` y CI más reciente antes de cualquier despliegue.
+- Estado: **EN REVISIÓN / NO DESPLEGADO**. Faltan migración histórica de IP/huellas, verificación funcional de Netlify/Firebase y Android, especialmente permisos de GPS.
 
 ## 7. Checklist de cierre de cualquier modificación
 
