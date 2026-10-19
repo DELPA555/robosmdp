@@ -69,7 +69,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | PUSH-01 | MEDIA | Alertas | Varias zonas/categorías, horarios y deduplicación de notificaciones; reintentos/logs y control de tokens inválidos. | IDEA | Sin asignar |
 | CHAT-01 | MEDIA | Chat | Denuncia de mensajes, silencio temporal, antispam del lado del servidor e historial de sanciones. | IDEA | Sin asignar |
 | APP-01 | MEDIA | Android | Auditar versión publicada, navegación, push, permisos, rendimiento móvil y comportamiento sin conexión. | IDEA | Sin asignar |
-| COM-01 | MEDIA | Sponsors | Administrar campañas, fechas, banners, clics/impresiones medidos e informes para anunciantes. | IDEA | Sin asignar |
+| COM-01 | MEDIA | Sponsors | Administrar campañas, fechas, banners, clics/impresiones medidos e informes para anunciantes. | EN REVISIÓN | ChatGPT (panel de campañas, importes y vencimientos) |
 | PERF-01 | MEDIA | Frontend | Reducir peso de imágenes y recursos, modularizar gradualmente `index.html`, mejorar tiempos de carga y evitar regresiones. | IDEA | Sin asignar |
 
 **Nota sobre estados:** `PENDIENTE DE VERIFICACIÓN` es una observación descriptiva del estado inicial de SEG-04; al tomar el trabajo usar uno de los estados definidos en §2. Estas observaciones provienen de una revisión estática del repositorio al 2026-10-18; **no prueban vulnerabilidad explotada ni confirman reglas desplegadas**.
@@ -104,6 +104,15 @@ Usar este formato para cada entrada nueva:
 - Tipo: **solo documentación en `main`**, sin cambios en la web, en datos, ni en reglas publicadas.
 - Estado: PR #3 de seguridad y PR #4 de seguimiento activos y **NO DESPLEGADOS**. Consultar sus diffs y ejecución CI antes de intervenir.
 - Notas para Claude Code: revisar PR #3 y #4 antes de tocar `index.html`, `chat.html`, Firestore o admin. Evitar trabajar sobre archivos y líneas de los dos PR sin coordinar. Al integrar, resolver `CLAUDE.md` preservando ambos historiales.
+
+### 2026-10-18 — COM-01 Panel privado de campañas y patrocinadores
+- Responsable: ChatGPT.
+- Archivos modificados: `robosmdp/admin-sponsors.html`, `robosmdp/assets/sponsor-admin.mjs`, `robosmdp/assets/sponsor-utils.mjs`, `robosmdp/index.html`, `robosmdp/_redirects`, `firestore.rules`, `firestore/tests/chat-rules.test.mjs`, `scripts/sponsor-utils.test.mjs`, `.github/workflows/sponsors-checks.yml`, `docs/SPONSORS-DESPLIEGUE.md`, `CLAUDE.md`.
+- Resultado: gestión privada de campañas con períodos, importes, pagos registrados, saldos, estado y vencimientos, además de exportación CSV y filtros.
+- Pruebas: pruebas de lógica y permisos de Firestore incorporadas en GitHub Actions; consultar el último resultado antes de fusionar.
+- Rama y PR: `feat/panel-sponsors-20261018`.
+- Estado: **EN REVISIÓN / NO DESPLEGADO**. No incluye impresiones ni clics reales; nunca deben mostrarse cifras fabricadas.
+- Riesgos: antes de publicar, combinar reglas con PR #3 sin sobrescribir su protección de IP y estados. También comparte `robosmdp/index.html` y `CLAUDE.md` con las PR #3, #4 y #5. No borrar datos comerciales.
 
 ## 7. Checklist de cierre de cualquier modificación
 
