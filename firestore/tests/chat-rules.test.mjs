@@ -23,7 +23,7 @@ import {
   assertFails,
 } from '@firebase/rules-unit-testing';
 import {
-  doc, getDoc, getDocs, setDoc, deleteDoc, collection, serverTimestamp, Timestamp,
+  doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
