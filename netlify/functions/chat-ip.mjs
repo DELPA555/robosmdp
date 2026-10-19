@@ -1,119 +1,110 @@
-/* Netlify Function — Captura IP real + geolocalización aproximada de un usuario del chat.
- *
- * Solo el SERVIDOR puede ver la IP real del cliente. Esta función la guarda en
- * chat_presencia/{sessionId} (ip, ciudad, region, pais, isp) para que quede visible
- * ÚNICAMENTE en el panel admin (las reglas de Firestore solo dejan leer presencia ajena
- * al admin). La IP NUNCA se expone en chat.html (vista pública) ni se loguea.
- *
- * POST  /.netlify/functions/chat-ip   body: { uid, sessionId }
- *
- * SIN dependencias npm: usa `crypto` y `fetch` nativos (Node 18+), mismo patrón que
- * chat-cleanup.mjs / notify-zone.mjs (OAuth JWT del Service Account + Firestore REST).
- * REQUIERE la variable de entorno FIREBASE_SERVICE_ACCOUNT (ya configurada en Netlify).
+/* Netlify Function — IP y ubicación aproximada del chat en Firestore privado.
+ * Exige Firebase ID token validado y un documento de presencia del mismo UID.
+ * No confía en el UID que llega desde el navegador.
  */
 import crypto from 'node:crypto';
+const PROJECT_ID='robosmdp-d1ef3';
+// La API key WEB pública es la misma del frontend, no es un secreto de servicio.
+const WEB_API_KEY=process.env.FIREBASE_WEB_API_KEY||'AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo';
+const FS=`https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
+const FIELDS=['uid','ip','ciudad','region','pais','isp','actualizado'];
+const b64url=b=>Buffer.from(b).toString('base64url');
 
-const PROJECT_ID = 'robosmdp-d1ef3';
-const FS = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
-const GEO_FIELDS = ['ip', 'ciudad', 'region', 'pais', 'isp'];
-
-const b64url = b => Buffer.from(b).toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-
-async function getAccessToken(sa) {
-  const now = Math.floor(Date.now() / 1000);
-  const header = { alg: 'RS256', typ: 'JWT' };
-  const claim = {
-    iss: sa.client_email,
-    scope: 'https://www.googleapis.com/auth/datastore',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: now, exp: now + 3600
+function json(status,body){
+  return new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+}
+async function authUid(req){
+  const match=/^Bearer\s+(\S+)$/i.exec(req.headers.get('authorization')||'');
+  if(!match)return null;
+  const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key='+encodeURIComponent(WEB_API_KEY),{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({idToken:match[1]})
+  });
+  if(!r.ok)return null;
+  const j=await r.json();
+  return typeof j.users?.[0]?.localId==='string'?j.users[0].localId:null;
+}
+async function accessToken(sa){
+  const now=Math.floor(Date.now()/1000);
+  const h=b64url(JSON.stringify({alg:'RS256',typ:'JWT'}));
+  const p=b64url(JSON.stringify({
+    iss:sa.client_email,scope:'https://www.googleapis.com/auth/datastore',
+    aud:'https://oauth2.googleapis.com/token',iat:now,exp:now+3600
+  }));
+  const sign=crypto.createSign('RSA-SHA256');sign.update(h+'.'+p);sign.end();
+  const assertion=h+'.'+p+'.'+b64url(sign.sign(sa.private_key));
+  const res=await fetch('https://oauth2.googleapis.com/token',{
+    method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion})
+  });
+  if(!res.ok)throw new Error('oauth '+res.status);
+  return (await res.json()).access_token;
+}
+async function ownerOf(sid,token){
+  const r=await fetch(FS+'/chat_presencia/'+encodeURIComponent(sid),{
+    headers:{Authorization:'Bearer '+token}
+  });
+  if(r.status===404)return null;
+  if(!r.ok)throw new Error('presence '+r.status);
+  const f=(await r.json()).fields||{};
+  const age=Date.now()-Date.parse(f.ultimo_ping?.timestampValue||'');
+  if(!Number.isFinite(age)||age< -60000||age>5*60*1000)return null;
+  return f.uid?.stringValue||null;
+}
+function clientIp(req,context){
+  // Usar cabecera gestionada por Netlify, no una cabecera X-Forwarded-For arbitraria.
+  return String(req.headers.get('x-nf-client-connection-ip')||context?.ip||'').trim();
+}
+async function geoFor(ip,context){
+  const geo={
+    ip,ciudad:context?.geo?.city||'',region:context?.geo?.subdivision?.name||'',
+    pais:context?.geo?.country?.name||'',isp:''
   };
-  const unsigned = b64url(JSON.stringify(header)) + '.' + b64url(JSON.stringify(claim));
-  const signer = crypto.createSign('RSA-SHA256');
-  signer.update(unsigned); signer.end();
-  const jwt = unsigned + '.' + b64url(signer.sign(sa.private_key));
-  const res = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=' + jwt
-  });
-  const j = await res.json();
-  if (!j.access_token) throw new Error('OAuth falló');
-  return j.access_token;
-}
-
-// Escribe (merge) SOLO los campos de IP/geo en chat_presencia/{sessionId} vía updateMask.
-async function patchPresence(sessionId, data, token) {
-  const mask = GEO_FIELDS.map(f => 'updateMask.fieldPaths=' + f).join('&');
-  const url = `${FS}/chat_presencia/${encodeURIComponent(sessionId)}?${mask}`;
-  const fields = {};
-  for (const f of GEO_FIELDS) fields[f] = { stringValue: String(data[f] ?? '') };
-  const res = await fetch(url, {
-    method: 'PATCH',
-    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields })
-  });
-  if (!res.ok) throw new Error('patch presencia ' + res.status);
-}
-
-function clientIp(req) {
-  const h = req.headers;
-  const real = h.get('x-nf-client-connection-ip');
-  if (real) return real.trim();
-  const fwd = h.get('x-forwarded-for');
-  if (fwd) return fwd.split(',')[0].trim();
-  return '';
-}
-
-export default async (req) => {
-  const bad = (error) => new Response(JSON.stringify({ ok: false, error }), {
-    status: 400, headers: { 'Content-Type': 'application/json' }
-  });
-  if (req.method !== 'POST') return bad('method');
-
-  let body;
-  try { body = await req.json(); } catch { return bad('json'); }
-  const uid = body && typeof body.uid === 'string' ? body.uid.trim() : '';
-  const sessionId = body && typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
-  if (!uid || !sessionId) return bad('uid y sessionId requeridos');
-
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) return new Response(JSON.stringify({ ok: false, error: 'config' }), {
-    status: 500, headers: { 'Content-Type': 'application/json' }
-  });
-
-  const data = { ip: '', ciudad: '', region: '', pais: '', isp: '' };
-  try {
-    const ip = clientIp(req);
-    if (ip === '127.0.0.1' || ip === '::1' || ip === '') {
-      data.ip = ip ? 'local' : 'desconocida';
-    } else {
-      data.ip = ip;
-      // Geolocalización aproximada (gratis, sin API key). Si falla, se guarda solo la IP.
-      try {
-        const geoRes = await fetch(
-          `http://ip-api.com/json/${encodeURIComponent(ip)}?fields=country,regionName,city,isp&lang=es`
-        );
-        if (geoRes.ok) {
-          const g = await geoRes.json();
-          data.ciudad = g.city || '';
-          data.region = g.regionName || '';
-          data.pais = g.country || '';
-          data.isp = g.isp || '';
-        }
-      } catch { /* geo opcional */ }
+  if(!ip||ip==='127.0.0.1'||ip==='::1')return geo;
+  // Geolocalización opcional vía HTTPS. Si falla, se conserva la IP original.
+  try{
+    const r=await fetch('https://ipwho.is/'+encodeURIComponent(ip),{signal:AbortSignal.timeout(2500)});
+    if(r.ok){
+      const v=await r.json();
+      if(v.success!==false){
+        geo.ciudad=v.city||geo.ciudad;geo.region=v.region||geo.region;
+        geo.pais=v.country||geo.pais;geo.isp=v.connection?.isp||'';
+      }
     }
-
-    const token = await getAccessToken(JSON.parse(raw));
-    await patchPresence(sessionId, data, token);
-  } catch {
-    // No se loguea la IP ni el detalle (dato sensible).
-    return new Response(JSON.stringify({ ok: false, error: 'interno' }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
+  }catch{}
+  return geo;
+}
+export default async(req,context)=>{
+  if(req.method!=='POST')return json(405,{ok:false,error:'method'});
+  let body;
+  try{body=await req.json();}catch{return json(400,{ok:false,error:'json'});}
+  const sid=typeof body?.sessionId==='string'?body.sessionId:'';
+  if(!/^[A-Za-z0-9_-]{8,100}$/.test(sid))return json(400,{ok:false,error:'sessionId'});
+  let uid;
+  try{uid=await authUid(req);}catch{return json(503,{ok:false,error:'auth-service'});}
+  if(!uid)return json(401,{ok:false,error:'unauthorized'});
+  const raw=process.env.FIREBASE_SERVICE_ACCOUNT;
+  if(!raw)return json(503,{ok:false,error:'config'});
+  try{
+    const sa=JSON.parse(raw);
+    if(sa.project_id!==PROJECT_ID)throw new Error('config-project');
+    const token=await accessToken(sa);
+    if((await ownerOf(sid,token))!==uid)return json(403,{ok:false,error:'session'});
+    const data=await geoFor(clientIp(req,context),context);
+    const fields={uid:{stringValue:uid},ip:{stringValue:data.ip},
+      ciudad:{stringValue:data.ciudad},region:{stringValue:data.region},
+      pais:{stringValue:data.pais},isp:{stringValue:data.isp},
+      actualizado:{timestampValue:new Date().toISOString()}};
+    const mask=FIELDS.map(f=>'updateMask.fieldPaths='+encodeURIComponent(f)).join('&');
+    const res=await fetch(FS+'/chat_ip_private/'+encodeURIComponent(sid)+'?'+mask,{
+      method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({fields})
     });
+    if(!res.ok)throw new Error('private-write '+res.status);
+    return json(200,{ok:true});
+  }catch(e){
+    // Nunca registrar en los logs IP, token ni datos personales.
+    console.error('chat-ip error',String(e.message||'unknown').replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g,'[IP]'));
+    return json(500,{ok:false,error:'internal'});
   }
-
-  return new Response(JSON.stringify({ ok: true }), {
-    status: 200, headers: { 'Content-Type': 'application/json' }
-  });
 };
