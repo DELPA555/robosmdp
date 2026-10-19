@@ -3,7 +3,7 @@
 Cambios propuestos por ChatGPT el **18/10/2026**, rama `fix/seguridad-privacidad-chat-20261018`.
 
 ## Qué cambia
-- La IP, geolocalización aproximada e ISP del chat **siguen visibles para el administrador**, pero pasan a `chat_ip_private/{sessionId}`. Los vecinos no pueden leer esa colección desde Firebase.
+- La IP, geolocalización aproximada, ISP y huella técnica de dispositivo del chat **siguen visibles para el administrador**, pero pasan a `chat_ip_private/{sessionId}`. Los vecinos no pueden leer esa colección desde Firebase.
 - `/.netlify/functions/chat-ip` valida un Firebase ID token y comprueba que la sesión enviada está asociada al UID autenticado antes de guardar los datos técnicos.
 - El estado `resolved` de los reportes queda bajo control del administrador. El flujo ciudadano de avisos de resolución con foto se conserva.
 - Se agregan tests del emulador para lectura de IP, escritura de presencia y cambio de estado.
@@ -36,3 +36,10 @@ Cambios propuestos por ChatGPT el **18/10/2026**, rama `fix/seguridad-privacidad
 - Conservá el deploy Netlify anterior para rollback.
 - Si los datos se migraron, `chat_ip_private` queda como respaldo para el admin; **no regenerar IP en presencia pública** al revertir.
 - Ante una reversión, no restaurar reglas que expongan IP sin una evaluación de privacidad; mantener lectura admin privada.
+
+## Moderación y protección adicional de huellas
+- La nueva función guarda `fingerprint` solo en `chat_ip_private`; los vecinos continúan usando la huella localmente para detectar baneos.
+- El admin puede consultar huellas en la colección privada; los botones de baneo crean espejos por UID, huella y apodo y al levantar un ban limpian los espejos asociados si pertenecen al mismo UID.
+- La función `chat-ip` no trata la huella como identificación infalsificable. Puede cambiar por navegador y ser manipulada; nunca sustituye a los controles de Firebase.
+- Antes de declarar migrada la colección, comprobar que **ningún documento** de `chat_presencia` contenga `ip`, `ciudad`, `region`, `pais`, `isp` o `fingerprint`.
+- Definir y publicar una política de retención aplicable a `chat_ip_private` antes de activar producción; no purgar registros por una decisión automatizada no autorizada.
