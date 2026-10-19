@@ -76,6 +76,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | APP-01 | MEDIA | Android | Auditar versión publicada, navegación, push, permisos, rendimiento móvil y comportamiento sin conexión. | IDEA | Sin asignar |
 | COM-01 | MEDIA | Sponsors | Administrar campañas, fechas, banners, clics/impresiones medidos e informes para anunciantes. | EN REVISIÓN | ChatGPT — PR #6 (gestión comercial) |
 | PERF-01 | MEDIA | Frontend | Reducir peso de imágenes y recursos, modularizar gradualmente `index.html`, mejorar tiempos de carga y evitar regresiones. | IDEA | Sin asignar |
+| APP-02 | MEDIA | Política de privacidad | Página legal para Google Play: `robosmdp/politica-de-privacidad.html` → `robosmdp.com.ar/politica-de-privacidad` (10 secciones, Ley 25.326). Verificada en vivo HTTP 200 (2026-10-19). | DESPLEGADO | Claude Code |
 
 **Nota histórica:** los estados anteriores de SEG-04 reflejaban una revisión estática anterior; el sistema anti-evasión de tres capas ya está implementado en `main`. Quedan pendientes solamente las pruebas de regresión relacionadas con las modificaciones de seguridad y el despliegue, no volver a programarlo. Las demás observaciones iniciales no implican confirmar las reglas de Firebase efectivamente desplegadas.
 
@@ -94,6 +95,17 @@ Usar este formato para cada entrada nueva:
 - Estado de deploy: NO DESPLEGADO / NETLIFY VERIFICADO / REGLAS FIREBASE VERIFICADAS / ANDROID VERIFICADA
 - Pendientes o riesgos:
 ```
+
+### 2026-10-18 — DOC-006 Política de privacidad desplegada
+- Responsable: Claude Code.
+- Pedido y alcance: crear la página de política de privacidad requerida por Google Play Console y dejarla pública.
+- Archivos modificados: `robosmdp/politica-de-privacidad.html` (nuevo).
+- Resultado: página de 10 secciones conforme a la Ley 25.326 (Argentina). Declara los datos que trata la app: Firebase Anonymous Auth, huella FingerprintJS (moderación), IP/geolocalización aproximada (visible solo para admin), tokens FCM/push + zona, y almacenamiento local (localStorage). Contacto: robosmdp@gmail.com.
+- Pruebas: verificación en vivo `GET https://robosmdp.com.ar/politica-de-privacidad` → HTTP 200 y título correcto (2026-10-19).
+- Commit o PR: 9cd674c (push directo a main).
+- Estado de deploy: **NETLIFY VERIFICADO** (página servida en el dominio).
+- Pendientes o riesgos: cargar la URL en la ficha de Play Console. Si en el futuro se agrega AdSense u otra red publicitaria, actualizar la sección de terceros de la política.
+- Nota de ID: se registra como DOC-006 porque DOC-005 ya está ocupado (localizador GPS y tablero).
 
 ### 2026-10-18 — DOC-001 Creación del archivo maestro de coordinación
 - Responsable: ChatGPT, a pedido del propietario.
