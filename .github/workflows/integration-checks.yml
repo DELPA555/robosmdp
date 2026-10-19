@@ -23,6 +23,7 @@ jobs:
           node --check netlify/functions/chat-ip.mjs
           node --check netlify/functions/notify-zone.mjs
           node --check netlify/functions/push-unsubscribe.mjs
+          node --check netlify/functions/push-delivery-cleanup.mjs
           node --check scripts/migrate-chat-ip.mjs
           node --check robosmdp/assets/report-tracking.js
           node --check robosmdp/assets/sponsor-admin.mjs
@@ -33,6 +34,7 @@ jobs:
           node --test scripts/report-tracking.test.mjs
           node --test scripts/sponsor-utils.test.mjs
           node --test scripts/push-notifications.test.mjs
+          node --test scripts/push-delivery-cleanup.test.mjs
   firebase-rules:
     runs-on: ubuntu-latest
     timeout-minutes: 20
