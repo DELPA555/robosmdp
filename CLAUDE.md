@@ -46,11 +46,11 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 
 | ID | Prioridad | Área | Trabajo / criterio principal | Estado inicial | Responsable |
 | --- | --- | --- | --- | --- | --- |
-| SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | PENDIENTE | Sin asignar |
-| SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | PENDIENTE | Sin asignar |
-| SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | PENDIENTE | Sin asignar |
+| SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | EN REVISIÓN | ChatGPT |
+| SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | EN REVISIÓN | ChatGPT |
+| SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT |
 | SEG-04 | ALTA | Chat y baneos | Probar efectividad del ban por UID y capas adicionales (huella/apodo), levantamiento, vencimiento, corte de lectura y presencia; confirmar reglas publicadas. | PENDIENTE DE VERIFICACIÓN | Sin asignar |
-| OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | PENDIENTE | Sin asignar |
+| OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | EN REVISIÓN | ChatGPT |
 | OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | IDEA | Sin asignar |
 | REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | IDEA | Sin asignar |
 | ADM-01 | ALTA | Administración | Centro de control unificado de reportes, chat, moderación, alertas, métricas y actividad; filtros por fecha/zona/estado y auditoría de acciones. | IDEA | Sin asignar |
@@ -87,6 +87,16 @@ Usar este formato para cada entrada nueva:
 - Pruebas: lectura de archivos del repositorio vía GitHub. **No se realizaron pruebas funcionales ni se cambiaron reglas en Firebase.**
 - Estado de deploy: archivo de documentación en GitHub; **sin cambio de comportamiento del sitio ni de Android**.
 - Pendientes: asignar responsables y completar las entradas históricas de los cambios de Claude que se quieran conservar; no inventar fechas o despliegues.
+
+### 2026-10-18 — SEG-01/SEG-02/SEG-03/OPS-01: seguridad del chat y permisos de reportes
+- Responsable: ChatGPT.
+- Pedido y alcance: mantener IP, geolocalización e ISP visibles en el panel de administrador, resguardarlos en una colección privada, comprobar identidad y titularidad de sesión en la función Netlify, y evitar que vecinos marquen reportes como resueltos.
+- Archivos modificados: `firestore.rules`, `robosmdp/chat.html`, `robosmdp/index.html`, `netlify/functions/chat-ip.mjs`, `firestore/tests/chat-rules.test.mjs`, `scripts/migrate-chat-ip.mjs`, `docs/SEG-01-02-03-DESPLIEGUE.md`, `.github/workflows/security-checks.yml`, `CLAUDE.md`.
+- Resultado: cambios de código guardados en rama `fix/seguridad-privacidad-chat-20261018`, revisión por PR pendiente de publicación. Migración de IP existentes incluida como script manual en modo simulación predeterminado.
+- Pruebas realizadas y resultado: verificación estática de código. Se agregaron pruebas para Firestore y flujo de GitHub Actions; su ejecución correcta aún requiere confirmación.
+- Commit o PR: ver rama y PR `fix/seguridad-privacidad-chat-20261018` (agregar enlace al aprobar).
+- Estado de deploy: **NO DESPLEGADO**. No se tocaron datos ni reglas activas de Firebase, Netlify de producción ni Play Store.
+- Pendientes o riesgos: ejecutar test del emulador y validación real, luego aplicar el orden de migración y publicación indicado en `docs/SEG-01-02-03-DESPLIEGUE.md`. La colección pública antigua aún puede contener IP hasta ejecutar migración.
 
 ## 7. Checklist de cierre de cualquier modificación
 
