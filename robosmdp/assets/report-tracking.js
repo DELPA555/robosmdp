@@ -124,12 +124,36 @@ async function lookup(type,id){
     document.getElementById('tracking-result-id').textContent=id;
     document.getElementById('tracking-result-date').textContent=dateText(r.timestamp);
     document.getElementById('tracking-result-description').textContent=String(r.description||'Sin descripción pública').slice(0,500);
-    const done=r.resolved===true;
-    document.getElementById('tracking-result-status').textContent=done?'Resuelto':'Publicado';
-    const explanation=done?
-      'El reporte figura como resuelto en la plataforma.':
-      'El reporte se encuentra publicado. Todavía no figura como resuelto; no significa necesariamente que un organismo público lo esté tramitando.';
-    document.getElementById('tracking-result-note').textContent=explanation;
+    // Solo informa el estado que el administrador marcó en esta plataforma.
+    // No equivale a la radicación o confirmación de una denuncia oficial.
+    const labels={publicado:'Publicado',revision:'En revisión interna',
+      derivado:'Derivado por Robos MDP',resuelto:'Resuelto'};
+    const notes={
+      publicado:'Reporte publicado. Aún no figura como resuelto.',
+      revision:'Robos MDP marcó el reporte como en revisión interna. No implica trámite oficial.',
+      derivado:'Robos MDP marcó este reporte como derivado. No confirma recepción ni actuación de autoridades.',
+      resuelto:'El reporte figura como resuelto en la plataforma.'
+    };
+    const state=r.resolved===true?'resuelto':
+      (Object.hasOwn(labels,r.estado_gestion)?r.estado_gestion:'publicado');
+    document.getElementById('tracking-result-status').textContent=labels[state];
+    document.getElementById('tracking-result-note').textContent=notes[state];
+    const timeline=document.getElementById('tracking-timeline');
+    if(timeline){
+      timeline.replaceChildren();
+      const validStates=(Array.isArray(r.historial_estado)?r.historial_estado:[])
+        .filter(e=>e&&Object.hasOwn(labels,e.estado)).slice(-25).reverse();
+      if(!validStates.length){
+        timeline.textContent='No hay cambios administrativos registrados para este reporte.';
+      }else{
+        for(const item of validStates){
+          const entry=document.createElement('div');
+          entry.className='history-link';
+          entry.textContent=labels[item.estado]+' · '+dateText(item.fecha);
+          timeline.append(entry);
+        }
+      }
+    }
     setMessage('Consulta actualizada.');
     result.hidden=false;
     save(type,id);renderHistory();
