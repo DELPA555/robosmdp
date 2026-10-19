@@ -65,7 +65,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT — PR #3 |
-| SEG-04 | ALTA | Chat y baneos | Probar efectividad del ban por UID y capas adicionales (huella/apodo), levantamiento, vencimiento, corte de lectura y presencia; confirmar reglas publicadas. | EN REVISIÓN | ChatGPT — PR #3 |
+| SEG-04 | IMPLEMENTADO EN PRODUCCIÓN | Chat y baneos (3 capas) | **PROTEGIDO — NO REIMPLEMENTAR**. Preservar UID + huella + apodo, `initFingerprint`, `checkFingerprintBan`, `checkApodoBan`, `applyExternalBan`, `isLocallyBlocked`, y espejos `chat_bans_fp` / `chat_bans_nick`. Solamente pruebas de regresión y mejoras coordinadas. | IMPLEMENTADO | Claude Code (existente en main); ChatGPT solo revisión de PR #3/#7 |
 | OPS-01 | ALTA | Despliegue | Tests automáticos de reglas, revisión de deploy previews, verificación Netlify y plan de rollback. No publicar reglas sin pruebas. | EN REVISIÓN | ChatGPT — PR #3 |
 | OPS-02 | ALTA | Monitoreo | Registrar fallos de Firestore, mapas, chat, funciones programadas, push y experiencia Android; alerta al admin ante errores importantes. | EN REVISIÓN | ChatGPT — PR #3 (monitoreo web parcial) |
 | REP-01 | ALTA | Reportes | Código de seguimiento, estado (recibido/en revisión/publicado/derivado/resuelto), historial y consulta por vecino. Diferenciar claramente reporte ciudadano de denuncia oficial. | EN DESARROLLO | ChatGPT — PR #4 (fase 1) |
@@ -77,7 +77,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | COM-01 | MEDIA | Sponsors | Administrar campañas, fechas, banners, clics/impresiones medidos e informes para anunciantes. | EN REVISIÓN | ChatGPT — PR #6 (gestión comercial) |
 | PERF-01 | MEDIA | Frontend | Reducir peso de imágenes y recursos, modularizar gradualmente `index.html`, mejorar tiempos de carga y evitar regresiones. | IDEA | Sin asignar |
 
-**Nota sobre estados:** `PENDIENTE DE VERIFICACIÓN` es una observación descriptiva del estado inicial de SEG-04; al tomar el trabajo usar uno de los estados definidos en §2. Estas observaciones provienen de una revisión estática del repositorio al 2026-10-18; **no prueban vulnerabilidad explotada ni confirman reglas desplegadas**.
+**Nota histórica:** los estados anteriores de SEG-04 reflejaban una revisión estática anterior; el sistema anti-evasión de tres capas ya está implementado en `main`. Quedan pendientes solamente las pruebas de regresión relacionadas con las modificaciones de seguridad y el despliegue, no volver a programarlo. Las demás observaciones iniciales no implican confirmar las reglas de Firebase efectivamente desplegadas.
 
 ## 6. Registro cronológico de cambios (actualizar después de CADA tarea)
 
@@ -131,6 +131,15 @@ Usar este formato para cada entrada nueva:
 - Analítica: totales de los documentos efectivamente cargados, pendientes, resolución, barrios, tendencias y CSV, con advertencias de muestreo; no usa datos privados del chat.
 - Ramas: `integration/mejoras-robosmdp-20261018` es la candidata unificada. Revisar `docs/INTEGRACION-VALIDACION.md` y CI más reciente antes de cualquier despliegue.
 - Estado: **EN REVISIÓN / NO DESPLEGADO**. Faltan migración histórica de IP/huellas, verificación funcional de Netlify/Firebase y Android, especialmente permisos de GPS.
+
+### SEC-04-IMPL — Anti-evasión de 3 capas: protegido en producción
+- **Código ya implementado en `main`**: UID de Firebase + huella de dispositivo + apodo. Nunca volver a implementar SEG-04 desde cero.
+- **Zona protegida:** `robosmdp/chat.html`, sección `ANTI-EVASIÓN DE BANEO ("anti-Jorgito")`. Preservar completas `initFingerprint`, `checkFingerprintBan`, `checkApodoBan`, `applyExternalBan`, `isLocallyBlocked` y funciones asociadas.
+- **Reglas protegidas:** `firestore.rules`, bloques `chat_bans_fp` y `chat_bans_nick`. Son colecciones espejo **deliberadas**, con `get` para usuario autenticado, `list` solo administrador y escritura solo administrador. No consolidar ni borrar.
+- **PR #3 y PR #7:** ambos modifican archivos cercanos. Antes de cada merge, **diff manual contra `main` actualizado** y pruebas UID/huella/apodo, cambio de UID, nick, vencimiento, ban/desban y presencia.
+- Atención especial: el cambio de almacenamiento de `fingerprint` desde `chat_presencia` a `chat_ip_private` debe mantener el baneo por huella desde administración y la limpieza correcta de espejos. No desplegar sin validar.
+- Enlaces de advertencia: https://github.com/DELPA555/robosmdp/pull/3 y https://github.com/DELPA555/robosmdp/pull/7.
+- Esta entrada **no implica** que las funciones de seguridad nuevas de esas PR estén publicadas; dichas mejoras aún requieren integración coordinada.
 
 ## 7. Checklist de cierre de cualquier modificación
 
