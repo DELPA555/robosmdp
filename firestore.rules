@@ -318,6 +318,29 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // GPS voluntario y temporal del chat. NO se pide automáticamente;
+    // solo el titular puede guardar/revocar su punto y el admin puede listar.
+    match /chat_location_private/{uid} {
+      function validShare() {
+        let d=request.resource.data;
+        return d.keys().hasOnly(['lat','lng','accuracy','shared_at','expires_at'])
+            && d.keys().hasAll(['lat','lng','accuracy','shared_at','expires_at'])
+            && d.lat is number && d.lat >= -90 && d.lat <= 90
+            && d.lng is number && d.lng >= -180 && d.lng <= 180
+            && d.accuracy is number && d.accuracy >= 0 && d.accuracy <= 20000
+            && d.shared_at == request.time
+            && d.expires_at is timestamp
+            && d.expires_at > request.time
+            && d.expires_at <= request.time + duration.value(65,'m');
+      }
+      allow get: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isAdmin();
+      allow create, update: if isSignedIn() && !isBanned()
+          && request.auth.uid == uid && validShare();
+      // Revocación incluso para un usuario luego baneado.
+      allow delete: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+    }
+
     // Moderadores indexados por UID. La lista no es sensible (solo da el badge 🛡️);
     // asignarlos/quitarlos es exclusivo del administrador.
     match /chat_moderadores/{uid} {

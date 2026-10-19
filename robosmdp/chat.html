@@ -127,6 +127,16 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 img.cmedia{cursor:zoom-in;object-fit:cover}
 #img-viewer{position:fixed;inset:0;z-index:8000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.9);padding:20px;cursor:zoom-out}
 #img-viewer img{max-width:100%;max-height:100%;border-radius:8px}
+#chat-gps-btn{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.38);color:#86efac;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:10px;font-weight:800}
+#chat-gps-btn[disabled]{opacity:.45;cursor:not-allowed}
+#gps-modal[hidden],#gps-revoke[hidden],#gps-share[hidden]{display:none!important}
+#gps-modal{position:fixed;inset:0;background:rgba(1,4,12,.88);z-index:9950;display:flex;align-items:center;justify-content:center;padding:18px}
+.gps-card{width:100%;max-width:445px;background:#111827;border:1px solid #475569;border-radius:18px;color:#e2e8f0;padding:23px;font-family:system-ui,sans-serif;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.gps-card h3{font-size:19px;font-weight:900;margin:0 0 12px;color:#f8fafc}
+.gps-card p{font-size:12px;line-height:1.65;margin:8px 0;color:#cbd5e1}
+.gps-card button{border:0;border-radius:10px;color:white;background:#15803d;padding:13px 12px;font-weight:800;font-size:12px;cursor:pointer}
+.gps-card button:disabled{opacity:.5;cursor:wait}
+@media(max-width:620px){#chat-gps-btn{max-width:96px;padding:8px 6px;font-size:9px}}
 </style>
 <link rel="stylesheet" href="./assets/premium-v5-chat.css?v=5">
 </head>
@@ -139,6 +149,7 @@ img.cmedia{cursor:zoom-in;object-fit:cover}
       <h2 style="font-size:15px;font-weight:700;color:var(--t0);letter-spacing:-.02em;line-height:1.1">Chat Vecinal</h2>
       <p style="font-size:10px;font-weight:600;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px"><span class="online-dot"></span><span id="chat-online">0 vecinos en línea</span></p>
     </div>
+    <button id="chat-gps-btn" type="button" disabled onclick="RMDPChatGPS.open()" title="Compartir ubicación precisa voluntariamente">📍 Compartir GPS</button>
     <button id="chat-notif-btn" onclick="toggleNotif()" title="Notificaciones">🔕</button>
     <button id="chat-admin-btn" onclick="openAdminLogin()" title="Acceso administrador" style="display:none">🔐 Login admin</button>
     <a href="/" class="flink" style="padding:9px 14px;background:rgba(var(--rgb-slate),.7);border:1px solid rgba(var(--rgb-line),.16);border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t2);flex-shrink:0">← Volver</a>
@@ -185,6 +196,22 @@ img.cmedia{cursor:zoom-in;object-fit:cover}
       <div id="chat-count">0 / 280</div>
     </div>
   </footer>
+</div>
+
+<!-- GPS optativo. Nunca se pide permiso sin este consentimiento afirmativo. -->
+<div id="gps-modal" role="dialog" aria-modal="true" aria-labelledby="gps-title" hidden onclick="if(event.target===this)RMDPChatGPS.close()">
+  <div class="gps-card">
+    <h3 id="gps-title">📍 Ubicación precisa voluntaria</h3>
+    <p>Si aceptás, tu dispositivo solicitará permiso para compartir <strong>una sola ubicación GPS</strong> con la administración de Robos MDP. No se comparte en los mensajes ni con otros participantes.</p>
+    <p>La ubicación y su margen de precisión estarán disponibles para el administrador durante <strong>60 minutos</strong> con fines de asistencia y moderación. Luego dejarán de ser visibles y se eliminarán del servidor mediante limpieza programada. Podés revocar el permiso compartido desde acá. No se realiza seguimiento continuo.</p>
+    <p><strong>El chat funciona exactamente igual si rechazás compartir.</strong> La precisión del GPS depende de tu dispositivo y no constituye una verificación de identidad.</p>
+    <p id="gps-status" role="status" aria-live="polite" style="color:#86efac"></p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px">
+      <button id="gps-share" type="button" onclick="RMDPChatGPS.share()" style="flex:1">Aceptar y compartir ubicación</button>
+      <button id="gps-revoke" type="button" onclick="RMDPChatGPS.revoke()" hidden style="background:#991b1b;flex:1">Revocar ubicación</button>
+    </div>
+    <button type="button" onclick="RMDPChatGPS.close()" style="background:#334155;width:100%;margin-top:9px">Cerrar / Ahora no</button>
+  </div>
 </div>
 
 <!-- Modal login admin -->
@@ -1086,5 +1113,6 @@ window.addEventListener('load',()=>{
   });
 });
 </script>
+<script src="/assets/chat-location.js?v=1"></script>
 </body>
 </html>
