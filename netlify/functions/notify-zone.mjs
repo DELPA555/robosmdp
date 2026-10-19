@@ -21,9 +21,12 @@ const FS = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases
 const COLLECTIONS = [
   { tab: 'robos',  path: 'artifacts/robosmdp-d1ef3/public/data', col: 'reports' },
   { tab: 'basura', path: '',                                     col: 'basura'  },
-  { tab: 'pozos',  path: '',                                     col: 'pozos'   }
+  { tab: 'pozos',  path: '',                                     col: 'pozos'   },
+  { tab: 'abandonados', path: '', col: 'abandonados' },
+  { tab: 'luminarias', path: '', col: 'luminarias' }
 ];
-const CAT_LABEL = { robos: 'robo', basura: 'reporte de basura', pozos: 'pozo' };
+const CAT_LABEL = { robos: 'robo', basura: 'reporte de basura', pozos: 'pozo',
+  abandonados:'vehículo abandonado', luminarias:'problema de alumbrado' };
 
 const b64url = b => Buffer.from(b).toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 
@@ -177,6 +180,11 @@ export default async () => {
       const c = coordsOf(r); if (!c) continue;
       const reportId = row.document.name.split('/').pop();
       for (const s of subs) {
+        // Las suscripciones anteriores reciben exactamente las 3 categorías
+        // originales. Las nuevas pueden elegir 1..5.
+        const categories=Array.isArray(s.categories)&&s.categories.length?
+          s.categories:['robos','basura','pozos'];
+        if (!categories.includes(tab)) continue;
         if (distMeters(c, [s.lat, s.lng]) <= s.radius) {
           matched++;
           let lock=null;
