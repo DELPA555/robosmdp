@@ -94,8 +94,8 @@ Usar este formato para cada entrada nueva:
 - Archivos afectados: `robosmdp/seguimiento.html`, `robosmdp/assets/report-tracking.js`, `robosmdp/index.html`, `robosmdp/_redirects`, `scripts/report-tracking.test.mjs`, `.github/workflows/report-tracking.yml`, `CLAUDE.md`.
 - Resultado: cada nuevo reporte recibe su ID original de Firestore como comprobante y enlace compartible `/seguimiento?tipo=...&id=...`. La página obtiene un documento por ID y muestra Publicado/Resuelto; los últimos 10 comprobantes pueden conservarse localmente en ese navegador.
 - Alcance expresamente limitado: **fase 1**, todavía NO incluye los estados Recibido/En revisión/Derivado, seguimiento de trámites ante organismos, historial de cambios administrativos ni notificaciones por avance. No confundir reporte ciudadano con denuncia policial.
-- Pruebas: tests automatizados de enlaces, validación de IDs, historial y presencia de componentes; ejecución por GitHub Actions pendiente de confirmar.
-- Rama y PR: `feat/seguimiento-reportes-v1-20261018`; agregar enlace de PR al crearlo.
+- Pruebas: GitHub Actions ejecutó `node --check` y `node --test scripts/report-tracking.test.mjs` correctamente en el commit 23a33c3 (https://github.com/DELPA555/robosmdp/actions/runs/39187198065). Netlify reportó estado de Deploy Preview `success`; aún falta prueba de interacción web/Android.
+- Rama y PR: `feat/seguimiento-reportes-v1-20261018` · https://github.com/DELPA555/robosmdp/pull/4
 - Estado de deploy: **NO DESPLEGADO**. No se modificaron datos o reglas de Firebase ni la versión Android.
 - Integración con otros trabajos: desarrollada en rama separada de `fix/seguridad-privacidad-chat-20261018`. Reconciliar `CLAUDE.md` preservando las dos entradas al fusionar PR, nunca reemplazar el registro del otro cambio.
 
