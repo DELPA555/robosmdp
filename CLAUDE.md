@@ -20,6 +20,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | [#4](https://github.com/DELPA555/robosmdp/pull/4) | ChatGPT | `feat/seguimiento-reportes-v1-20261018`: comprobante al reportar, consulta pública por ID, estados internos administrables (publicado, revisión, derivado y resuelto), historial de estados y pruebas JS | EN REVISIÓN; NO DESPLEGADO. GitHub Actions aprobó pruebas, Netlify informó vista previa correcta; falta prueba funcional integrada |
 | [#5](https://github.com/DELPA555/robosmdp/pull/5) | ChatGPT | `fix/push-cancelacion-deduplicacion-20261018`: baja efectiva de alertas mediante token FCM y Netlify, historial de entregas sin duplicados, reintentos sin adelantar el checkpoint, pruebas | EN REVISIÓN; NO DESPLEGADO. CI aprobada; configurar caducidad del log y verificar Android/web |
 | [#6](https://github.com/DELPA555/robosmdp/pull/6) | ChatGPT | `feat/panel-sponsors-20261018`: panel privado de campañas y cobros, vencimientos, exportación CSV, reglas admin y pruebas | EN REVISIÓN; NO DESPLEGADO. Falta validar tests Firestore y fusionar reglas con PR #3 |
+| [#7](https://github.com/DELPA555/robosmdp/pull/7) | ChatGPT | `integration/mejoras-robosmdp-20261018`: integración de PR #3–#6, frontend, backend Netlify, reglas Firebase y pruebas conjuntas | EN REVISIÓN; NO DESPLEGADO. Candidato conjunto; migración IP/huellas, retención push y validación E2E pendientes |
 
 **Importante al integrar:** las PR #3, #4, #5 y #6 modifican `CLAUDE.md` y `robosmdp/index.html`; también #3 y #6 modifican `firestore.rules`. Resolver conflictos conservando todas las mejoras. Los PR #5 y #6 tampoco están desplegados. Al fusionar, conservar los dos cambios en frontend y las dos entradas del historial, resolviendo conflictos. No fusionar el PR #3 antes de migrar las IP/huellas históricas y probar la seguridad en producción. El PR #4 incorporó una segunda fase con estados internos e historial administrativo; no implica confirmación de un trámite oficial. Requiere prueba funcional de punta a punta antes de publicar. Ver instrucciones de despliegue en cada rama.
 
@@ -113,6 +114,13 @@ Usar este formato para cada entrada nueva:
 - PR #6: https://github.com/DELPA555/robosmdp/pull/6 — panel privado de patrocinadores. Pruebas de lógica financiera aprobadas; verificar reglas Firestore.
 - Estado de ambos: **EN REVISIÓN / NO DESPLEGADO**.
 - Atención: múltiples ramas tocan `index.html`, `CLAUDE.md`; dos tocan `firestore.rules`. No sobrescribir el desarrollo ajeno; integrar y verificar reglas Firebase antes de desplegar.
+
+### 2026-10-18 — DOC-004 Integración conjunta en PR #7
+- Responsable: ChatGPT. Cambios en `main`: **solo documentación**, sin desplegar código funcional.
+- PR #7: https://github.com/DELPA555/robosmdp/pull/7 — contiene la integración de seguridad, seguimiento de reportes, alertas y patrocinadores.
+- La integración preserva los cambios del archivo principal `index.html`, las reglas de Firebase, las rutas y los tests de los PR #3–#6.
+- Estado: **EN REVISIÓN / NO DESPLEGADO**. Quedan las pruebas E2E, la migración de IP/huellas, la configuración de TTL de entregas FCM y el despliegue coordinado.
+- Claude Code debe priorizar la lectura de PR #7 antes de añadir nuevas funciones que modifiquen los archivos compartidos.
 
 ### 2026-10-18 — SEG-01/SEG-02/SEG-03/OPS-01: seguridad del chat y permisos de reportes
 - Responsable: ChatGPT.
