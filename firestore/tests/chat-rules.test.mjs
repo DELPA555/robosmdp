@@ -199,3 +199,21 @@ test('reportes: no se puede crear un reporte ya resuelto sin ser administrador',
     description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:false
   }));
 });
+
+test('estados y su historial solamente los modifica el administrador', async()=>{
+  const user=anon('usuario-10');
+  const own=doc(user,'basura','gestion-prueba');
+  await assertFails(setDoc(doc(user,'basura','gestion-falsificada'),{
+    description:'Reportado',lat:-38.01,lng:-57.55,estado_gestion:'resuelto'
+  }));
+  await assertSucceeds(setDoc(own,{
+    description:'Reportado',lat:-38.01,lng:-57.55,uid:'usuario-10',resolved:false
+  }));
+  await assertFails(updateDoc(own,{estado_gestion:'derivado'}));
+  await assertFails(updateDoc(own,{historial_estado:[{estado:'resuelto'}]}));
+  await assertFails(updateDoc(own,{estado_actualizado:serverTimestamp()}));
+  await assertSucceeds(updateDoc(doc(adminCtx(),'basura','gestion-prueba'),{
+    estado_gestion:'revision',estado_actualizado:serverTimestamp(),
+    historial_estado:[{estado:'revision'}],resolved:false
+  }));
+});
