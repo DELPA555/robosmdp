@@ -27,7 +27,7 @@
 3. **Código web y funciones de Netlify primero**, de modo que el chat deje de escribir IP/huellas a la presencia pública y registre nuevos datos en la colección privada. No publicar aún las reglas Firebase.
 4. **Migrar los datos antiguos** con `scripts/migrate-chat-ip.mjs` en modo simulación y luego `--apply`, usando credencial de servicio en entorno autorizado, sin imprimir IP. Comprobar **0 documentos** de `chat_presencia` con `ip`, `ciudad`, `region`, `pais`, `isp` o `fingerprint` antes de publicar reglas.
 5. Publicar las **reglas completas de esta rama**, incluyendo chats, estados de reportes y colección privada de sponsors, después de probar en el emulador y contar con aprobación de producción.
-6. Configurar política de eliminación TTL para `push_delivery_log.expiresAt` o ejecutar plan de depuración aprobado; no dejar crecer el registro indefinidamente.
+6. Verificar la ejecución diaria de `netlify/functions/push-delivery-cleanup.mjs`: purga los documentos de `push_delivery_log` cuyo `expiresAt` venció, sin tocar tokens ni suscripciones. Puede agregarse una política TTL de Firestore como respaldo opcional. Confirmar las pruebas antes de publicar.
 7. Prueba de humo real con dos cuentas de ensayo (vecino/admin), Android y navegador; revisar errores Netlify y permisos Firestore. Actualizar `CLAUDE.md` al verificar **DESPLEGADO**.
 8. Si falla algo, coordinar rollback de Netlify y Firebase; **no** restaurar reglas que vuelvan a publicar IP y huellas sin validar la privacidad. No eliminar registros históricos comerciales automáticamente.
 
@@ -39,3 +39,6 @@
 - La fusión a `main` por sí sola no despliega reglas Firebase; debe controlarse cada plataforma por separado.
 
 **No ejecutar esta publicación de forma automática a partir de una revisión de código.**
+
+## Limpieza automática de entregas
+La rama integra `netlify/functions/push-delivery-cleanup.mjs` (cron diario 05:15 UTC, 02:15 de Argentina). Elimina por lotes únicamente marcadores de notificaciones vencidos; el ciclo de vida de las suscripciones reales es independiente. Su funcionamiento se prueba con `scripts/push-delivery-cleanup.test.mjs` y también depende de `FIREBASE_SERVICE_ACCOUNT` en Netlify.
