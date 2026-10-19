@@ -325,7 +325,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <button onclick="openPatentes()" type="button">Patentes</button>
 <button onclick="openObjetos()" type="button">Objetos</button>
 <button onclick="openMascotas()" type="button">Mascotas</button>
-<button onclick="openForo()" type="button">Foro vecinal</button><a class="pro-chat-menu" href="./chat.html">● Chat vecinal en vivo</a>
+<button onclick="openForo()" type="button">Foro vecinal</button><a href="/seguimiento">📋 Seguir mi reporte</a><a class="pro-chat-menu" href="./chat.html">● Chat vecinal en vivo</a>
 <a href="./rastreo.html">Rastreo MDP</a>
 <a href="#colaborar">Donaciones</a>
 <a href="https://wa.me/5491138574444" rel="noopener" target="_blank">Contacto</a>
@@ -391,6 +391,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <button onclick="openMascotas()" type="button"><span>♧</span> Mascotas <b>↗</b></button>
 <button onclick="openForo()" type="button"><span>◉</span> Foro vecinal <b>↗</b></button>
 <a href="./rastreo.html"><span>⌁</span> Rastreo MDP <b>↗</b></a>
+<a href="/seguimiento"><span>▤</span> Seguir mi reporte <b>↗</b></a>
 </div>
 <div class="pro-nav-note">Una iniciativa vecinal e independiente.<br/>Mar del Plata · Argentina</div>
 </aside>
@@ -3073,10 +3074,12 @@ async function subR(mod){
   // Geocoding inverso: guardar el barrio (no bloquea si falla/tarda)
   try{ const b=await reverseBarrio(data.lat,data.lng); if(b) data.barrio=b; }catch(e){}
   try{
-    await db.collection(MOD_CFG[mod].col).add(data);
+    const created=await db.collection(MOD_CFG[mod].col).add(data);
     gaEvent('submit_report',{report_type:mod});
     showToast('¡Reporte publicado! 🎉','g');
     closeM(mod); resetF(mod);
+    // Comprobante compartible: ID nativo de Firestore, sin datos personales nuevos.
+    if(window.RMDPTracking?.showReceipt) window.RMDPTracking.showReceipt(mod,created.id);
   }catch(e){showToast('Error al publicar. Intentá de nuevo.','r');sub.disabled=false;sub.textContent='PUBLICAR REPORTE';}
 }
 
@@ -5146,5 +5149,6 @@ function tAgo(date){
   return 'hace '+Math.floor(d/86400)+'d';
 }
 </script>
+<script defer src="/assets/report-tracking.js"></script>
 </body>
 </html>
