@@ -184,3 +184,13 @@ test('reportes: ni visitantes ni autores pueden marcar resuelto', async()=>{
   await assertFails(updateDoc(ref,{resolved:true}));
   await assertSucceeds(updateDoc(doc(adminCtx(),'basura','test-resuelto'),{resolved:true}));
 });
+
+test('reportes: no se puede crear un reporte ya resuelto sin ser administrador', async()=>{
+  const db=anon('usuario-9');
+  await assertFails(setDoc(doc(db,'basura','nuevo-report-falso'),{
+    description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:true
+  }));
+  await assertSucceeds(setDoc(doc(db,'basura','nuevo-report-correcto'),{
+    description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:false
+  }));
+});
