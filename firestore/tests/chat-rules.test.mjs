@@ -217,3 +217,22 @@ test('estados y su historial solamente los modifica el administrador', async()=>
     historial_estado:[{estado:'revision'}],resolved:false
   }));
 });
+
+test('campañas publicitarias: acceso y escritura exclusivos del administrador',async()=>{
+  const vecino=anon('lector-comercial');
+  const admin=adminCtx();
+  const values={
+    cliente:'Anunciante de prueba',plan:'Campaña mensual',
+    inicio:'2026-10-18',fin:'2026-11-18',
+    importe_total:100000,cobrado_total:50000,estado:'activa'
+  };
+  await assertFails(setDoc(doc(vecino,'campanias_publicitarias','c0'),values));
+  await assertSucceeds(setDoc(doc(admin,'campanias_publicitarias','c1'),values));
+  await assertFails(getDoc(doc(vecino,'campanias_publicitarias','c1')));
+  await assertFails(getDocs(collection(vecino,'campanias_publicitarias')));
+  await assertFails(updateDoc(doc(vecino,'campanias_publicitarias','c1'),{cobrado_total:0}));
+  await assertFails(deleteDoc(doc(vecino,'campanias_publicitarias','c1')));
+  await assertSucceeds(getDoc(doc(admin,'campanias_publicitarias','c1')));
+  await assertSucceeds(updateDoc(doc(admin,'campanias_publicitarias','c1'),{cobrado_total:100000}));
+  await assertSucceeds(deleteDoc(doc(admin,'campanias_publicitarias','c1')));
+});
