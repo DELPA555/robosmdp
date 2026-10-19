@@ -2842,7 +2842,7 @@ function removeZone(){
 }
 
 // ===== NOTIFICACIONES PUSH (opt-in) para "Mi zona" =====
-const PUSH_DOC_LS='rmdp_push_doc';
+const PUSH_DOC_LS='rmdp_push_doc', PUSH_TOKEN_LS='rmdp_push_token';
 const VAPID_KEY='BFPBiqqRaMEsxPOE1vYMAOSEOXFm7fumHb0y7-m9CEsn2r374isYgv0UYeZzFRx0HdXeiYmA4Jr5moNGd6E0erY';
 function getMessaging(){ try{ if(window.firebase&&firebase.messaging) return firebase.messaging(); }catch(e){ console.warn('messaging no disponible',e); } return null; }
 function syncPushToggle(){ const cb=document.getElementById('zone-push'); if(cb) cb.checked=!!localStorage.getItem(PUSH_DOC_LS); }
@@ -2871,6 +2871,7 @@ async function enablePush(){
       let docId=localStorage.getItem(PUSH_DOC_LS);
       if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
       else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
+      localStorage.setItem(PUSH_TOKEN_LS,token);
       showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
     }catch(e){ console.error('enablePush(native)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
     return;
@@ -2886,14 +2887,68 @@ async function enablePush(){
     let docId=localStorage.getItem(PUSH_DOC_LS);
     if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
     else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
+    localStorage.setItem(PUSH_TOKEN_LS,token);
     showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
   }catch(e){ console.error('enablePush(web)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
 }
+// En suscripciones antiguas, el token puede no estar guardado localmente.
+async function getPushTokenForUnsubscribe(){
+  const cached=localStorage.getItem(PUSH_TOKEN_LS);
+  if(cached)return cached;
+  if(!isCapacitor()){
+    const messaging=getMessaging();
+    return messaging?await messaging.getToken({vapidKey:VAPID_KEY}):'';
+  }
+  const plugin=window.Capacitor?.Plugins?.PushNotifications;
+  if(!plugin)return '';
+  let ok=null,err=null,timer=null;
+  try{
+    return await new Promise(async(resolve,reject)=>{
+      let settled=false;
+      const finish=(error,token)=>{
+        if(settled)return;
+        settled=true;clearTimeout(timer);
+        try{ok?.remove?.();err?.remove?.();}catch(e){}
+        error?reject(error):resolve(token||'');
+      };
+      timer=setTimeout(()=>finish(new Error('Tiempo de espera agotado')),10000);
+      try{
+        ok=await plugin.addListener('registration',x=>finish(null,x.value));
+        err=await plugin.addListener('registrationError',e=>finish(new Error('Registro FCM falló')));
+        await plugin.register();
+      }catch(e){finish(e);}
+    });
+  }finally{
+    try{ok?.remove?.();err?.remove?.();}catch(e){}
+  }
+}
 async function disablePush(){
+  const cb=document.getElementById('zone-push');
   const docId=localStorage.getItem(PUSH_DOC_LS);
-  localStorage.removeItem(PUSH_DOC_LS);
-  const cb=document.getElementById('zone-push'); if(cb) cb.checked=false;
-  if(docId){ try{ await db.collection('subscripciones_push').doc(docId).delete(); }catch(e){ console.warn('disablePush',e); } }
+  if(!docId){
+    localStorage.removeItem(PUSH_TOKEN_LS);
+    if(cb)cb.checked=false;
+    return;
+  }
+  // Nunca simular una baja exitosa si Firebase conserva una suscripción.
+  try{
+    const token=await getPushTokenForUnsubscribe();
+    if(!token)throw new Error('Token FCM no disponible');
+    const response=await fetch('/.netlify/functions/push-unsubscribe',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({docId,token})
+    });
+    const result=await response.json();
+    if(!response.ok||result.ok!==true)throw new Error('Servicio de baja rechazó la solicitud');
+    localStorage.removeItem(PUSH_DOC_LS);
+    localStorage.removeItem(PUSH_TOKEN_LS);
+    if(cb)cb.checked=false;
+    showToast('Alertas desactivadas. Se eliminó tu suscripción.','g');
+  }catch(e){
+    if(cb)cb.checked=true;
+    console.warn('No se pudo cancelar la suscripción push',e.message);
+    showToast('No se pudo desactivar la suscripción. Reintentá con conexión.','r');
+  }
 }
 // Si el usuario re-define su zona y tiene push activo, actualizar la suscripción.
 async function updatePushZone(){
