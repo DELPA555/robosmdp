@@ -23,7 +23,7 @@ import {
   assertFails,
 } from '@firebase/rules-unit-testing';
 import {
-  doc, getDoc, getDocs, setDoc, deleteDoc, collection, serverTimestamp, Timestamp,
+  doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -149,4 +149,71 @@ test('Admin puede marcar inactiva la presencia de un usuario baneado', async () 
   const admin = adminCtx();
   await assertSucceeds(setDoc(doc(admin, 'chat_presencia', 'sv'),
     { uid: 'vecino5', apodo: 'V', activo: false, ultimo_ping: serverTimestamp() }, { merge: true }));
+});
+
+
+test('IP privada: el vecino no puede consultar ni escribir información sensible', async()=>{
+  const vecino=anon('usuario-6'), admin=adminCtx();
+  await testEnv.withSecurityRulesDisabled(async ctx=>{
+    await setDoc(doc(ctx.firestore(),'chat_ip_private','sesion-test'),{
+      uid:'usuario-6',ip:'192.0.2.15',ciudad:'Prueba'
+    });
+  });
+  await assertFails(getDoc(doc(vecino,'chat_ip_private','sesion-test')));
+  await assertFails(getDocs(collection(vecino,'chat_ip_private')));
+  await assertFails(setDoc(doc(vecino,'chat_ip_private','nueva'),{ip:'192.0.2.20'}));
+  await assertSucceeds(getDoc(doc(admin,'chat_ip_private','sesion-test')));
+});
+
+test('presencia: el vecino no puede crear ni modificar IP', async()=>{
+  const vecino=anon('usuario-7'), ref=doc(vecino,'chat_presencia','sesion-7');
+  await assertFails(setDoc(ref,{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),activo:true,ip:'192.0.2.15'
+  }));
+  await assertSucceeds(setDoc(ref,{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),activo:true
+  }));
+  await assertFails(updateDoc(ref,{ip:'192.0.2.20'}));
+  await assertFails(updateDoc(ref,{fingerprint:'abcdefghijklmnop'}));
+  await assertFails(setDoc(doc(vecino,'chat_presencia','sesion-7-fp'),{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),
+    activo:true,fingerprint:'abcdefghijklmnop'
+  }));
+});
+
+test('reportes: ni visitantes ni autores pueden marcar resuelto', async()=>{
+  const vecino=anon('usuario-8'), ref=doc(vecino,'basura','test-resuelto');
+  await assertSucceeds(setDoc(ref,{
+    description:'Basura en la esquina',lat:-38.01,lng:-57.55,resolved:false,uid:'usuario-8'
+  }));
+  await assertFails(updateDoc(ref,{resolved:true}));
+  await assertSucceeds(updateDoc(doc(adminCtx(),'basura','test-resuelto'),{resolved:true}));
+});
+
+test('reportes: no se puede crear un reporte ya resuelto sin ser administrador', async()=>{
+  const db=anon('usuario-9');
+  await assertFails(setDoc(doc(db,'basura','nuevo-report-falso'),{
+    description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:true
+  }));
+  await assertSucceeds(setDoc(doc(db,'basura','nuevo-report-correcto'),{
+    description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:false
+  }));
+});
+
+test('estados y su historial solamente los modifica el administrador', async()=>{
+  const user=anon('usuario-10');
+  const own=doc(user,'basura','gestion-prueba');
+  await assertFails(setDoc(doc(user,'basura','gestion-falsificada'),{
+    description:'Reportado',lat:-38.01,lng:-57.55,estado_gestion:'resuelto'
+  }));
+  await assertSucceeds(setDoc(own,{
+    description:'Reportado',lat:-38.01,lng:-57.55,uid:'usuario-10',resolved:false
+  }));
+  await assertFails(updateDoc(own,{estado_gestion:'derivado'}));
+  await assertFails(updateDoc(own,{historial_estado:[{estado:'resuelto'}]}));
+  await assertFails(updateDoc(own,{estado_actualizado:serverTimestamp()}));
+  await assertSucceeds(updateDoc(doc(adminCtx(),'basura','gestion-prueba'),{
+    estado_gestion:'revision',estado_actualizado:serverTimestamp(),
+    historial_estado:[{estado:'revision'}],resolved:false
+  }));
 });

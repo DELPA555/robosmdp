@@ -237,7 +237,7 @@ const G={ limit:CHAT_PAGE, msgsUnsub:null, presUnsub:null, banUnsub:null, modUns
   mods:new Set(), lastSend:0, sendTimes:[], banned:true, authReady:false, banReady:false,
   uid:null, sid:null, presTimer:null, onlineTimer:null, banExpiryTimer:null,
   msgsCount:0, isAdmin:false, replyTo:null, mentionStart:-1,
-  notifOn:false, notifReady:false, hasSent:false, ipSent:false, pendingMedia:null,
+  notifOn:false, notifReady:false, hasSent:false, ipSent:false, fpSent:false, ipPending:false, pendingMedia:null,
   adminTaps:0, adminTapStart:0,
   fp:null, fpReady:false, fpChecked:false, extBan:false };
 // Envío de imágenes/videos: SOLO admin. Límites de tamaño.
@@ -408,8 +408,13 @@ function pushPresence(){
   if(!db || !auth || !auth.currentUser || G.banned || !G.authReady || !G.banReady) return;
   const a=getApodo(); if(!a) return;
   const data={uid:auth.currentUser.uid,apodo:a,ultimo_ping:FV.serverTimestamp(),activo:true};
-  if(G.fp) data.fingerprint=G.fp;   // CAPA 1: huella del dispositivo (para banear por huella)
-  try{ db.collection(PRES_COL).doc(getSid()).set(data,{merge:true}).catch(()=>{}); }catch(e){}
+  // La huella se remite exclusivamente al servidor y NO a la presencia pública.
+  const sid=getSid(), uid=auth.currentUser.uid;
+  try{
+    db.collection(PRES_COL).doc(sid).set(data,{merge:true})
+      .then(()=>{ if(auth?.currentUser?.uid===uid && !G.banned && !G.isAdmin) reportChatIp(uid,sid); })
+      .catch(()=>{});
+  }catch(e){}
 }
 function stopPresence(){
   if(G.presTimer){ clearInterval(G.presTimer); G.presTimer=null; }
@@ -420,17 +425,24 @@ function startPresence(){
   pushPresence();
   G.presTimer=setInterval(pushPresence,30000);
 }
-// Reporta al servidor (Netlify Function) la IP real + ubicación aproximada, para que
-// queden en chat_presencia y SOLO el admin las vea. Silencioso: si falla no afecta el chat.
-function reportChatIp(uid,sid){
-  if(G.ipSent || !uid || !sid) return;
-  G.ipSent=true;
+// IP y geo viajan al servidor con ID token de Firebase, y se escriben solo
+// en chat_ip_private, nunca en la presencia consultada por otros vecinos.
+async function reportChatIp(uid,sid){
+  if((G.ipSent && (!G.fp || G.fpSent)) || G.ipPending || !uid || !sid || !auth?.currentUser || G.isAdmin) return;
+  G.ipPending=true;
   try{
-    fetch('/.netlify/functions/chat-ip',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({uid:uid, sessionId:sid})
-    }).catch(()=>{});
-  }catch(e){}
+    const user=auth.currentUser;
+    if(user.uid!==uid) return;
+    const idToken=await user.getIdToken();
+    if(auth.currentUser?.uid!==uid) return;
+    const resp=await fetch('/.netlify/functions/chat-ip',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+idToken},
+      body:JSON.stringify({sessionId:sid,fingerprint:G.fp||null})
+    });
+    if(resp.ok){ G.ipSent=true; if(G.fp) G.fpSent=true; }
+  }catch(e){ /* La captura es complementaria, el chat no depende de ella. */ }
+  finally{ G.ipPending=false; }
 }
 let _presDocs=[];
 function presTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toDate().getTime(); if(v&&typeof v.seconds==='number') return v.seconds*1000; return 0; }
@@ -984,7 +996,15 @@ async function banInlineConfirm(){
   try{
     const ps=await db.collection(PRES_COL).where('uid','==',uid).get();
     presDocs=ps.docs;
-    ps.forEach(p=>{ const pd=p.data()||{}; if(!fp && pd.fingerprint) fp=pd.fingerprint; if(pd.apodo) apodoReal=pd.apodo; });
+    await Promise.all(presDocs.map(async p=>{
+      const pd=p.data()||{};
+      if(!fp && pd.fingerprint) fp=pd.fingerprint; // compatibilidad heredada
+      if(pd.apodo) apodoReal=pd.apodo;
+      try{
+        const privateDoc=await db.collection('chat_ip_private').doc(p.id).get();
+        if(!fp && privateDoc.exists && privateDoc.data()?.fingerprint) fp=privateDoc.data().fingerprint;
+      }catch(_){} // si aún no están las reglas, prevalece el ban por UID
+    }));
   }catch(_){}
   const banDoc={uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,duracion_ms:dur,
     baneado_por:'AdminRobos',timestamp:FV.serverTimestamp(),
@@ -1025,7 +1045,7 @@ window.addEventListener('load',()=>{
       // Sesión lista (anónima o admin): verificar identidad y recién ahí comprobar el ban.
       G.uid=u.uid; G.authReady=true; G.banReady=false; G.banned=true;
       setAdminMode(u.email===ADMIN_EMAIL);
-      if(!G.isAdmin) reportChatIp(u.uid, getSid());   // IP/geo al servidor (solo visible para el admin)
+      G.ipSent=false; G.fpSent=false; G.ipPending=false; // Si cambia el UID, nueva sesión autenticada.
       subscribeBan();   // applyBanUI abrirá (o no) las suscripciones según el estado de la sanción
       maybeCheckFingerprintBan();   // CAPA 1: ban por huella (otro UID/mismo dispositivo)
     });

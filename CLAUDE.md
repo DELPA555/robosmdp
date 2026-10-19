@@ -114,6 +114,24 @@ Usar este formato para cada entrada nueva:
 - Estado de ambos: **EN REVISIÓN / NO DESPLEGADO**.
 - Atención: múltiples ramas tocan `index.html`, `CLAUDE.md`; dos tocan `firestore.rules`. No sobrescribir el desarrollo ajeno; integrar y verificar reglas Firebase antes de desplegar.
 
+### 2026-10-18 — SEG-01/SEG-02/SEG-03/OPS-01: seguridad del chat y permisos de reportes
+- Responsable: ChatGPT.
+- Pedido y alcance: mantener IP, geolocalización e ISP visibles en el panel de administrador, resguardarlos en una colección privada, comprobar identidad y titularidad de sesión en la función Netlify, y evitar que vecinos marquen reportes como resueltos.
+- Archivos modificados: `firestore.rules`, `robosmdp/chat.html`, `robosmdp/index.html` (incluye aviso de privacidad), `netlify/functions/chat-ip.mjs`, `firestore/tests/chat-rules.test.mjs`, `scripts/migrate-chat-ip.mjs`, `docs/SEG-01-02-03-DESPLIEGUE.md`, `.github/workflows/security-checks.yml`, `.github/workflows/monitor-web.yml`, `CLAUDE.md`.
+- Resultado: se protege también la huella técnica del dispositivo, se evita crear reportes falsamente resueltos y se corrige el levantamiento de baneos asociados (UID, huella y apodo). Cambios guardados en rama `fix/seguridad-privacidad-chat-20261018`, revisión por PR pendiente de publicación. Migración de IP existentes incluida como script manual en modo simulación predeterminado.
+- Pruebas realizadas y resultado: GitHub Actions verificó sintaxis Node y pasó la batería de reglas de Firestore en el emulador (corridas exitosas sobre commit `21ae2ec451215b2b2e6a4facea063cfc3ba48db9`; ver https://github.com/DELPA555/robosmdp/actions/runs/39186749576). Siguen pendientes pruebas integradas en Netlify/Firebase real y confirmación Android.
+- Commit o PR: https://github.com/DELPA555/robosmdp/pull/3
+- Estado de deploy: **NO DESPLEGADO**. No se tocaron datos ni reglas activas de Firebase, Netlify de producción ni Play Store.
+- Pendientes o riesgos: ejecutar test del emulador y validación real, luego aplicar el orden de migración y publicación indicado en `docs/SEG-01-02-03-DESPLIEGUE.md`. La colección pública antigua aún puede contener IP hasta ejecutar migración.
+
+### 2026-10-18 — OPS-02 Monitoreo horario de disponibilidad web (primera fase)
+- Responsable: ChatGPT.
+- Pedido: detectar automáticamente caídas o rutas erróneas del sitio.
+- Archivo: `.github/workflows/monitor-web.yml`.
+- Resultado: workflow programado cada hora (minuto 17) para las rutas Inicio, Chat, Foro y Rastreo. Verifica código HTTP y contenido de cada sección para detectar redireccionamientos incorrectos. Soporta ejecución manual.
+- Estado: **EN REVISIÓN / NO DESPLEGADO** hasta integrar la PR en `main`. No incluye todavía Firebase, mapas, push ni alertas externas; las notificaciones de fallos dependen de la configuración de GitHub Actions.
+- PR: https://github.com/DELPA555/robosmdp/pull/3
+
 ## 7. Checklist de cierre de cualquier modificación
 
 - [ ] Se consultó este `CLAUDE.md` y el código vigente antes de empezar.

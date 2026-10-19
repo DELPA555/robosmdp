@@ -1,0 +1,41 @@
+name: Monitoreo web ROBOS MDP
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  availability:
+    name: Verificar dominio y secciones
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probar páginas públicas y detectar redirects incorrectos
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            local url="$1" title="$2"
+            local response
+            response=$(mktemp)
+            if ! curl --fail --silent --show-error --location --retry 2 --retry-delay 2 --connect-timeout 10 --max-time 25 "$url" -o "$response"; then
+              echo "::error::Sitio inaccesible: $url"
+              rm -f "$response"
+              return 1
+            fi
+            if ! grep -Fiq "$title" "$response"; then
+              echo "::error::Página incorrecta o fallback inesperado: $url"
+              rm -f "$response"
+              return 1
+            fi
+            echo "OK: $url"
+            rm -f "$response"
+          }
+          check "https://robosmdp.com.ar/" "Mapa de Robos"
+          check "https://robosmdp.com.ar/chat" "Chat vecinal"
+          check "https://robosmdp.com.ar/foro" "Foro vecinal"
+          check "https://robosmdp.com.ar/rastreo" "Sistema de Recuperación Vehicular"

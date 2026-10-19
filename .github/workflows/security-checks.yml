@@ -1,0 +1,40 @@
+name: Verificación de seguridad ROBOS MDP
+
+on:
+  pull_request:
+  push:
+    branches:
+      - fix/seguridad-privacidad-chat-20261018
+
+permissions:
+  contents: read
+
+jobs:
+  firebase-rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Java para Firestore Emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Comprobar sintaxis de funciones
+        run: |
+          node --check netlify/functions/chat-ip.mjs
+          node --check scripts/migrate-chat-ip.mjs
+          node --check netlify/functions/chat-cleanup.mjs
+          node --check netlify/functions/notify-zone.mjs
+      - name: Instalar Firebase CLI y dependencias de las pruebas
+        run: |
+          npm install -g firebase-tools
+          npm install --prefix firestore/tests
+      - name: Probar reglas de Firestore en emulador
+        working-directory: firestore/tests
+        run: npm test
