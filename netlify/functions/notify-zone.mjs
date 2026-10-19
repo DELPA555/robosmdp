@@ -21,9 +21,12 @@ const FS = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases
 const COLLECTIONS = [
   { tab: 'robos',  path: 'artifacts/robosmdp-d1ef3/public/data', col: 'reports' },
   { tab: 'basura', path: '',                                     col: 'basura'  },
-  { tab: 'pozos',  path: '',                                     col: 'pozos'   }
+  { tab: 'pozos',  path: '',                                     col: 'pozos'   },
+  { tab: 'abandonados', path: '', col: 'abandonados' },
+  { tab: 'luminarias', path: '', col: 'luminarias' }
 ];
-const CAT_LABEL = { robos: 'robo', basura: 'reporte de basura', pozos: 'pozo' };
+const CAT_LABEL = { robos: 'robo', basura: 'reporte de basura', pozos: 'pozo',
+  abandonados:'vehículo abandonado', luminarias:'problema de alumbrado' };
 
 const b64url = b => Buffer.from(b).toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 
@@ -107,7 +110,35 @@ async function sendPush(token, accessToken, { title, body, url, reportId }) {
     headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: { token, data: { title, body, url, reportId: reportId || '' } } })
   });
-  return res.ok ? { ok: true } : { ok: false, status: res.status, body: await res.text() };
+  return res.ok ? {ok:true} : {ok:false,status:res.status};
+}
+
+// Reserva atómica antes de enviar. El registro permite no repetir un push
+// cuando la ventana de 1 minuto se solapa o se reintenta una ejecución fallida.
+// La clave es un hash: jamás persistimos el token en el historial de entregas.
+function deliveryId(token,tab,reportId){
+  return crypto.createHash('sha256').update(token+'|'+tab+'|'+reportId).digest('hex');
+}
+async function reserveDelivery(token,tab,reportId,access){
+  const id=deliveryId(token,tab,reportId);
+  const payload={fields:{
+    createdAt:{timestampValue:new Date().toISOString()},
+    expiresAt:{timestampValue:new Date(Date.now()+8*86400000).toISOString()},
+    type:{stringValue:tab}
+  }};
+  const response=await fetch(FS+'/push_delivery_log?documentId='+id,{
+    method:'POST',headers:{Authorization:'Bearer '+access,'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(response.status===409)return null;
+  if(!response.ok)throw Error('Reserva push '+response.status);
+  return id;
+}
+async function releaseDelivery(id,access){
+  const response=await fetch(FS+'/push_delivery_log/'+id,{
+    method:'DELETE',headers:{Authorization:'Bearer '+access}
+  });
+  if(!response.ok&&response.status!==404)throw Error('Liberación push '+response.status);
 }
 
 export default async () => {
@@ -124,14 +155,16 @@ export default async () => {
 
   // 2) suscripciones (admin lee todo, las reglas no aplican al service account)
   const subs = await fsListAll('subscripciones_push', accessToken)
-    .then(arr => arr.filter(s => s.token && isFinite(s.lat) && isFinite(s.lng) && isFinite(s.radius)));
+    .then(arr => arr.filter(s => !s.revoked && s.token &&
+      Number.isFinite(s.lat) && Number.isFinite(s.lng) && Number.isFinite(s.radius)
+      && Math.abs(s.lat)<=90 && Math.abs(s.lng)<=180 && s.radius>0 && s.radius<=50000));
   if (!subs.length) {
     await saveLastRun(accessToken, nowIso, stateDoc);
     return new Response('Sin suscripciones', { status: 200 });
   }
 
   // 3) reportes nuevos por colección (timestamp > sinceIso), sin photoBase64
-  let sent = 0, matched = 0;
+  let sent = 0, matched = 0, failures = 0, duplicates = 0;
   for (const { tab, path, col } of COLLECTIONS) {
     const rows = await fsRunQuery(path, {
       structuredQuery: {
@@ -140,36 +173,65 @@ export default async () => {
         select: { fields: ['type', 'description', 'location', 'lat', 'lng', 'timestamp'].map(f => ({ fieldPath: f })) },
         orderBy: [{ field: { fieldPath: 'timestamp' }, direction: 'ASCENDING' }]
       }
-    }, accessToken).catch(e => { console.error('query ' + col, e.message); return []; });
+    }, accessToken); // No avanzar lastRun si falló una consulta.
 
     for (const row of rows) {
       const r = fields(row.document);
       const c = coordsOf(r); if (!c) continue;
       const reportId = row.document.name.split('/').pop();
       for (const s of subs) {
+        // Las suscripciones anteriores reciben exactamente las 3 categorías
+        // originales. Las nuevas pueden elegir 1..5.
+        const categories=Array.isArray(s.categories)&&s.categories.length?
+          s.categories:['robos','basura','pozos'];
+        if (!categories.includes(tab)) continue;
         if (distMeters(c, [s.lat, s.lng]) <= s.radius) {
           matched++;
-          const body = (r.description || CAT_LABEL[tab]).slice(0, 90);
-          const res = await sendPush(s.token, accessToken, {
-            title: '⚠️ Nuevo ' + CAT_LABEL[tab] + ' en tu zona',
-            body, url: 'https://robosmdp.com.ar', reportId
-          });
-          if (res.ok) sent++; else console.warn('FCM fail', res.status, res.body);
+          let lock=null;
+          try{
+            lock=await reserveDelivery(s.token,tab,reportId,accessToken);
+            if(!lock){duplicates++;continue;}
+            const body=(r.description||CAT_LABEL[tab]).slice(0,90);
+            const res=await sendPush(s.token,accessToken,{
+              title:'⚠️ Nuevo '+CAT_LABEL[tab]+' en tu zona',
+              body,url:'https://robosmdp.com.ar',reportId
+            });
+            if(res.ok)sent++;
+            else{
+              failures++;
+              console.warn('FCM: entrega fallida',res.status);
+              await releaseDelivery(lock,accessToken);
+            }
+          }catch(error){
+            failures++;
+            console.warn('FCM: error de entrega',String(error?.message||'error').slice(0,80));
+            if(lock){
+              try{await releaseDelivery(lock,accessToken);}catch(e){}
+            }
+          }
         }
       }
     }
   }
 
-  await saveLastRun(accessToken, nowIso, stateDoc);
-  return new Response(JSON.stringify({ subs: subs.length, matched, sent }), { status: 200 });
+  // Si hubo un fallo, NO avanzar checkpoint: los envíos exitosos ya están
+  // reservados y un próximo reintento solo alcanzará a los pendientes.
+  if(failures){
+    return new Response(JSON.stringify({subs:subs.length,matched,sent,failures,duplicates}),
+      {status:503,headers:{'Content-Type':'application/json'}});
+  }
+  await saveLastRun(accessToken,nowIso,stateDoc);
+  return new Response(JSON.stringify({subs:subs.length,matched,sent,duplicates,failures:0}),
+    {status:200,headers:{'Content-Type':'application/json'}});
 };
 
 async function saveLastRun(accessToken, iso, stateDoc) {
-  await fetch(`${FS}/meta/push_state?updateMask.fieldPaths=lastRun`, {
+  const response = await fetch(`${FS}/meta/push_state?updateMask.fieldPaths=lastRun`, {
     method: 'PATCH',
     headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields: { lastRun: { timestampValue: iso } } })
   });
+  if(!response.ok)throw Error('No se pudo guardar checkpoint push '+response.status);
 }
 
 // Netlify Scheduled Function: cada 5 minutos.

@@ -1,0 +1,27 @@
+name: Tablero operativo reportes
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/tablero-operativo-reportes-20261018
+
+permissions:
+  contents: read
+
+jobs:
+  analytics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Sintaxis de módulos de estadísticas
+        run: |
+          node --check robosmdp/assets/analytics-utils.mjs
+          node --check robosmdp/assets/admin-analytics.mjs
+          node --check scripts/analytics.test.mjs
+      - name: KPI, categorías, barrios y veracidad de muestra
+        run: node --test scripts/analytics.test.mjs

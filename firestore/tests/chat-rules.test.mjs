@@ -23,7 +23,7 @@ import {
   assertFails,
 } from '@firebase/rules-unit-testing';
 import {
-  doc, getDoc, getDocs, setDoc, deleteDoc, collection, serverTimestamp, Timestamp,
+  doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -149,4 +149,155 @@ test('Admin puede marcar inactiva la presencia de un usuario baneado', async () 
   const admin = adminCtx();
   await assertSucceeds(setDoc(doc(admin, 'chat_presencia', 'sv'),
     { uid: 'vecino5', apodo: 'V', activo: false, ultimo_ping: serverTimestamp() }, { merge: true }));
+});
+
+
+test('IP privada: el vecino no puede consultar ni escribir información sensible', async()=>{
+  const vecino=anon('usuario-6'), admin=adminCtx();
+  await testEnv.withSecurityRulesDisabled(async ctx=>{
+    await setDoc(doc(ctx.firestore(),'chat_ip_private','sesion-test'),{
+      uid:'usuario-6',ip:'192.0.2.15',ciudad:'Prueba'
+    });
+  });
+  await assertFails(getDoc(doc(vecino,'chat_ip_private','sesion-test')));
+  await assertFails(getDocs(collection(vecino,'chat_ip_private')));
+  await assertFails(setDoc(doc(vecino,'chat_ip_private','nueva'),{ip:'192.0.2.20'}));
+  await assertSucceeds(getDoc(doc(admin,'chat_ip_private','sesion-test')));
+});
+
+test('presencia: el vecino no puede crear ni modificar IP', async()=>{
+  const vecino=anon('usuario-7'), ref=doc(vecino,'chat_presencia','sesion-7');
+  await assertFails(setDoc(ref,{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),activo:true,ip:'192.0.2.15'
+  }));
+  await assertSucceeds(setDoc(ref,{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),activo:true
+  }));
+  await assertFails(updateDoc(ref,{ip:'192.0.2.20'}));
+  await assertFails(updateDoc(ref,{fingerprint:'abcdefghijklmnop'}));
+  await assertFails(setDoc(doc(vecino,'chat_presencia','sesion-7-fp'),{
+    uid:'usuario-7',apodo:'Vecino',ultimo_ping:serverTimestamp(),
+    activo:true,fingerprint:'abcdefghijklmnop'
+  }));
+});
+
+test('reportes: ni visitantes ni autores pueden marcar resuelto', async()=>{
+  const vecino=anon('usuario-8'), ref=doc(vecino,'basura','test-resuelto');
+  await assertSucceeds(setDoc(ref,{
+    description:'Basura en la esquina',lat:-38.01,lng:-57.55,resolved:false,uid:'usuario-8'
+  }));
+  await assertFails(updateDoc(ref,{resolved:true}));
+  await assertSucceeds(updateDoc(doc(adminCtx(),'basura','test-resuelto'),{resolved:true}));
+});
+
+test('reportes: no se puede crear un reporte ya resuelto sin ser administrador', async()=>{
+  const db=anon('usuario-9');
+  await assertFails(setDoc(doc(db,'basura','nuevo-report-falso'),{
+    description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:true
+  }));
+  await assertSucceeds(setDoc(doc(db,'basura','nuevo-report-correcto'),{
+    description:'Basural identificado',lat:-38.01,lng:-57.55,resolved:false
+  }));
+});
+
+test('estados y su historial solamente los modifica el administrador', async()=>{
+  const user=anon('usuario-10');
+  const own=doc(user,'basura','gestion-prueba');
+  await assertFails(setDoc(doc(user,'basura','gestion-falsificada'),{
+    description:'Reportado',lat:-38.01,lng:-57.55,estado_gestion:'resuelto'
+  }));
+  await assertSucceeds(setDoc(own,{
+    description:'Reportado',lat:-38.01,lng:-57.55,uid:'usuario-10',resolved:false
+  }));
+  await assertFails(updateDoc(own,{estado_gestion:'derivado'}));
+  await assertFails(updateDoc(own,{historial_estado:[{estado:'resuelto'}]}));
+  await assertFails(updateDoc(own,{estado_actualizado:serverTimestamp()}));
+  await assertSucceeds(updateDoc(doc(adminCtx(),'basura','gestion-prueba'),{
+    estado_gestion:'revision',estado_actualizado:serverTimestamp(),
+    historial_estado:[{estado:'revision'}],resolved:false
+  }));
+});
+
+test('campañas publicitarias: acceso y escritura exclusivos del administrador',async()=>{
+  const vecino=anon('lector-comercial');
+  const admin=adminCtx();
+  const values={
+    cliente:'Anunciante de prueba',plan:'Campaña mensual',
+    inicio:'2026-10-18',fin:'2026-11-18',
+    importe_total:100000,cobrado_total:50000,estado:'activa'
+  };
+  await assertFails(setDoc(doc(vecino,'campanias_publicitarias','c0'),values));
+  await assertSucceeds(setDoc(doc(admin,'campanias_publicitarias','c1'),values));
+  await assertFails(getDoc(doc(vecino,'campanias_publicitarias','c1')));
+  await assertFails(getDocs(collection(vecino,'campanias_publicitarias')));
+  await assertFails(updateDoc(doc(vecino,'campanias_publicitarias','c1'),{cobrado_total:0}));
+  await assertFails(deleteDoc(doc(vecino,'campanias_publicitarias','c1')));
+  await assertSucceeds(getDoc(doc(admin,'campanias_publicitarias','c1')));
+  await assertSucceeds(updateDoc(doc(admin,'campanias_publicitarias','c1'),{cobrado_total:100000}));
+  await assertSucceeds(deleteDoc(doc(admin,'campanias_publicitarias','c1')));
+});
+
+
+test('push: se admiten categorías válidas y se rechazan categorías ajenas', async()=>{
+  const db=anon('vecino-push');
+  const base={token:'token-prueba-1234567890',lat:-38,lng:-57.56,radius:400};
+  await assertSucceeds(setDoc(doc(db,'subscripciones_push','cat-validas'),{
+    ...base,categories:['robos','luminarias']
+  }));
+  await assertFails(setDoc(doc(db,'subscripciones_push','cat-invalidas'),{
+    ...base,categories:['robos','no-existe']
+  }));
+  await assertFails(setDoc(doc(db,'subscripciones_push','cat-vacias'),{
+    ...base,categories:[]
+  }));
+  await assertSucceeds(updateDoc(doc(db,'subscripciones_push','cat-validas'),{
+    categories:['basura','pozos']
+  }));
+  await assertFails(updateDoc(doc(db,'subscripciones_push','cat-validas'),{
+    categories:['robo-falso']
+  }));
+  // Compatibilidad con usuarios anteriores sin campo categories.
+  await assertSucceeds(setDoc(doc(db,'subscripciones_push','cat-heredadas'),base));
+});
+
+
+test('GPS chat: lectura solo propia o admin, nunca otros participantes',async()=>{
+  const owner=anon('vecino-gps-1'),other=anon('vecino-gps-2'),admin=adminCtx();
+  const expiry=Timestamp.fromDate(new Date(Date.now()+60*60*1000));
+  const point={lat:-38.0041,lng:-57.5575,accuracy:14,
+    shared_at:serverTimestamp(),expires_at:expiry};
+  await assertSucceeds(setDoc(doc(owner,'chat_location_private','vecino-gps-1'),point));
+  await assertSucceeds(getDoc(doc(owner,'chat_location_private','vecino-gps-1')));
+  await assertFails(getDoc(doc(other,'chat_location_private','vecino-gps-1')));
+  await assertFails(getDocs(collection(other,'chat_location_private')));
+  await assertSucceeds(getDocs(collection(admin,'chat_location_private')));
+  await assertSucceeds(getDoc(doc(admin,'chat_location_private','vecino-gps-1')));
+  await assertFails(setDoc(doc(other,'chat_location_private','vecino-gps-1'),point));
+  await assertFails(deleteDoc(doc(other,'chat_location_private','vecino-gps-1')));
+  await assertSucceeds(deleteDoc(doc(owner,'chat_location_private','vecino-gps-1')));
+});
+
+test('GPS chat: campos, precisión, coordenadas y vencimiento validados',async()=>{
+  const db=anon('gps-validation'),ref=doc(db,'chat_location_private','gps-validation');
+  const expiry=Timestamp.fromDate(new Date(Date.now()+60*60*1000));
+  const point={lat:-38,lng:-57.55,accuracy:30,
+    shared_at:serverTimestamp(),expires_at:expiry};
+  await assertFails(setDoc(ref,{...point,ip:'192.0.2.4'}));
+  await assertFails(setDoc(ref,{...point,lat:-150}));
+  await assertFails(setDoc(ref,{...point,accuracy:30000}));
+  await assertFails(setDoc(ref,{...point,expires_at:Timestamp.fromDate(new Date(Date.now()+3*60*60*1000))}));
+  await assertSucceeds(setDoc(ref,point));
+  await assertFails(updateDoc(ref,{accuracy:-1}));
+  await assertSucceeds(updateDoc(ref,{accuracy:60,shared_at:serverTimestamp()}));
+});
+
+test('GPS chat: un usuario baneado no puede publicar, pero puede revocar',async()=>{
+  const uid='gps-banned',user=anon(uid),ref=doc(user,'chat_location_private',uid);
+  await assertSucceeds(setDoc(ref,{
+    lat:-38,lng:-57.55,accuracy:10,shared_at:serverTimestamp(),
+    expires_at:Timestamp.fromDate(new Date(Date.now()+60*60*1000))
+  }));
+  await seedBan(uid,null);
+  await assertFails(updateDoc(ref,{lat:-37,shared_at:serverTimestamp()}));
+  await assertSucceeds(deleteDoc(ref));
 });

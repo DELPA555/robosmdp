@@ -21,18 +21,25 @@ service cloud.firestore {
     function validReportCreate() {
       let d = request.resource.data;
       return d.description is string && d.description.size() > 0 && d.description.size() <= 500
-          && d.lat is number && d.lng is number;
+          && d.lat is number && d.lng is number
+          // No permitir que una publicación nueva ya figure resuelta por decisión anónima.
+          && (isAdmin() || !('resolved' in d) || d.resolved == false)
+          // Los estados e historial de gestión pertenecen solo al administrador.
+          && (isAdmin() || !d.keys().hasAny([
+                'estado_gestion','estado_actualizado','historial_estado'
+             ]));
     }
 
     // Updates permitidos en reportes: admin/autor, o cambios anónimos acotados
-    // que la app ya hace: sumar "me preocupa" (+1) o alternar "resolved".
+    // que la app ya hace: sumar "me preocupa" (+1). Resolver: solo admin.
     function reportUpdateOK() {
       let changed = request.resource.data.diff(resource.data).affectedKeys();
-      return isAdmin() || isAuthor()
+      return isAdmin()
+          || (isAuthor() && !changed.hasAny([
+                'resolved','estado_gestion','estado_actualizado','historial_estado'
+             ]))
           || (changed.hasOnly(['concerns'])
-              && request.resource.data.concerns == resource.data.get('concerns', 0) + 1)
-          || (changed.hasOnly(['resolved'])
-              && request.resource.data.resolved is bool);
+              && request.resource.data.concerns == resource.data.get('concerns', 0) + 1);
     }
 
     function reservedName(a) {
@@ -113,6 +120,12 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Contratos comerciales internos: datos y montos solo administradores.
+    // El portal público nunca consulta esta colección.
+    match /campanias_publicitarias/{id} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
     // --- Patentes: alta validada; update público SOLO para marcar resuelto=true ---
     match /patentes/{docId} {
       allow read: if true;
@@ -157,14 +170,26 @@ service cloud.firestore {
     //     localStorage) solo con campos de zona. read = admin (contienen tokens,
     //     NO deben ser legibles por cualquiera; el server los lee con Admin SDK). ---
     match /subscripciones_push/{docId} {
+      // Compatibilidad: suscripciones antiguas sin categorías conservan
+      // robos, basura y pozos; las nuevas deben contener 1..5 categorías válidas.
+      function validCategories() {
+        return !('categories' in request.resource.data)
+            || (request.resource.data.categories is list
+                && request.resource.data.categories.size() >= 1
+                && request.resource.data.categories.size() <= 5
+                && request.resource.data.categories.hasOnly(
+                     ['robos','basura','pozos','abandonados','luminarias']));
+      }
       allow read: if isAdmin();
       allow create: if request.resource.data.token is string
                   && request.resource.data.lat is number
                   && request.resource.data.lng is number
-                  && request.resource.data.radius is number;
+                  && request.resource.data.radius is number
+                  && validCategories();
       allow update: if isAdmin()
-                  || request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['lat','lng','radius','updatedAt']);
+                  || (request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['lat','lng','radius','categories','updatedAt'])
+                      && validCategories());
       allow delete: if isAdmin();
     }
 
@@ -269,12 +294,51 @@ service cloud.firestore {
     // para marcarla inactiva al banear. La limpieza programada usa Service
     // Account vía REST y no pasa por estas reglas.
     match /chat_presencia/{sessionId} {
+      // Presencia pública sin IP: migrar primero todos los campos heredados.
       allow read: if isAdmin() || (isSignedIn() && !isBanned());
-      allow create, update: if isAdmin()
-                  || (isSignedIn() && !isBanned()
-                      && request.resource.data.uid == request.auth.uid);
+      allow create: if isAdmin()
+          || (isSignedIn() && !isBanned()
+              && request.resource.data.uid == request.auth.uid
+              && request.resource.data.keys().hasOnly(
+                  ['uid','apodo','ultimo_ping','activo']));
+      allow update: if isAdmin()
+          || (isSignedIn() && !isBanned()
+              && resource.data.uid == request.auth.uid
+              && request.resource.data.uid == request.auth.uid
+              && request.resource.data.diff(resource.data).affectedKeys()
+                  .hasOnly(['apodo','ultimo_ping','activo']));
       allow delete: if isAdmin()
-                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+          || (isSignedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // IP y ubicación aproximada para moderación: lectura exclusiva admin.
+    // Solo la función autenticada del servidor escribe con Service Account.
+    match /chat_ip_private/{sessionId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // GPS voluntario y temporal del chat. NO se pide automáticamente;
+    // solo el titular puede guardar/revocar su punto y el admin puede listar.
+    match /chat_location_private/{uid} {
+      function validShare() {
+        let d=request.resource.data;
+        return d.keys().hasOnly(['lat','lng','accuracy','shared_at','expires_at'])
+            && d.keys().hasAll(['lat','lng','accuracy','shared_at','expires_at'])
+            && d.lat is number && d.lat >= -90 && d.lat <= 90
+            && d.lng is number && d.lng >= -180 && d.lng <= 180
+            && d.accuracy is number && d.accuracy >= 0 && d.accuracy <= 20000
+            && d.shared_at == request.time
+            && d.expires_at is timestamp
+            && d.expires_at > request.time
+            && d.expires_at <= request.time + duration.value(65,'m');
+      }
+      allow get: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isAdmin();
+      allow create, update: if isSignedIn() && !isBanned()
+          && request.auth.uid == uid && validShare();
+      // Revocación incluso para un usuario luego baneado.
+      allow delete: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
     }
 
     // Moderadores indexados por UID. La lista no es sensible (solo da el badge 🛡️);

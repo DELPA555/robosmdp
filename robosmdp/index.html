@@ -325,7 +325,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <button onclick="openPatentes()" type="button">Patentes</button>
 <button onclick="openObjetos()" type="button">Objetos</button>
 <button onclick="openMascotas()" type="button">Mascotas</button>
-<button onclick="openForo()" type="button">Foro vecinal</button><a class="pro-chat-menu" href="./chat.html">● Chat vecinal en vivo</a>
+<button onclick="openForo()" type="button">Foro vecinal</button><a href="/seguimiento">📋 Seguir mi reporte</a><a class="pro-chat-menu" href="./chat.html">● Chat vecinal en vivo</a>
 <a href="./rastreo.html">Rastreo MDP</a>
 <a href="#colaborar">Donaciones</a>
 <a href="https://wa.me/5491138574444" rel="noopener" target="_blank">Contacto</a>
@@ -391,6 +391,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <button onclick="openMascotas()" type="button"><span>♧</span> Mascotas <b>↗</b></button>
 <button onclick="openForo()" type="button"><span>◉</span> Foro vecinal <b>↗</b></button>
 <a href="./rastreo.html"><span>⌁</span> Rastreo MDP <b>↗</b></a>
+<a href="/seguimiento"><span>▤</span> Seguir mi reporte <b>↗</b></a>
 </div>
 <div class="pro-nav-note">Una iniciativa vecinal e independiente.<br/>Mar del Plata · Argentina</div>
 </aside>
@@ -905,6 +906,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase">Radio</span><span id="zone-radius-val" style="font-size:10px;font-weight:800;color:#a5b4fc">400 m</span></div>
 <input id="zone-radius" max="1000" min="200" oninput="setZoneRadius(this.value)" step="100" style="width:100%;accent-color:#6366f1" type="range" value="400"/>
 </div>
+<fieldset style="margin:8px 0 11px;padding:9px;border:1px solid rgba(var(--rgb-line),.2);border-radius:10px">
+<legend style="font-size:9px;font-weight:800;color:var(--t2);padding:0 4px">CATEGORÍAS DE ALERTA</legend>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="robos" onchange="updatePushCategories(this)" checked> 🚨 Robos</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="basura" onchange="updatePushCategories(this)" checked> 🗑️ Basura</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="pozos" onchange="updatePushCategories(this)" checked> ⚠️ Pozos</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="abandonados" onchange="updatePushCategories(this)"> 🚗 Autos abandonados</label>
+<label style="display:block;font-size:10px;padding:3px"><input class="zone-push-cat" type="checkbox" value="luminarias" onchange="updatePushCategories(this)"> 💡 Luminarias</label>
+</fieldset>
 <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:11px;cursor:pointer;font-size:10px;font-weight:600;color:var(--t2);line-height:1.4">
 <input id="zone-push" onchange="togglePush(this.checked)" style="width:15px;height:15px;accent-color:#6366f1;flex-shrink:0;margin-top:1px" type="checkbox"/>
 <span>🔔 Avisarme cuando haya algo nuevo en mi zona</span>
@@ -1218,7 +1227,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
         <button id="adm-tab-mascotas" onclick="switchAdmTab('mascotas')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🐾 Mascotas</button>
         <button id="adm-tab-foro" onclick="switchAdmTab('foro')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Foro</button>
         <button id="adm-tab-rastreo" onclick="switchAdmTab('rastreo')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">🛡️ Rastreo</button>
-        <button id="adm-tab-chat" onclick="switchAdmTab('chat')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Chat</button>
+        <button id="adm-tab-chat" onclick="switchAdmTab('chat')" style="flex:1.3;padding:9px 8px;border-radius:10px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all .2s">💬 Chat</button><a href="/admin-analitica" target="_blank" rel="noopener" title="Indicadores operativos de reportes y barrios" style="display:flex;align-items:center;white-space:nowrap;text-decoration:none;border-radius:10px;background:rgba(59,130,246,.14);border:1px solid rgba(59,130,246,.35);color:#bfdbfe;padding:9px 12px;font-size:10px;font-weight:800">📊 Análisis ↗</a><a href="/admin-sponsors" target="_blank" rel="noopener" title="Campañas, cobros y vencimientos (solo administrador)" style="display:flex;align-items:center;white-space:nowrap;text-decoration:none;border-radius:10px;background:rgba(244,63,94,.15);border:1px solid rgba(244,63,94,.4);color:#fecdd3;padding:9px 12px;font-size:10px;font-weight:800">📢 Sponsors ↗</a>
       </div>
       <div id="adm-export-row" style="display:flex;gap:8px;margin-bottom:14px">
         <button onclick="exportCSV()" style="flex:1;padding:10px;border:1px solid rgba(var(--rgb-line),.2);border-radius:11px;background:rgba(var(--rgb-slate),.6);color:var(--t2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i data-lucide="file-spreadsheet" style="width:14px;height:14px"></i>Exportar CSV</button>
@@ -1700,6 +1709,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <p style="margin-top:10px">Está prohibido publicar contenido falso, difamatorio, discriminatorio, datos personales de terceros sin su consentimiento, o cualquier material que infrinja la ley. Nos reservamos el derecho de eliminar publicaciones que incumplan estas condiciones.</p>
 <h3 style="font-size:14px;font-weight:700;color:var(--t0);margin:22px 0 8px">Política de privacidad</h3>
 <p><strong style="color:var(--t2)">Qué datos recopilamos:</strong> al crear un reporte se guarda la ubicación geográfica que indicás, una descripción del hecho y, opcionalmente, una foto. No solicitamos ni almacenamos tu nombre, correo, teléfono ni datos identificatorios para reportar: los reportes son anónimos.</p>
+<p style="margin-top:10px"><strong style="color:var(--t2)">Privacidad del chat vecinal:</strong> para permitir la moderación y prevenir abusos, el chat utiliza un identificador de sesión anónimo de Firebase y puede registrar apodo, dirección IP, ubicación geográfica aproximada, proveedor de conexión y una huella técnica del navegador. Estos datos técnicos se utilizan para seguridad y moderación; la IP y la ubicación no se publican en el chat y su consulta queda restringida a la administración autorizada. La ubicación aproximada puede ser consultada a un proveedor externo mediante una conexión cifrada. Podés solicitar información, rectificación o eliminación de tus datos mediante los canales de contacto indicados abajo.</p>
+<p style="margin-top:10px"><strong style="color:var(--t2)">GPS opcional del chat:</strong> únicamente si una persona acepta expresamente y autoriza el permiso del navegador, guardamos una ubicación GPS puntual con su precisión declarada. La ve la administración autorizada, no los demás participantes; deja de mostrarse después de 60 minutos y se elimina por una limpieza programada. La persona puede revocar y eliminar su ubicación desde el chat. No realizamos seguimiento continuo. Rechazar la función no limita el acceso al chat.</p>
 <p style="margin-top:10px"><strong style="color:var(--t2)">Cómo usamos los datos:</strong> la información de los reportes se muestra públicamente en el mapa y en los listados de la plataforma, ya que ese es justamente su propósito comunitario. También usamos métricas de uso agregadas y anónimas para mejorar el servicio.</p>
 <p style="margin-top:10px"><strong style="color:var(--t2)">No vendemos tus datos.</strong> No comercializamos ni cedemos información a terceros con fines de lucro. La plataforma puede mostrar publicidad (propia o de Google AdSense), pero eso no implica compartir datos personales identificatorios.</p>
 <p style="margin-top:10px">Si publicaste un reporte y querés que lo eliminemos, escribinos y lo resolvemos a la brevedad.</p>
@@ -2842,10 +2853,52 @@ function removeZone(){
 }
 
 // ===== NOTIFICACIONES PUSH (opt-in) para "Mi zona" =====
-const PUSH_DOC_LS='rmdp_push_doc';
+const PUSH_DOC_LS='rmdp_push_doc', PUSH_TOKEN_LS='rmdp_push_token',
+      PUSH_CATS_LS='rmdp_push_cats_v1';
+const PUSH_ALLOWED_CATS=['robos','basura','pozos','abandonados','luminarias'];
+const PUSH_DEFAULT_CATS=['robos','basura','pozos'];
 const VAPID_KEY='BFPBiqqRaMEsxPOE1vYMAOSEOXFm7fumHb0y7-m9CEsn2r374isYgv0UYeZzFRx0HdXeiYmA4Jr5moNGd6E0erY';
 function getMessaging(){ try{ if(window.firebase&&firebase.messaging) return firebase.messaging(); }catch(e){ console.warn('messaging no disponible',e); } return null; }
-function syncPushToggle(){ const cb=document.getElementById('zone-push'); if(cb) cb.checked=!!localStorage.getItem(PUSH_DOC_LS); }
+function readPushCategories(){
+  try{
+    const list=JSON.parse(localStorage.getItem(PUSH_CATS_LS)||'null');
+    if(Array.isArray(list) && list.length>0){
+      const valid=[...new Set(list.filter(c=>PUSH_ALLOWED_CATS.includes(c)))];
+      if(valid.length)return valid;
+    }
+  }catch(e){}
+  return PUSH_DEFAULT_CATS.slice();
+}
+function getPushCategories(){
+  return [...document.querySelectorAll('.zone-push-cat')].filter(x=>x.checked).map(x=>x.value);
+}
+function syncPushCategoryUI(){
+  const wanted=new Set(readPushCategories());
+  document.querySelectorAll('.zone-push-cat').forEach(cb=>{cb.checked=wanted.has(cb.value);});
+}
+async function updatePushCategories(changed){
+  let selected=getPushCategories();
+  if(!selected.length){
+    if(changed)changed.checked=true;
+    selected=getPushCategories();
+    showToast('Seleccioná al menos una categoría de alerta','r');
+  }
+  localStorage.setItem(PUSH_CATS_LS,JSON.stringify(selected));
+  const docId=localStorage.getItem(PUSH_DOC_LS);
+  if(docId && db){
+    try{
+      await db.collection('subscripciones_push').doc(docId).update({
+        categories:selected,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('Categorías de alertas actualizadas','g');
+    }catch(e){showToast('No se pudieron actualizar las alertas','r');}
+  }
+}
+function syncPushToggle(){
+  const cb=document.getElementById('zone-push');
+  if(cb)cb.checked=!!localStorage.getItem(PUSH_DOC_LS);
+  syncPushCategoryUI();
+}
 async function togglePush(on){ if(on) await enablePush(); else await disablePush(); }
 function isCapacitor(){ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
 
@@ -2860,17 +2913,15 @@ async function enablePush(){
       if(permResult.receive !== 'granted'){
         showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return;
       }
-      await PushNotifications.register();
-      const token = await new Promise((resolve, reject) => {
-        const regHandler = PushNotifications.addListener('registration', (t) => { regHandler.remove(); resolve(t.value); });
-        const errHandler = PushNotifications.addListener('registrationError', (err) => { errHandler.remove(); reject(err); });
-        setTimeout(() => reject(new Error('timeout')), 15000);
-      });
+      // Instalar listeners ANTES de registrar: el evento de Android puede
+      // llegar inmediatamente y se perdía con el orden anterior.
+      const token=await getPushTokenForUnsubscribe(true);
       if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
-      const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'android',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+      const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,categories:getPushCategories(),platform:'android',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
       let docId=localStorage.getItem(PUSH_DOC_LS);
       if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
       else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
+      localStorage.setItem(PUSH_TOKEN_LS,token);
       showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
     }catch(e){ console.error('enablePush(native)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
     return;
@@ -2882,23 +2933,77 @@ async function enablePush(){
     if(perm!=='granted'){ showToast('Permiso de notificaciones denegado','r'); if(cb)cb.checked=false; return; }
     const token=await m.getToken({vapidKey:VAPID_KEY});
     if(!token){ showToast('No se pudo obtener el token','r'); if(cb)cb.checked=false; return; }
-    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,platform:'web',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    const base={token,lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,categories:getPushCategories(),platform:'web',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
     let docId=localStorage.getItem(PUSH_DOC_LS);
     if(docId){ await db.collection('subscripciones_push').doc(docId).set(base,{merge:true}); }
     else{ const ref=await db.collection('subscripciones_push').add({...base,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); localStorage.setItem(PUSH_DOC_LS,ref.id); }
+    localStorage.setItem(PUSH_TOKEN_LS,token);
     showToast('¡Listo! Te avisamos de lo nuevo en tu zona 🔔','g');
   }catch(e){ console.error('enablePush(web)',e); showToast('No se pudieron activar las notificaciones','r'); if(cb)cb.checked=false; }
 }
+// En suscripciones antiguas, el token puede no estar guardado localmente.
+async function getPushTokenForUnsubscribe(forceRefresh=false){
+  const cached=localStorage.getItem(PUSH_TOKEN_LS);
+  if(cached&&!forceRefresh)return cached;
+  if(!isCapacitor()){
+    const messaging=getMessaging();
+    return messaging?await messaging.getToken({vapidKey:VAPID_KEY}):'';
+  }
+  const plugin=window.Capacitor?.Plugins?.PushNotifications;
+  if(!plugin)return '';
+  let ok=null,err=null,timer=null;
+  try{
+    return await new Promise(async(resolve,reject)=>{
+      let settled=false;
+      const finish=(error,token)=>{
+        if(settled)return;
+        settled=true;clearTimeout(timer);
+        try{ok?.remove?.();err?.remove?.();}catch(e){}
+        error?reject(error):resolve(token||'');
+      };
+      timer=setTimeout(()=>finish(new Error('Tiempo de espera agotado')),10000);
+      try{
+        ok=await plugin.addListener('registration',x=>finish(null,x.value));
+        err=await plugin.addListener('registrationError',e=>finish(new Error('Registro FCM falló')));
+        await plugin.register();
+      }catch(e){finish(e);}
+    });
+  }finally{
+    try{ok?.remove?.();err?.remove?.();}catch(e){}
+  }
+}
 async function disablePush(){
+  const cb=document.getElementById('zone-push');
   const docId=localStorage.getItem(PUSH_DOC_LS);
-  localStorage.removeItem(PUSH_DOC_LS);
-  const cb=document.getElementById('zone-push'); if(cb) cb.checked=false;
-  if(docId){ try{ await db.collection('subscripciones_push').doc(docId).delete(); }catch(e){ console.warn('disablePush',e); } }
+  if(!docId){
+    localStorage.removeItem(PUSH_TOKEN_LS);
+    if(cb)cb.checked=false;
+    return;
+  }
+  // Nunca simular una baja exitosa si Firebase conserva una suscripción.
+  try{
+    const token=await getPushTokenForUnsubscribe();
+    if(!token)throw new Error('Token FCM no disponible');
+    const response=await fetch('/.netlify/functions/push-unsubscribe',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({docId,token})
+    });
+    const result=await response.json();
+    if(!response.ok||result.ok!==true)throw new Error('Servicio de baja rechazó la solicitud');
+    localStorage.removeItem(PUSH_DOC_LS);
+    localStorage.removeItem(PUSH_TOKEN_LS);
+    if(cb)cb.checked=false;
+    showToast('Alertas desactivadas. Se eliminó tu suscripción.','g');
+  }catch(e){
+    if(cb)cb.checked=true;
+    console.warn('No se pudo cancelar la suscripción push',e.message);
+    showToast('No se pudo desactivar la suscripción. Reintentá con conexión.','r');
+  }
 }
 // Si el usuario re-define su zona y tiene push activo, actualizar la suscripción.
 async function updatePushZone(){
   const docId=localStorage.getItem(PUSH_DOC_LS); if(!docId||!G.zone) return;
-  try{ await db.collection('subscripciones_push').doc(docId).set({lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){ console.warn('updatePushZone',e); }
+  try{ await db.collection('subscripciones_push').doc(docId).set({lat:G.zone.lat,lng:G.zone.lng,radius:G.zone.radius,categories:readPushCategories(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){ console.warn('updatePushZone',e); }
 }
 
 // ===== MODALS =====
@@ -3073,10 +3178,12 @@ async function subR(mod){
   // Geocoding inverso: guardar el barrio (no bloquea si falla/tarda)
   try{ const b=await reverseBarrio(data.lat,data.lng); if(b) data.barrio=b; }catch(e){}
   try{
-    await db.collection(MOD_CFG[mod].col).add(data);
+    const created=await db.collection(MOD_CFG[mod].col).add(data);
     gaEvent('submit_report',{report_type:mod});
     showToast('¡Reporte publicado! 🎉','g');
     closeM(mod); resetF(mod);
+    // Comprobante compartible: ID nativo de Firestore, sin datos personales nuevos.
+    if(window.RMDPTracking?.showReceipt) window.RMDPTracking.showReceipt(mod,created.id);
   }catch(e){showToast('Error al publicar. Intentá de nuevo.','r');sub.disabled=false;sub.textContent='PUBLICAR REPORTE';}
 }
 
@@ -3178,7 +3285,11 @@ function renderAdm(){
     const fecha=ts.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})+' '+ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
     const resBtn=admTab!=='robos'?'<button onclick="event.stopPropagation();toggleRes(\''+r.id+'\')" style="padding:5px 10px;background:'+(r.resolved?'rgba(34,197,94,.18)':'rgba(var(--rgb-line),.15)')+';color:'+(r.resolved?'#4ade80':'var(--t3)')+';border:none;border-radius:999px;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">'+(r.resolved?'✓ Resuelto':'Resolver')+'</button>':'';
     const delBtn='<button onclick="event.stopPropagation();delReport(\''+r.id+'\')" title="Eliminar" style="padding:5px 9px;background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;line-height:1">🗑️</button>';
-    const actions='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+resBtn+delBtn+'</div>';
+    const state=r.resolved?'resuelto':(r.estado_gestion||'publicado');
+    const stateOptions=[['publicado','Publicado'],['revision','En revisión'],['derivado','Derivado por Robos MDP'],['resuelto','Resuelto']];
+    const stateControl='<select aria-label="Estado del reporte" title="Estado gestionado por Robos MDP" onchange="event.stopPropagation();updateReportState(\''+r.id+'\',this.value)" onclick="event.stopPropagation()" style="padding:6px 8px;border-radius:9px;background:rgba(var(--rgb-deep),.95);color:var(--t1);border:1px solid rgba(var(--rgb-line),.3);max-width:145px;font-size:10px;font-weight:700">'+
+      stateOptions.map(o=>'<option value="'+o[0]+'"'+(state===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>';
+    const actions='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+stateControl+delBtn+'</div>';
     return '<div onclick="openAD(\''+r.id+'\')" style="background:linear-gradient(160deg,rgba(var(--rgb-slate),.6),rgba(var(--rgb-deep),.7));border-radius:18px;border:1px solid rgba(var(--rgb-line),.14);padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:11px">'+
       '<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">'+
       '<div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+cat.color+'"><i data-lucide="'+cat.icon+'" style="width:18px;height:18px;color:#fff"></i></div>'+
@@ -3443,13 +3554,34 @@ async function descargarUltimoInforme(){
   }catch(e){ console.error('descargarUltimoInforme',e); showToast('No se pudo leer el informe automático','r'); }
 }
 
-async function toggleRes(id){
-  const col=MOD_CFG[admTab].col;
-  const r=G.data[admTab].find(x=>x.id===id); if(!r) return;
+// Estados administrados por Robos MDP; no reemplazan denuncias o expedientes oficiales.
+const REPORT_STATES=Object.freeze(['publicado','revision','derivado','resuelto']);
+async function updateReportState(id,state){
+  if(!G.isAdmin||!REPORT_STATES.includes(state)||!MOD_CFG[admTab])return;
+  const tab=admTab,r=(G.data[tab]||[]).find(x=>x.id===id);
+  if(!r)return;
+  const label={publicado:'Publicado',revision:'En revisión',derivado:'Derivado',resuelto:'Resuelto'}[state];
   try{
-    await db.collection(col).doc(id).update({resolved:!r.resolved});
-    showToast(r.resolved?'Marcado como pendiente':'Marcado como resuelto ✅','g');
-  }catch(e){showToast('Error al actualizar','r');}
+    const event={estado:state,fecha:firebase.firestore.Timestamp.now(),por:'Robos MDP'};
+    await db.collection(MOD_CFG[tab].col).doc(id).update({
+      estado_gestion:state,estado_actualizado:firebase.firestore.FieldValue.serverTimestamp(),
+      resolved:state==='resuelto',
+      historial_estado:firebase.firestore.FieldValue.arrayUnion(event)
+    });
+    r.estado_gestion=state;r.resolved=state==='resuelto';
+    r.historial_estado=[...(r.historial_estado||[]),event];
+    renderAdm();renderMk(tab);renderRL(tab);updSBStats(tab);updLandingStats(tab);
+    showToast('Estado actualizado: '+label,'g');
+  }catch(e){
+    console.warn('report state update',e?.code||'error');
+    showToast('No se pudo actualizar el estado','r');renderAdm();
+  }
+}
+
+async function toggleRes(id){
+  const r=(G.data[admTab]||[]).find(x=>x.id===id);
+  if(!r)return;
+  await updateReportState(id,r.resolved?'publicado':'resuelto');
 }
 
 async function publicToggleResolved(tab,id){
@@ -3602,9 +3734,15 @@ function renderAvisos(){
 async function confirmAviso(avisoId){
   const a=(G.avisos||[]).find(x=>x.id===avisoId); if(!a) return;
   try{
-    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({resolved:true});
+    const event={estado:'resuelto',fecha:firebase.firestore.Timestamp.now(),por:'Robos MDP'};
+    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({
+      resolved:true,estado_gestion:'resuelto',
+      estado_actualizado:firebase.firestore.FieldValue.serverTimestamp(),
+      historial_estado:firebase.firestore.FieldValue.arrayUnion(event)
+    });
     await db.collection(RESNOTIF_COL).doc(avisoId).update({status:'aprobado'});
-    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId); if(r) r.resolved=true;
+    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId);
+    if(r){r.resolved=true;r.estado_gestion='resuelto';r.historial_estado=[...(r.historial_estado||[]),event];}
     renderMk(a.reportType); renderRL(a.reportType); updSBStats(a.reportType); updLandingStats(a.reportType);
     showToast('Reporte marcado como resuelto ✅','g');
     loadAvisos();
@@ -4882,7 +5020,7 @@ async function delReply(tid,rid){
 
 // ===== CHAT VECINAL — moderación (panel admin) =====
 const CHATA_MSG='chat_publico', CHATA_PRES='chat_presencia', CHATA_MOD='chat_moderadores', CHATA_BAN='chat_bans', CHATA_TTL=90000;
-const _chatA={ msgs:[], pres:[], mods:[], bans:[], query:'', subbed:false };
+const _chatA={ msgs:[], pres:[], ipRecords:[], gps:[], mods:[], bans:[], query:'', subbed:false };
 function chatMsgDate(x){ const v=x&&x.timestamp; if(v&&v.toDate) return v.toDate(); if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000); return new Date(0); }
 function chatColorA(s){ s=String(s||'?'); let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return 'hsl('+(h%360)+',52%,46%)'; }
 function loadChatAdmin(){
@@ -4891,6 +5029,16 @@ function loadChatAdmin(){
   try{
     db.collection(CHATA_MSG).orderBy('timestamp','desc').limit(200).onSnapshot(s=>{ _chatA.msgs=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin msgs',e));
     db.collection(CHATA_PRES).onSnapshot(s=>{ _chatA.pres=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin pres',e));
+    // IP privadas solo para cuenta admin con reglas Firebase actualizadas.
+    db.collection('chat_ip_private').onSnapshot(s=>{
+      _chatA.ipRecords=s.docs.map(d=>({id:d.id,...d.data()}));
+      if(admTab==='chat') renderChatAdmin();
+    },e=>console.warn('chatAdmin IP privada: comprobar reglas',e.code||e.message));
+    // Solo administrador: GPS entregados expresamente, con caducidad inmediata en UI.
+    db.collection('chat_location_private').onSnapshot(s=>{
+      _chatA.gps=s.docs.map(d=>({id:d.id,...d.data()}));
+      if(admTab==='chat') renderChatAdmin();
+    },e=>console.warn('chatAdmin GPS permisos',e.code||e.message));
     db.collection(CHATA_MOD).onSnapshot(s=>{ _chatA.mods=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin mods',e));
     db.collection(CHATA_BAN).onSnapshot(s=>{ _chatA.bans=s.docs.map(d=>({id:d.id,...d.data()})); if(admTab==='chat') renderChatAdmin(); },e=>console.warn('chatAdmin bans',e));
   }catch(e){ console.warn('loadChatAdmin',e); }
@@ -4900,13 +5048,23 @@ function chatPresTime(x){ const v=x&&x.ultimo_ping; if(v&&v.toDate) return v.toD
 function chatBanActiveDoc(d){ if(!d) return false; const h=d.ban_hasta; if(h==null) return true; const t=(h&&h.toDate)?h.toDate().getTime():(h&&h.seconds?h.seconds*1000:0); return t>Date.now(); }
 // UIDs con sanción activa (para excluirlos de "en línea").
 function chatActiveBanUids(){ const s=new Set(); _chatA.bans.forEach(b=>{ if(chatBanActiveDoc(b)){ const u=b.uid||b.id; if(u) s.add(u); } }); return s; }
-// Campos de IP/geo que la Netlify Function chat-ip guarda en chat_presencia.
+// IP/geo ahora se almacenan en colección privada, de lectura exclusiva admin.
+// La presencia antigua con IP se admite solo como respaldo hasta su migración.
 function chatGeoOf(p){ return { ip:p.ip||'', ciudad:p.ciudad||'', region:p.region||'', pais:p.pais||'', isp:p.isp||'' }; }
 function chatHasGeo(p){ return !!(p.ip||p.ciudad||p.region||p.pais||p.isp); }
-// IP/geo más reciente registrada para un UID (p. ej. para mostrarla en un baneado
-// cuya presencia ya no está activa).
+function chatGeoFromSession(sid){
+  const p=_chatA.ipRecords.find(x=>x.id===sid);
+  return p&&chatHasGeo(p)?chatGeoOf(p):null;
+}
+// Datos de IP más recientes para el UID, incluido un usuario baneado.
 function chatIpInfo(uid){
   if(!uid) return null;
+  const records=_chatA.ipRecords.filter(p=>p.uid===uid&&chatHasGeo(p))
+    .sort((a,b)=>{
+      const tm=x=>x.actualizado?.toDate?.()?.getTime?.()||new Date(x.actualizado||0).getTime()||0;
+      return tm(b)-tm(a);
+    });
+  if(records.length) return chatGeoOf(records[0]);
   let best=null, bt=-1;
   _chatA.pres.forEach(p=>{ if((p.uid||'')!==uid || !chatHasGeo(p)) return; const t=chatPresTime(p); if(t>=bt){ bt=t; best=p; } });
   return best?chatGeoOf(best):null;
@@ -4921,7 +5079,7 @@ function chatOnlineUsers(){
     const uid=p.uid||'', t=chatPresTime(p);
     if(uid && banned.has(uid)) return;                 // un baneado nunca figura en línea
     const key=uid||('apodo:'+(p.apodo||p.id));
-    const geo=chatHasGeo(p)?chatGeoOf(p):null;
+    const geo=chatGeoFromSession(p.id)||(chatHasGeo(p)?chatGeoOf(p):null);
     const prev=byKey.get(key);
     if(prev){ prev.sessions++; if(t>prev.last){ prev.last=t; prev.apodo=p.apodo||prev.apodo; if(geo) prev.geo=geo; } else if(geo && !prev.geo){ prev.geo=geo; } return; }
     byKey.set(key,{ uid:uid, apodo:p.apodo||'(sin apodo)', last:t, sessions:1, legacy:!uid, geo:geo });
@@ -4937,7 +5095,11 @@ function chatIpLineHTML(geo){
   const parts=['📍 '+esc(loc)];
   if(geo.ip) parts.push('🌐 '+esc(geo.ip));
   if(geo.isp) parts.push('ISP: '+esc(geo.isp));
-  return '<span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+parts.join(' · ')+'</span>';
+  // Esta referencia es solo una zona estimada por la IP, nunca la posición GPS.
+  const zone=[geo.ciudad,geo.region,geo.pais].filter(Boolean).join(', ');
+  const link=zone?
+    ' · <a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(zone)+'" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc;text-decoration:underline" title="Buscar zona aproximada de la IP en Google Maps">🗺️ Zona estimada</a>':'';
+  return '<span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+parts.join(' · ')+link+'</span>';
 }
 function isModUid(uid){ return !!uid && _chatA.mods.some(m=>m.id===uid||m.uid===uid); }
 function renderChatAdmin(){
@@ -4956,6 +5118,27 @@ function renderChatAdmin(){
   const delAllBtn=a=>'<button onclick="admChatDeleteAll(\''+enc(a)+'\')" title="Eliminar todos los mensajes de este apodo" style="padding:4px 9px;background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3);border-radius:999px;font-size:9px;font-weight:700;cursor:pointer">🗑️ Todos</button>';
   // Buscador
   let html='<div style="position:relative;margin-bottom:12px"><input id="chata-q" oninput="onChatAdminSearch()" value="'+esc(q)+'" placeholder="Buscar mensajes por apodo o texto..." style="width:100%;background:rgba(var(--rgb-deep),.7);border:1px solid rgba(var(--rgb-line),.2);border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;color:var(--t1);outline:none"></div>';
+  // Ubicaciones compartidas VOLUNTARIAMENTE; la IP no es un punto GPS.
+  const gpsActive=_chatA.gps.filter(p=>{
+    const until=p.expires_at?.toMillis?.()||(p.expires_at?.seconds?1000*p.expires_at.seconds:0);
+    return until>Date.now()&&Number.isFinite(p.lat)&&Number.isFinite(p.lng)
+      && p.lat>=-90&&p.lat<=90&&p.lng>=-180&&p.lng<=180;
+  });
+  html+=box('📍 GPS voluntario activo ('+gpsActive.length+')',
+    gpsActive.length?gpsActive.map(p=>{
+      const owner=_chatA.pres.find(u=>u.uid===p.id);
+      const nick=esc(owner?.apodo||'Participante del chat');
+      const accuracy=Number.isFinite(p.accuracy)?' · Precisión declarada ±'+Math.round(p.accuracy)+' m':'';
+      const point=p.lat.toFixed(5)+','+p.lng.toFixed(5);
+      const map='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(point);
+      const until=p.expires_at?.toDate?.();
+      return '<div style="padding:8px 0;border-bottom:1px solid rgba(var(--rgb-line),.16);font-size:11px">'+
+        '<strong>'+nick+'</strong>'+uidChip(p.id)+'<br>'+
+        '<span style="color:var(--t3)">Compartida por el dispositivo'+esc(accuracy)+' · hasta '+esc(until?until.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'su vencimiento')+'</span><br>'+
+        '<a href="'+map+'" target="_blank" rel="noopener noreferrer" style="color:#86efac;font-weight:800">🗺️ Ver punto compartido en Maps</a>'+
+        '</div>';
+    }).join(''):
+    '<p style="color:var(--t3);font-size:11px">Nadie compartió GPS activo. Es completamente opcional para cada usuario.</p>');
   // Usuarios en línea (participantes autorizados y activos; baneados excluidos)
   html+=box('👥 En línea ('+online.length+')', online.length?('<div style="display:flex;flex-direction:column;gap:7px">'+online.map(u=>{ const act=u.last?tAgo(new Date(u.last)):''; const sess=u.sessions>1?(' · '+u.sessions+' sesiones'):''; return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:var(--t1);min-width:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px"></span>'+esc(u.apodo)+(isModUid(u.uid)?' <span style="font-size:8.5px;color:#93c5fd">🛡️</span>':'')+uidChip(u.uid)+'</span><span style="display:block;font-size:9px;color:var(--t3);font-weight:600;margin-left:14px">'+(act?'activo '+act:'')+sess+'</span>'+chatIpLineHTML(u.geo)+'</span><span style="display:flex;gap:5px;flex-shrink:0">'+modBtn(u.uid,u.apodo)+banBtn(u.uid,u.apodo)+'</span></div>'; }).join('')+'</div>'):'<p style="font-size:11px;color:#475569">Nadie conectado ahora.</p>');
   // Baneados (por UID: último apodo, UID, duración, motivo)
@@ -4993,8 +5176,24 @@ async function admChatToggleMod(encUid,encA,make){
 }
 async function admChatUnban(encUid){
   const uid=decodeURIComponent(encUid||''); if(!uid) return;
-  try{ await db.collection(CHATA_BAN).doc(uid).delete(); showToast('Ban levantado ✅','g'); }
-  catch(e){ console.error('admChatUnban',e); showToast('Error al levantar ban','r'); }
+  try{
+    const ref=db.collection(CHATA_BAN).doc(uid), snap=await ref.get();
+    const ban=snap.exists?snap.data()||{}:{};
+    const mirrors=[];
+    const fp=ban.fingerprint;
+    const nick=String(ban.apodo_baneado||ban.apodo||'').toLowerCase().trim();
+    if(fp && /^[A-Za-z0-9_-]{8,128}$/.test(fp)){
+      mirrors.push(db.collection('chat_bans_fp').doc(fp));
+    }
+    if(nick && !nick.includes('/')) mirrors.push(db.collection('chat_bans_nick').doc(nick));
+    const batch=db.batch();batch.delete(ref);
+    for(const mirror of mirrors){
+      const other=await mirror.get();
+      if(other.exists && other.data()?.uid===uid)batch.delete(mirror);
+    }
+    await batch.commit();
+    showToast('Ban y bloqueos asociados levantados ✅','g');
+  }catch(e){ console.error('admChatUnban',e); showToast('Error al levantar ban','r'); }
 }
 function admChatOpenBan(encUid,encA){
   const uid=decodeURIComponent(encUid||''), a=decodeURIComponent(encA||''); if(!uid) return;
@@ -5030,7 +5229,17 @@ async function admChatConfirmBan(){
   let ban_hasta=null, dur='indefinido';
   if(ms&&ms!=='null'){ ban_hasta=firebase.firestore.Timestamp.fromDate(new Date(Date.now()+Number(ms))); dur=ms; }
   try{
-    await db.collection(CHATA_BAN).doc(uid).set({uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,duracion_ms:dur,baneado_por:'AdminRobos',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    const fp=_chatA.ipRecords.find(p=>p.uid===uid && /^[A-Za-z0-9_-]{8,128}$/.test(String(p.fingerprint||'')))?.fingerprint||null;
+    const nick=a.toLowerCase().trim();
+    const stamp=firebase.firestore.FieldValue.serverTimestamp();
+    const doc={uid:uid,apodo:a,motivo:motivo,ban_hasta:ban_hasta,
+      duracion_ms:dur,baneado_por:'AdminRobos',timestamp:stamp,apodo_baneado:a};
+    if(fp)doc.fingerprint=fp;
+    const batch=db.batch();
+    batch.set(db.collection(CHATA_BAN).doc(uid),doc);
+    if(fp)batch.set(db.collection('chat_bans_fp').doc(fp),{uid,ban_hasta,baneado_en:stamp});
+    if(nick && !nick.includes('/'))batch.set(db.collection('chat_bans_nick').doc(nick),{uid,ban_hasta,baneado_en:stamp});
+    await batch.commit();
     // Sacarlo YA de los conectados: marcar todas sus presencias como inactivas.
     try{ const ps=await db.collection(CHATA_PRES).where('uid','==',uid).get(); let batch=db.batch(),n=0; for(const d of ps.docs){ batch.update(d.ref,{activo:false}); if(++n>=450){ await batch.commit(); batch=db.batch(); n=0; } } if(n>0) await batch.commit(); }catch(_){}
     ov.remove(); showToast('Usuario baneado 🚫','r');
@@ -5146,5 +5355,6 @@ function tAgo(date){
   return 'hace '+Math.floor(d/86400)+'d';
 }
 </script>
+<script defer src="/assets/report-tracking.js?v=1"></script>
 </body>
 </html>
