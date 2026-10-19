@@ -1,0 +1,26 @@
+name: Verificar seguimiento de reportes
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/seguimiento-reportes-v1-20261018
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obtener repo
+        uses: actions/checkout@v4
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Revisar sintaxis JS
+        run: node --check robosmdp/assets/report-tracking.js
+      - name: Ejecutar pruebas
+        run: node --test scripts/report-tracking.test.mjs
