@@ -236,3 +236,26 @@ test('campañas publicitarias: acceso y escritura exclusivos del administrador',
   await assertSucceeds(updateDoc(doc(admin,'campanias_publicitarias','c1'),{cobrado_total:100000}));
   await assertSucceeds(deleteDoc(doc(admin,'campanias_publicitarias','c1')));
 });
+
+
+test('push: se admiten categorías válidas y se rechazan categorías ajenas', async()=>{
+  const db=anon('vecino-push');
+  const base={token:'token-prueba-1234567890',lat:-38,lng:-57.56,radius:400};
+  await assertSucceeds(setDoc(doc(db,'subscripciones_push','cat-validas'),{
+    ...base,categories:['robos','luminarias']
+  }));
+  await assertFails(setDoc(doc(db,'subscripciones_push','cat-invalidas'),{
+    ...base,categories:['robos','no-existe']
+  }));
+  await assertFails(setDoc(doc(db,'subscripciones_push','cat-vacias'),{
+    ...base,categories:[]
+  }));
+  await assertSucceeds(updateDoc(doc(db,'subscripciones_push','cat-validas'),{
+    categories:['basura','pozos']
+  }));
+  await assertFails(updateDoc(doc(db,'subscripciones_push','cat-validas'),{
+    categories:['robo-falso']
+  }));
+  // Compatibilidad con usuarios anteriores sin campo categories.
+  await assertSucceeds(setDoc(doc(db,'subscripciones_push','cat-heredadas'),base));
+});
