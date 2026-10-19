@@ -3475,12 +3475,9 @@ async function updateReportState(id,state){
 }
 
 async function toggleRes(id){
-  const col=MOD_CFG[admTab].col;
-  const r=G.data[admTab].find(x=>x.id===id); if(!r) return;
-  try{
-    await db.collection(col).doc(id).update({resolved:!r.resolved});
-    showToast(r.resolved?'Marcado como pendiente':'Marcado como resuelto ✅','g');
-  }catch(e){showToast('Error al actualizar','r');}
+  const r=(G.data[admTab]||[]).find(x=>x.id===id);
+  if(!r)return;
+  await updateReportState(id,r.resolved?'publicado':'resuelto');
 }
 
 async function publicToggleResolved(tab,id){
@@ -3633,9 +3630,15 @@ function renderAvisos(){
 async function confirmAviso(avisoId){
   const a=(G.avisos||[]).find(x=>x.id===avisoId); if(!a) return;
   try{
-    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({resolved:true});
+    const event={estado:'resuelto',fecha:firebase.firestore.Timestamp.now(),por:'Robos MDP'};
+    await db.collection(MOD_CFG[a.reportType].col).doc(a.reportId).update({
+      resolved:true,estado_gestion:'resuelto',
+      estado_actualizado:firebase.firestore.FieldValue.serverTimestamp(),
+      historial_estado:firebase.firestore.FieldValue.arrayUnion(event)
+    });
     await db.collection(RESNOTIF_COL).doc(avisoId).update({status:'aprobado'});
-    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId); if(r) r.resolved=true;
+    const r=(G.data[a.reportType]||[]).find(x=>x.id===a.reportId);
+    if(r){r.resolved=true;r.estado_gestion='resuelto';r.historial_estado=[...(r.historial_estado||[]),event];}
     renderMk(a.reportType); renderRL(a.reportType); updSBStats(a.reportType); updLandingStats(a.reportType);
     showToast('Reporte marcado como resuelto ✅','g');
     loadAvisos();
