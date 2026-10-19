@@ -7,7 +7,7 @@ const PROJECT_ID='robosmdp-d1ef3';
 // La API key WEB pública es la misma del frontend, no es un secreto de servicio.
 const WEB_API_KEY=process.env.FIREBASE_WEB_API_KEY||'AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo';
 const FS=`https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
-const FIELDS=['uid','ip','ciudad','region','pais','isp','actualizado'];
+// La huella técnica, si está disponible, se guarda solamente en la colección privada.
 const b64url=b=>Buffer.from(b).toString('base64url');
 
 function json(status,body){
@@ -95,7 +95,10 @@ export default async(req,context)=>{
       ciudad:{stringValue:data.ciudad},region:{stringValue:data.region},
       pais:{stringValue:data.pais},isp:{stringValue:data.isp},
       actualizado:{timestampValue:new Date().toISOString()}};
-    const mask=FIELDS.map(f=>'updateMask.fieldPaths='+encodeURIComponent(f)).join('&');
+    const fp=typeof body.fingerprint==='string'&&/^[A-Za-z0-9_-]{8,128}$/.test(body.fingerprint)?
+      body.fingerprint:null;
+    if(fp)fields.fingerprint={stringValue:fp};
+    const mask=Object.keys(fields).map(f=>'updateMask.fieldPaths='+encodeURIComponent(f)).join('&');
     const res=await fetch(FS+'/chat_ip_private/'+encodeURIComponent(sid)+'?'+mask,{
       method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
       body:JSON.stringify({fields})
