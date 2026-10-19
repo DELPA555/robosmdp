@@ -21,12 +21,16 @@ jobs:
       - name: Sintaxis
         run: |
           node --check netlify/functions/chat-ip.mjs
+          node --check netlify/functions/chat-location-cleanup.mjs
           node --check netlify/functions/notify-zone.mjs
           node --check netlify/functions/push-unsubscribe.mjs
           node --check netlify/functions/push-delivery-cleanup.mjs
           node --check scripts/migrate-chat-ip.mjs
           node --check robosmdp/assets/report-tracking.js
+          node --check robosmdp/assets/chat-location.js
           node --check robosmdp/assets/sponsor-admin.mjs
+          node --check robosmdp/assets/admin-analytics.mjs
+          node --check robosmdp/assets/analytics-utils.mjs
           node --check robosmdp/assets/sponsor-utils.mjs
       - name: Tests integrados, comerciales, reportes y alertas
         run: |
@@ -35,6 +39,8 @@ jobs:
           node --test scripts/sponsor-utils.test.mjs
           node --test scripts/push-notifications.test.mjs
           node --test scripts/push-delivery-cleanup.test.mjs
+          node --test scripts/chat-location.test.mjs
+          node --test scripts/analytics.test.mjs
   firebase-rules:
     runs-on: ubuntu-latest
     timeout-minutes: 20
