@@ -132,6 +132,17 @@ Usar este formato para cada entrada nueva:
 - Estado: **EN REVISIÓN / NO DESPLEGADO** hasta integrar la PR en `main`. No incluye todavía Firebase, mapas, push ni alertas externas; las notificaciones de fallos dependen de la configuración de GitHub Actions.
 - PR: https://github.com/DELPA555/robosmdp/pull/3
 
+### 2026-10-18 — INT-01 Integración conjunta de seguridad, reportes, push y sponsors
+- Responsable: ChatGPT.
+- Pedido: continuar todo lo propuesto conservando compatibilidad entre Claude Code y ChatGPT.
+- Rama: `integration/mejoras-robosmdp-20261018`, a partir de seguridad PR #3, incorporando los archivos y parches de PR #4, #5 y #6.
+- Código combinado: `robosmdp/index.html` preserva los cambios de las cuatro solicitudes. `firestore.rules` conserva privacidad de chat y suma permisos privados comerciales; tests y `_redirects` integrados.
+- Archivos de verificación: `scripts/integration.test.mjs`, `.github/workflows/integration-checks.yml`, `docs/INTEGRACION-VALIDACION.md`.
+- Resultado: rama de integración preparada; **NO DESPLEGADA** a Firebase, Netlify de producción ni Play Store.
+- Pruebas: comprobada sintaxis del JS principal durante la fusión; falta confirmar el resultado completo de GitHub Actions y la ejecución integrada en Netlify/Android.
+- Pendientes indispensables: migración de IP/huellas heredadas, reglas unificadas en Firebase, configuración de retención TTL de registros push y prueba funcional admin/vecino. Ver guía `docs/INTEGRACION-VALIDACION.md`.
+- Importante: no fusionar primero PR individuales a producción sin resolver cambios compartidos. Se recomienda utilizar la rama integrada validada como candidato final tras completar el checklist.
+
 ## 7. Checklist de cierre de cualquier modificación
 
 - [ ] Se consultó este `CLAUDE.md` y el código vigente antes de empezar.
