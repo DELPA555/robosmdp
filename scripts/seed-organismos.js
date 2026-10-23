@@ -21,7 +21,9 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const admin = require('firebase-admin');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 
 const DOMINIO = 'robosmdp.com.ar';
 
@@ -68,11 +70,13 @@ async function main() {
     process.exit(1);
   }
 
-  // applicationDefault() toma la credencial de GOOGLE_APPLICATION_CREDENTIALS.
-  admin.initializeApp({ credential: admin.credential.applicationDefault() });
-  const auth = admin.auth();
-  const db = admin.firestore();
-  const FV = admin.firestore.FieldValue;
+  // Lee el JSON del Service Account directamente desde la ruta de
+  // GOOGLE_APPLICATION_CREDENTIALS (require de un .json = objeto ya parseado).
+  const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+  initializeApp({ credential: cert(serviceAccount) });
+  const auth = getAuth();
+  const db = getFirestore();
+  const FV = FieldValue;
 
   const creadas = [];
 
