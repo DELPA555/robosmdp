@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel de organismos — Robos MDP</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0e1a">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#141d30;--surface-2:#1a2438;--line:rgba(148,163,184,.16);
+  --t0:#f1f5f9;--t1:#e2e8f0;--t2:#cbd5e1;--t3:#94a3b8;--accent:#0ea5e9;--accent-2:#0284c7;
+  --ok:#22c55e;--err:#ef4444;--warn:#f59e0b;
+}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--t1);line-height:1.5;min-height:100vh;
+  background-image:radial-gradient(800px circle at 50% -10%,rgba(14,165,233,.12),transparent 55%)}
+.wrap{max-width:720px;margin:0 auto;padding:22px 16px 60px}
+.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px}
+.card{background:linear-gradient(170deg,rgba(26,36,56,.6),rgba(13,20,36,.65));border:1px solid var(--line);border-radius:16px;padding:20px 18px}
+h1{font-size:20px;font-weight:700;color:var(--t0);letter-spacing:-.02em}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--t3);margin:0 0 6px}
+input{width:100%;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;padding:11px 12px;font-size:15px;outline:none;font-family:inherit}
+input:focus{border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 16px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04110c;font-size:14px;font-weight:700;cursor:pointer}
+.btn.ghost{background:var(--surface-2);border:1px solid var(--line);color:var(--t1)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.msg{font-size:13px;min-height:18px;margin-top:10px}
+.msg.err{color:var(--err)} .msg.ok{color:#86efac}
+
+/* Login */
+#login{max-width:400px;margin:40px auto 0}
+#login .head{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+#login .field{margin-bottom:14px}
+
+/* Panel */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.who{display:flex;align-items:center;gap:10px}
+.who .n{font-size:15px;font-weight:700;color:var(--t0)}
+.who .r{font-size:11px;color:#86efac;font-weight:700;background:rgba(34,197,94,.12);padding:2px 8px;border-radius:999px}
+.tabs{display:flex;gap:6px;margin-bottom:14px;background:#0c1322;padding:5px;border-radius:12px;border:1px solid var(--line)}
+.tab{flex:1;padding:9px;border:none;background:transparent;color:var(--t3);font-size:13px;font-weight:600;border-radius:8px;cursor:pointer}
+.tab.active{background:var(--surface-2);color:var(--t0)}
+.pane{display:none} .pane.active{display:block}
+
+.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:10px}
+.item.unread{border-color:rgba(14,165,233,.45)}
+.item .row1{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:6px}
+.item .when{font-size:11px;color:var(--t3)}
+.item .txt{font-size:14px;color:var(--t1);white-space:pre-wrap;word-break:break-word}
+.item .who2{font-size:12px;color:#7dd3fc;font-weight:700}
+.badge{font-size:10px;font-weight:800;color:#04110c;background:var(--accent);padding:2px 7px;border-radius:999px}
+.mini{margin-top:9px;max-height:90px;border-radius:8px;border:1px solid var(--line);cursor:pointer}
+.empty{text-align:center;color:var(--t3);font-size:13px;padding:30px 10px}
+
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi .v{font-size:28px;font-weight:800;color:var(--t0)}
+.kpi .l{font-size:12px;color:var(--t3);margin-top:3px}
+.push{margin-top:14px}
+
+/* Modal imagen */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+#modal img{max-width:100%;max-height:90vh;border-radius:12px}
+#modal.open{display:flex}
+a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div id="login">
+    <div class="card">
+      <div class="head"><div class="logo">🛡️</div><h1>Panel de organismos</h1></div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="username" placeholder="apodo@robosmdp.com.ar">
+      </div>
+      <div class="field">
+        <label for="pass">Contraseña</label>
+        <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button class="btn" id="btn-login" onclick="login()" style="width:100%">Ingresar</button>
+      <div class="msg" id="login-msg"></div>
+    </div>
+    <div style="text-align:center"><a class="back" href="/">← Volver a Robos MDP</a></div>
+  </div>
+
+  <!-- PANEL -->
+  <div id="panel" style="display:none">
+    <div class="topbar">
+      <div class="who"><div class="logo">🛡️</div><div><div class="n" id="org-nombre">—</div><span class="r">Organismo verificado ✓</span></div></div>
+      <button class="btn ghost" onclick="logout()">Salir</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="denuncias" onclick="showTab('denuncias')">Denuncias</button>
+      <button class="tab" data-tab="menciones" onclick="showTab('menciones')">Menciones</button>
+      <button class="tab" data-tab="panel" onclick="showTab('panel')">Panel</button>
+    </div>
+
+    <div class="pane active" id="pane-denuncias"><div class="empty">Cargando denuncias…</div></div>
+    <div class="pane" id="pane-menciones"><div class="empty">Cargando menciones…</div></div>
+    <div class="pane" id="pane-panel">
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="kpi-total">—</div><div class="l">Denuncias recibidas</div></div>
+        <div class="kpi"><div class="v" id="kpi-unread">—</div><div class="l">Sin leer</div></div>
+      </div>
+      <div class="kpi" style="margin-top:10px"><div class="v" id="kpi-last" style="font-size:16px">—</div><div class="l">Última actividad</div></div>
+      <div class="push">
+        <button class="btn" id="btn-push" onclick="activarPush()">🔔 Activar notificaciones push</button>
+        <div class="msg" id="push-msg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal" onclick="this.classList.remove('open')"><img id="modal-img" alt=""></div>
+
+<!-- Firebase (compat, misma versión del sitio) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+<script>
+// ⚠ PLACEHOLDERS: el dueño reemplaza con la config real antes de deploy.
+const FB_CONFIG={
+  apiKey:"REEMPLAZAR_API_KEY",
+  authDomain:"REEMPLAZAR.firebaseapp.com",
+  projectId:"REEMPLAZAR_PROJECT_ID",
+  storageBucket:"REEMPLAZAR.firebasestorage.app",
+  messagingSenderId:"REEMPLAZAR_SENDER_ID",
+  appId:"REEMPLAZAR_APP_ID"
+};
+const VAPID_KEY='VAPID_KEY_PLACEHOLDER'; // ⚠ reemplazar por la VAPID key (FCM web push)
+
+let auth=null, db=null, messaging=null, FV=null, Timestamp=null;
+try{
+  firebase.initializeApp(FB_CONFIG);
+  auth=firebase.auth();
+  db=firebase.firestore();
+  FV=firebase.firestore.FieldValue;
+  Timestamp=firebase.firestore.Timestamp;
+  try{ messaging=firebase.messaging(); }catch(e){ console.warn('messaging no soportado', e.message); }
+}catch(e){ console.error('Firebase init', e); }
+
+const $=id=>document.getElementById(id);
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function say(el,t,cls){ el.textContent=t||''; el.className='msg'+(cls?(' '+cls):''); }
+function fmtDate(ts){
+  const d=ts&&ts.toDate?ts.toDate():(ts instanceof Date?ts:null);
+  if(!d) return '';
+  return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+let orgApodo=null, denUnsub=null, menUnsub=null, denCache=[];
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+function login(){
+  const email=$('email').value.trim(), pass=$('pass').value;
+  if(!email||!pass){ say($('login-msg'),'Completá email y contraseña.','err'); return; }
+  $('btn-login').disabled=true; say($('login-msg'),'Ingresando…','ok');
+  auth.signInWithEmailAndPassword(email,pass)
+    .catch(e=>{
+      $('btn-login').disabled=false;
+      say($('login-msg'), e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found'
+        ? 'Email o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
+    });
+}
+function logout(){ if(denUnsub)denUnsub(); if(menUnsub)menUnsub(); auth.signOut(); }
+
+if(auth) auth.onAuthStateChanged(async user=>{
+  if(!user){ showLogin(); return; }
+  try{
+    const tok=await user.getIdTokenResult();
+    if(tok.claims.rol!=='organismo'){
+      await auth.signOut();
+      showLogin('Acceso solo para organismos verificados.');
+      return;
+    }
+    orgApodo=tok.claims.apodo||null;
+    if(!orgApodo){ await auth.signOut(); showLogin('Tu cuenta no tiene apodo asignado.'); return; }
+    entrarPanel(user);
+  }catch(e){ console.error(e); showLogin('No se pudo verificar la sesión.'); }
+});
+
+function showLogin(err){
+  if(denUnsub){denUnsub();denUnsub=null;} if(menUnsub){menUnsub();menUnsub=null;}
+  $('panel').style.display='none'; $('login').style.display='block';
+  $('btn-login').disabled=false; $('pass').value='';
+  say($('login-msg'), err||'', err?'err':'');
+}
+
+function entrarPanel(user){
+  $('login').style.display='none'; $('panel').style.display='block';
+  $('org-nombre').textContent='@'+orgApodo;
+  // Nombre lindo desde el doc (si existe).
+  db.collection('chat_organismos').doc(orgApodo).get()
+    .then(d=>{ if(d.exists&&d.data().nombre) $('org-nombre').textContent=d.data().nombre; }).catch(()=>{});
+  subDenuncias(); subMenciones();
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  $('pane-'+name).classList.add('active');
+}
+
+// ── Denuncias (tiempo real) ────────────────────────────────────────────────
+function subDenuncias(){
+  if(denUnsub) denUnsub();
+  denUnsub=db.collection('chat_denuncias')
+    .where('destinatario','==',orgApodo).orderBy('creado_en','desc')
+    .onSnapshot(snap=>{
+      denCache=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderDenuncias(); renderKpis();
+    }, err=>{
+      console.warn('denuncias', err);
+      $('pane-denuncias').innerHTML='<div class="empty">No se pudieron cargar las denuncias.<br>'+
+        (/index/i.test(err.message)?'Falta crear el índice compuesto (destinatario + creado_en DESC).':esc(err.message))+'</div>';
+    });
+}
+function renderDenuncias(){
+  const pane=$('pane-denuncias');
+  if(!denCache.length){ pane.innerHTML='<div class="empty">Todavía no recibiste denuncias.</div>'; return; }
+  pane.innerHTML=denCache.map(d=>{
+    const unread=d.leido===false;
+    const img=d.imagen_url?`<img class="mini" src="${esc(d.imagen_url)}" alt="foto" onclick="verImagen('${esc(d.imagen_url)}')">`:'';
+    return `<div class="item${unread?' unread':''}" onclick="marcarLeida('${d.id}')">
+      <div class="row1"><span class="when">${esc(fmtDate(d.creado_en))}</span>${unread?'<span class="badge">No leído</span>':''}</div>
+      <div class="txt">${esc(d.mensaje||'')}</div>${img}</div>`;
+  }).join('');
+}
+function marcarLeida(id){
+  const d=denCache.find(x=>x.id===id);
+  if(!d||d.leido!==false) return;
+  db.collection('chat_denuncias').doc(id).update({leido:true}).catch(e=>console.warn('marcarLeida',e));
+}
+function verImagen(url){ event.stopPropagation(); $('modal-img').src=url; $('modal').classList.add('open'); }
+
+// ── Menciones (tiempo real) ───────────────────────────────────────────────
+function subMenciones(){
+  if(menUnsub) menUnsub();
+  menUnsub=db.collection('chat_publico')
+    .where('menciones','array-contains',orgApodo).orderBy('timestamp','desc').limit(50)
+    .onSnapshot(snap=>{
+      const pane=$('pane-menciones');
+      if(snap.empty){ pane.innerHTML='<div class="empty">Nadie te mencionó todavía.</div>'; return; }
+      pane.innerHTML=snap.docs.map(d=>{ const m=d.data();
+        return `<div class="item"><div class="row1"><span class="who2">@${esc(m.apodo||'Vecino')}</span>
+          <span class="when">${esc(fmtDate(m.timestamp))}</span></div>
+          <div class="txt">${esc(m.texto||'')}</div></div>`;
+      }).join('');
+    }, err=>{
+      console.warn('menciones', err);
+      $('pane-menciones').innerHTML='<div class="empty">No se pudieron cargar las menciones.<br>'+
+        (/index/i.test(err.message)?'Falta crear el índice compuesto (menciones array-contains + timestamp DESC).':esc(err.message))+'</div>';
+    });
+}
+
+// ── KPIs ─────────────────────────────────────────────────────────────────────
+function renderKpis(){
+  $('kpi-total').textContent=denCache.length;
+  $('kpi-unread').textContent=denCache.filter(d=>d.leido===false).length;
+  const last=denCache[0]&&denCache[0].creado_en;
+  $('kpi-last').textContent=last?fmtDate(last):'Sin actividad';
+}
+
+// ── FCM push ─────────────────────────────────────────────────────────────────
+async function activarPush(){
+  const m=$('push-msg');
+  if(!messaging){ say(m,'Este navegador no soporta notificaciones push.','err'); return; }
+  if(!('Notification' in window)){ say(m,'Este navegador no soporta notificaciones.','err'); return; }
+  $('btn-push').disabled=true; say(m,'Pidiendo permiso…','ok');
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){ say(m,'No diste permiso para notificaciones.','err'); $('btn-push').disabled=false; return; }
+    const token=await messaging.getToken({vapidKey:VAPID_KEY});
+    if(!token){ say(m,'No se pudo obtener el token.','err'); $('btn-push').disabled=false; return; }
+    await db.collection('chat_organismos').doc(orgApodo).update({ fcm_token:token, ultima_sesion:FV.serverTimestamp() });
+    say(m,'✓ Notificaciones activadas en este dispositivo.','ok');
+  }catch(e){
+    console.error('activarPush', e);
+    say(m,'No se pudieron activar: '+(e.message||e.code),'err');
+    $('btn-push').disabled=false;
+  }
+}
+</script>
+</body>
+</html>

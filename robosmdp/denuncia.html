@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Denuncia anónima — Robos MDP</title>
+<meta name="description" content="Enviá una denuncia anónima a un organismo. Sin registro, sin identidad: no guardamos quién sos.">
+<meta name="theme-color" content="#0a0e1a">
+<meta name="robots" content="noindex">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#141d30;--surface-2:#1a2438;
+  --line:rgba(148,163,184,.16);--t0:#f1f5f9;--t1:#e2e8f0;--t2:#cbd5e1;--t3:#94a3b8;
+  --accent:#0ea5e9;--accent-2:#0284c7;--ok:#22c55e;--err:#ef4444;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--t1);line-height:1.55;
+  background-image:radial-gradient(800px circle at 50% -10%,rgba(14,165,233,.12),transparent 55%);min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:28px 18px 60px}
+header{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+h1{font-size:21px;font-weight:700;color:var(--t0);letter-spacing:-.02em}
+.anon{display:inline-flex;align-items:center;gap:7px;margin:14px 0 20px;padding:10px 13px;border-radius:11px;
+  background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.3);color:#86efac;font-size:12.5px;font-weight:600}
+.card{background:linear-gradient(170deg,rgba(26,36,56,.6),rgba(13,20,36,.65));border:1px solid var(--line);border-radius:16px;padding:20px 18px}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--t3);margin:0 0 6px}
+.field{margin-bottom:17px}
+select,textarea{width:100%;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;
+  padding:11px 12px;font-size:15px;font-family:inherit;outline:none}
+select:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:120px;resize:vertical}
+.count{font-size:11px;color:var(--t3);text-align:right;margin-top:4px}
+.count.over{color:var(--err);font-weight:700}
+.file-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.file-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:10px;background:var(--surface-2);
+  border:1px solid var(--line);color:var(--t1);font-size:13px;font-weight:600;cursor:pointer}
+.file-btn:hover{border-color:var(--accent)}
+input[type=file]{display:none}
+.file-name{font-size:12px;color:var(--t3);word-break:break-all}
+.thumb{margin-top:10px;max-width:100%;max-height:200px;border-radius:10px;border:1px solid var(--line);display:none}
+.bar{height:6px;border-radius:999px;background:#0c1322;overflow:hidden;margin-top:10px;display:none}
+.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .2s}
+.send{width:100%;margin-top:6px;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#04110c;font-size:15px;font-weight:700;cursor:pointer}
+.send:disabled{opacity:.55;cursor:not-allowed}
+.msg{margin-top:14px;font-size:13px;min-height:18px}
+.msg.err{color:var(--err)} .msg.ok{color:#86efac}
+.hint{font-size:11.5px;color:var(--t3);margin-top:6px}
+.done{text-align:center;padding:34px 18px}
+.done .big{font-size:48px;margin-bottom:10px}
+.done h2{font-size:19px;color:var(--t0);margin-bottom:8px}
+.done p{font-size:14px;color:var(--t2);margin-bottom:22px}
+.again{padding:12px 20px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line);color:var(--t1);font-size:14px;font-weight:600;cursor:pointer}
+a.back{display:inline-block;margin-top:24px;color:#38bdf8;text-decoration:none;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true">🛡️</div>
+    <h1>Denuncia anónima</h1>
+  </header>
+
+  <div id="form-view">
+    <div class="anon">🔒 100% anónima — no guardamos tu identidad, IP ni dispositivo.</div>
+    <div class="card">
+      <div class="field">
+        <label for="org">¿A qué organismo querés denunciar?</label>
+        <select id="org"><option value="">Cargando organismos…</option></select>
+      </div>
+      <div class="field">
+        <label for="mensaje">Contanos qué pasó</label>
+        <textarea id="mensaje" maxlength="1000" placeholder="Describí la situación con el mayor detalle posible…" oninput="onMsgInput()"></textarea>
+        <div class="count" id="count">0 / 1000</div>
+      </div>
+      <div class="field">
+        <label>Foto (opcional)</label>
+        <div class="file-row">
+          <label class="file-btn" for="foto">📷 Adjuntar foto</label>
+          <span class="file-name" id="file-name">Ninguna (máx. 8 MB)</span>
+          <input type="file" id="foto" accept="image/*" onchange="onFile()">
+        </div>
+        <img id="thumb" class="thumb" alt="">
+        <div class="bar" id="bar"><i id="bar-fill"></i></div>
+        <div class="hint">La foto se borra automáticamente a las 24 horas.</div>
+      </div>
+      <button class="send" id="send" onclick="enviar()">Enviar denuncia</button>
+      <div class="msg" id="msg"></div>
+    </div>
+    <a class="back" href="/">← Volver a Robos MDP</a>
+  </div>
+
+  <div id="done-view" class="card done" style="display:none">
+    <div class="big">✓</div>
+    <h2>Denuncia enviada</h2>
+    <p>Gracias. El organismo la va a recibir de forma anónima. No tenemos forma de identificarte.</p>
+    <button class="again" onclick="reset()">Enviar otra denuncia</button>
+    <div><a class="back" href="/">← Volver a Robos MDP</a></div>
+  </div>
+</div>
+
+<!-- Firebase (compat, misma versión del sitio) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script>
+// ⚠ PLACEHOLDERS: el dueño reemplaza con la config real del proyecto antes de deploy.
+const FB_CONFIG={
+  apiKey:"REEMPLAZAR_API_KEY",
+  authDomain:"REEMPLAZAR.firebaseapp.com",
+  projectId:"REEMPLAZAR_PROJECT_ID",
+  storageBucket:"REEMPLAZAR.firebasestorage.app",
+  messagingSenderId:"REEMPLAZAR_SENDER_ID",
+  appId:"REEMPLAZAR_APP_ID"
+};
+
+// Lista estática de respaldo si Firestore no responde (apodo → nombre visible).
+const FALLBACK_ORGS=[
+  ['comisaria1ra','Comisaría 1ª'],['comisaria2da','Comisaría 2ª'],['comisaria3ra','Comisaría 3ª'],
+  ['comisaria4ta','Comisaría 4ª'],['comisaria5ta','Comisaría 5ª'],['comisaria6ta','Comisaría 6ª'],
+  ['comisaria7ma','Comisaría 7ª'],['comisaria8va','Comisaría 8ª'],['comisaria9na','Comisaría 9ª'],
+  ['comisaria10ma','Comisaría 10ª'],['ddi','DDI — Depto. de Investigaciones'],
+  ['patrullamunicipal','Patrulla Municipal MDP'],['brigada1','Brigada de Investigaciones'],
+  ['infanteria','Infantería PBA'],['transito','Dirección de Tránsito MDP'],['defCivil','Defensa Civil MDP'],
+  ['bomberosMdp','Bomberos Voluntarios MDP'],['samur','SAME / SAMUR MDP'],['defensoria','Defensoría del Pueblo'],
+  ['fiscaliaMdp','Fiscalía General MDP'],['juzgadoFaltas','Juzgado de Faltas MDP'],
+  ['secretariaSegMdp','Secretaría de Seguridad Municipal'],['polAdicionalMdp','Policía Adicional MDP'],
+  ['gendarmeriaMdp','Gendarmería Nacional MDP'],['prefecturaMdp','Prefectura Naval MDP']
+];
+
+const MAX_FOTO=8*1024*1024;
+let db=null, storage=null, FV=null, Timestamp=null, fotoFile=null;
+
+try{
+  firebase.initializeApp(FB_CONFIG);
+  db=firebase.firestore();
+  storage=firebase.storage();
+  FV=firebase.firestore.FieldValue;
+  Timestamp=firebase.firestore.Timestamp;
+}catch(e){ console.error('Firebase init', e); }
+
+const $=id=>document.getElementById(id);
+function say(t,cls){ const m=$('msg'); m.textContent=t||''; m.className='msg'+(cls?(' '+cls):''); }
+
+function fillOrgs(pairs){
+  const sel=$('org');
+  sel.innerHTML='<option value="">Elegí un organismo…</option>'+
+    pairs.map(([apodo,nombre])=>`<option value="${apodo}">${nombre.replace(/</g,'&lt;')}</option>`).join('');
+}
+
+async function loadOrgs(){
+  if(!db){ fillOrgs(FALLBACK_ORGS); return; }
+  try{
+    const snap=await db.collection('chat_organismos').where('activo','==',true).get();
+    if(snap.empty){ fillOrgs(FALLBACK_ORGS); return; }
+    const pairs=snap.docs.map(d=>[d.id,(d.data().nombre||d.id)]).sort((a,b)=>a[1].localeCompare(b[1]));
+    fillOrgs(pairs);
+  }catch(e){ console.warn('loadOrgs', e.message); fillOrgs(FALLBACK_ORGS); }
+}
+
+function onMsgInput(){
+  const n=$('mensaje').value.length, c=$('count');
+  c.textContent=n+' / 1000'; c.classList.toggle('over',n>=1000);
+}
+
+function onFile(){
+  const f=$('foto').files[0];
+  if(!f){ fotoFile=null; $('file-name').textContent='Ninguna (máx. 8 MB)'; $('thumb').style.display='none'; return; }
+  if(!/^image\//.test(f.type)){ say('El archivo debe ser una imagen.','err'); $('foto').value=''; return; }
+  if(f.size>MAX_FOTO){ say('La foto supera los 8 MB.','err'); $('foto').value=''; return; }
+  fotoFile=f; say('');
+  $('file-name').textContent=f.name;
+  const r=new FileReader();
+  r.onload=e=>{ const t=$('thumb'); t.src=e.target.result; t.style.display='block'; };
+  r.readAsDataURL(f);
+}
+
+// Sube la foto a denuncias/{ts}_{rand}.{ext} con barra de progreso. Devuelve la URL.
+function subirFoto(){
+  return new Promise((resolve,reject)=>{
+    const ext=(fotoFile.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,5)||'jpg';
+    const path='denuncias/'+Date.now()+'_'+Math.random().toString(36).slice(2,10)+'.'+ext;
+    const task=storage.ref().child(path).put(fotoFile,{contentType:fotoFile.type});
+    $('bar').style.display='block';
+    task.on('state_changed',
+      s=>{ $('bar-fill').style.width=Math.round((s.bytesTransferred/s.totalBytes)*100)+'%'; },
+      err=>reject(err),
+      async()=>{ try{ resolve(await task.snapshot.ref.getDownloadURL()); }catch(e){ reject(e); } }
+    );
+  });
+}
+
+async function enviar(){
+  if(!db){ say('No se pudo conectar. Reintentá en un momento.','err'); return; }
+  const destinatario=$('org').value;
+  const mensaje=$('mensaje').value.trim();
+  if(!destinatario){ say('Elegí un organismo destinatario.','err'); return; }
+  if(!mensaje){ say('Escribí tu denuncia.','err'); return; }
+  if(mensaje.length>1000){ say('El mensaje supera los 1000 caracteres.','err'); return; }
+
+  $('send').disabled=true; say('Enviando…','ok');
+  try{
+    // Documento SIN identidad: ni uid, ni ip, ni fingerprint, ni email.
+    const doc={ destinatario, mensaje, leido:false, creado_en:FV.serverTimestamp() };
+    if(fotoFile){
+      const url=await subirFoto();
+      doc.imagen_url=url;
+      doc.expira_imagen_en=Timestamp.fromMillis(Date.now()+24*60*60*1000);
+    }
+    const ref=await db.collection('chat_denuncias').add(doc);
+
+    // Aviso al organismo (fire-and-forget, no bloquea ni frena el éxito).
+    fetch('/api/notificar-denuncia',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ denunciaId:ref.id, destinatario })
+    }).catch(e=>console.warn('notificar-denuncia', e));
+
+    $('form-view').style.display='none';
+    $('done-view').style.display='block';
+    window.scrollTo(0,0);
+  }catch(e){
+    console.error('enviar', e);
+    say('No se pudo enviar la denuncia. '+(e&&e.code==='permission-denied'?'(permiso denegado)':'Reintentá.'),'err');
+    $('send').disabled=false;
+  }
+}
+
+function reset(){
+  $('mensaje').value=''; $('foto').value=''; fotoFile=null;
+  $('file-name').textContent='Ninguna (máx. 8 MB)'; $('thumb').style.display='none';
+  $('bar').style.display='none'; $('bar-fill').style.width='0';
+  $('org').selectedIndex=0; onMsgInput(); say('');
+  $('send').disabled=false;
+  $('done-view').style.display='none'; $('form-view').style.display='block';
+}
+
+loadOrgs();
+</script>
+</body>
+</html>
