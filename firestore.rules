@@ -190,7 +190,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if request.resource.data.texto is string
                   && request.resource.data.texto.size() > 0
-                  && request.resource.data.texto.size() <= 500
+                  && request.resource.data.texto.size() <= 280
                   && honestAuthor();
       allow update: if false;
       allow delete: if isAdmin();
@@ -200,7 +200,7 @@ service cloud.firestore {
       allow create: if col in ['basura','pozos','abandonados','luminarias','reportes']
                   && request.resource.data.texto is string
                   && request.resource.data.texto.size() > 0
-                  && request.resource.data.texto.size() <= 500
+                  && request.resource.data.texto.size() <= 280
                   && honestAuthor();
       allow update: if false;
       allow delete: if col in ['basura','pozos','abandonados','luminarias','reportes'] && isAdmin();
