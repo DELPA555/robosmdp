@@ -39,6 +39,13 @@ const ORGANISMOS = [
   { apodo: 'comisaria8va',      nombre: 'Comisaría 8ª' },
   { apodo: 'comisaria9na',      nombre: 'Comisaría 9ª' },
   { apodo: 'comisaria10ma',     nombre: 'Comisaría 10ª' },
+  { apodo: 'comisaria11va',     nombre: 'Comisaría 11ª' },
+  { apodo: 'comisaria12va',     nombre: 'Comisaría 12ª' },
+  { apodo: 'comisaria13ra',     nombre: 'Comisaría 13ª' },
+  { apodo: 'comisaria14va',     nombre: 'Comisaría 14ª' },
+  { apodo: 'comisaria15va',     nombre: 'Comisaría 15ª' },
+  { apodo: 'comisaria16va',     nombre: 'Comisaría 16ª' },
+  { apodo: 'comisaria17ma',     nombre: 'Comisaría 17ª' },
   { apodo: 'ddi',               nombre: 'DDI — Depto. de Investigaciones' },
   { apodo: 'patrullamunicipal', nombre: 'Patrulla Municipal MDP' },
   { apodo: 'brigada1',          nombre: 'Brigada de Investigaciones' },
@@ -81,9 +88,18 @@ async function main() {
   const db = getFirestore();
   const FV = FieldValue;
 
+  // Filtro opcional por CLI: si se pasan apodos como argumentos, SOLO se procesan
+  // esos (altas incrementales sin tocar las cuentas existentes). Sin argumentos,
+  // se procesan todos (idempotente).
+  const filtro = process.argv.slice(2).map(s => s.trim()).filter(Boolean);
+  const objetivo = filtro.length ? ORGANISMOS.filter(o => filtro.includes(o.apodo)) : ORGANISMOS;
+  const noEncontrados = filtro.filter(f => !ORGANISMOS.some(o => o.apodo === f));
+  if (noEncontrados.length) console.warn('⚠ Apodos no reconocidos (se ignoran): ' + noEncontrados.join(', '));
+  if (!objetivo.length) { console.error('✗ No hay organismos para procesar con ese filtro.'); process.exit(1); }
+
   const creadas = [];
 
-  for (const org of ORGANISMOS) {
+  for (const org of objetivo) {
     const email = `${org.apodo}@${DOMINIO}`;
     let uid = null;
     let password = null;
@@ -129,7 +145,7 @@ async function main() {
   console.log('  CREDENCIALES DE ORGANISMOS — se muestran UNA SOLA VEZ');
   console.log('═══════════════════════════════════════════════════════════════');
   console.table(creadas.map(c => ({ Organismo: c.nombre, Email: c.email, Password: c.password, Estado: c.estado })));
-  console.log('\nTotal procesados: ' + creadas.length + ' / ' + ORGANISMOS.length);
+  console.log('\nTotal procesados: ' + creadas.length + ' / ' + objetivo.length);
   console.log('Guardá las contraseñas ahora: no se vuelven a mostrar.');
 
   process.exit(0);
