@@ -20,8 +20,8 @@ body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--
 .card{background:linear-gradient(170deg,rgba(26,36,56,.6),rgba(13,20,36,.65));border:1px solid var(--line);border-radius:16px;padding:20px 18px}
 h1{font-size:20px;font-weight:700;color:var(--t0);letter-spacing:-.02em}
 label{display:block;font-size:12.5px;font-weight:600;color:var(--t3);margin:0 0 6px}
-input{width:100%;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;padding:11px 12px;font-size:15px;outline:none;font-family:inherit}
-input:focus{border-color:var(--accent)}
+input,select{width:100%;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;padding:11px 12px;font-size:15px;outline:none;font-family:inherit}
+input:focus,select:focus{border-color:var(--accent)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 16px;border:none;border-radius:11px;
   background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04110c;font-size:14px;font-weight:700;cursor:pointer}
 .btn.ghost{background:var(--surface-2);border:1px solid var(--line);color:var(--t1)}
@@ -75,8 +75,12 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
     <div class="card">
       <div class="head"><div class="logo">🛡️</div><h1>Panel de organismos</h1></div>
       <div class="field">
-        <label for="email">Email</label>
-        <input id="email" type="email" autocomplete="username" placeholder="apodo@robosmdp.com.ar">
+        <label for="org-select">Seleccioná tu organismo</label>
+        <select id="org-select" onchange="onOrgSelect()"><option value="">Elegí de la lista…</option></select>
+      </div>
+      <div class="field">
+        <label for="apodo">…o escribí tu apodo</label>
+        <input id="apodo" type="text" autocomplete="username" placeholder="ej: comisaria1ra">
       </div>
       <div class="field">
         <label for="pass">Contraseña</label>
@@ -84,6 +88,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       </div>
       <button class="btn" id="btn-login" onclick="login()" style="width:100%">Ingresar</button>
       <div class="msg" id="login-msg"></div>
+      <div style="text-align:center;margin-top:12px"><a class="back" href="#" onclick="resetPassword();return false" style="margin-top:0">Olvidé mi contraseña</a></div>
     </div>
     <div style="text-align:center"><a class="back" href="/">← Volver a Robos MDP</a></div>
   </div>
@@ -114,6 +119,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
         <div class="msg" id="push-msg"></div>
       </div>
     </div>
+    <div style="text-align:center;margin-top:16px"><a class="back" href="cambiar-password.html" style="margin-top:0">¿Primera vez? → Cambiar contraseña</a></div>
   </div>
 </div>
 
@@ -157,18 +163,69 @@ function fmtDate(ts){
 
 let orgApodo=null, denUnsub=null, menUnsub=null, denCache=[];
 
-// ── Auth ───────────────────────────────────────────────────────────────────
+// ── Login por apodo (arma el email solo) ─────────────────────────────────────
+const DOMINIO='@robosmdp.com.ar';
+// Lista estática de respaldo (apodo → nombre) si Firestore no responde — misma que denuncia.html.
+const FALLBACK_ORGS=[
+  ['comisaria1ra','Comisaría 1ª'],['comisaria2da','Comisaría 2ª'],['comisaria3ra','Comisaría 3ª'],
+  ['comisaria4ta','Comisaría 4ª'],['comisaria5ta','Comisaría 5ª'],['comisaria6ta','Comisaría 6ª'],
+  ['comisaria7ma','Comisaría 7ª'],['comisaria8va','Comisaría 8ª'],['comisaria9na','Comisaría 9ª'],
+  ['comisaria10ma','Comisaría 10ª'],['ddi','DDI — Depto. de Investigaciones'],
+  ['patrullamunicipal','Patrulla Municipal MDP'],['brigada1','Brigada de Investigaciones'],
+  ['infanteria','Infantería PBA'],['transito','Dirección de Tránsito MDP'],['defCivil','Defensa Civil MDP'],
+  ['bomberosMdp','Bomberos Voluntarios MDP'],['samur','SAME / SAMUR MDP'],['defensoria','Defensoría del Pueblo'],
+  ['fiscaliaMdp','Fiscalía General MDP'],['juzgadoFaltas','Juzgado de Faltas MDP'],
+  ['secretariaSegMdp','Secretaría de Seguridad Municipal'],['polAdicionalMdp','Policía Adicional MDP'],
+  ['gendarmeriaMdp','Gendarmería Nacional MDP'],['prefecturaMdp','Prefectura Naval MDP']
+];
+
+// Convierte lo que el usuario escribió en un email. Si ya trae @, lo usa tal cual;
+// si no, limpia espacios/@ y le agrega el dominio.
+function apodoToEmail(raw){
+  let v=String(raw||'').trim().toLowerCase();
+  if(v.includes('@')) return v;                 // escribió el email completo → tal cual
+  v=v.replace(/\s+/g,'');                        // apodo solo → limpiar espacios
+  return v+DOMINIO;
+}
+
+function onOrgSelect(){ const v=$('org-select').value; if(v) $('apodo').value=v; }
+
+async function loadLoginOrgs(){
+  const sel=$('org-select');
+  const fill=pairs=>{ sel.innerHTML='<option value="">Elegí de la lista…</option>'+
+    pairs.map(([ap,nom])=>`<option value="${ap}">${esc(nom)}</option>`).join(''); };
+  if(!db){ fill(FALLBACK_ORGS); return; }
+  try{
+    // Sin sesión las reglas pueden denegar la lectura → fallback (igual que denuncia.html).
+    const snap=await db.collection('chat_organismos').where('activo','==',true).get();
+    if(snap.empty){ fill(FALLBACK_ORGS); return; }
+    fill(snap.docs.map(d=>[d.id,(d.data().nombre||d.id)]).sort((a,b)=>a[1].localeCompare(b[1])));
+  }catch(e){ console.warn('loadLoginOrgs', e.message); fill(FALLBACK_ORGS); }
+}
+
 function login(){
-  const email=$('email').value.trim(), pass=$('pass').value;
-  if(!email||!pass){ say($('login-msg'),'Completá email y contraseña.','err'); return; }
+  const apodoRaw=$('apodo').value, pass=$('pass').value;
+  if(!apodoRaw.trim()){ say($('login-msg'),'Elegí o escribí tu apodo.','err'); return; }
+  if(!pass){ say($('login-msg'),'Ingresá tu contraseña.','err'); return; }
+  const email=apodoToEmail(apodoRaw);
   $('btn-login').disabled=true; say($('login-msg'),'Ingresando…','ok');
   auth.signInWithEmailAndPassword(email,pass)
     .catch(e=>{
       $('btn-login').disabled=false;
       say($('login-msg'), e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found'
-        ? 'Email o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
+        ? 'Apodo o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
     });
 }
+
+function resetPassword(){
+  const apodoRaw=$('apodo').value;
+  if(!apodoRaw.trim()){ say($('login-msg'),'Escribí o elegí tu apodo primero.','err'); return; }
+  const email=apodoToEmail(apodoRaw);
+  auth.sendPasswordResetEmail(email)
+    .then(()=>say($('login-msg'),'Te enviamos un email a '+email+' para resetear tu contraseña.','ok'))
+    .catch(e=>say($('login-msg'),'No se pudo enviar el reset: '+(e.message||e.code),'err'));
+}
+
 function logout(){ if(denUnsub)denUnsub(); if(menUnsub)menUnsub(); auth.signOut(); }
 
 if(auth) auth.onAuthStateChanged(async user=>{
@@ -288,6 +345,9 @@ async function activarPush(){
     $('btn-push').disabled=false;
   }
 }
+
+// Poblar el dropdown de organismos del login al cargar.
+loadLoginOrgs();
 </script>
 </body>
 </html>

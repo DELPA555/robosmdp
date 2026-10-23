@@ -329,9 +329,12 @@ service cloud.firestore {
     // que no pasa por estas reglas).
     match /chat_organismos/{apodo} {
       allow read: if isSignedIn();
-      allow update: if isOrganismo(apodo)
-        && request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['fcm_token','ultima_sesion']);
+      // El admin puede editar cualquier campo (ej. activo:false para desactivar);
+      // el propio organismo solo su token/última-sesión.
+      allow update: if isAdmin()
+        || (isOrganismo(apodo)
+            && request.resource.data.diff(resource.data).affectedKeys()
+                .hasOnly(['fcm_token','ultima_sesion']));
       allow create, delete: if false;
     }
 
@@ -351,7 +354,10 @@ service cloud.firestore {
         && request.resource.data.mensaje.size() > 0
         && request.resource.data.mensaje.size() <= 1000
         && request.resource.data.leido == false;
-      allow read, update: if isOrganismo(resource.data.destinatario);
+      // El organismo destinatario lee y marca leído; el admin puede leer (panel de
+      // administración: conteos y detalle). El admin NO escribe denuncias.
+      allow read: if isAdmin() || isOrganismo(resource.data.destinatario);
+      allow update: if isOrganismo(resource.data.destinatario);
     }
   }
 }

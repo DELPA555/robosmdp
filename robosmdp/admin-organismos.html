@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin organismos — Robos MDP</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0e1a">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#141d30;--surface-2:#1a2438;--line:rgba(148,163,184,.16);
+  --t0:#f1f5f9;--t1:#e2e8f0;--t2:#cbd5e1;--t3:#94a3b8;--accent:#0ea5e9;--accent-2:#0284c7;
+  --ok:#22c55e;--err:#ef4444;--warn:#f59e0b;
+}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--t1);line-height:1.5;min-height:100vh;
+  background-image:radial-gradient(800px circle at 50% -10%,rgba(14,165,233,.12),transparent 55%)}
+.wrap{max-width:1000px;margin:0 auto;padding:22px 16px 60px}
+.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px}
+.card{background:linear-gradient(170deg,rgba(26,36,56,.6),rgba(13,20,36,.65));border:1px solid var(--line);border-radius:16px;padding:20px 18px}
+h1{font-size:20px;font-weight:700;color:var(--t0);letter-spacing:-.02em}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--t3);margin:0 0 6px}
+input{width:100%;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;padding:11px 12px;font-size:15px;outline:none;font-family:inherit}
+input:focus{border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 15px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04110c;font-size:13px;font-weight:700;cursor:pointer}
+.btn.ghost{background:var(--surface-2);border:1px solid var(--line);color:var(--t1)}
+.btn.danger{background:rgba(239,90,90,.14);border:1px solid rgba(239,90,90,.4);color:#ffb0b0}
+.btn.sm{padding:6px 10px;font-size:12px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.msg{font-size:13px;min-height:18px;margin-top:10px}
+.msg.err{color:var(--err)} .msg.ok{color:#86efac}
+
+/* Login */
+#login{max-width:400px;margin:40px auto 0}
+#login .head{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+#login .field{margin-bottom:14px}
+
+/* Panel */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.who{display:flex;align-items:center;gap:10px}
+.who .n{font-size:15px;font-weight:700;color:var(--t0)}
+.who .r{font-size:11px;color:#fcd34d;font-weight:700;background:rgba(245,158,11,.14);padding:2px 8px;border-radius:999px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi .v{font-size:26px;font-weight:800;color:var(--t0)}
+.kpi .l{font-size:11.5px;color:var(--t3);margin-top:3px}
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--t3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:rgba(148,163,184,.06)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot.on{background:var(--ok)} .dot.off{background:var(--err)}
+.num{font-weight:700}
+.num.unread{color:var(--warn)}
+.empty{text-align:center;color:var(--t3);font-size:13px;padding:26px 10px}
+
+/* Detalle de denuncias */
+#detail{margin-top:14px;display:none}
+#detail .dhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px}
+.item.unread{border-color:rgba(245,158,11,.45)}
+.item .row1{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+.item .when{font-size:11px;color:var(--t3)}
+.item .txt{font-size:13.5px;color:var(--t1);white-space:pre-wrap;word-break:break-word}
+.badge{font-size:10px;font-weight:800;color:#231405;background:var(--warn);padding:2px 7px;border-radius:999px}
+a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div id="login">
+    <div class="card">
+      <div class="head"><div class="logo">🛡️</div><h1>Admin — Organismos</h1></div>
+      <div class="field"><label for="email">Email admin</label><input id="email" type="email" autocomplete="username" placeholder="admin@robosmdp.com.ar"></div>
+      <div class="field"><label for="pass">Contraseña</label><input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <button class="btn" id="btn-login" onclick="login()" style="width:100%">Ingresar</button>
+      <div class="msg" id="login-msg"></div>
+    </div>
+    <div style="text-align:center"><a class="back" href="/">← Volver a Robos MDP</a></div>
+  </div>
+
+  <!-- PANEL -->
+  <div id="panel" style="display:none">
+    <div class="topbar">
+      <div class="who"><div class="logo">🛡️</div><div><div class="n">Panel de administración</div><span class="r" id="admin-email">admin</span></div></div>
+      <button class="btn ghost" onclick="logout()">Salir</button>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="kpi-orgs">—</div><div class="l">Organismos activos</div></div>
+      <div class="kpi"><div class="v" id="kpi-hoy">—</div><div class="l">Denuncias hoy</div></div>
+      <div class="kpi"><div class="v" id="kpi-unread">—</div><div class="l">Sin leer (total)</div></div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn ghost" id="btn-refresh" onclick="cargar()">↻ Actualizar</button>
+      <span class="msg" id="panel-msg" style="margin-top:0;align-self:center"></span>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Nombre</th><th>Apodo</th><th>Email</th><th>FCM</th><th>Última sesión</th>
+          <th>Denuncias</th><th>Sin leer</th><th></th>
+        </tr></thead>
+        <tbody id="tbody"><tr><td colspan="8" class="empty">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div id="detail" class="card">
+      <div class="dhead"><strong id="detail-title">Denuncias</strong><button class="btn ghost sm" onclick="cerrarDetalle()">Cerrar</button></div>
+      <div id="detail-list"></div>
+    </div>
+
+    <div style="text-align:center"><a class="back" href="/">← Volver a Robos MDP</a></div>
+  </div>
+</div>
+
+<!-- Firebase (compat, misma versión del sitio) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+// ⚠ PLACEHOLDERS: el dueño reemplaza con la config real antes de deploy.
+const FB_CONFIG={
+  apiKey:"REEMPLAZAR_API_KEY",
+  authDomain:"REEMPLAZAR.firebaseapp.com",
+  projectId:"REEMPLAZAR_PROJECT_ID",
+  storageBucket:"REEMPLAZAR.firebasestorage.app",
+  messagingSenderId:"REEMPLAZAR_SENDER_ID",
+  appId:"REEMPLAZAR_APP_ID"
+};
+const ADMIN_EMAIL='admin@robosmdp.com.ar'; // mismo admin del resto del sistema
+
+let auth=null, db=null;
+try{ firebase.initializeApp(FB_CONFIG); auth=firebase.auth(); db=firebase.firestore(); }
+catch(e){ console.error('Firebase init', e); }
+
+const $=id=>document.getElementById(id);
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function say(el,t,cls){ el.textContent=t||''; el.className='msg'+(cls?(' '+cls):''); }
+function fmtDate(ts){ const d=ts&&ts.toDate?ts.toDate():null; return d?d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'; }
+function isAdmin(user, tok){ return (tok&&tok.claims&&tok.claims.admin===true) || (user&&user.email===ADMIN_EMAIL); }
+
+let denByOrg={}; // apodo → [denuncias]
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+function login(){
+  const email=$('email').value.trim(), pass=$('pass').value;
+  if(!email||!pass){ say($('login-msg'),'Completá email y contraseña.','err'); return; }
+  $('btn-login').disabled=true; say($('login-msg'),'Ingresando…','ok');
+  auth.signInWithEmailAndPassword(email,pass).catch(e=>{
+    $('btn-login').disabled=false;
+    say($('login-msg'), (e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found')
+      ? 'Email o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
+  });
+}
+function logout(){ auth.signOut(); }
+
+if(auth) auth.onAuthStateChanged(async user=>{
+  if(!user){ showLogin(); return; }
+  try{
+    const tok=await user.getIdTokenResult();
+    if(!isAdmin(user,tok)){ await auth.signOut(); showLogin('Acceso solo para el administrador.'); return; }
+    $('login').style.display='none'; $('panel').style.display='block';
+    $('admin-email').textContent=user.email||'admin';
+    cargar();
+  }catch(e){ console.error(e); showLogin('No se pudo verificar la sesión.'); }
+});
+
+function showLogin(err){
+  $('panel').style.display='none'; $('login').style.display='block';
+  $('btn-login').disabled=false; $('pass').value='';
+  say($('login-msg'), err||'', err?'err':'');
+}
+
+// ── Carga de datos ───────────────────────────────────────────────────────────
+async function cargar(){
+  $('btn-refresh').disabled=true; say($('panel-msg'),'Actualizando…','ok');
+  cerrarDetalle();
+  try{
+    const [orgSnap, denSnap]=await Promise.all([
+      db.collection('chat_organismos').where('activo','==',true).get(),
+      db.collection('chat_denuncias').get()
+    ]);
+    const orgs=orgSnap.docs.map(d=>({apodo:d.id,...d.data()})).sort((a,b)=>String(a.nombre||a.apodo).localeCompare(String(b.nombre||b.apodo)));
+
+    // Agrupar denuncias por destinatario + contar hoy / no leídas global.
+    denByOrg={}; let hoy=0, unreadTotal=0;
+    const t0=new Date(); t0.setHours(0,0,0,0);
+    denSnap.docs.forEach(d=>{
+      const x={id:d.id,...d.data()};
+      (denByOrg[x.destinatario]=denByOrg[x.destinatario]||[]).push(x);
+      const cd=x.creado_en&&x.creado_en.toDate?x.creado_en.toDate():null;
+      if(cd && cd>=t0) hoy++;
+      if(x.leido===false) unreadTotal++;
+    });
+    // Orden interno por fecha desc.
+    Object.values(denByOrg).forEach(arr=>arr.sort((a,b)=>{
+      const ta=a.creado_en&&a.creado_en.toMillis?a.creado_en.toMillis():0;
+      const tb=b.creado_en&&b.creado_en.toMillis?b.creado_en.toMillis():0; return tb-ta;
+    }));
+
+    $('kpi-orgs').textContent=orgs.length;
+    $('kpi-hoy').textContent=hoy;
+    $('kpi-unread').textContent=unreadTotal;
+    renderTabla(orgs);
+    say($('panel-msg'),'');
+  }catch(e){
+    console.error('cargar', e);
+    $('tbody').innerHTML='<tr><td colspan="8" class="empty">No se pudo cargar. '+
+      (/permission/i.test(e.message)?'(permiso denegado — ¿reglas de admin publicadas?)':esc(e.message))+'</td></tr>';
+    say($('panel-msg'),'Error al cargar.','err');
+  }finally{ $('btn-refresh').disabled=false; }
+}
+
+function renderTabla(orgs){
+  if(!orgs.length){ $('tbody').innerHTML='<tr><td colspan="8" class="empty">No hay organismos activos.</td></tr>'; return; }
+  $('tbody').innerHTML=orgs.map(o=>{
+    const dd=denByOrg[o.apodo]||[];
+    const unread=dd.filter(x=>x.leido===false).length;
+    const fcm=o.fcm_token?'<span class="dot on"></span>Sí':'<span class="dot off"></span>No';
+    return `<tr onclick="verDenuncias('${esc(o.apodo)}')">
+      <td>${esc(o.nombre||o.apodo)}</td><td>@${esc(o.apodo)}</td><td>${esc(o.email||'')}</td>
+      <td>${fcm}</td><td>${esc(fmtDate(o.ultima_sesion))}</td>
+      <td class="num">${dd.length}</td><td class="num${unread?' unread':''}">${unread}</td>
+      <td><button class="btn danger sm" onclick="desactivar(event,'${esc(o.apodo)}','${esc((o.nombre||o.apodo)).replace(/'/g,"")}')">Desactivar</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Detalle de denuncias de un organismo ──────────────────────────────────────
+function verDenuncias(apodo){
+  const dd=denByOrg[apodo]||[];
+  $('detail-title').textContent='Denuncias de @'+apodo+' ('+dd.length+')';
+  $('detail-list').innerHTML=dd.length? dd.map(x=>`
+    <div class="item${x.leido===false?' unread':''}">
+      <div class="row1"><span class="when">${esc(fmtDate(x.creado_en))}</span>${x.leido===false?'<span class="badge">No leído</span>':''}</div>
+      <div class="txt">${esc(x.mensaje||'')}</div>
+    </div>`).join('') : '<div class="empty">Sin denuncias.</div>';
+  $('detail').style.display='block';
+  $('detail').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cerrarDetalle(){ $('detail').style.display='none'; }
+
+// ── Desactivar organismo ──────────────────────────────────────────────────────
+async function desactivar(ev, apodo, nombre){
+  ev.stopPropagation();
+  if(!confirm('¿Desactivar a "'+nombre+'"? Dejará de recibir denuncias y menciones.')) return;
+  try{
+    await db.collection('chat_organismos').doc(apodo).update({activo:false});
+    say($('panel-msg'),'Organismo desactivado.','ok');
+    cargar();
+  }catch(e){ console.error('desactivar', e); say($('panel-msg'),'No se pudo desactivar: '+(e.message||e.code),'err'); }
+}
+</script>
+</body>
+</html>
