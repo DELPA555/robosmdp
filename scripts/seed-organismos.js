@@ -21,6 +21,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const path = require('node:path');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
@@ -70,9 +71,11 @@ async function main() {
     process.exit(1);
   }
 
-  // Lee el JSON del Service Account directamente desde la ruta de
-  // GOOGLE_APPLICATION_CREDENTIALS (require de un .json = objeto ya parseado).
-  const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+  // Lee el JSON del Service Account desde la ruta de GOOGLE_APPLICATION_CREDENTIALS
+  // (require de un .json = objeto ya parseado). Limpia espacios al final y resuelve
+  // rutas relativas contra el directorio actual.
+  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS.trim();
+  const serviceAccount = require(path.isAbsolute(credPath) ? credPath : path.resolve(process.cwd(), credPath));
   initializeApp({ credential: cert(serviceAccount) });
   const auth = getAuth();
   const db = getFirestore();
