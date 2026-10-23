@@ -102,17 +102,18 @@ a.back{display:inline-block;margin-top:24px;color:#38bdf8;text-decoration:none;f
 
 <!-- Firebase (compat, misma versión del sitio) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
-// ⚠ PLACEHOLDERS: el dueño reemplaza con la config real del proyecto antes de deploy.
+// Config pública del sitio (misma que chat.html / index.html).
 const FB_CONFIG={
-  apiKey:"REEMPLAZAR_API_KEY",
-  authDomain:"REEMPLAZAR.firebaseapp.com",
-  projectId:"REEMPLAZAR_PROJECT_ID",
-  storageBucket:"REEMPLAZAR.firebasestorage.app",
-  messagingSenderId:"REEMPLAZAR_SENDER_ID",
-  appId:"REEMPLAZAR_APP_ID"
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
 
 // Lista estática de respaldo si Firestore no responde (apodo → nombre visible).
@@ -130,12 +131,13 @@ const FALLBACK_ORGS=[
 ];
 
 const MAX_FOTO=8*1024*1024;
-let db=null, storage=null, FV=null, Timestamp=null, fotoFile=null;
+let db=null, storage=null, auth=null, FV=null, Timestamp=null, fotoFile=null;
 
 try{
   firebase.initializeApp(FB_CONFIG);
   db=firebase.firestore();
   storage=firebase.storage();
+  auth=firebase.auth();
   FV=firebase.firestore.FieldValue;
   Timestamp=firebase.firestore.Timestamp;
 }catch(e){ console.error('Firebase init', e); }
@@ -204,6 +206,10 @@ async function enviar(){
     // Documento SIN identidad: ni uid, ni ip, ni fingerprint, ni email.
     const doc={ destinatario, mensaje, leido:false, creado_en:FV.serverTimestamp() };
     if(fotoFile){
+      // Opción A: las denuncias de solo texto van sin auth; para subir foto nos
+      // autenticamos de forma anónima (la regla de Storage exige request.auth != null).
+      // El uid anónimo es efímero y NO se guarda en el doc: la denuncia sigue anónima.
+      if(auth && !auth.currentUser) await auth.signInAnonymously();
       const url=await subirFoto();
       doc.imagen_url=url;
       doc.expira_imagen_en=Timestamp.fromMillis(Date.now()+24*60*60*1000);

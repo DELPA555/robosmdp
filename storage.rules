@@ -24,6 +24,18 @@ service firebase.storage {
             || request.resource.contentType.matches('video/.*'));
     }
 
+    // Fotos de denuncias anónimas (ORG-01): denuncias/{archivo}.
+    // Opción A: la subida se hace con Auth anónima (ver denuncia.html), con límite
+    // de 8 MB y solo imágenes. No se listan ni se sobrescriben desde el cliente; la
+    // foto se ve por su download URL (token). La limpieza horaria (función
+    // limpiar-imagenes) borra con Admin SDK, fuera de estas reglas.
+    match /denuncias/{file} {
+      allow create: if request.auth != null
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow read, update, delete: if false;
+    }
+
     // Todo lo demás del bucket: denegado por defecto.
   }
 }
