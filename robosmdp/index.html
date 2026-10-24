@@ -664,8 +664,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <a href="https://www.instagram.com/robos.mdp/" rel="noopener" target="_blank">Instagram</a>
 <a href="https://www.facebook.com/profile.php?id=61586689222412" rel="noopener" target="_blank">Facebook</a>
 </div>
-<p style="font-size:10px;color:#475569;font-weight:600;line-height:1.7">Robos MDP · Mapa colaborativo de Mar del Plata · Plataforma independiente sin fines de lucro<br/>Contacto: WhatsApp +54 11 3857-4444</p>
+<p id="footerCopy" style="font-size:10px;color:#475569;font-weight:600;line-height:1.7">Robos MDP · Mapa colaborativo de Mar del Plata · Plataforma independiente sin fines de lucro<br/>Contacto: WhatsApp +54 11 3857-4444</p>
 </footer>
+<script>
+/* Acceso oculto (sin link visible): 3 taps/clicks sobre el copyright del footer,
+   los 3 en menos de 2 segundos, redirige al panel de organismos. El contador se
+   reinicia si pasan más de 2s entre taps. */
+(function(){
+  var el=document.getElementById('footerCopy');
+  if(!el)return;
+  var taps=0,last=0;
+  el.addEventListener('click',function(){
+    var now=Date.now();
+    taps=(now-last>2000)?1:taps+1;
+    last=now;
+    if(taps>=3){taps=0;location.href='/panel-organismos.html';}
+  });
+})();
+</script>
 </div>
 <!-- APP -->
 <div id="app"><button aria-label="Cerrar menú y volver al mapa" id="pro-sb-backdrop" onclick="closeSB()" tabindex="-1" type="button"></button>
