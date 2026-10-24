@@ -289,7 +289,10 @@ service cloud.firestore {
     // para marcarla inactiva al banear. La limpieza programada usa Service
     // Account vía REST y no pasa por estas reglas.
     match /chat_presencia/{sessionId} {
-      allow read: if isAdmin() || (isSignedIn() && !isBanned());
+      // Solo el admin lee la presencia: los docs contienen IP/geo/fingerprint y no
+      // deben quedar expuestos a vecinos (auth anónima). El chat sigue escribiendo
+      // SU propia presencia; el contador "en línea" para vecinos queda deshabilitado.
+      allow read: if isAdmin();
       allow create, update: if isAdmin()
                   || (isSignedIn() && !isBanned()
                       && request.resource.data.uid == request.auth.uid);
