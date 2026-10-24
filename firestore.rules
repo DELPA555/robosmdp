@@ -3,34 +3,31 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function isAdmin() {
-      // Admin por email (cuenta existente) O por custom claim admin==true.
       return request.auth != null && (
         request.auth.token.email == 'admin@robosmdp.com.ar'
         || request.auth.token.admin == true
       );
     }
 
-    // Autor del doc (si en el futuro los docs guardan el uid del creador).
     function isAuthor() {
       return request.auth != null
           && 'uid' in resource.data
           && resource.data.uid == request.auth.uid;
     }
 
-    // Alta de reportes de mapa: descripción 1..500 + coordenadas numéricas.
     function validReportCreate() {
       let d = request.resource.data;
-      return d.description is string && d.description.size() > 0 && d.description.size() <= 500
-          && d.lat is number && d.lng is number;
+      return d.description is string
+          && d.description.size() <= 500
+          && d.lat is number
+          && d.lng is number;
     }
 
-    // Updates permitidos en reportes: admin/autor, o cambios anónimos acotados
-    // que la app ya hace: sumar "me preocupa" (+1) o alternar "resolved".
     function reportUpdateOK() {
       let changed = request.resource.data.diff(resource.data).affectedKeys();
       return isAdmin() || isAuthor()
           || (changed.hasOnly(['concerns'])
-              && request.resource.data.concerns == resource.data.get('concerns', 0) + 1)
+              && request.resource.data.concerns == resource.data.concerns + 1)
           || (changed.hasOnly(['resolved'])
               && request.resource.data.resolved is bool);
     }
@@ -53,35 +50,34 @@ service cloud.firestore {
     function isSignedIn() {
       return request.auth != null;
     }
+
     // ORG-01: organismo verificado (custom claims rol=='organismo' + apodo).
     function isOrganismo(apodo) {
       return request.auth != null
         && request.auth.token.rol == 'organismo'
         && request.auth.token.apodo == apodo;
     }
+
     function banRef() {
       return /databases/$(database)/documents/chat_bans/$(request.auth.uid);
     }
-    // Baneado = existe su doc de ban por UID y sigue vigente (permanente = sin ban_hasta).
+
     function isBanned() {
       return isSignedIn()
         && exists(banRef())
         && (get(banRef()).data.ban_hasta == null
             || get(banRef()).data.ban_hasta > request.time);
     }
-    // Moderador = tiene doc en chat_moderadores indexado por su UID.
+
     function isMod() {
       return isSignedIn()
         && exists(/databases/$(database)/documents/chat_moderadores/$(request.auth.uid));
     }
 
     // ===========================================================
-    //  COLECCIONES PÚBLICAS ENDURECIDAS (antes: todo abierto)
-    //  read: libre · create: validado (sin auth) · update: admin/autor
-    //  + cambios anónimos acotados · delete: solo admin.
+    //  COLECCIONES PÚBLICAS ENDURECIDAS
     // ===========================================================
 
-    // --- Reportes de mapa (misma forma: description/lat/lng) ---
     match /artifacts/{appId}/public/data/reports/{rid} {
       allow read: if true;
       allow create: if validReportCreate();
@@ -119,7 +115,6 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // --- Patentes: alta validada; update público SOLO para marcar resuelto=true ---
     match /patentes/{docId} {
       allow read: if true;
       allow create: if request.resource.data.patente is string
@@ -134,7 +129,6 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // --- Objetos perdidos: alta validada; update público SOLO para resuelto=true ---
     match /objetos_perdidos/{docId} {
       allow read: if true;
       allow create: if request.resource.data.descripcion is string
@@ -146,8 +140,6 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // --- Avisos de resolución (foto que manda un vecino): alta validada; el
-    //     admin los procesa (update) y los borra. ---
     match /notificaciones_resolucion/{docId} {
       allow read: if true;
       allow create: if request.resource.data.reportId is string
@@ -159,9 +151,6 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // --- Suscripciones push: cada navegador crea/actualiza SU doc (por id de
-    //     localStorage) solo con campos de zona. read = admin (contienen tokens,
-    //     NO deben ser legibles por cualquiera; el server los lee con Admin SDK). ---
     match /subscripciones_push/{docId} {
       allow read: if isAdmin();
       allow create: if request.resource.data.token is string
@@ -174,18 +163,18 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // --- Contadores (incrementos públicos por diseño; hoy sin uso desde el
-    //     cliente). Se dejan escribibles para no romper incrementos; borrado admin. ---
     match /pageCounters/{docId} {
       allow read: if true;
       allow create, update: if true;
       allow delete: if isAdmin();
     }
+
     match /stats/visitas {
       allow read: if true;
       allow create, update: if true;
       allow delete: if isAdmin();
     }
+
     match /artifacts/{aid}/public/data/reports/{rid}/comentarios/{cid} {
       allow read: if true;
       allow create: if request.resource.data.texto is string
@@ -195,6 +184,7 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if isAdmin();
     }
+
     match /{col}/{rid}/comentarios/{cid} {
       allow read: if col in ['basura','pozos','abandonados','luminarias','reportes'];
       allow create: if col in ['basura','pozos','abandonados','luminarias','reportes']
@@ -205,6 +195,7 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if col in ['basura','pozos','abandonados','luminarias','reportes'] && isAdmin();
     }
+
     match /foro/{tid} {
       allow read: if true;
       allow create: if request.resource.data.titulo is string
@@ -226,12 +217,15 @@ service cloud.firestore {
         allow delete: if isAdmin();
       }
     }
+
+    // Validación anti-abuso: máximo 10 campos por doc.
     match /rastreo_registros/{docId} {
-      // Validación mínima anti-abuso: acotar la cantidad de campos del doc.
       allow create: if request.resource.data.keys().size() <= 10;
       allow read, delete: if isAdmin();
       allow update: if false;
     }
+
+    // Validación: descripcion string de 1..500 chars.
     match /mascotas/{id} {
       allow read: if true;
       allow create: if request.resource.data.descripcion is string
@@ -248,15 +242,13 @@ service cloud.firestore {
     //  CHAT VECINAL v2 — identidad y moderación por UID de Auth
     // ===========================================================
 
-    // Mensajes: solo autenticados y NO baneados leen/escriben. El uid del
-    // mensaje debe ser el del autor y no se puede auto-atribuir admin/moderador.
     match /chat_publico/{msgId} {
       allow read: if isAdmin() || (isSignedIn() && !isBanned());
       allow create: if isSignedIn() && !isBanned()
                   && request.resource.data.uid == request.auth.uid
                   && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo','media','menciones','esOrganismo','autor'])
                   && request.resource.data.texto is string
-                  && request.resource.data.texto.size() <= 500
+                  && request.resource.data.texto.size() <= 280
                   && (request.resource.data.texto.size() > 0 || 'media' in request.resource.data)
                   && request.resource.data.apodo is string
                   && request.resource.data.apodo.size() <= 40
@@ -270,12 +262,10 @@ service cloud.firestore {
                       || (isAdmin()
                           && request.resource.data.media.url is string
                           && request.resource.data.media.type is string))
-                  // ORG-01: menciones a organismos (opcional) debe ser una lista.
+                  // Menciones: campo opcional, debe ser lista.
                   && (!('menciones' in request.resource.data)
                       || request.resource.data.menciones is list)
-                  // ORG-01 (Parte 2): respuesta oficial de un organismo. esOrganismo:true
-                  // SOLO si el autor es realmente ese organismo (su claim apodo coincide)
-                  // o el admin — anti-spoofing: un vecino no puede fingir respuesta oficial.
+                  // ORG-01: esOrganismo:true SOLO si el auth claim coincide o es admin.
                   && (!('esOrganismo' in request.resource.data)
                       || (request.resource.data.esOrganismo is bool
                           && (request.resource.data.esOrganismo == false
@@ -288,13 +278,8 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Presencia atada al UID autenticado. El admin puede escribir la de otros
-    // para marcarla inactiva al banear. La limpieza programada usa Service
-    // Account vía REST y no pasa por estas reglas.
+    // Solo admin lee presencia (evita leak de IP/geo de vecinos).
     match /chat_presencia/{sessionId} {
-      // Solo el admin lee la presencia: los docs contienen IP/geo/fingerprint y no
-      // deben quedar expuestos a vecinos (auth anónima). El chat sigue escribiendo
-      // SU propia presencia; el contador "en línea" para vecinos queda deshabilitado.
       allow read: if isAdmin();
       allow create, update: if isAdmin()
                   || (isSignedIn() && !isBanned()
@@ -303,33 +288,23 @@ service cloud.firestore {
                   || (isSignedIn() && resource.data.uid == request.auth.uid);
     }
 
-    // Moderadores indexados por UID. La lista no es sensible (solo da el badge 🛡️);
-    // asignarlos/quitarlos es exclusivo del administrador.
     match /chat_moderadores/{uid} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Baneos indexados por UID. Un vecino solo puede leer SU propio ban (para
-    // auto-bloquearse en vivo); el admin lista todos y es el único que crea,
-    // modifica o levanta sanciones.
     match /chat_bans/{uid} {
       allow get:  if isAdmin() || (isSignedIn() && request.auth.uid == uid);
       allow list: if isAdmin();
       allow write: if isAdmin();
     }
 
-    // Espejo de baneo por huella de dispositivo (FingerprintJS).
-    // ID del doc = visitorId. Lectura por get() para firmados — no hay datos
-    // sensibles, solo uid + ban_hasta. Lista solo admin; escritura solo admin.
     match /chat_bans_fp/{fingerprint} {
       allow get: if isSignedIn();
       allow list: if isAdmin();
       allow write: if isAdmin();
     }
 
-    // Espejo de baneo por apodo (nick en minúsculas).
-    // ID del doc = apodo.toLowerCase(). Lectura por get() para firmados.
     match /chat_bans_nick/{nick} {
       allow get: if isSignedIn();
       allow list: if isAdmin();
@@ -340,14 +315,8 @@ service cloud.firestore {
     //  ORG-01 — ORGANISMOS VERIFICADOS
     // ===========================================================
 
-    // Organismos verificados (doc id = apodo). Lectura abierta a cualquier firmado:
-    // el chat necesita la lista para el badge ✓ y las @menciones. Cada organismo
-    // solo puede tocar SU token/última-sesión. Alta/baja = seed admin (Admin SDK,
-    // que no pasa por estas reglas).
     match /chat_organismos/{apodo} {
       allow read: if isSignedIn();
-      // El admin puede editar cualquier campo (ej. activo:false para desactivar);
-      // el propio organismo solo su token/última-sesión.
       allow update: if isAdmin()
         || (isOrganismo(apodo)
             && request.resource.data.diff(resource.data).affectedKeys()
@@ -355,21 +324,20 @@ service cloud.firestore {
       allow create, delete: if false;
     }
 
-    // Denuncias anónimas. Crear = cualquiera (anónimo incluido), pero el doc NO
-    // puede traer datos de identidad (uid/ip/fingerprint/email) — bloqueado acá,
-    // no solo en el frontend (Ley 25.326). Leer y marcar leído = solo el organismo
-    // destinatario.
+    // Denuncias anónimas: el cliente NO crea directo (va por función crear-denuncia).
+    // imagen_url solo puede apuntar a storage de denuncias.
     match /chat_denuncias/{id} {
-      // El cliente NO crea denuncias directo: van por la función crear-denuncia
-      // (rate limiting por IP + escritura con Admin SDK, que no pasa por estas
-      // reglas). Bloquear el create acá es lo que hace que el límite no sea
-      // bypasseable escribiendo directo a Firestore. La función igual valida
-      // destinatario/mensaje/imagen_url y no guarda identidad.
       allow create: if false;
-      // El organismo destinatario lee y marca leído; el admin puede leer (panel de
-      // administración: conteos y detalle). El admin NO escribe denuncias.
       allow read: if isAdmin() || isOrganismo(resource.data.destinatario);
-      allow update: if isOrganismo(resource.data.destinatario);
+      allow update: if isOrganismo(resource.data.destinatario)
+                  && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leido','leido_en']);
+      allow delete: if isAdmin();
     }
+
+    // Rate limiting para crear-denuncia (escrito por Admin SDK).
+    match /rate_limits/{docId} {
+      allow read, write: if false;
+    }
+
   }
 }
