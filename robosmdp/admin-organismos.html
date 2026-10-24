@@ -191,7 +191,7 @@ const $=id=>document.getElementById(id);
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function say(el,t,cls){ el.textContent=t||''; el.className='msg'+(cls?(' '+cls):''); }
 function fmtDate(ts){ const d=ts&&ts.toDate?ts.toDate():null; return d?d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'; }
-function isAdmin(user, tok){ return (tok&&tok.claims&&tok.claims.admin===true) || (user&&user.email===ADMIN_EMAIL); }
+function isAdmin(user, tok){ return (tok&&tok.claims&&tok.claims.admin===true) || (user&&user.email&&user.email.toLowerCase()===ADMIN_EMAIL); }
 
 let denByOrg={}; // apodo → [denuncias]
 let _orgs=[];    // último listado de organismos (para el reset masivo)
@@ -201,18 +201,20 @@ function login(){
   const email=$('email').value.trim(), pass=$('pass').value;
   if(!email||!pass){ say($('login-msg'),'Completá email y contraseña.','err'); return; }
   $('btn-login').disabled=true; say($('login-msg'),'Ingresando…','ok');
-  auth.signInWithEmailAndPassword(email,pass).catch(e=>{
-    $('btn-login').disabled=false;
-    say($('login-msg'), (e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found')
-      ? 'Email o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
-  });
+  auth.signInWithEmailAndPassword(email,pass)
+    .then(cred=>cred.user.getIdToken(true)) // fuerza refresh: los custom claims recién seteados tardan en propagar
+    .catch(e=>{
+      $('btn-login').disabled=false;
+      say($('login-msg'), (e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found')
+        ? 'Email o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
+    });
 }
 function logout(){ auth.signOut(); }
 
 if(auth) auth.onAuthStateChanged(async user=>{
   if(!user){ showLogin(); return; }
   try{
-    const tok=await user.getIdTokenResult();
+    const tok=await user.getIdTokenResult(true); // forceRefresh: trae los custom claims al día
     if(!isAdmin(user,tok)){ await auth.signOut(); showLogin('Acceso solo para el administrador.'); return; }
     $('login').style.display='none'; $('panel').style.display='block';
     $('admin-email').textContent=user.email||'admin';
