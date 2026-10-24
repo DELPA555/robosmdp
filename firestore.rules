@@ -367,7 +367,15 @@ service cloud.firestore {
         && request.resource.data.mensaje is string
         && request.resource.data.mensaje.size() > 0
         && request.resource.data.mensaje.size() <= 1000
-        && request.resource.data.leido == false;
+        && request.resource.data.leido == false
+        // imagen_url (opcional): solo una download URL real de Firebase Storage bajo
+        // denuncias/. La barra del path va codificada como %2F en la URL que devuelve
+        // getDownloadURL() (por eso (%2F|/), no solo "/").
+        && (!('imagen_url' in request.resource.data)
+            || (request.resource.data.imagen_url is string
+                && request.resource.data.imagen_url.matches('https://firebasestorage\\.googleapis\\.com/.*denuncias(%2F|/).*')))
+        && (!('expira_imagen_en' in request.resource.data)
+            || request.resource.data.expira_imagen_en is timestamp);
       // El organismo destinatario lee y marca leído; el admin puede leer (panel de
       // administración: conteos y detalle). El admin NO escribe denuncias.
       allow read: if isAdmin() || isOrganismo(resource.data.destinatario);
