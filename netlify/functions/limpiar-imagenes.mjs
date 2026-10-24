@@ -105,7 +105,15 @@ export default async () => {
       const url = f.imagen_url && f.imagen_url.stringValue;
       if (!url) continue; // ya limpiada o sin foto
       const path = storagePathFromUrl(url);
-      if (path) await deleteObject(path, accessToken);
+      // Anti-abuso: imagen_url lo escribe el cliente al crear la denuncia. Solo
+      // borramos objetos bajo denuncias/ — nunca un path arbitrario (p.ej. chat_media/)
+      // que un atacante haya puesto en imagen_url para hacernos borrar algo ajeno.
+      if (!path || !path.startsWith('denuncias/')) {
+        console.warn('limpiar-imagenes: path fuera de denuncias/, se saltea sin borrar:', path);
+        await markDeleted(row.document.name, accessToken, nowIso); // igual limpiamos el campo del doc
+        continue;
+      }
+      await deleteObject(path, accessToken);
       await markDeleted(row.document.name, accessToken, nowIso);
       eliminadas++;
     }
