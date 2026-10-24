@@ -60,6 +60,17 @@ input:focus,select:focus{border-color:var(--accent)}
 .kpi .l{font-size:12px;color:var(--t3);margin-top:3px}
 .push{margin-top:14px}
 
+/* Menciones: composer de respuesta + resaltado */
+.men-composer{background:var(--surface);border:1px solid rgba(34,197,94,.35);border-radius:12px;padding:12px;margin-bottom:12px}
+.men-composer textarea{width:100%;min-height:60px;resize:vertical;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;padding:10px 11px;font:inherit;font-size:14px;outline:none}
+.men-composer textarea:focus{border-color:var(--ok)}
+.men-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;flex-wrap:wrap}
+.men-hint{font-size:11.5px;color:var(--t3)}
+.men-count{font-size:11px;color:var(--t3)}
+.item.mencion{border-left:3px solid var(--ok)}
+.badge-men{display:inline-block;font-size:10px;font-weight:800;color:#052e16;background:#4ade80;padding:1px 7px;border-radius:999px;margin-left:6px}
+.btn-reply{background:var(--surface-2);border:1px solid var(--line);color:var(--t1);padding:6px 11px;font-size:12px;border-radius:9px;cursor:pointer;font-weight:700}
+
 /* Modal imagen */
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
 #modal img{max-width:100%;max-height:90vh;border-radius:12px}
@@ -107,7 +118,20 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
     </div>
 
     <div class="pane active" id="pane-denuncias"><div class="empty">Cargando denuncias…</div></div>
-    <div class="pane" id="pane-menciones"><div class="empty">Cargando menciones…</div></div>
+    <div class="pane" id="pane-menciones">
+      <div class="men-composer">
+        <textarea id="men-reply" maxlength="500" placeholder="Escribí una respuesta oficial para el chat público…" oninput="menCount()"></textarea>
+        <div class="men-row">
+          <span class="men-hint">Se publica en el chat público como <strong style="color:#86efac">organismo oficial ✓</strong></span>
+          <span class="men-count" id="men-count">0 / 500</span>
+        </div>
+        <div class="men-row">
+          <span class="msg" id="men-msg" style="margin-top:0"></span>
+          <button class="btn" id="men-send" onclick="responderChat()">Responder en chat público</button>
+        </div>
+      </div>
+      <div id="men-list"><div class="empty">Cargando menciones…</div></div>
+    </div>
     <div class="pane" id="pane-panel">
       <div class="kpis">
         <div class="kpi"><div class="v" id="kpi-total">—</div><div class="l">Denuncias recibidas</div></div>
@@ -304,21 +328,69 @@ function verImagen(url){ event.stopPropagation(); $('modal-img').src=url; $('mod
 // ── Menciones (tiempo real) ───────────────────────────────────────────────
 function subMenciones(){
   if(menUnsub) menUnsub();
+  const list=()=>$('men-list');
   menUnsub=db.collection('chat_publico')
     .where('menciones','array-contains',orgApodo).orderBy('timestamp','desc').limit(50)
     .onSnapshot(snap=>{
-      const pane=$('pane-menciones');
-      if(snap.empty){ pane.innerHTML='<div class="empty">Nadie te mencionó todavía.</div>'; return; }
-      pane.innerHTML=snap.docs.map(d=>{ const m=d.data();
-        return `<div class="item"><div class="row1"><span class="who2">@${esc(m.apodo||'Vecino')}</span>
-          <span class="when">${esc(fmtDate(m.timestamp))}</span></div>
-          <div class="txt">${esc(m.texto||'')}</div></div>`;
+      if(!list()) return;
+      if(snap.empty){ list().innerHTML='<div class="empty">Nadie te mencionó todavía.</div>'; return; }
+      list().innerHTML=snap.docs.map(d=>{ const m=d.data();
+        const autor=m.apodo||'Vecino';
+        const autorAttr=autor.replace(/['\\]/g,''); // seguro para el onclick inline
+        return `<div class="item mencion">
+          <div class="row1"><span class="who2">@${esc(autor)}<span class="badge-men">te mencionó</span></span>
+            <span class="when">${esc(fmtDate(m.timestamp))}</span></div>
+          <div class="txt">${esc(m.texto||'')}</div>
+          <div class="men-row" style="margin-top:9px"><span></span>
+            <button class="btn-reply" onclick="prefillResponder('${autorAttr}')">↩️ Responder</button></div>
+        </div>`;
       }).join('');
     }, err=>{
       console.warn('menciones', err);
-      $('pane-menciones').innerHTML='<div class="empty">No se pudieron cargar las menciones.<br>'+
+      if(list()) list().innerHTML='<div class="empty">No se pudieron cargar las menciones.<br>'+
         (/index/i.test(err.message)?'Falta crear el índice compuesto (menciones array-contains + timestamp DESC).':esc(err.message))+'</div>';
     });
+}
+
+// Contador del composer de respuesta.
+function menCount(){ const el=$('men-count'); if(el) el.textContent=(($('men-reply').value||'').length)+' / 500'; }
+
+// "Responder": pre-completa el composer con @autor del mensaje original y enfoca.
+function prefillResponder(autor){
+  const ta=$('men-reply'); if(!ta) return;
+  const pre='@'+autor+' ';
+  if(!ta.value.startsWith(pre)) ta.value=pre+ta.value;
+  menCount();
+  const comp=document.querySelector('.men-composer');
+  if(comp) comp.scrollIntoView({behavior:'smooth',block:'nearest'});
+  ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+
+// Publica la respuesta oficial del organismo en el chat público.
+async function responderChat(){
+  const ta=$('men-reply'), m=$('men-msg');
+  const txt=(ta.value||'').trim();
+  if(!txt){ say(m,'Escribí una respuesta.','err'); return; }
+  if(txt.length>500){ say(m,'Máximo 500 caracteres.','err'); return; }
+  if(!orgApodo || !auth.currentUser){ say(m,'Tu sesión no es válida, reingresá.','err'); return; }
+  $('men-send').disabled=true; say(m,'Publicando…','ok');
+  try{
+    await db.collection('chat_publico').add({
+      uid: auth.currentUser.uid,   // requerido por las reglas (uid == auth.uid)
+      apodo: orgApodo,             // autor visible en el chat
+      autor: orgApodo,             // campo explícito de la feature
+      texto: txt.slice(0,500),
+      esOrganismo: true,           // marca de respuesta oficial (badge en el chat)
+      timestamp: FV.serverTimestamp()
+    });
+    ta.value=''; menCount();
+    say(m,'✓ Respuesta publicada en el chat público.','ok');
+  }catch(e){
+    console.error('responderChat', e);
+    say(m, /permission/i.test(e.message)
+      ? 'No se pudo publicar (¿reglas de chat_publico actualizadas con esOrganismo/autor?).'
+      : ('No se pudo publicar: '+(e.message||e.code)), 'err');
+  }finally{ $('men-send').disabled=false; }
 }
 
 // ── KPIs ─────────────────────────────────────────────────────────────────────
@@ -338,7 +410,15 @@ async function activarPush(){
   try{
     const perm=await Notification.requestPermission();
     if(perm!=='granted'){ say(m,'No diste permiso para notificaciones.','err'); $('btn-push').disabled=false; return; }
-    const token=await messaging.getToken({vapidKey:VAPID_KEY});
+    // Esperar a que el Service Worker de FCM esté ACTIVO antes de pedir el token.
+    // Si se llama a getToken sin un SW activo, falla con "no active Service Worker".
+    // navigator.serviceWorker.ready resuelve recién cuando hay un SW activo.
+    let swReg;
+    if('serviceWorker' in navigator){
+      try{ await navigator.serviceWorker.register('/firebase-messaging-sw.js'); }catch(_){ }
+      swReg=await navigator.serviceWorker.ready;
+    }
+    const token=await messaging.getToken(swReg?{vapidKey:VAPID_KEY,serviceWorkerRegistration:swReg}:{vapidKey:VAPID_KEY});
     if(!token){ say(m,'No se pudo obtener el token.','err'); $('btn-push').disabled=false; return; }
     await db.collection('chat_organismos').doc(orgApodo).update({ fcm_token:token, ultima_sesion:FV.serverTimestamp() });
     say(m,'✓ Notificaciones activadas en este dispositivo.','ok');
