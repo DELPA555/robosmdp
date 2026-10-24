@@ -68,6 +68,21 @@ tbody tr:hover{background:rgba(148,163,184,.06)}
 .item .txt{font-size:13.5px;color:var(--t1);white-space:pre-wrap;word-break:break-word}
 .badge{font-size:10px;font-weight:800;color:#231405;background:var(--warn);padding:2px 7px;border-radius:999px}
 a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;font-size:13px;font-weight:600}
+
+/* Modal (reset de contraseña) */
+.modal{position:fixed;inset:0;background:rgba(2,6,16,.72);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal.show{display:flex}
+.modal .box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 18px;width:100%;max-width:420px}
+.modal h2{font-size:17px;font-weight:700;color:var(--t0);margin-bottom:6px}
+.modal .sub{font-size:12.5px;color:var(--t3);margin-bottom:14px}
+.modal .actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}
+
+/* Tabla de credenciales nuevas (reset masivo) */
+#reset-results{margin-top:14px;display:none}
+#reset-results code{font-family:ui-monospace,"Cascadia Code",Menlo,monospace;font-size:12.5px;color:#fde68a}
+.copybar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.rok{color:#86efac;font-weight:700}
+.rerr{color:#fca5a5;font-weight:700}
 </style>
 </head>
 <body>
@@ -100,6 +115,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
 
     <div class="toolbar">
       <button class="btn ghost" id="btn-refresh" onclick="cargar()">↻ Actualizar</button>
+      <button class="btn danger" id="btn-reset-all" onclick="resetearTodas()">🔑 Resetear todas</button>
       <span class="msg" id="panel-msg" style="margin-top:0;align-self:center"></span>
     </div>
 
@@ -107,9 +123,9 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       <table>
         <thead><tr>
           <th>Nombre</th><th>Apodo</th><th>Email</th><th>FCM</th><th>Última sesión</th>
-          <th>Denuncias</th><th>Sin leer</th><th></th>
+          <th>Denuncias</th><th>Sin leer</th><th>Contraseña</th><th></th>
         </tr></thead>
-        <tbody id="tbody"><tr><td colspan="8" class="empty">Cargando…</td></tr></tbody>
+        <tbody id="tbody"><tr><td colspan="9" class="empty">Cargando…</td></tr></tbody>
       </table>
     </div>
 
@@ -118,7 +134,36 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       <div id="detail-list"></div>
     </div>
 
+    <div id="reset-results" class="card">
+      <div class="dhead"><strong id="reset-results-title">Contraseñas nuevas</strong><button class="btn ghost sm" onclick="cerrarResultados()">Cerrar</button></div>
+      <div class="copybar">
+        <button class="btn ghost sm" onclick="copiarResultados()">📋 Copiar todo</button>
+        <span class="sub" style="font-size:12px;color:var(--t3)">Guardá estas contraseñas ahora: no se vuelven a mostrar.</span>
+      </div>
+      <div class="tablewrap">
+        <table style="min-width:520px">
+          <thead><tr><th>Apodo</th><th>Email</th><th>Contraseña nueva</th><th>Estado</th></tr></thead>
+          <tbody id="reset-results-body"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div style="text-align:center"><a class="back" href="/">← Volver a Robos MDP</a></div>
+  </div>
+</div>
+
+<!-- MODAL: reset de contraseña individual -->
+<div class="modal" id="reset-modal">
+  <div class="box">
+    <h2>Resetear contraseña</h2>
+    <div class="sub" id="reset-modal-sub">Organismo</div>
+    <label for="reset-pass">Nueva contraseña (mínimo 8 caracteres)</label>
+    <input id="reset-pass" type="text" autocomplete="off" placeholder="Nueva contraseña">
+    <div class="msg" id="reset-modal-msg"></div>
+    <div class="actions">
+      <button class="btn ghost" onclick="cerrarResetModal()">Cancelar</button>
+      <button class="btn" id="reset-modal-ok" onclick="confirmarReset()">Confirmar</button>
+    </div>
   </div>
 </div>
 
@@ -149,6 +194,7 @@ function fmtDate(ts){ const d=ts&&ts.toDate?ts.toDate():null; return d?d.toLocal
 function isAdmin(user, tok){ return (tok&&tok.claims&&tok.claims.admin===true) || (user&&user.email===ADMIN_EMAIL); }
 
 let denByOrg={}; // apodo → [denuncias]
+let _orgs=[];    // último listado de organismos (para el reset masivo)
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 function login(){
@@ -190,6 +236,7 @@ async function cargar(){
       db.collection('chat_denuncias').get()
     ]);
     const orgs=orgSnap.docs.map(d=>({apodo:d.id,...d.data()})).sort((a,b)=>String(a.nombre||a.apodo).localeCompare(String(b.nombre||b.apodo)));
+    _orgs=orgs;
 
     // Agrupar denuncias por destinatario + contar hoy / no leídas global.
     denByOrg={}; let hoy=0, unreadTotal=0;
@@ -214,23 +261,25 @@ async function cargar(){
     say($('panel-msg'),'');
   }catch(e){
     console.error('cargar', e);
-    $('tbody').innerHTML='<tr><td colspan="8" class="empty">No se pudo cargar. '+
+    $('tbody').innerHTML='<tr><td colspan="9" class="empty">No se pudo cargar. '+
       (/permission/i.test(e.message)?'(permiso denegado — ¿reglas de admin publicadas?)':esc(e.message))+'</td></tr>';
     say($('panel-msg'),'Error al cargar.','err');
   }finally{ $('btn-refresh').disabled=false; }
 }
 
 function renderTabla(orgs){
-  if(!orgs.length){ $('tbody').innerHTML='<tr><td colspan="8" class="empty">No hay organismos activos.</td></tr>'; return; }
+  if(!orgs.length){ $('tbody').innerHTML='<tr><td colspan="9" class="empty">No hay organismos activos.</td></tr>'; return; }
   $('tbody').innerHTML=orgs.map(o=>{
     const dd=denByOrg[o.apodo]||[];
     const unread=dd.filter(x=>x.leido===false).length;
     const fcm=o.fcm_token?'<span class="dot on"></span>Sí':'<span class="dot off"></span>No';
+    const nombreSafe=esc((o.nombre||o.apodo)).replace(/'/g,"");
     return `<tr onclick="verDenuncias('${esc(o.apodo)}')">
       <td>${esc(o.nombre||o.apodo)}</td><td>@${esc(o.apodo)}</td><td>${esc(o.email||'')}</td>
       <td>${fcm}</td><td>${esc(fmtDate(o.ultima_sesion))}</td>
       <td class="num">${dd.length}</td><td class="num${unread?' unread':''}">${unread}</td>
-      <td><button class="btn danger sm" onclick="desactivar(event,'${esc(o.apodo)}','${esc((o.nombre||o.apodo)).replace(/'/g,"")}')">Desactivar</button></td>
+      <td><button class="btn ghost sm" onclick="abrirResetModal(event,'${esc(o.apodo)}','${nombreSafe}')">Resetear 🔑</button></td>
+      <td><button class="btn danger sm" onclick="desactivar(event,'${esc(o.apodo)}','${nombreSafe}')">Desactivar</button></td>
     </tr>`;
   }).join('');
 }
@@ -258,6 +307,94 @@ async function desactivar(ev, apodo, nombre){
     say($('panel-msg'),'Organismo desactivado.','ok');
     cargar();
   }catch(e){ console.error('desactivar', e); say($('panel-msg'),'No se pudo desactivar: '+(e.message||e.code),'err'); }
+}
+
+// ── Reset de contraseñas (via /api/resetear-password, admin only) ──────────────
+let _resetApodo=null, _resetResults=[];
+
+// Contraseña del reset masivo: primera letra del apodo en mayúscula + resto + sufijo.
+function passwordMasiva(apodo){ return apodo.charAt(0).toUpperCase()+apodo.slice(1)+'Mdp2025#'; }
+
+// Llama a la function con el idToken del admin. Devuelve {ok} o {ok:false,error}.
+async function doReset(apodo, nuevaPassword){
+  try{
+    const token=await auth.currentUser.getIdToken();
+    const r=await fetch('/api/resetear-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({apodo, nuevaPassword})
+    });
+    let j={}; try{ j=await r.json(); }catch(_){ }
+    if(r.ok && j.ok) return {ok:true};
+    return {ok:false, error:(j&&j.error)||('HTTP '+r.status)};
+  }catch(e){ return {ok:false, error:e.message||'Error de red'}; }
+}
+
+function abrirResetModal(ev, apodo, nombre){
+  ev.stopPropagation();
+  _resetApodo=apodo;
+  $('reset-modal-sub').textContent=nombre+'  ·  '+apodo+'@robosmdp.com.ar';
+  $('reset-pass').value='';
+  say($('reset-modal-msg'),'');
+  $('reset-modal-ok').disabled=false;
+  $('reset-modal').classList.add('show');
+  setTimeout(()=>$('reset-pass').focus(),50);
+}
+function cerrarResetModal(){ $('reset-modal').classList.remove('show'); _resetApodo=null; }
+
+async function confirmarReset(){
+  const pass=$('reset-pass').value;
+  if(pass.length<8){ say($('reset-modal-msg'),'La contraseña debe tener al menos 8 caracteres.','err'); return; }
+  const apodo=_resetApodo;
+  $('reset-modal-ok').disabled=true; say($('reset-modal-msg'),'Reseteando…','ok');
+  const r=await doReset(apodo, pass);
+  if(r.ok){
+    cerrarResetModal();
+    say($('panel-msg'),'Contraseña de @'+apodo+' actualizada.','ok');
+  }else{
+    $('reset-modal-ok').disabled=false;
+    say($('reset-modal-msg'),'No se pudo resetear: '+r.error,'err');
+  }
+}
+
+async function resetearTodas(){
+  const orgs=_orgs.slice();
+  if(!orgs.length){ say($('panel-msg'),'No hay organismos para resetear.','err'); return; }
+  if(!confirm('¿Resetear la contraseña de los '+orgs.length+' organismos activos?\n\nCada uno quedará con: Mayúscula(apodo)+"Mdp2025#".\nVas a ver la lista de contraseñas nuevas al terminar.')) return;
+
+  const btn=$('btn-reset-all'); btn.disabled=true; cerrarDetalle();
+  _resetResults=[];
+  for(let i=0;i<orgs.length;i++){
+    const o=orgs[i];
+    say($('panel-msg'),'Reseteando '+(i+1)+'/'+orgs.length+': @'+o.apodo+'…','ok');
+    const pass=passwordMasiva(o.apodo);
+    const r=await doReset(o.apodo, pass);
+    _resetResults.push({ apodo:o.apodo, email:o.apodo+'@robosmdp.com.ar', password:pass, ok:r.ok, error:r.error||'' });
+  }
+  btn.disabled=false;
+  const okN=_resetResults.filter(x=>x.ok).length;
+  say($('panel-msg'),'Reset masivo: '+okN+'/'+orgs.length+' ok.', okN===orgs.length?'ok':'err');
+  renderResultados();
+}
+
+function renderResultados(){
+  $('reset-results-title').textContent='Contraseñas nuevas ('+_resetResults.filter(x=>x.ok).length+'/'+_resetResults.length+')';
+  $('reset-results-body').innerHTML=_resetResults.map(x=>`
+    <tr>
+      <td>@${esc(x.apodo)}</td>
+      <td>${esc(x.email)}</td>
+      <td>${x.ok?('<code>'+esc(x.password)+'</code>'):'—'}</td>
+      <td>${x.ok?'<span class="rok">✓ ok</span>':('<span class="rerr">✗ '+esc(x.error)+'</span>')}</td>
+    </tr>`).join('');
+  $('reset-results').style.display='block';
+  $('reset-results').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cerrarResultados(){ $('reset-results').style.display='none'; }
+
+async function copiarResultados(){
+  const txt=_resetResults.filter(x=>x.ok).map(x=>x.apodo+'\t'+x.email+'\t'+x.password).join('\n');
+  try{ await navigator.clipboard.writeText(txt); say($('panel-msg'),'Contraseñas copiadas al portapapeles.','ok'); }
+  catch(_){ say($('panel-msg'),'No se pudo copiar automáticamente (copiá a mano desde la tabla).','err'); }
 }
 </script>
 </body>
