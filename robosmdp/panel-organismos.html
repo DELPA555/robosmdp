@@ -212,6 +212,7 @@ function login(){
   const email=apodoToEmail(apodoRaw);
   $('btn-login').disabled=true; say($('login-msg'),'Ingresando…','ok');
   auth.signInWithEmailAndPassword(email,pass)
+    .then(cred=>cred.user.getIdToken(true)) // fuerza refresh: los custom claims (rol/apodo) tardan en propagar
     .catch(e=>{
       $('btn-login').disabled=false;
       say($('login-msg'), e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found'
@@ -233,7 +234,7 @@ function logout(){ if(denUnsub)denUnsub(); if(menUnsub)menUnsub(); auth.signOut(
 if(auth) auth.onAuthStateChanged(async user=>{
   if(!user){ showLogin(); return; }
   try{
-    const tok=await user.getIdTokenResult();
+    const tok=await user.getIdTokenResult(true); // forceRefresh: trae los custom claims al día
     if(tok.claims.rol!=='organismo'){
       await auth.signOut();
       showLogin('Acceso solo para organismos verificados.');
