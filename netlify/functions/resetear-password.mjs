@@ -14,24 +14,34 @@
  * equivalente REST simple y seguro. Por eso firebase-admin pasó a `dependencies`.
  * REQUIERE env var FIREBASE_SERVICE_ACCOUNT (configurada en Netlify).
  */
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
-
 export const config = { path: '/api/resetear-password' };
 
 const DOMINIO = 'robosmdp.com.ar';
 
-// App de firebase-admin reutilizable entre invocaciones calientes (singleton).
-function getAdminAuth() {
-  if (!getApps().length) {
-    const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    initializeApp({ credential: cert(sa) });
-  }
-  return getAuth();
-}
-
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
+
+// firebase-admin se carga de forma PEREZOSA (dynamic import) dentro del handler.
+// Si se importara a nivel módulo y el bundling fallara, la función tiraría un 502
+// opaco (sin logs). Así cualquier fallo de carga cae en el try/catch y se loguea.
+// Singleton: la app se reutiliza entre invocaciones calientes.
+let _auth = null;
+async function getAdminAuth() {
+  if (_auth) return _auth;
+  const { initializeApp, getApps, cert } = await import('firebase-admin/app');
+  const { getAuth } = await import('firebase-admin/auth');
+  if (!getApps().length) {
+    let sa;
+    try {
+      sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } catch (e) {
+      throw new Error('FIREBASE_SERVICE_ACCOUNT no es JSON válido: ' + e.message);
+    }
+    initializeApp({ credential: cert(sa) });
+  }
+  _auth = getAuth();
+  return _auth;
+}
 
 export default async (req) => {
   if (req.method !== 'POST') return json({ error: 'Method Not Allowed' }, 405);
@@ -52,7 +62,7 @@ export default async (req) => {
   if (nuevaPassword.length < 8) return json({ error: 'La contraseña debe tener al menos 8 caracteres' }, 400);
 
   try {
-    const auth = getAdminAuth();
+    const auth = await getAdminAuth();
 
     // 3) Verificar que el caller sea admin.
     let decoded;
@@ -69,7 +79,9 @@ export default async (req) => {
 
     return json({ ok: true, apodo, email });
   } catch (e) {
-    console.error('resetear-password', e && e.message);
-    return json({ error: 'Error interno al resetear la contraseña' }, 500);
+    // Log detallado para los logs de Netlify (stack completo). La respuesta al
+    // cliente NO filtra detalles internos.
+    console.error('resetear-password ERROR:', (e && e.stack) || e);
+    return json({ error: 'Error interno al resetear la contraseña', detalle: e && e.message }, 500);
   }
 };

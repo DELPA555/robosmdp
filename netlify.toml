@@ -9,3 +9,8 @@
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+  # firebase-admin no se bundlea bien con esbuild (require dinámicos + deps nativas
+  # opcionales): esbuild lo rompe y la función tira 502 al cargar. Marcándolo como
+  # external, Netlify lo copia tal cual desde node_modules en vez de bundlearlo.
+  external_node_modules = ["firebase-admin"]
