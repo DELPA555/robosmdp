@@ -196,7 +196,6 @@ function subirFoto(){
 }
 
 async function enviar(){
-  if(!db){ say('No se pudo conectar. Reintentá en un momento.','err'); return; }
   const destinatario=$('org').value;
   const mensaje=$('mensaje').value.trim();
   if(!destinatario){ say('Elegí un organismo destinatario.','err'); return; }
@@ -205,23 +204,30 @@ async function enviar(){
 
   $('send').disabled=true; say('Enviando…','ok');
   try{
-    // Documento SIN identidad: ni uid, ni ip, ni fingerprint, ni email.
-    const doc={ destinatario, mensaje, leido:false, creado_en:FV.serverTimestamp() };
+    let imagen_url=null;
     if(fotoFile){
-      // Opción A: las denuncias de solo texto van sin auth; para subir foto nos
-      // autenticamos de forma anónima (la regla de Storage exige request.auth != null).
-      // El uid anónimo es efímero y NO se guarda en el doc: la denuncia sigue anónima.
+      // La foto se sube client-side: para eso nos autenticamos de forma anónima
+      // (la regla de Storage exige request.auth != null). El uid anónimo es efímero
+      // y NO viaja en la denuncia: la denuncia sigue siendo anónima.
       if(auth && !auth.currentUser) await auth.signInAnonymously();
-      const url=await subirFoto();
-      doc.imagen_url=url;
-      doc.expira_imagen_en=Timestamp.fromMillis(Date.now()+24*60*60*1000);
+      imagen_url=await subirFoto();
     }
-    const ref=await db.collection('chat_denuncias').add(doc);
+
+    // El documento lo crea la función crear-denuncia (rate limiting por IP +
+    // escritura con Admin SDK). La IP se usa SOLO para el límite; nunca se guarda
+    // en la denuncia. El doc NO lleva identidad (ni uid, ni ip, ni fingerprint).
+    const res=await fetch('/api/crear-denuncia',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ destinatario, mensaje, imagen_url })
+    });
+    const data=await res.json().catch(()=>({}));
+    if(res.status===429){ say(data.error||'Demasiadas denuncias, esperá unos minutos.','err'); $('send').disabled=false; return; }
+    if(!res.ok || !data.ok){ say('No se pudo enviar la denuncia. '+(data.error||'Reintentá.'),'err'); $('send').disabled=false; return; }
 
     // Aviso al organismo (fire-and-forget, no bloquea ni frena el éxito).
     fetch('/api/notificar-denuncia',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ denunciaId:ref.id, destinatario })
+      body:JSON.stringify({ denunciaId:data.denunciaId, destinatario })
     }).catch(e=>console.warn('notificar-denuncia', e));
 
     $('form-view').style.display='none';
@@ -229,7 +235,7 @@ async function enviar(){
     window.scrollTo(0,0);
   }catch(e){
     console.error('enviar', e);
-    say('No se pudo enviar la denuncia. '+(e&&e.code==='permission-denied'?'(permiso denegado)':'Reintentá.'),'err');
+    say('No se pudo enviar la denuncia. Reintentá.','err');
     $('send').disabled=false;
   }
 }
