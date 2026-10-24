@@ -50,6 +50,8 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .badge{font-size:8.5px;font-weight:800;padding:1px 6px;border-radius:999px;text-transform:uppercase;letter-spacing:.02em;line-height:1.5}
 .badge-admin{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
 .badge-mod{background:rgba(59,130,246,.2);color:#93c5fd;border:1px solid rgba(59,130,246,.4)}
+.badge-org{background:rgba(34,197,94,.2);color:#86efac;border:1px solid rgba(34,197,94,.45)}
+.cmsg.org .cbubble{border:1px solid rgba(34,197,94,.45);box-shadow:0 0 0 1px rgba(34,197,94,.14)}
 #chat-footer{flex-shrink:0;border-top:1px solid rgba(var(--rgb-line),.1);background:rgba(var(--rgb-deep),.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 #chat-who{font-size:10px;color:var(--t3);margin-bottom:7px}
 .inrow{display:flex;gap:9px;align-items:flex-end}
@@ -373,7 +375,10 @@ function renderMessages(doScroll){
     const d=msgDate(m);
     const isMod=!!m.moderador || (!!m.uid && G.mods.has(m.uid));
     const isAdm=!!m.admin;
-    const badge=isAdm?'<span class="badge badge-admin">✓ AdminRobos</span>':(isMod?'<span class="badge badge-mod">🛡️ Mod</span>':'');
+    const isOrg=!!m.esOrganismo;
+    const badge=isAdm?'<span class="badge badge-admin">✓ AdminRobos</span>'
+      :(isOrg?'<span class="badge badge-org">✓ Organismo oficial</span>'
+      :(isMod?'<span class="badge badge-mod">🛡️ Mod</span>':''));
     const modActions = G.isAdmin ? ('<div class="mod-actions">'+
       '<button class="mod-btn mod-del" onclick="adminDeleteMsgInline(\''+m.id+'\')" title="Eliminar mensaje">🗑️</button>'+
       (isAdm?'':'<button class="mod-btn mod-ban" onclick="adminBanInline(\''+encodeURIComponent(m.uid||'')+'\',\''+encodeURIComponent(m.apodo||'')+'\')" title="Banear a este usuario">🚫</button>')+
@@ -390,7 +395,7 @@ function renderMessages(doScroll){
         '<div class="cq-text">'+body+'</div></div>';
     }
     const div=document.createElement('div');
-    div.className='cmsg'+(mine?' mine':'');
+    div.className='cmsg'+(mine?' mine':'')+(isOrg?' org':'');
     div.dataset.mid=m.id;
     div.innerHTML=chatAvatar(m.apodo,34)+
       '<div class="cbubble">'+

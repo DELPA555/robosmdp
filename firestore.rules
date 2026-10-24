@@ -251,7 +251,7 @@ service cloud.firestore {
       allow read: if isAdmin() || (isSignedIn() && !isBanned());
       allow create: if isSignedIn() && !isBanned()
                   && request.resource.data.uid == request.auth.uid
-                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo','media','menciones'])
+                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo','media','menciones','esOrganismo','autor'])
                   && request.resource.data.texto is string
                   && request.resource.data.texto.size() <= 500
                   && (request.resource.data.texto.size() > 0 || 'media' in request.resource.data)
@@ -269,7 +269,18 @@ service cloud.firestore {
                           && request.resource.data.media.type is string))
                   // ORG-01: menciones a organismos (opcional) debe ser una lista.
                   && (!('menciones' in request.resource.data)
-                      || request.resource.data.menciones is list);
+                      || request.resource.data.menciones is list)
+                  // ORG-01 (Parte 2): respuesta oficial de un organismo. esOrganismo:true
+                  // SOLO si el autor es realmente ese organismo (su claim apodo coincide)
+                  // o el admin — anti-spoofing: un vecino no puede fingir respuesta oficial.
+                  && (!('esOrganismo' in request.resource.data)
+                      || (request.resource.data.esOrganismo is bool
+                          && (request.resource.data.esOrganismo == false
+                              || isOrganismo(request.resource.data.apodo)
+                              || isAdmin())))
+                  && (!('autor' in request.resource.data)
+                      || (request.resource.data.autor is string
+                          && request.resource.data.autor.size() <= 40));
       allow update: if false;
       allow delete: if isAdmin();
     }
