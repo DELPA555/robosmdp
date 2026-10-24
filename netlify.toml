@@ -1,5 +1,11 @@
 # ROBOS MDP — Configuración de deploy GitHub/Netlify
 [build]
   publish = "robosmdp"
+  # Sitio estático: el HTML ya está armado en robosmdp/, no hay paso de build.
+  # Definimos un command no-op para anular cualquier build command heredado del
+  # dashboard (p.ej. "npm run build", que no existe y rompía el deploy con exit 2).
+  # Netlify igual instala dependencies y bundlea las functions: eso no depende de este command.
+  command = "echo 'Sitio estatico: sin paso de build'"
+
 [functions]
   directory = "netlify/functions"
