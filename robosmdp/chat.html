@@ -99,6 +99,20 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .mod-btn{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;line-height:1.5}
 .mod-del{background:rgba(239,68,68,.14);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
 .mod-ban{background:rgba(249,115,22,.14);color:#fdba74;border:1px solid rgba(249,115,22,.3)}
+/* Reacciones emoji */
+.creactions{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.creact-btn{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:999px;border:1px solid rgba(var(--rgb-line),.18);background:rgba(var(--rgb-slate),.4);font-size:12px;line-height:1.4;cursor:pointer;transition:background .12s,border-color .12s;font-family:inherit;color:var(--t2)}
+.creact-btn:hover{background:rgba(var(--rgb-slate),.75);border-color:rgba(var(--rgb-line),.35)}
+.creact-btn.mine{background:rgba(14,165,233,.15);border-color:rgba(14,165,233,.4);color:#7dd3fc}
+.creact-btn .rc{font-size:13px;line-height:1}
+.creact-btn .rn{font-size:10px;font-weight:700;min-width:6px}
+.creact-picker{display:none;flex-wrap:wrap;gap:4px;margin-top:5px;padding:6px 8px;background:rgba(var(--rgb-deep),.9);border:1px solid var(--line-2);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.creact-picker.open{display:flex}
+.creact-picker button{background:none;border:none;cursor:pointer;font-size:18px;line-height:1;padding:3px 4px;border-radius:7px;transition:background .1s}
+.creact-picker button:hover{background:rgba(var(--rgb-line),.15)}
+.cmsg .react-open-btn{flex-shrink:0;align-self:center;opacity:0;transition:opacity .15s;width:28px;height:28px;border-radius:50%;border:1px solid rgba(var(--rgb-line),.2);background:rgba(var(--rgb-slate),.9);color:var(--t3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0}
+@media (hover:hover){.cmsg:hover .react-open-btn{opacity:1}}
+@media (hover:none){.react-open-btn{opacity:.7}}
 /* Pantalla de estado / suspensión (Premium V5) */
 #chat-lockout{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:28px 20px;text-align:center}
 #chat-lockout .lk-card{max-width:420px;width:100%;background:linear-gradient(170deg,rgba(var(--rgb-slate),.55),rgba(var(--rgb-deep),.72));border:1px solid var(--line-2);border-radius:22px;padding:34px 26px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
@@ -404,9 +418,14 @@ function renderMessages(doScroll){
       mediaHTML(m)+
       (m.texto?('<div class="ctext">'+renderText(m.texto)+'</div>'):'')+
       '<div class="ctime">'+tAgo(d)+'</div>'+
+      renderReactions(m, me)+
+      '<div class="creact-picker" id="rp-'+m.id+'">'+
+        ['👍','❤️','😂','😮','😢','😡'].map(e=>'<button onclick="toggleReaction(\''+m.id+'\',\''+e+'\')" title="'+e+'">'+e+'</button>').join('')+
+      '</div>'+
       modActions+
       '</div>'+
-      '<button class="reply-btn" onclick="setReply(\''+m.id+'\')" title="Responder" aria-label="Responder">↩️</button>';
+      '<button class="reply-btn" onclick="setReply(\''+m.id+'\')" title="Responder" aria-label="Responder">↩️</button>'+
+      '<button class="react-open-btn" onclick="toggleReactPicker(\''+m.id+'\')" title="Reaccionar" aria-label="Reaccionar">😊</button>';
     frag.appendChild(div);
   });
   const empt=document.getElementById('chat-empty');
@@ -803,6 +822,54 @@ function setReply(id){
   const ta=document.getElementById('chat-in'); if(ta) ta.focus();
 }
 function clearReply(){ G.replyTo=null; const pv=document.getElementById('reply-preview'); if(pv) pv.style.display='none'; }
+
+// ===== REACCIONES EMOJI =====
+const REACT_EMOJIS=['👍','❤️','😂','😮','😢','😡'];
+function renderReactions(m, me){
+  const reac=m.reacciones||{};
+  const myUid=auth&&auth.currentUser?auth.currentUser.uid:null;
+  const btns=REACT_EMOJIS.map(e=>{
+    const uids=reac[e]||[];
+    if(!uids.length) return '';
+    const isMine=myUid && uids.includes(myUid);
+    return '<button class="creact-btn'+(isMine?' mine':'')+'" onclick="toggleReaction(\''+m.id+'\',\''+e+'\')" title="'+e+' ('+uids.length+')">'+
+      '<span class="rc">'+e+'</span><span class="rn">'+uids.length+'</span></button>';
+  }).join('');
+  return btns ? '<div class="creactions">'+btns+'</div>' : '';
+}
+function toggleReactPicker(msgId){
+  // Cierra todos los otros pickers abiertos
+  document.querySelectorAll('.creact-picker.open').forEach(el=>{ if(el.id!=='rp-'+msgId) el.classList.remove('open'); });
+  const pk=document.getElementById('rp-'+msgId);
+  if(pk) pk.classList.toggle('open');
+}
+async function toggleReaction(msgId, emoji){
+  if(!db||!auth||!auth.currentUser||G.banned) return;
+  if(!REACT_EMOJIS.includes(emoji)) return;
+  const uid=auth.currentUser.uid;
+  const ref=db.collection(CHAT_COL).doc(msgId);
+  try{
+    const snap=await ref.get();
+    if(!snap.exists) return;
+    const reac=snap.data().reacciones||{};
+    const lista=reac[emoji]||[];
+    let nueva;
+    if(lista.includes(uid)){
+      // quitar reacción
+      nueva=lista.filter(u=>u!==uid);
+    } else {
+      // agregar (máx 200 por emoji para no inflar el doc)
+      if(lista.length>=200) return;
+      nueva=[...lista,uid];
+    }
+    const update={'reacciones.'+emoji: nueva.length ? nueva : FV.delete()};
+    await ref.update(update);
+    // cerrar picker
+    const pk=document.getElementById('rp-'+msgId);
+    if(pk) pk.classList.remove('open');
+  }catch(e){ console.warn('toggleReaction',e); showToast('No se pudo reaccionar','r'); }
+}
+
 function scrollToReply(id){
   if(!id){ showToast('Ese mensaje ya no está disponible','r'); return; }
   const el=[...document.querySelectorAll('.cmsg')].find(n=>n.dataset.mid===id);
@@ -1110,6 +1177,11 @@ window.addEventListener('load',()=>{
   document.addEventListener('click',e=>{
     if(e.target.closest&&(e.target.closest('#mention-dd')||e.target.id==='chat-in')) return;
     const dd=document.getElementById('mention-dd'); if(dd) dd.style.display='none';
+  });
+  // Cerrar picker de reacciones al tocar afuera
+  document.addEventListener('click',e=>{
+    if(e.target.closest&&(e.target.closest('.creact-picker')||e.target.closest('.react-open-btn'))) return;
+    document.querySelectorAll('.creact-picker.open').forEach(el=>el.classList.remove('open'));
   });
 });
 </script>

@@ -274,7 +274,10 @@ service cloud.firestore {
                   && (!('autor' in request.resource.data)
                       || (request.resource.data.autor is string
                           && request.resource.data.autor.size() <= 40));
-      allow update: if false;
+      // Reacciones: cualquier usuario autenticado y no baneado puede hacer update
+      // SOLO del campo reacciones (mapa de emoji → array de UIDs).
+      allow update: if isSignedIn() && !isBanned()
+                  && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reacciones']);
       allow delete: if isAdmin();
     }
 
