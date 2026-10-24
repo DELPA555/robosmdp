@@ -77,6 +77,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | COM-01 | MEDIA | Sponsors | Administrar campañas, fechas, banners, clics/impresiones medidos e informes para anunciantes. | EN REVISIÓN | ChatGPT — PR #6 (gestión comercial) |
 | PERF-01 | MEDIA | Frontend | Reducir peso de imágenes y recursos, modularizar gradualmente `index.html`, mejorar tiempos de carga y evitar regresiones. | IDEA | Sin asignar |
 | APP-02 | MEDIA | Política de privacidad | Página legal para Google Play: `robosmdp/politica-de-privacidad.html` → `robosmdp.com.ar/politica-de-privacidad` (10 secciones, Ley 25.326). Verificada en vivo HTTP 200 (2026-10-19). | DESPLEGADO | Claude Code |
+| ORG-01 | ALTA | Organismos verificados | Panel de organismos, denuncias anónimas, menciones ✓ + FCM y chat a 500 chars. Rama `feature/organismos-verificados`. NO mergeado; reglas NO desplegadas. | PR #10 EN REVISIÓN | Claude Code |
 
 **Nota histórica:** los estados anteriores de SEG-04 reflejaban una revisión estática anterior; el sistema anti-evasión de tres capas ya está implementado en `main`. Quedan pendientes solamente las pruebas de regresión relacionadas con las modificaciones de seguridad y el despliegue, no volver a programarlo. Las demás observaciones iniciales no implican confirmar las reglas de Firebase efectivamente desplegadas.
 
@@ -95,6 +96,17 @@ Usar este formato para cada entrada nueva:
 - Estado de deploy: NO DESPLEGADO / NETLIFY VERIFICADO / REGLAS FIREBASE VERIFICADAS / ANDROID VERIFICADA
 - Pendientes o riesgos:
 ```
+
+### 2026-10-23 — ORG-01 Organismos verificados (panel, denuncias anónimas, FCM, chat 500)
+- Responsable: Claude Code.
+- Pedido y alcance: implementar la feature ORG-01 completa en la rama `feature/organismos-verificados` y abrir PR hacia main (sin merge).
+- Archivos modificados: `robosmdp/panel-organismos.html` (nuevo; login por apodo que arma el email solo + dropdown de organismos + reset de contraseña + link a cambiar-password), `robosmdp/denuncia.html` (nuevo, anónima), `robosmdp/cambiar-password.html` (nuevo; reautenticación + updatePassword), `robosmdp/admin-organismos.html` (nuevo; panel admin: tabla de organismos, KPIs, detalle de denuncias, desactivar), `netlify/functions/notificar-mencion.mjs` (nuevo), `netlify/functions/notificar-denuncia.mjs` (nuevo), `netlify/functions/limpiar-imagenes.mjs` (nuevo, `@hourly`), `scripts/seed-organismos.js` (nuevo, admin-only), `firestore.rules` (helper `isOrganismo` + reglas `chat_organismos` y `chat_denuncias`; chat_publico 280→500 y `menciones` en whitelist; comentarios de reportes se mantienen en 280; **admin** lee `chat_denuncias` y actualiza `chat_organismos` para el panel de administración), `robosmdp/chat.html` (menciones con badge ✓, notificación FCM, límite 500 chars), `.gitignore` (bloqueo de claves Firebase/`*.json` con negaciones para configs versionados), `package.json`/`package-lock.json` (`firebase-admin` devDependency para el seed).
+- Resultado: feature construida desde cero (los commits/archivos del pedido original no existían en el repo). Funciones Netlify implementadas con el patrón REST del repo (no firebase-admin) para no sumar deps en producción.
+- Pruebas realizadas y resultado: `node --check` OK en las 3 funciones y el seed; parseo OK de los scripts inline de los 5 HTML; `git check-ignore` verifica que las claves quedan ignoradas y los configs versionables; `index.html` intacto (guard WIP preservado).
+- Commit o PR: PR #10 — https://github.com/DELPA555/robosmdp/pull/10 (commits `16cb357` feature, `93fe170` fix límites + CLAUDE.md, `f40f169` gitignore, `86d6ab8` cambiar-password + admin + login por apodo, `86b1755` docs, `5b66f0f` config real + VAPID + Auth anónima foto + bloque storage.rules).
+- Estado de deploy: **NO DESPLEGADO** (sin merge; reglas NO publicadas en Firebase).
+- Ya hecho (sin intervención del dueño): config pública real en las 4 páginas nuevas; VAPID key real en `panel-organismos.html`; `denuncia.html` con Auth anónima solo al subir foto (opción A); bloque `denuncias/` agregado a `storage.rules` (create con `auth != null` + 8 MB + `image/*`), **aún sin desplegar**. Confirmado por el dueño: `FIREBASE_SERVICE_ACCOUNT` ya cargado en Netlify; `firebase-messaging-sw.js` ya existe.
+- Pendientes (del dueño): publicar `firestore.rules` Y `storage.rules` en Firebase (requiere su aprobación); correr el seed (`node scripts/seed-organismos.js` con `GOOGLE_APPLICATION_CREDENTIALS`, crea cuentas Auth + claims); crear índices compuestos (`chat_denuncias`: destinatario + `creado_en DESC`; `chat_publico`: `menciones` array-contains + `timestamp DESC`); mergear PR #10. Riesgo conocido: lectura de `chat_organismos` abierta a firmados expone `fcm_token` (endurecer si se desea).
 
 ### 2026-10-18 — DOC-006 Política de privacidad desplegada
 - Responsable: Claude Code.

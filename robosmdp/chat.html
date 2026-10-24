@@ -179,10 +179,10 @@ img.cmedia{cursor:zoom-in;object-fit:cover}
       <div class="inrow" style="position:relative">
         <div id="mention-dd"></div>
         <button id="btn-adjuntar" onclick="document.getElementById('media-input').click()" title="Adjuntar imagen o video (solo admin)" style="display:none">📎</button>
-        <textarea id="chat-in" rows="1" maxlength="280" placeholder="Escribí un mensaje..." oninput="onChatInput()" onkeydown="onChatKey(event)"></textarea>
+        <textarea id="chat-in" rows="1" maxlength="500" placeholder="Escribí un mensaje..." oninput="onChatInput()" onkeydown="onChatKey(event)"></textarea>
         <button id="chat-send" onclick="sendChat()" title="Enviar"><i data-lucide="send" style="width:19px;height:19px"></i></button>
       </div>
-      <div id="chat-count">0 / 280</div>
+      <div id="chat-count">0 / 500</div>
     </div>
   </footer>
 </div>
@@ -225,11 +225,23 @@ if(window.firebase){
 const FV=firebase.firestore.FieldValue;
 const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
+// ===== ORGANISMOS VERIFICADOS (ORG-01) =====
+// Apodos de organismos activos: para el badge ✓ en @menciones y para notificar por
+// FCM cuando se los menciona. Se carga una vez al iniciar el chat (fail-soft).
+let _orgApodos=[];
+async function loadOrgApodos(){
+  if(!db) return;
+  try{
+    const snap=await db.collection('chat_organismos').where('activo','==',true).get();
+    _orgApodos=snap.docs.map(d=>d.id);
+  }catch(e){ console.warn('loadOrgApodos', e.message); }
+}
+
 const CHAT_COL='chat_publico', PRES_COL='chat_presencia', MOD_COL='chat_moderadores', BAN_COL='chat_bans';
 // CAPA 2 (anti-evasión): gate local de baneo. Sobrevive a cerrar sesión, cambiar
 // de apodo o recargar en el MISMO navegador — no requiere tocar reglas de Firebase.
 const BAN_LS='chat_ban';
-const CHAT_PAGE=100, CHAT_MAX_LEN=280, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
+const CHAT_PAGE=100, CHAT_MAX_LEN=500, COOLDOWN_MS=3000, RATE_MAX=10, RATE_WIN_MS=60000, ONLINE_TTL=90000;
 
 // banned arranca en true (fail-closed): nadie lee/escribe hasta verificar auth + ban.
 // G.mods es un Set de UIDs (los moderadores se indexan por UID, no por apodo).
@@ -443,6 +455,7 @@ function recomputeOnline(){
   const el=document.getElementById('chat-online'); if(el) el.textContent=n+' '+(n===1?'vecino':'vecinos')+' en línea';
 }
 function subscribeOnline(){
+  if(!_orgApodos.length) loadOrgApodos(); // ORG-01: cargar organismos verificados (fail-soft)
   if(G.banned || !G.banReady || G.presUnsub) return;
   try{
     G.presUnsub=db.collection(PRES_COL).onSnapshot(snap=>{ _presDocs=snap.docs.map(d=>({_id:d.id,...d.data()})); recomputeOnline(); },err=>{ console.warn('presencia',err); });
@@ -735,13 +748,29 @@ async function sendChat(){
   if(G.replyTo && G.replyTo.msgId){
     payload.replyTo={ msgId:G.replyTo.msgId, apodo:String(G.replyTo.apodo||'').slice(0,40), texto:String(G.replyTo.texto||'').slice(0,80) };
   }
+  // ORG-01: @menciones a organismos verificados → se guardan en el doc (para el panel)
+  // y disparan un push FCM (fire-and-forget).
+  const mencionesOrg=[...new Set(
+    (txt.match(/(?:^|\s)@([\p{L}\p{N}_.-]{1,30})/gu)||[])
+      .map(m=>m.trim().slice(1))
+      .filter(ap=>_orgApodos.includes(ap))
+  )];
+  if(mencionesOrg.length) payload.menciones=mencionesOrg;
   try{
     if(hasMedia){
       showToast('Subiendo '+(G.pendingMedia.type==='video'?'video':'imagen')+'…','g');
       const media=await uploadPendingMedia();   // sube a Storage y devuelve {url,type}
       if(media && media.url) payload.media=media;
     }
-    await db.collection(CHAT_COL).add(payload);
+    const docRef=await db.collection(CHAT_COL).add(payload);
+    if(mencionesOrg.length){
+      mencionesOrg.forEach(apOrg=>{
+        fetch('/api/notificar-mencion',{
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ apodo:apOrg, msgId:docRef.id, texto:txt, autorApodo:a||'Vecino' })
+        }).catch(e=>console.warn('notificar-mencion', e));
+      });
+    }
     G.lastSend=now; G.sendTimes.push(now);
     ta.value=''; clearReply(); clearMedia(); onChatInput(); ta.focus();
     requestAnimationFrame(scrollBottom);
@@ -777,6 +806,9 @@ function activeApodos(){
     if(p.activo===false) return; if((now-presTime(p))>ONLINE_TTL) return;
     const a=p.apodo; if(!a||seen.has(a)) return; seen.add(a); out.push(a);
   });
+  // ORG-01: sumar organismos verificados que no estén ya en la lista (mencionables
+  // aunque no estén "online" en presencia).
+  _orgApodos.forEach(a=>{ if(a&&!seen.has(a)){ seen.add(a); out.push(a); } });
   return out;
 }
 function checkMention(){
@@ -791,7 +823,10 @@ function checkMention(){
   if(q) list=list.filter(a=>a.toLowerCase().includes(q));
   list=list.slice(0,6);
   if(!list.length){ dd.style.display='none'; return; }
-  dd.innerHTML=list.map((a,i)=>'<div class="md-item'+(i===0?' sel':'')+'" onclick="pickMention(\''+encodeURIComponent(a)+'\')">'+chatAvatar(a,22)+'<span>'+esc(a)+'</span></div>').join('');
+  dd.innerHTML=list.map((a,i)=>{
+    const badge=_orgApodos.includes(a)?'<span style="font-size:9px;color:#4ade80;font-weight:800;margin-left:2px">✓</span>':'';
+    return '<div class="md-item'+(i===0?' sel':'')+'" onclick="pickMention(\''+encodeURIComponent(a)+'\')">'+chatAvatar(a,22)+'<span>'+esc(a)+'</span>'+badge+'</div>';
+  }).join('');
   dd.style.display='block'; safeIcons();
 }
 function moveMentionSel(dir){

@@ -53,6 +53,12 @@ service cloud.firestore {
     function isSignedIn() {
       return request.auth != null;
     }
+    // ORG-01: organismo verificado (custom claims rol=='organismo' + apodo).
+    function isOrganismo(apodo) {
+      return request.auth != null
+        && request.auth.token.rol == 'organismo'
+        && request.auth.token.apodo == apodo;
+    }
     function banRef() {
       return /databases/$(database)/documents/chat_bans/$(request.auth.uid);
     }
@@ -245,9 +251,9 @@ service cloud.firestore {
       allow read: if isAdmin() || (isSignedIn() && !isBanned());
       allow create: if isSignedIn() && !isBanned()
                   && request.resource.data.uid == request.auth.uid
-                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo','media'])
+                  && request.resource.data.keys().hasOnly(['uid','apodo','texto','admin','moderador','timestamp','replyTo','media','menciones'])
                   && request.resource.data.texto is string
-                  && request.resource.data.texto.size() <= 280
+                  && request.resource.data.texto.size() <= 500
                   && (request.resource.data.texto.size() > 0 || 'media' in request.resource.data)
                   && request.resource.data.apodo is string
                   && request.resource.data.apodo.size() <= 40
@@ -260,7 +266,10 @@ service cloud.firestore {
                   && (!('media' in request.resource.data)
                       || (isAdmin()
                           && request.resource.data.media.url is string
-                          && request.resource.data.media.type is string));
+                          && request.resource.data.media.type is string))
+                  // ORG-01: menciones a organismos (opcional) debe ser una lista.
+                  && (!('menciones' in request.resource.data)
+                      || request.resource.data.menciones is list);
       allow update: if false;
       allow delete: if isAdmin();
     }
@@ -308,6 +317,47 @@ service cloud.firestore {
       allow get: if isSignedIn();
       allow list: if isAdmin();
       allow write: if isAdmin();
+    }
+
+    // ===========================================================
+    //  ORG-01 — ORGANISMOS VERIFICADOS
+    // ===========================================================
+
+    // Organismos verificados (doc id = apodo). Lectura abierta a cualquier firmado:
+    // el chat necesita la lista para el badge ✓ y las @menciones. Cada organismo
+    // solo puede tocar SU token/última-sesión. Alta/baja = seed admin (Admin SDK,
+    // que no pasa por estas reglas).
+    match /chat_organismos/{apodo} {
+      allow read: if isSignedIn();
+      // El admin puede editar cualquier campo (ej. activo:false para desactivar);
+      // el propio organismo solo su token/última-sesión.
+      allow update: if isAdmin()
+        || (isOrganismo(apodo)
+            && request.resource.data.diff(resource.data).affectedKeys()
+                .hasOnly(['fcm_token','ultima_sesion']));
+      allow create, delete: if false;
+    }
+
+    // Denuncias anónimas. Crear = cualquiera (anónimo incluido), pero el doc NO
+    // puede traer datos de identidad (uid/ip/fingerprint/email) — bloqueado acá,
+    // no solo en el frontend (Ley 25.326). Leer y marcar leído = solo el organismo
+    // destinatario.
+    match /chat_denuncias/{id} {
+      allow create: if
+        request.resource.data.keys().hasOnly(['destinatario','mensaje','leido','creado_en','imagen_url','expira_imagen_en'])
+        && !('uid' in request.resource.data)
+        && !('ip' in request.resource.data)
+        && !('fingerprint' in request.resource.data)
+        && !('email' in request.resource.data)
+        && request.resource.data.destinatario is string
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() > 0
+        && request.resource.data.mensaje.size() <= 1000
+        && request.resource.data.leido == false;
+      // El organismo destinatario lee y marca leído; el admin puede leer (panel de
+      // administración: conteos y detalle). El admin NO escribe denuncias.
+      allow read: if isAdmin() || isOrganismo(resource.data.destinatario);
+      allow update: if isOrganismo(resource.data.destinatario);
     }
   }
 }
