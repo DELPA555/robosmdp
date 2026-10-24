@@ -5,3 +5,22 @@ android/
 *.jks
 .gradle/
 local.properties
+
+# Claves / secretos de Firebase — NUNCA al repo
+serviceAccount*.json
+*serviceAccount*.json
+*service-account*.json
+firebase-adminsdk*.json
+*-firebase-adminsdk-*.json
+google-services.json
+
+# Red de seguridad: ignorar TODO .json por defecto para que ninguna clave se
+# cuele por accidente…
+*.json
+# …excepto los JSON de configuración que SÍ deben versionarse:
+!package.json
+!package-lock.json
+!capacitor.config.json
+!firebase.json
+!robosmdp/manifest.json
+!firestore/tests/package.json
