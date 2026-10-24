@@ -82,6 +82,8 @@ export default async (req) => {
     // Log detallado para los logs de Netlify (stack completo). La respuesta al
     // cliente NO filtra detalles internos.
     console.error('resetear-password ERROR:', (e && e.stack) || e);
-    return json({ error: 'Error interno al resetear la contraseña', detalle: e && e.message }, 500);
+    // El stack completo queda en los logs (console.error). No se filtra el detalle
+    // interno al cliente.
+    return json({ error: 'Error interno al resetear la contraseña', detalle: 'Error interno' }, 500);
   }
 };

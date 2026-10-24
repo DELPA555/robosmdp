@@ -227,13 +227,16 @@ service cloud.firestore {
       }
     }
     match /rastreo_registros/{docId} {
-      allow create: if true;
+      // Validación mínima anti-abuso: acotar la cantidad de campos del doc.
+      allow create: if request.resource.data.keys().size() <= 10;
       allow read, delete: if isAdmin();
       allow update: if false;
     }
     match /mascotas/{id} {
       allow read: if true;
-      allow create: if true;
+      allow create: if request.resource.data.descripcion is string
+                  && request.resource.data.descripcion.size() > 0
+                  && request.resource.data.descripcion.size() <= 500;
       allow update: if isAdmin() || (
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resuelto'])
         && request.resource.data.resuelto == true

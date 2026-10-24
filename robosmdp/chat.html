@@ -744,6 +744,13 @@ async function sendChat(){
   // rate: máx 10 en 60s
   G.sendTimes=G.sendTimes.filter(t=>now-t<RATE_WIN_MS);
   if(G.sendTimes.length>=RATE_MAX){ showToast('Demasiados mensajes, esperá un momento','r'); return; }
+  // rate estricto: máx 3 en 10s → bloquear el botón 10s
+  if(G.sendTimes.filter(t=>now-t<10000).length>=3){
+    showToast('Enviás mensajes muy rápido, esperá unos segundos','r');
+    const sndB=document.getElementById('chat-send');
+    if(sndB){ sndB.disabled=true; setTimeout(()=>{ const b=document.getElementById('chat-send'); if(b) b.disabled=G.banned; },10000); }
+    return;
+  }
   const snd=document.getElementById('chat-send'); if(snd) snd.disabled=true;
   const payload={
     uid:auth.currentUser.uid, apodo:a, texto:txt.slice(0,CHAT_MAX_LEN),
