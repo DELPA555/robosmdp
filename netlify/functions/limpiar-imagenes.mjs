@@ -14,7 +14,7 @@
  */
 import crypto from 'node:crypto';
 
-export const config = { path: '/api/limpiar-imagenes', schedule: '@hourly' };
+export const config = { schedule: '@hourly' };
 
 const PROJECT_ID = 'robosmdp-d1ef3';
 const BUCKET = 'robosmdp-d1ef3.firebasestorage.app';
