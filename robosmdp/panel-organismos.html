@@ -15,7 +15,7 @@
 }
 body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--t1);line-height:1.5;min-height:100vh;
   background-image:radial-gradient(800px circle at 50% -10%,rgba(14,165,233,.12),transparent 55%)}
-.wrap{max-width:720px;margin:0 auto;padding:22px 16px 60px}
+.wrap{max-width:860px;margin:0 auto;padding:22px 16px 60px}
 .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px}
 .card{background:linear-gradient(170deg,rgba(26,36,56,.6),rgba(13,20,36,.65));border:1px solid var(--line);border-radius:16px;padding:20px 18px}
 h1{font-size:20px;font-weight:700;color:var(--t0);letter-spacing:-.02em}
@@ -25,6 +25,8 @@ input:focus,select:focus{border-color:var(--accent)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 16px;border:none;border-radius:11px;
   background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04110c;font-size:14px;font-weight:700;cursor:pointer}
 .btn.ghost{background:var(--surface-2);border:1px solid var(--line);color:var(--t1)}
+.btn.danger{background:rgba(239,90,90,.14);border:1px solid rgba(239,90,90,.4);color:#ffb0b0}
+.btn.sm{padding:6px 10px;font-size:12px}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 .msg{font-size:13px;min-height:18px;margin-top:10px}
 .msg.err{color:var(--err)} .msg.ok{color:#86efac}
@@ -39,14 +41,14 @@ input:focus,select:focus{border-color:var(--accent)}
 .who{display:flex;align-items:center;gap:10px}
 .who .n{font-size:15px;font-weight:700;color:var(--t0)}
 .who .r{font-size:11px;color:#86efac;font-weight:700;background:rgba(34,197,94,.12);padding:2px 8px;border-radius:999px}
-.tabs{display:flex;gap:6px;margin-bottom:14px;background:#0c1322;padding:5px;border-radius:12px;border:1px solid var(--line)}
-.tab{flex:1;padding:9px;border:none;background:transparent;color:var(--t3);font-size:13px;font-weight:600;border-radius:8px;cursor:pointer}
+.tabs{display:flex;gap:6px;margin-bottom:14px;background:#0c1322;padding:5px;border-radius:12px;border:1px solid var(--line);flex-wrap:wrap}
+.tab{flex:1;min-width:84px;padding:9px;border:none;background:transparent;color:var(--t3);font-size:13px;font-weight:600;border-radius:8px;cursor:pointer}
 .tab.active{background:var(--surface-2);color:var(--t0)}
 .pane{display:none} .pane.active{display:block}
 
 .item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:10px}
 .item.unread{border-color:rgba(14,165,233,.45)}
-.item .row1{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:6px}
+.item .row1{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap}
 .item .when{font-size:11px;color:var(--t3)}
 .item .txt{font-size:14px;color:var(--t1);white-space:pre-wrap;word-break:break-word}
 .item .who2{font-size:12px;color:#7dd3fc;font-weight:700}
@@ -55,6 +57,7 @@ input:focus,select:focus{border-color:var(--accent)}
 .empty{text-align:center;color:var(--t3);font-size:13px;padding:30px 10px}
 
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpis.g3{grid-template-columns:repeat(3,1fr)}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
 .kpi .v{font-size:28px;font-weight:800;color:var(--t0)}
 .kpi .l{font-size:12px;color:var(--t3);margin-top:3px}
@@ -85,7 +88,34 @@ input:focus,select:focus{border-color:var(--accent)}
 .chat-composer textarea{width:100%;min-height:52px;resize:vertical;background:#0c1322;border:1px solid var(--line);color:var(--t0);border-radius:10px;padding:9px 11px;font:inherit;font-size:14px;outline:none}
 .chat-composer textarea:focus{border-color:var(--accent)}
 
-/* Modal imagen */
+/* Gestión de organismos (admin) */
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--t3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:rgba(148,163,184,.06)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot.on{background:var(--ok)} .dot.off{background:var(--err)}
+.num{font-weight:700}
+.num.unread{color:var(--warn)}
+#detail{margin-top:14px;display:none}
+#detail .dhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#reset-results{margin-top:14px;display:none}
+#reset-results .dhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#reset-results code{font-family:ui-monospace,"Cascadia Code",Menlo,monospace;font-size:12.5px;color:#fde68a}
+.copybar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.rok{color:#86efac;font-weight:700}
+.rerr{color:#fca5a5;font-weight:700}
+
+/* Modal (reset de contraseña / imagen) */
+.modal{position:fixed;inset:0;background:rgba(2,6,16,.72);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal.show{display:flex}
+.modal .box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 18px;width:100%;max-width:420px}
+.modal h2{font-size:17px;font-weight:700;color:var(--t0);margin-bottom:6px}
+.modal .sub{font-size:12.5px;color:var(--t3);margin-bottom:14px}
+.modal .actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
 #modal img{max-width:100%;max-height:90vh;border-radius:12px}
 #modal.open{display:flex}
@@ -104,7 +134,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
         <select id="org-select" onchange="onOrgSelect()"><option value="">Elegí de la lista…</option></select>
       </div>
       <div class="field">
-        <label for="apodo">…o escribí tu apodo</label>
+        <label for="apodo">…o escribí tu apodo (o tu email de admin)</label>
         <input id="apodo" type="text" autocomplete="username" placeholder="ej: comisaria1ra">
       </div>
       <div class="field">
@@ -121,7 +151,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
   <!-- PANEL -->
   <div id="panel" style="display:none">
     <div class="topbar">
-      <div class="who"><div class="logo">🛡️</div><div><div class="n" id="org-nombre">—</div><span class="r">Organismo verificado ✓</span></div></div>
+      <div class="who"><div class="logo">🛡️</div><div><div class="n" id="org-nombre">—</div><span class="r" id="role-label">Organismo verificado ✓</span></div></div>
       <button class="btn ghost" onclick="logout()">Salir</button>
     </div>
 
@@ -129,12 +159,16 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       <button class="tab active" data-tab="denuncias" onclick="showTab('denuncias')">Denuncias</button>
       <button class="tab" data-tab="menciones" onclick="showTab('menciones')">Menciones</button>
       <button class="tab" data-tab="chat" onclick="showTab('chat')">Chat Público</button>
-      <button class="tab" data-tab="panel" onclick="showTab('panel')">Panel</button>
+      <button class="tab" data-tab="panel" data-role="org" onclick="showTab('panel')">Panel</button>
+      <button class="tab" data-tab="gestion" data-role="admin" onclick="showTab('gestion')">Gestión de Organismos</button>
     </div>
 
+    <!-- Denuncias -->
     <div class="pane active" id="pane-denuncias"><div class="empty">Cargando denuncias…</div></div>
+
+    <!-- Menciones -->
     <div class="pane" id="pane-menciones">
-      <div class="men-composer">
+      <div class="men-composer" data-role="org">
         <textarea id="men-reply" maxlength="500" placeholder="Escribí una respuesta oficial para el chat público…" oninput="menCount()"></textarea>
         <div class="men-row">
           <span class="men-hint">Se publica en el chat público como <strong style="color:#86efac">organismo oficial ✓</strong></span>
@@ -147,12 +181,14 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       </div>
       <div id="men-list"><div class="empty">Cargando menciones…</div></div>
     </div>
+
+    <!-- Chat público -->
     <div class="pane" id="pane-chat">
       <div id="chat-list" class="chatbox"><div class="empty">Cargando chat…</div></div>
       <div class="chat-composer">
         <textarea id="chat-input" maxlength="500" placeholder="Escribí en el chat público… (Enter para enviar)" oninput="chatCount()" onkeydown="chatKey(event)"></textarea>
         <div class="men-row">
-          <span class="men-hint">Escribís como <strong style="color:#86efac">organismo oficial ✓</strong></span>
+          <span class="men-hint" id="chat-hint">Escribís como <strong style="color:#86efac">organismo oficial ✓</strong></span>
           <span class="men-count" id="chat-count">0 / 500</span>
         </div>
         <div class="men-row">
@@ -161,6 +197,8 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
         </div>
       </div>
     </div>
+
+    <!-- Panel propio del organismo (KPIs + push) -->
     <div class="pane" id="pane-panel">
       <div class="kpis">
         <div class="kpi"><div class="v" id="kpi-total">—</div><div class="l">Denuncias recibidas</div></div>
@@ -172,11 +210,68 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
         <div class="msg" id="push-msg"></div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:16px"><a class="back" href="cambiar-password.html" style="margin-top:0">¿Primera vez? → Cambiar contraseña</a></div>
+
+    <!-- Gestión de organismos (solo admin) -->
+    <div class="pane" id="pane-gestion">
+      <div class="kpis g3">
+        <div class="kpi"><div class="v" id="kpi-g-orgs">—</div><div class="l">Organismos activos</div></div>
+        <div class="kpi"><div class="v" id="kpi-g-hoy">—</div><div class="l">Denuncias hoy</div></div>
+        <div class="kpi"><div class="v" id="kpi-g-unread">—</div><div class="l">Sin leer (total)</div></div>
+      </div>
+      <div class="toolbar" style="margin-top:12px">
+        <button class="btn ghost" id="btn-refresh" onclick="cargar()">↻ Actualizar</button>
+        <button class="btn danger" id="btn-reset-all" onclick="resetearTodas()">🔑 Resetear todas</button>
+        <span class="msg" id="panel-msg" style="margin-top:0;align-self:center"></span>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th>Nombre</th><th>Apodo</th><th>Email</th><th>FCM</th><th>Última sesión</th>
+            <th>Denuncias</th><th>Sin leer</th><th>Contraseña</th><th></th>
+          </tr></thead>
+          <tbody id="tbody"><tr><td colspan="9" class="empty">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+      <div id="detail" class="card">
+        <div class="dhead"><strong id="detail-title">Denuncias</strong><button class="btn ghost sm" onclick="cerrarDetalle()">Cerrar</button></div>
+        <div id="detail-list"></div>
+      </div>
+      <div id="reset-results" class="card">
+        <div class="dhead"><strong id="reset-results-title">Contraseñas nuevas</strong><button class="btn ghost sm" onclick="cerrarResultados()">Cerrar</button></div>
+        <div class="copybar">
+          <button class="btn ghost sm" onclick="copiarResultados()">📋 Copiar todo</button>
+          <span style="font-size:12px;color:var(--t3)">Guardá estas contraseñas ahora: no se vuelven a mostrar.</span>
+        </div>
+        <div class="tablewrap">
+          <table style="min-width:520px">
+            <thead><tr><th>Apodo</th><th>Email</th><th>Contraseña nueva</th><th>Estado</th></tr></thead>
+            <tbody id="reset-results-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px"><a class="back" href="cambiar-password.html" data-role="org" style="margin-top:0">¿Primera vez? → Cambiar contraseña</a></div>
   </div>
 </div>
 
+<!-- Modal imagen -->
 <div id="modal" onclick="this.classList.remove('open')"><img id="modal-img" alt=""></div>
+
+<!-- MODAL: reset de contraseña individual (admin) -->
+<div class="modal" id="reset-modal">
+  <div class="box">
+    <h2>Resetear contraseña</h2>
+    <div class="sub" id="reset-modal-sub">Organismo</div>
+    <label for="reset-pass">Nueva contraseña (mínimo 8 caracteres)</label>
+    <input id="reset-pass" type="text" autocomplete="off" placeholder="Nueva contraseña">
+    <div class="msg" id="reset-modal-msg"></div>
+    <div class="actions">
+      <button class="btn ghost" onclick="cerrarResetModal()">Cancelar</button>
+      <button class="btn" id="reset-modal-ok" onclick="confirmarReset()">Confirmar</button>
+    </div>
+  </div>
+</div>
 
 <!-- Firebase (compat, misma versión del sitio) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -194,6 +289,7 @@ const FB_CONFIG={
   appId:"1:329992862097:web:be1166da8fe9380df2c230"
 };
 const VAPID_KEY='BL8pNekefSukhNCIO-Rd1qt1gJeO4plOBnwdTGVOl6UCb-h_SLcK6HCqZD9paSMemaBDRKmjOZ1aHZPu2RSTbxs'; // VAPID key (FCM web push)
+const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
 let auth=null, db=null, messaging=null, FV=null, Timestamp=null;
 try{
@@ -207,16 +303,19 @@ try{
 
 const $=id=>document.getElementById(id);
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function say(el,t,cls){ el.textContent=t||''; el.className='msg'+(cls?(' '+cls):''); }
+function say(el,t,cls){ if(!el) return; el.textContent=t||''; el.className='msg'+(cls?(' '+cls):''); }
 function fmtDate(ts){
   const d=ts&&ts.toDate?ts.toDate():(ts instanceof Date?ts:null);
   if(!d) return '';
   return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
 }
 
+// Rol del usuario en sesión.
+let esAdmin=false, esOrg=false;
 let orgApodo=null, denUnsub=null, menUnsub=null, chatUnsub=null, denCache=[];
+let _gestionLoaded=false;
 
-// ── Login por apodo (arma el email solo) ─────────────────────────────────────
+// ── Login (apodo para organismos, email para admin) ──────────────────────────
 const DOMINIO='@robosmdp.com.ar';
 // Lista estática de respaldo (apodo → nombre) si Firestore no responde — misma que denuncia.html.
 const FALLBACK_ORGS=[
@@ -235,11 +334,11 @@ const FALLBACK_ORGS=[
 ];
 
 // Convierte lo que el usuario escribió en un email. Si ya trae @, lo usa tal cual;
-// si no, limpia espacios/@ y le agrega el dominio.
+// si no, limpia espacios/@ y le agrega el dominio de organismos.
 function apodoToEmail(raw){
   let v=String(raw||'').trim().toLowerCase();
-  if(v.includes('@')) return v;                 // escribió el email completo → tal cual
-  v=v.replace(/\s+/g,'');                        // apodo solo → limpiar espacios
+  if(v.includes('@')) return v;
+  v=v.replace(/\s+/g,'');
   return v+DOMINIO;
 }
 
@@ -251,7 +350,6 @@ async function loadLoginOrgs(){
     pairs.map(([ap,nom])=>`<option value="${ap}">${esc(nom)}</option>`).join(''); };
   if(!db){ fill(FALLBACK_ORGS); return; }
   try{
-    // Sin sesión las reglas pueden denegar la lectura → fallback (igual que denuncia.html).
     const snap=await db.collection('chat_organismos').where('activo','==',true).get();
     if(snap.empty){ fill(FALLBACK_ORGS); return; }
     fill(snap.docs.map(d=>[d.id,(d.data().nombre||d.id)]).sort((a,b)=>a[1].localeCompare(b[1])));
@@ -260,22 +358,22 @@ async function loadLoginOrgs(){
 
 function login(){
   const apodoRaw=$('apodo').value, pass=$('pass').value;
-  if(!apodoRaw.trim()){ say($('login-msg'),'Elegí o escribí tu apodo.','err'); return; }
+  if(!apodoRaw.trim()){ say($('login-msg'),'Elegí/escribí tu apodo o tu email.','err'); return; }
   if(!pass){ say($('login-msg'),'Ingresá tu contraseña.','err'); return; }
   const email=apodoToEmail(apodoRaw);
   $('btn-login').disabled=true; say($('login-msg'),'Ingresando…','ok');
   auth.signInWithEmailAndPassword(email,pass)
-    .then(cred=>cred.user.getIdToken(true)) // fuerza refresh: los custom claims (rol/apodo) tardan en propagar
+    .then(cred=>cred.user.getIdToken(true)) // fuerza refresh: los custom claims tardan en propagar
     .catch(e=>{
       $('btn-login').disabled=false;
       say($('login-msg'), e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found'
-        ? 'Apodo o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
+        ? 'Usuario o contraseña incorrectos.' : ('No se pudo ingresar: '+(e.message||e.code)), 'err');
     });
 }
 
 function resetPassword(){
   const apodoRaw=$('apodo').value;
-  if(!apodoRaw.trim()){ say($('login-msg'),'Escribí o elegí tu apodo primero.','err'); return; }
+  if(!apodoRaw.trim()){ say($('login-msg'),'Escribí o elegí tu apodo/email primero.','err'); return; }
   const email=apodoToEmail(apodoRaw);
   auth.sendPasswordResetEmail(email)
     .then(()=>say($('login-msg'),'Te enviamos un email a '+email+' para resetear tu contraseña.','ok'))
@@ -288,30 +386,47 @@ if(auth) auth.onAuthStateChanged(async user=>{
   if(!user){ showLogin(); return; }
   try{
     const tok=await user.getIdTokenResult(true); // forceRefresh: trae los custom claims al día
-    if(tok.claims.rol!=='organismo'){
-      await auth.signOut();
-      showLogin('Acceso solo para organismos verificados.');
-      return;
-    }
-    orgApodo=tok.claims.apodo||null;
-    if(!orgApodo){ await auth.signOut(); showLogin('Tu cuenta no tiene apodo asignado.'); return; }
+    esAdmin = tok.claims.admin===true || (user.email && user.email.toLowerCase()===ADMIN_EMAIL);
+    esOrg   = tok.claims.rol==='organismo';
+    if(!esAdmin && !esOrg){ await auth.signOut(); showLogin('Tu cuenta no tiene acceso a este panel.'); return; }
+    orgApodo = tok.claims.apodo || null;
+    if(esOrg && !orgApodo){ await auth.signOut(); showLogin('Tu cuenta de organismo no tiene apodo asignado.'); return; }
     entrarPanel(user);
   }catch(e){ console.error(e); showLogin('No se pudo verificar la sesión.'); }
 });
 
 function showLogin(err){
   if(denUnsub){denUnsub();denUnsub=null;} if(menUnsub){menUnsub();menUnsub=null;} if(chatUnsub){chatUnsub();chatUnsub=null;}
+  _gestionLoaded=false;
   $('panel').style.display='none'; $('login').style.display='block';
   $('btn-login').disabled=false; $('pass').value='';
   say($('login-msg'), err||'', err?'err':'');
 }
 
+// Muestra/oculta elementos [data-role] según el rol en sesión.
+function aplicarRol(){
+  document.querySelectorAll('[data-role]').forEach(el=>{
+    const r=el.getAttribute('data-role');
+    const show = (r==='admin'&&esAdmin) || (r==='org'&&esOrg);
+    el.style.display = show ? '' : 'none';
+  });
+}
+
 function entrarPanel(user){
   $('login').style.display='none'; $('panel').style.display='block';
-  $('org-nombre').textContent='@'+orgApodo;
-  // Nombre lindo desde el doc (si existe).
-  db.collection('chat_organismos').doc(orgApodo).get()
-    .then(d=>{ if(d.exists&&d.data().nombre) $('org-nombre').textContent=d.data().nombre; }).catch(()=>{});
+  aplicarRol();
+  if(esAdmin){
+    $('org-nombre').textContent='Administración';
+    $('role-label').textContent='Administrador';
+    const ch=$('chat-hint'); if(ch) ch.innerHTML='Escribís como <strong style="color:#fca5a5">AdminRobos</strong>';
+    showTab('gestion');
+  }else{
+    $('org-nombre').textContent='@'+orgApodo;
+    $('role-label').textContent='Organismo verificado ✓';
+    db.collection('chat_organismos').doc(orgApodo).get()
+      .then(d=>{ if(d.exists&&d.data().nombre) $('org-nombre').textContent=d.data().nombre; }).catch(()=>{});
+    showTab('denuncias');
+  }
   subDenuncias(); subMenciones();
 }
 
@@ -319,36 +434,43 @@ function entrarPanel(user){
 function showTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
-  $('pane-'+name).classList.add('active');
-  if(name==='chat' && !chatUnsub) subChatPublico(); // suscripción perezosa al abrir la tab
+  const pane=$('pane-'+name); if(pane) pane.classList.add('active');
+  if(name==='chat' && !chatUnsub) subChatPublico();            // suscripción perezosa
+  if(name==='gestion' && esAdmin && !_gestionLoaded){ _gestionLoaded=true; cargar(); }
 }
 
 // ── Denuncias (tiempo real) ────────────────────────────────────────────────
+// Organismo: solo las suyas. Admin: todas (oversight).
 function subDenuncias(){
   if(denUnsub) denUnsub();
-  denUnsub=db.collection('chat_denuncias')
-    .where('destinatario','==',orgApodo).orderBy('creado_en','desc')
-    .onSnapshot(snap=>{
-      denCache=snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderDenuncias(); renderKpis();
-    }, err=>{
-      console.warn('denuncias', err);
-      $('pane-denuncias').innerHTML='<div class="empty">No se pudieron cargar las denuncias.<br>'+
-        (/index/i.test(err.message)?'Falta crear el índice compuesto (destinatario + creado_en DESC).':esc(err.message))+'</div>';
-    });
+  let q=db.collection('chat_denuncias');
+  if(esOrg) q=q.where('destinatario','==',orgApodo);
+  q=q.orderBy('creado_en','desc');
+  if(esAdmin) q=q.limit(200);
+  denUnsub=q.onSnapshot(snap=>{
+    denCache=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDenuncias(); renderKpis();
+  }, err=>{
+    console.warn('denuncias', err);
+    $('pane-denuncias').innerHTML='<div class="empty">No se pudieron cargar las denuncias.<br>'+
+      (/index/i.test(err.message)?'Falta crear el índice compuesto (destinatario + creado_en DESC).':esc(err.message))+'</div>';
+  });
 }
 function renderDenuncias(){
   const pane=$('pane-denuncias');
-  if(!denCache.length){ pane.innerHTML='<div class="empty">Todavía no recibiste denuncias.</div>'; return; }
+  if(!denCache.length){ pane.innerHTML='<div class="empty">'+(esAdmin?'No hay denuncias.':'Todavía no recibiste denuncias.')+'</div>'; return; }
   pane.innerHTML=denCache.map(d=>{
     const unread=d.leido===false;
     const img=d.imagen_url?`<img class="mini" src="${esc(d.imagen_url)}" alt="foto" onclick="verImagen('${esc(d.imagen_url)}')">`:'';
-    return `<div class="item${unread?' unread':''}" onclick="marcarLeida('${d.id}')">
-      <div class="row1"><span class="when">${esc(fmtDate(d.creado_en))}</span>${unread?'<span class="badge">No leído</span>':''}</div>
+    const dest=esAdmin?`<span class="who2">→ @${esc(d.destinatario||'?')}</span>`:'';
+    const click=(esOrg&&unread)?` onclick="marcarLeida('${d.id}')"`:'';
+    return `<div class="item${unread?' unread':''}"${click}>
+      <div class="row1"><span class="when">${esc(fmtDate(d.creado_en))}</span>${dest}${unread?'<span class="badge">No leído</span>':''}</div>
       <div class="txt">${esc(d.mensaje||'')}</div>${img}</div>`;
   }).join('');
 }
 function marcarLeida(id){
+  if(!esOrg) return; // solo el organismo destinatario puede marcar leído (reglas)
   const d=denCache.find(x=>x.id===id);
   if(!d||d.leido!==false) return;
   db.collection('chat_denuncias').doc(id).update({leido:true}).catch(e=>console.warn('marcarLeida',e));
@@ -359,6 +481,25 @@ function verImagen(url){ event.stopPropagation(); $('modal-img').src=url; $('mod
 function subMenciones(){
   if(menUnsub) menUnsub();
   const list=()=>$('men-list');
+  if(esAdmin){
+    // Admin: todas las menciones recientes (a cualquier organismo). Sin composer.
+    menUnsub=db.collection('chat_publico').orderBy('timestamp','desc').limit(100)
+      .onSnapshot(snap=>{
+        if(!list()) return;
+        const rows=snap.docs.map(d=>d.data()).filter(m=>Array.isArray(m.menciones)&&m.menciones.length);
+        if(!rows.length){ list().innerHTML='<div class="empty">No hay menciones recientes.</div>'; return; }
+        list().innerHTML=rows.map(m=>`
+          <div class="item mencion">
+            <div class="row1"><span class="who2">@${esc(m.apodo||'Vecino')} → ${esc(m.menciones.map(a=>'@'+a).join(', '))}</span>
+              <span class="when">${esc(fmtDate(m.timestamp))}</span></div>
+            <div class="txt">${esc(m.texto||'')}</div></div>`).join('');
+      }, err=>{
+        console.warn('menciones', err);
+        if(list()) list().innerHTML='<div class="empty">No se pudieron cargar las menciones.<br>'+esc(err.message)+'</div>';
+      });
+    return;
+  }
+  // Organismo: solo las que lo mencionan.
   menUnsub=db.collection('chat_publico')
     .where('menciones','array-contains',orgApodo).orderBy('timestamp','desc').limit(50)
     .onSnapshot(snap=>{
@@ -366,7 +507,7 @@ function subMenciones(){
       if(snap.empty){ list().innerHTML='<div class="empty">Nadie te mencionó todavía.</div>'; return; }
       list().innerHTML=snap.docs.map(d=>{ const m=d.data();
         const autor=m.apodo||'Vecino';
-        const autorAttr=autor.replace(/['\\]/g,''); // seguro para el onclick inline
+        const autorAttr=autor.replace(/['\\]/g,'');
         return `<div class="item mencion">
           <div class="row1"><span class="who2">@${esc(autor)}<span class="badge-men">te mencionó</span></span>
             <span class="when">${esc(fmtDate(m.timestamp))}</span></div>
@@ -382,10 +523,8 @@ function subMenciones(){
     });
 }
 
-// Contador del composer de respuesta.
 function menCount(){ const el=$('men-count'); if(el) el.textContent=(($('men-reply').value||'').length)+' / 500'; }
 
-// "Responder": pre-completa el composer con @autor del mensaje original y enfoca.
 function prefillResponder(autor){
   const ta=$('men-reply'); if(!ta) return;
   const pre='@'+autor+' ';
@@ -396,7 +535,6 @@ function prefillResponder(autor){
   ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
 }
 
-// Publica la respuesta oficial del organismo en el chat público.
 async function responderChat(){
   const ta=$('men-reply'), m=$('men-msg');
   const txt=(ta.value||'').trim();
@@ -406,11 +544,11 @@ async function responderChat(){
   $('men-send').disabled=true; say(m,'Publicando…','ok');
   try{
     await db.collection('chat_publico').add({
-      uid: auth.currentUser.uid,   // requerido por las reglas (uid == auth.uid)
-      apodo: orgApodo,             // autor visible en el chat
-      autor: orgApodo,             // campo explícito de la feature
+      uid: auth.currentUser.uid,
+      apodo: orgApodo,
+      autor: orgApodo,
       texto: txt.slice(0,500),
-      esOrganismo: true,           // marca de respuesta oficial (badge en el chat)
+      esOrganismo: true,
       timestamp: FV.serverTimestamp()
     });
     ta.value=''; menCount();
@@ -424,12 +562,11 @@ async function responderChat(){
 }
 
 // ── Chat público embebido (tiempo real) ───────────────────────────────────
-// ¿El mensaje menciona al organismo logueado? (por el array `menciones` o por texto)
 function mencionaAlOrg(m){
+  if(!orgApodo) return false; // el admin no tiene un apodo propio que resaltar
   if(Array.isArray(m.menciones) && m.menciones.includes(orgApodo)) return true;
-  return String(m.texto||'').toLowerCase().includes('@'+String(orgApodo||'').toLowerCase());
+  return String(m.texto||'').toLowerCase().includes('@'+String(orgApodo).toLowerCase());
 }
-// Resalta @apodos en el texto ya escapado (igual que chat.html).
 function highlightMentions(escaped){
   try{ return escaped.replace(/(^|\s)@([\p{L}\p{N}_.-]{1,30})/gu,'$1<span class="mention">@$2</span>'); }
   catch(e){ return escaped.replace(/(^|\s)@([A-Za-z0-9_.-]{1,30})/g,'$1<span class="mention">@$2</span>'); }
@@ -441,9 +578,8 @@ function subChatPublico(){
     .onSnapshot(snap=>{
       if(!box()) return;
       if(snap.empty){ box().innerHTML='<div class="empty">Todavía no hay mensajes.</div>'; return; }
-      // ¿estaba cerca del fondo? para no cortar el scroll si está leyendo arriba.
       const near = box().scrollHeight - box().scrollTop - box().clientHeight < 140;
-      const msgs = snap.docs.map(d=>d.data()).reverse(); // orden ascendente por tiempo
+      const msgs = snap.docs.map(d=>d.data()).reverse();
       box().innerHTML = msgs.map(m=>{
         const mine = m.uid && auth.currentUser && m.uid===auth.currentUser.uid;
         const isOrg = !!m.esOrganismo;
@@ -471,46 +607,42 @@ async function enviarChatPublico(){
   const txt=(ta.value||'').trim();
   if(!txt) return;
   if(txt.length>500){ say(m,'Máximo 500 caracteres.','err'); return; }
-  if(!orgApodo || !auth.currentUser){ say(m,'Tu sesión no es válida, reingresá.','err'); return; }
+  if(!auth.currentUser || (esOrg && !orgApodo)){ say(m,'Tu sesión no es válida, reingresá.','err'); return; }
   $('chat-send').disabled=true; say(m,'');
   try{
-    await db.collection('chat_publico').add({
-      uid: auth.currentUser.uid,   // requerido por las reglas (uid == auth.uid)
-      apodo: orgApodo,             // autor visible
-      texto: txt.slice(0,500),
-      timestamp: FV.serverTimestamp(),
-      esOrganismo: true,           // marca de respuesta oficial (badge)
-      autor: orgApodo
-    });
+    const doc = esAdmin
+      ? { uid:auth.currentUser.uid, apodo:'AdminRobos', texto:txt.slice(0,500), admin:true, timestamp:FV.serverTimestamp() }
+      : { uid:auth.currentUser.uid, apodo:orgApodo, texto:txt.slice(0,500), esOrganismo:true, autor:orgApodo, timestamp:FV.serverTimestamp() };
+    await db.collection('chat_publico').add(doc);
     ta.value=''; chatCount();
   }catch(e){
     console.error('enviarChatPublico', e);
     say(m, /permission/i.test(e.message)
-      ? 'No se pudo enviar (¿reglas de chat_publico actualizadas con esOrganismo/autor?).'
+      ? 'No se pudo enviar (¿reglas de chat_publico actualizadas?).'
       : ('No se pudo enviar: '+(e.message||e.code)), 'err');
   }finally{ $('chat-send').disabled=false; }
 }
 
-// ── KPIs ─────────────────────────────────────────────────────────────────────
+// ── KPIs del organismo (tab Panel) ─────────────────────────────────────────
 function renderKpis(){
-  $('kpi-total').textContent=denCache.length;
+  const t=$('kpi-total'); if(!t) return;
+  t.textContent=denCache.length;
   $('kpi-unread').textContent=denCache.filter(d=>d.leido===false).length;
   const last=denCache[0]&&denCache[0].creado_en;
   $('kpi-last').textContent=last?fmtDate(last):'Sin actividad';
 }
 
-// ── FCM push ─────────────────────────────────────────────────────────────────
+// ── FCM push (organismo) ───────────────────────────────────────────────────
 async function activarPush(){
   const m=$('push-msg');
   if(!messaging){ say(m,'Este navegador no soporta notificaciones push.','err'); return; }
   if(!('Notification' in window)){ say(m,'Este navegador no soporta notificaciones.','err'); return; }
+  if(!orgApodo){ say(m,'Las notificaciones son por organismo.','err'); return; }
   $('btn-push').disabled=true; say(m,'Pidiendo permiso…','ok');
   try{
     const perm=await Notification.requestPermission();
     if(perm!=='granted'){ say(m,'No diste permiso para notificaciones.','err'); $('btn-push').disabled=false; return; }
     // Esperar a que el Service Worker de FCM esté ACTIVO antes de pedir el token.
-    // Si se llama a getToken sin un SW activo, falla con "no active Service Worker".
-    // navigator.serviceWorker.ready resuelve recién cuando hay un SW activo.
     let swReg;
     if('serviceWorker' in navigator){
       try{ await navigator.serviceWorker.register('/firebase-messaging-sw.js'); }catch(_){ }
@@ -525,6 +657,175 @@ async function activarPush(){
     say(m,'No se pudieron activar: '+(e.message||e.code),'err');
     $('btn-push').disabled=false;
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  GESTIÓN DE ORGANISMOS (solo admin) — lista, detalle, reset de contraseñas
+// ═══════════════════════════════════════════════════════════════════════════
+let denByOrg={}; // apodo → [denuncias]
+let _orgs=[];    // último listado de organismos (para el reset masivo)
+
+async function cargar(){
+  $('btn-refresh').disabled=true; say($('panel-msg'),'Actualizando…','ok');
+  cerrarDetalle();
+  try{
+    const [orgSnap, denSnap]=await Promise.all([
+      db.collection('chat_organismos').where('activo','==',true).get(),
+      db.collection('chat_denuncias').get()
+    ]);
+    const orgs=orgSnap.docs.map(d=>({apodo:d.id,...d.data()})).sort((a,b)=>String(a.nombre||a.apodo).localeCompare(String(b.nombre||b.apodo)));
+    _orgs=orgs;
+
+    denByOrg={}; let hoy=0, unreadTotal=0;
+    const t0=new Date(); t0.setHours(0,0,0,0);
+    denSnap.docs.forEach(d=>{
+      const x={id:d.id,...d.data()};
+      (denByOrg[x.destinatario]=denByOrg[x.destinatario]||[]).push(x);
+      const cd=x.creado_en&&x.creado_en.toDate?x.creado_en.toDate():null;
+      if(cd && cd>=t0) hoy++;
+      if(x.leido===false) unreadTotal++;
+    });
+    Object.values(denByOrg).forEach(arr=>arr.sort((a,b)=>{
+      const ta=a.creado_en&&a.creado_en.toMillis?a.creado_en.toMillis():0;
+      const tb=b.creado_en&&b.creado_en.toMillis?b.creado_en.toMillis():0; return tb-ta;
+    }));
+
+    $('kpi-g-orgs').textContent=orgs.length;
+    $('kpi-g-hoy').textContent=hoy;
+    $('kpi-g-unread').textContent=unreadTotal;
+    renderTabla(orgs);
+    say($('panel-msg'),'');
+  }catch(e){
+    console.error('cargar', e);
+    $('tbody').innerHTML='<tr><td colspan="9" class="empty">No se pudo cargar. '+
+      (/permission/i.test(e.message)?'(permiso denegado — ¿reglas de admin publicadas?)':esc(e.message))+'</td></tr>';
+    say($('panel-msg'),'Error al cargar.','err');
+  }finally{ $('btn-refresh').disabled=false; }
+}
+
+function renderTabla(orgs){
+  if(!orgs.length){ $('tbody').innerHTML='<tr><td colspan="9" class="empty">No hay organismos activos.</td></tr>'; return; }
+  $('tbody').innerHTML=orgs.map(o=>{
+    const dd=denByOrg[o.apodo]||[];
+    const unread=dd.filter(x=>x.leido===false).length;
+    const fcm=o.fcm_token?'<span class="dot on"></span>Sí':'<span class="dot off"></span>No';
+    const nombreSafe=esc((o.nombre||o.apodo)).replace(/'/g,"");
+    return `<tr onclick="verDenuncias('${esc(o.apodo)}')">
+      <td>${esc(o.nombre||o.apodo)}</td><td>@${esc(o.apodo)}</td><td>${esc(o.email||'')}</td>
+      <td>${fcm}</td><td>${esc(fmtDate(o.ultima_sesion))}</td>
+      <td class="num">${dd.length}</td><td class="num${unread?' unread':''}">${unread}</td>
+      <td><button class="btn ghost sm" onclick="abrirResetModal(event,'${esc(o.apodo)}','${nombreSafe}')">Resetear 🔑</button></td>
+      <td><button class="btn danger sm" onclick="desactivar(event,'${esc(o.apodo)}','${nombreSafe}')">Desactivar</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function verDenuncias(apodo){
+  const dd=denByOrg[apodo]||[];
+  $('detail-title').textContent='Denuncias de @'+apodo+' ('+dd.length+')';
+  $('detail-list').innerHTML=dd.length? dd.map(x=>`
+    <div class="item${x.leido===false?' unread':''}">
+      <div class="row1"><span class="when">${esc(fmtDate(x.creado_en))}</span>${x.leido===false?'<span class="badge">No leído</span>':''}</div>
+      <div class="txt">${esc(x.mensaje||'')}</div>
+    </div>`).join('') : '<div class="empty">Sin denuncias.</div>';
+  $('detail').style.display='block';
+  $('detail').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cerrarDetalle(){ const d=$('detail'); if(d) d.style.display='none'; }
+
+async function desactivar(ev, apodo, nombre){
+  ev.stopPropagation();
+  if(!confirm('¿Desactivar a "'+nombre+'"? Dejará de recibir denuncias y menciones.')) return;
+  try{
+    await db.collection('chat_organismos').doc(apodo).update({activo:false});
+    say($('panel-msg'),'Organismo desactivado.','ok');
+    cargar();
+  }catch(e){ console.error('desactivar', e); say($('panel-msg'),'No se pudo desactivar: '+(e.message||e.code),'err'); }
+}
+
+// ── Reset de contraseñas (via /api/resetear-password, admin only) ──────────────
+let _resetApodo=null, _resetResults=[];
+function passwordMasiva(apodo){ return apodo.charAt(0).toUpperCase()+apodo.slice(1)+'Mdp2025#'; }
+
+async function doReset(apodo, nuevaPassword){
+  try{
+    const token=await auth.currentUser.getIdToken();
+    const r=await fetch('/api/resetear-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({apodo, nuevaPassword})
+    });
+    let j={}; try{ j=await r.json(); }catch(_){ }
+    if(r.ok && j.ok) return {ok:true};
+    return {ok:false, error:(j&&j.error)||('HTTP '+r.status)};
+  }catch(e){ return {ok:false, error:e.message||'Error de red'}; }
+}
+
+function abrirResetModal(ev, apodo, nombre){
+  ev.stopPropagation();
+  _resetApodo=apodo;
+  $('reset-modal-sub').textContent=nombre+'  ·  '+apodo+'@robosmdp.com.ar';
+  $('reset-pass').value='';
+  say($('reset-modal-msg'),'');
+  $('reset-modal-ok').disabled=false;
+  $('reset-modal').classList.add('show');
+  setTimeout(()=>$('reset-pass').focus(),50);
+}
+function cerrarResetModal(){ $('reset-modal').classList.remove('show'); _resetApodo=null; }
+
+async function confirmarReset(){
+  const pass=$('reset-pass').value;
+  if(pass.length<8){ say($('reset-modal-msg'),'La contraseña debe tener al menos 8 caracteres.','err'); return; }
+  const apodo=_resetApodo;
+  $('reset-modal-ok').disabled=true; say($('reset-modal-msg'),'Reseteando…','ok');
+  const r=await doReset(apodo, pass);
+  if(r.ok){
+    cerrarResetModal();
+    say($('panel-msg'),'Contraseña de @'+apodo+' actualizada.','ok');
+  }else{
+    $('reset-modal-ok').disabled=false;
+    say($('reset-modal-msg'),'No se pudo resetear: '+r.error,'err');
+  }
+}
+
+async function resetearTodas(){
+  const orgs=_orgs.slice();
+  if(!orgs.length){ say($('panel-msg'),'No hay organismos para resetear.','err'); return; }
+  if(!confirm('¿Resetear la contraseña de los '+orgs.length+' organismos activos?\n\nCada uno quedará con: Mayúscula(apodo)+"Mdp2025#".\nVas a ver la lista de contraseñas nuevas al terminar.')) return;
+
+  const btn=$('btn-reset-all'); btn.disabled=true; cerrarDetalle();
+  _resetResults=[];
+  for(let i=0;i<orgs.length;i++){
+    const o=orgs[i];
+    say($('panel-msg'),'Reseteando '+(i+1)+'/'+orgs.length+': @'+o.apodo+'…','ok');
+    const pass=passwordMasiva(o.apodo);
+    const r=await doReset(o.apodo, pass);
+    _resetResults.push({ apodo:o.apodo, email:o.apodo+'@robosmdp.com.ar', password:pass, ok:r.ok, error:r.error||'' });
+  }
+  btn.disabled=false;
+  const okN=_resetResults.filter(x=>x.ok).length;
+  say($('panel-msg'),'Reset masivo: '+okN+'/'+orgs.length+' ok.', okN===orgs.length?'ok':'err');
+  renderResultados();
+}
+
+function renderResultados(){
+  $('reset-results-title').textContent='Contraseñas nuevas ('+_resetResults.filter(x=>x.ok).length+'/'+_resetResults.length+')';
+  $('reset-results-body').innerHTML=_resetResults.map(x=>`
+    <tr>
+      <td>@${esc(x.apodo)}</td>
+      <td>${esc(x.email)}</td>
+      <td>${x.ok?('<code>'+esc(x.password)+'</code>'):'—'}</td>
+      <td>${x.ok?'<span class="rok">✓ ok</span>':('<span class="rerr">✗ '+esc(x.error)+'</span>')}</td>
+    </tr>`).join('');
+  $('reset-results').style.display='block';
+  $('reset-results').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cerrarResultados(){ $('reset-results').style.display='none'; }
+
+async function copiarResultados(){
+  const txt=_resetResults.filter(x=>x.ok).map(x=>x.apodo+'\t'+x.email+'\t'+x.password).join('\n');
+  try{ await navigator.clipboard.writeText(txt); say($('panel-msg'),'Contraseñas copiadas al portapapeles.','ok'); }
+  catch(_){ say($('panel-msg'),'No se pudo copiar automáticamente (copiá a mano desde la tabla).','err'); }
 }
 
 // Poblar el dropdown de organismos del login al cargar.
