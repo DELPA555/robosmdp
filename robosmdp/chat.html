@@ -862,7 +862,7 @@ async function toggleReaction(msgId, emoji){
       if(lista.length>=200) return;
       nueva=[...lista,uid];
     }
-    const update={'reacciones.'+emoji: nueva.length ? nueva : FV.delete()};
+    const update={['reacciones.'+emoji]: nueva.length ? nueva : FV.delete()};
     await ref.update(update);
     // cerrar picker
     const pk=document.getElementById('rp-'+msgId);
