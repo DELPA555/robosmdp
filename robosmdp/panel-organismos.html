@@ -120,6 +120,70 @@ tbody tr:hover{background:rgba(148,163,184,.06)}
 #modal img{max-width:100%;max-height:90vh;border-radius:12px}
 #modal.open{display:flex}
 a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;font-size:13px;font-weight:600}
+
+/* ── Colectas admin ───────────────────────────────────────────────────────── */
+.ctabs{display:flex;gap:4px;background:#0c1322;border-radius:11px;padding:4px;border:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
+.ctab{flex:1;min-width:72px;padding:8px 6px;border:none;background:transparent;color:var(--t3);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border-radius:8px;cursor:pointer;font-family:inherit}
+.ctab.active{background:var(--surface-2);color:var(--t0)}
+.cpane{display:none} .cpane.active{display:block}
+.col-card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer}
+.col-card:hover{border-color:rgba(14,165,233,.4)}
+.col-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:9px;flex-wrap:wrap}
+.col-titulo{font-size:14px;font-weight:700}
+.col-desc-p{font-size:11.5px;color:var(--t3);margin-top:3px;line-height:1.4}
+.cbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.cbadge.activa{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.cbadge.cerrada{background:rgba(148,163,184,.1);color:var(--t3);border:1px solid var(--line)}
+.bchips{display:flex;gap:7px;flex-wrap:wrap}
+.bchip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px}
+.bchip.g{background:rgba(34,197,94,.1);color:#22c55e}
+.bchip.a{background:rgba(245,158,11,.09);color:#f59e0b}
+.bchip.b{background:rgba(91,141,239,.1);color:#7b9ef0}
+/* form colectas */
+.cfield{margin-bottom:12px}
+.cfield label{display:block;font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.cfield input,.cfield textarea,.cfield select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0c1322;color:var(--t0);font-size:13.5px;font-family:inherit;outline:none}
+.cfield input:focus,.cfield textarea:focus,.cfield select:focus{border-color:var(--ok)}
+.cfield textarea{resize:vertical;min-height:65px}
+.crow2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:400px){.crow2{grid-template-columns:1fr}}
+.calert{padding:10px 13px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:12px;display:none}
+.calert.ok{background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.25)}
+.calert.err{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+/* movimientos */
+.adm-mov{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;background:var(--surface);border:1px solid var(--line);border-radius:11px;margin-bottom:7px}
+.adm-mov-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.adm-mov-body{flex:1;min-width:0}
+.adm-mov-desc{font-size:12px;font-weight:600;color:var(--t0)}
+.adm-mov-meta{font-size:10.5px;color:var(--t3);margin-top:1px}
+.adm-mov-monto{font-size:12.5px;font-weight:800;flex-shrink:0}
+.adm-mov-monto.g{color:#22c55e} .adm-mov-monto.a{color:#f59e0b} .adm-mov-monto.b{color:#7b9ef0}
+.adm-mov-foto{width:38px;height:38px;border-radius:6px;object-fit:cover;cursor:pointer;border:1px solid var(--line);flex-shrink:0}
+.btn-del-mov{padding:3px 7px;border-radius:6px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#ef4444;font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0}
+/* foto upload */
+.foto-lbl{display:flex;align-items:center;gap:7px;padding:10px 12px;border:1.5px dashed var(--line);border-radius:10px;cursor:pointer;color:var(--t3);font-size:12px;font-weight:600}
+.foto-lbl:hover{border-color:var(--ok)}
+.foto-prev-img{width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid var(--line);margin-top:7px;display:none}
+/* checklist */
+.need-adm{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:6px}
+.need-adm-body{flex:1;min-width:0}
+.need-adm-nombre{font-size:12px;font-weight:700;color:var(--t0)}
+.need-adm-prog{font-size:10px;color:var(--t3)}
+.need-adm-inp{width:50px;padding:4px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--t0);font-size:11px;text-align:center}
+.btn-del-need2{padding:3px 7px;border-radius:6px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#ef4444;font-size:9px;font-weight:700;cursor:pointer}
+/* yo tengo */
+.yo-item{background:var(--surface);border:1px solid rgba(34,197,94,.2);border-radius:13px;padding:13px;margin-bottom:10px}
+.yo-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px}
+.yo-nombre{font-size:13px;font-weight:700;color:var(--t0)}
+.yo-meta{font-size:11px;color:var(--t3)}
+.yo-detalle{font-size:12px;color:var(--t2);line-height:1.4}
+.yo-foto{width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-top:7px;border:1px solid var(--line);cursor:pointer}
+.btn-leer2{padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);color:var(--t3);font-size:9px;font-weight:700;cursor:pointer;margin-top:7px}
+.new-dot2{width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0;margin-top:4px}
+.csep{height:1px;background:var(--line);margin:16px 0}
+.det-back{display:flex;align-items:center;gap:9px;margin-bottom:13px;flex-wrap:wrap}
+.stitle{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:11px}
+.sin-items{text-align:center;padding:28px 16px;color:var(--t3);font-size:13px}
 </style>
 </head>
 <body>
@@ -161,6 +225,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       <button class="tab" data-tab="chat" onclick="showTab('chat')">Chat Público</button>
       <button class="tab" data-tab="panel" data-role="org" onclick="showTab('panel')">Panel</button>
       <button class="tab" data-tab="gestion" data-role="admin" onclick="showTab('gestion')">Gestión de Organismos</button>
+      <button class="tab" data-tab="colectas" data-role="admin" onclick="showTab('colectas')">💚 Colectas</button>
     </div>
 
     <!-- Denuncias -->
@@ -251,6 +316,115 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
       </div>
     </div>
 
+    <!-- Colectas (solo admin) -->
+    <div class="pane" id="pane-colectas">
+      <!-- SUB-TABS -->
+      <div class="ctabs">
+        <button class="ctab active" id="ctab-lista" onclick="cSwitchTab('lista')">📋 Colectas</button>
+        <button class="ctab" id="ctab-nueva" onclick="cSwitchTab('nueva')">➕ Nueva</button>
+        <button class="ctab" id="ctab-yo" onclick="cSwitchTab('yo')">💌 Yo tengo</button>
+      </div>
+
+      <!-- Lista colectas -->
+      <div class="cpane active" id="cpane-lista">
+        <div id="c-adm-lista"><div class="sin-items">Cargando…</div></div>
+
+        <!-- Detalle colecta (visible al abrir una) -->
+        <div id="c-det-overlay" style="display:none">
+          <div class="det-back">
+            <button class="btn ghost sm" onclick="cCerrarDet()">← Volver</button>
+            <div style="flex:1;min-width:0;font-size:15px;font-weight:800" id="c-det-titulo"></div>
+            <button class="btn ghost sm" id="c-btn-toggle" onclick="cToggleEstado()"></button>
+          </div>
+          <!-- sub-tabs dentro del detalle -->
+          <div class="ctabs">
+            <button class="ctab active" id="csdtab-mov" onclick="cSwitchSDTab('mov')">💰 Movimientos</button>
+            <button class="ctab" id="csdtab-add" onclick="cSwitchSDTab('add')">➕ Agregar</button>
+            <button class="ctab" id="csdtab-need" onclick="cSwitchSDTab('need')">📋 Checklist</button>
+          </div>
+          <!-- movimientos -->
+          <div class="cpane active" id="csdpane-mov">
+            <div id="c-adm-movs"><div class="sin-items">Cargando…</div></div>
+          </div>
+          <!-- agregar movimiento -->
+          <div class="cpane" id="csdpane-add">
+            <div class="cfield"><label>Tipo *</label>
+              <select id="c-mov-tipo" onchange="cOnTipoChange()">
+                <option value="ingreso">💚 Ingreso de dinero</option>
+                <option value="egreso">🧾 Gasto / egreso</option>
+                <option value="especie">📦 Artículo en especie</option>
+              </select>
+            </div>
+            <div class="cfield"><label>Descripción *</label><input id="c-mov-desc" maxlength="200" placeholder="Ej: Donación de Juan / Compra de colchones…"></div>
+            <div class="crow2">
+              <div class="cfield" id="c-mov-monto-wrap"><label>Monto ($)</label><input id="c-mov-monto" min="0" placeholder="0" type="number"></div>
+              <div class="cfield" id="c-mov-cant-wrap" style="display:none"><label>Cantidad</label><input id="c-mov-cant" min="1" placeholder="1" type="number"></div>
+            </div>
+            <div class="crow2">
+              <div class="cfield" id="c-mov-donante-wrap"><label>Donante (opcional)</label><input id="c-mov-donante" maxlength="60" placeholder="Nombre o anónimo"></div>
+              <div class="cfield" id="c-mov-comercio-wrap" style="display:none"><label>Comercio / lugar</label><input id="c-mov-comercio" maxlength="80" placeholder="Ej: Cetrogar Comodoro"></div>
+            </div>
+            <div class="cfield"><label>Fecha</label><input id="c-mov-fecha" type="date"></div>
+            <div class="cfield">
+              <label>Comprobante / foto</label>
+              <label class="foto-lbl" id="c-foto-lbl">
+                <span style="font-size:18px">📷</span><span>Adjuntá foto o ticket</span>
+                <input accept="image/*" id="c-foto-inp" onchange="cPrevFoto(this)" style="display:none" type="file">
+              </label>
+              <img alt="" id="c-foto-prev" src="" class="foto-prev-img">
+            </div>
+            <div class="calert" id="c-mov-alert"></div>
+            <button class="btn" onclick="cAgregarMovimiento()" style="width:100%;padding:13px">Guardar movimiento →</button>
+          </div>
+          <!-- checklist -->
+          <div class="cpane" id="csdpane-need">
+            <div id="c-adm-needs"><div class="sin-items">Cargando…</div></div>
+            <div class="csep"></div>
+            <p class="stitle">Agregar artículo al checklist</p>
+            <div class="crow2">
+              <div class="cfield"><label>Nombre *</label><input id="c-need-nombre" maxlength="80" placeholder="Ej: Colchón doble"></div>
+              <div class="cfield"><label>Cantidad requerida</label><input id="c-need-cant" min="1" placeholder="1" type="number"></div>
+            </div>
+            <div class="crow2">
+              <div class="cfield"><label>Unidad</label><input id="c-need-unidad" maxlength="20" placeholder="unidades"></div>
+              <div class="cfield"><label>Cantidad recibida</label><input id="c-need-recibida" min="0" placeholder="0" type="number"></div>
+            </div>
+            <div class="calert" id="c-need-alert"></div>
+            <button class="btn" onclick="cAgregarNeed()" style="width:100%;padding:13px">Agregar al checklist →</button>
+          </div>
+        </div><!-- /c-det-overlay -->
+      </div>
+
+      <!-- Nueva colecta -->
+      <div class="cpane" id="cpane-nueva">
+        <p class="stitle">➕ Nueva colecta</p>
+        <div class="cfield"><label>Título *</label><input id="c-n-titulo" maxlength="80" placeholder="Ej: Colecta para Quique (incendio)"></div>
+        <div class="cfield"><label>Descripción / historia</label><textarea id="c-n-desc" maxlength="600" placeholder="Contá brevemente la situación…"></textarea></div>
+        <div class="crow2">
+          <div class="cfield"><label>Beneficiario</label><input id="c-n-ben" maxlength="60" placeholder="Nombre"></div>
+          <div class="cfield"><label>Categoría</label>
+            <select id="c-n-cat">
+              <option value="">Sin categoría</option>
+              <option value="Incendio">Incendio</option>
+              <option value="Inundación">Inundación</option>
+              <option value="Salud">Salud</option>
+              <option value="Mascota">Mascota</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="cfield"><label>Meta de dinero (opcional)</label><input id="c-n-meta" min="0" placeholder="Ej: 50000" type="number"></div>
+        <div class="calert" id="c-n-alert"></div>
+        <button class="btn" onclick="cCrearColecta()" style="width:100%;padding:13px">Crear colecta →</button>
+      </div>
+
+      <!-- Yo tengo esto -->
+      <div class="cpane" id="cpane-yo">
+        <p class="stitle">💌 Formularios "Yo tengo esto"</p>
+        <div id="c-yo-lista"><div class="sin-items">Cargando…</div></div>
+      </div>
+    </div><!-- /pane-colectas -->
+
     <div style="text-align:center;margin-top:16px"><a class="back" href="cambiar-password.html" data-role="org" style="margin-top:0">¿Primera vez? → Cambiar contraseña</a></div>
   </div>
 </div>
@@ -278,6 +452,7 @@ a.back{display:inline-block;margin-top:20px;color:#38bdf8;text-decoration:none;f
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 // Config pública del sitio (misma que chat.html / index.html).
 const FB_CONFIG={
@@ -291,13 +466,14 @@ const FB_CONFIG={
 const VAPID_KEY='BL8pNekefSukhNCIO-Rd1qt1gJeO4plOBnwdTGVOl6UCb-h_SLcK6HCqZD9paSMemaBDRKmjOZ1aHZPu2RSTbxs'; // VAPID key (FCM web push)
 const ADMIN_EMAIL='admin@robosmdp.com.ar';
 
-let auth=null, db=null, messaging=null, FV=null, Timestamp=null;
+let auth=null, db=null, messaging=null, storage=null, FV=null, Timestamp=null;
 try{
   firebase.initializeApp(FB_CONFIG);
   auth=firebase.auth();
   db=firebase.firestore();
   FV=firebase.firestore.FieldValue;
   Timestamp=firebase.firestore.Timestamp;
+  try{ storage=firebase.storage(); }catch(e){ console.warn('storage no disponible', e.message); }
   try{ messaging=firebase.messaging(); }catch(e){ console.warn('messaging no soportado', e.message); }
 }catch(e){ console.error('Firebase init', e); }
 
@@ -437,6 +613,7 @@ function showTab(name){
   const pane=$('pane-'+name); if(pane) pane.classList.add('active');
   if(name==='chat' && !chatUnsub) subChatPublico();            // suscripción perezosa
   if(name==='gestion' && esAdmin && !_gestionLoaded){ _gestionLoaded=true; cargar(); }
+  if(name==='colectas' && esAdmin && !_colectasLoaded){ _colectasLoaded=true; cCargarColectas(); cCargarYoTengo(); }
 }
 
 // ── Denuncias (tiempo real) ────────────────────────────────────────────────
@@ -827,6 +1004,324 @@ async function copiarResultados(){
   try{ await navigator.clipboard.writeText(txt); say($('panel-msg'),'Contraseñas copiadas al portapapeles.','ok'); }
   catch(_){ say($('panel-msg'),'No se pudo copiar automáticamente (copiá a mano desde la tabla).','err'); }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  MÓDULO COLECTAS (solo admin)
+// ═══════════════════════════════════════════════════════════════════════════
+let _colectasLoaded=false;
+let cColDetId=null;  // colecta en detalle
+let cFotoFile=null;  // foto pendiente de subir
+
+// ── Utilidades colectas ───────────────────────────────────────────────────
+function cFmtPesos(n){ return '$'+Number(n||0).toLocaleString('es-AR'); }
+function cFmtFecha(ts){
+  if(!ts) return '';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  return d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
+}
+function cShowAlert(id,msg,tipo){
+  const el=$(id); if(!el) return;
+  el.textContent=msg; el.style.display='block';
+  el.className='calert '+(tipo==='ok'?'ok':'err');
+  setTimeout(()=>{el.style.display='none';},4000);
+}
+function cIconBg(tipo){
+  return {ingreso:'background:rgba(34,197,94,.14)',egreso:'background:rgba(245,158,11,.12)',especie:'background:rgba(91,141,239,.12)'}[tipo]||'';
+}
+
+// ── Sub-tabs colectas ─────────────────────────────────────────────────────
+function cSwitchTab(t){
+  ['lista','nueva','yo'].forEach(x=>{
+    const tb=$('ctab-'+x); if(tb) tb.classList.toggle('active',x===t);
+    const pn=$('cpane-'+x); if(pn) pn.classList.toggle('active',x===t);
+  });
+  if(t!=='lista') cCerrarDet();
+}
+function cSwitchSDTab(t){
+  ['mov','add','need'].forEach(x=>{
+    const tb=$('csdtab-'+x); if(tb) tb.classList.toggle('active',x===t);
+    const pn=$('csdpane-'+x); if(pn) pn.classList.toggle('active',x===t);
+  });
+}
+
+// ── Cargar lista de colectas ──────────────────────────────────────────────
+async function cCargarColectas(){
+  const el=$('c-adm-lista'); if(!el) return;
+  try{
+    const snap=await db.collection('colectas').orderBy('creada_en','desc').get();
+    if(snap.empty){ el.innerHTML='<div class="sin-items">No hay colectas. Creá la primera.</div>'; return; }
+    let html='';
+    snap.forEach(doc=>{
+      const c={id:doc.id,...doc.data()};
+      const activa=c.estado!=='cerrada';
+      const saldo=(c.total_ingresado||0)-(c.total_gastado||0);
+      html+=`<div class="col-card" onclick="cAbrirDet('${c.id}')">
+        <div class="col-card-head">
+          <div>
+            <div class="col-titulo">${esc(c.titulo)}</div>
+            ${c.descripcion?`<div class="col-desc-p">${esc(c.descripcion.slice(0,80))}${c.descripcion.length>80?'…':''}</div>`:''}
+          </div>
+          <span class="cbadge ${activa?'activa':'cerrada'}">${activa?'● Activa':'Cerrada'}</span>
+        </div>
+        <div class="bchips">
+          <span class="bchip g">+${cFmtPesos(c.total_ingresado||0)}</span>
+          <span class="bchip a">-${cFmtPesos(c.total_gastado||0)}</span>
+          <span class="bchip b">=${cFmtPesos(saldo)}</span>
+          ${(c.total_especie||0)>0?`<span class="bchip" style="background:rgba(148,163,184,.1);color:var(--t2)">📦 ${c.total_especie}</span>`:''}
+        </div>
+      </div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){ el.innerHTML='<div class="sin-items">Error al cargar: '+esc(e.message)+'</div>'; }
+}
+
+// ── Crear colecta ─────────────────────────────────────────────────────────
+async function cCrearColecta(){
+  const titulo=($('c-n-titulo').value||'').trim();
+  if(!titulo){ cShowAlert('c-n-alert','El título es obligatorio.','err'); return; }
+  try{
+    await db.collection('colectas').add({
+      titulo,
+      descripcion:($('c-n-desc').value||'').trim(),
+      beneficiario:($('c-n-ben').value||'').trim(),
+      categoria:$('c-n-cat').value||'',
+      meta_dinero:parseFloat($('c-n-meta').value)||0,
+      estado:'activa',
+      total_ingresado:0, total_gastado:0, total_especie:0,
+      creada_en:FV.serverTimestamp()
+    });
+    cShowAlert('c-n-alert','¡Colecta creada! Ya está pública.','ok');
+    ['c-n-titulo','c-n-desc','c-n-ben','c-n-meta'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+    $('c-n-cat').value='';
+    cCargarColectas();
+    setTimeout(()=>cSwitchTab('lista'),1200);
+  }catch(e){ cShowAlert('c-n-alert','Error: '+e.message,'err'); }
+}
+
+// ── Detalle de colecta ────────────────────────────────────────────────────
+async function cAbrirDet(id){
+  cColDetId=id;
+  $('c-adm-lista').style.display='none';
+  $('c-det-overlay').style.display='block';
+  cSwitchSDTab('mov');
+  try{
+    const snap=await db.collection('colectas').doc(id).get();
+    const c=snap.data()||{};
+    $('c-det-titulo').textContent=c.titulo||'';
+    const activa=c.estado!=='cerrada';
+    const btn=$('c-btn-toggle');
+    btn.textContent=activa?'Cerrar colecta':'Reabrir colecta';
+    btn.style.color=activa?'#ef4444':'#22c55e';
+    await Promise.all([cCargarMovs(id), cCargarNeedsAdm(id)]);
+  }catch(e){ console.error('cAbrirDet',e); }
+}
+function cCerrarDet(){
+  cColDetId=null;
+  const ov=$('c-det-overlay'); if(ov) ov.style.display='none';
+  const li=$('c-adm-lista'); if(li) li.style.display='block';
+}
+async function cToggleEstado(){
+  if(!cColDetId) return;
+  const snap=await db.collection('colectas').doc(cColDetId).get();
+  const activa=snap.data().estado!=='cerrada';
+  if(!confirm(activa?'¿Cerrar la colecta?':'¿Reabrir la colecta?')) return;
+  await db.collection('colectas').doc(cColDetId).update({estado:activa?'cerrada':'activa'});
+  cAbrirDet(cColDetId);
+}
+
+// ── Movimientos ───────────────────────────────────────────────────────────
+async function cCargarMovs(colId){
+  const el=$('c-adm-movs'); if(!el) return;
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('movimientos').orderBy('fecha','desc').get();
+    if(snap.empty){ el.innerHTML='<div class="sin-items">Sin movimientos. Usá "Agregar".</div>'; return; }
+    let html='';
+    snap.forEach(doc=>{
+      const m=doc.data();
+      const icon={ingreso:'💚',egreso:'🧾',especie:'📦'}[m.tipo]||'📌';
+      const cls={ingreso:'g',egreso:'a',especie:'b'}[m.tipo]||'';
+      const monto=m.tipo==='especie'
+        ?(m.cantidad?m.cantidad+' u.':'—')
+        :((m.tipo==='ingreso'?'+':'-')+cFmtPesos(m.monto));
+      html+=`<div class="adm-mov">
+        <div class="adm-mov-icon" style="${cIconBg(m.tipo)}">${icon}</div>
+        <div class="adm-mov-body">
+          <div class="adm-mov-desc">${esc(m.descripcion||'')}</div>
+          <div class="adm-mov-meta">${m.donante?esc(m.donante)+' · ':''}${cFmtFecha(m.fecha)}${m.comercio?' · '+esc(m.comercio):''}</div>
+        </div>
+        <div class="adm-mov-monto ${cls}">${monto}</div>
+        ${m.foto_url?`<img class="adm-mov-foto" src="${esc(m.foto_url)}" onclick="verImagen('${esc(m.foto_url)}')" loading="lazy">`:''}
+        <button class="btn-del-mov" onclick="cEliminarMov('${doc.id}',event)">✕</button>
+      </div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){ el.innerHTML='<div class="sin-items">Error: '+esc(e.message)+'</div>'; }
+}
+
+async function cEliminarMov(movId,evt){
+  evt.stopPropagation();
+  if(!confirm('¿Eliminar este movimiento?')) return;
+  await db.collection('colectas').doc(cColDetId).collection('movimientos').doc(movId).delete();
+  await cRecalcularTotales(cColDetId);
+  cCargarMovs(cColDetId);
+}
+
+function cOnTipoChange(){
+  const t=($('c-mov-tipo')||{}).value||'ingreso';
+  const show=(id,v)=>{ const el=$(id); if(el) el.style.display=v?'':'none'; };
+  show('c-mov-monto-wrap', t!=='especie');
+  show('c-mov-cant-wrap',  t==='especie');
+  show('c-mov-donante-wrap', t!=='egreso');
+  show('c-mov-comercio-wrap', t==='egreso');
+}
+
+function cPrevFoto(inp){
+  const f=inp.files[0];
+  if(!f) return;
+  if(f.size>5*1024*1024){ alert('La foto no puede superar 5 MB'); inp.value=''; return; }
+  cFotoFile=f;
+  const reader=new FileReader();
+  reader.onload=e=>{ const img=$('c-foto-prev'); if(img){ img.src=e.target.result; img.style.display='block'; } };
+  reader.readAsDataURL(f);
+}
+
+async function cAgregarMovimiento(){
+  if(!cColDetId){ cShowAlert('c-mov-alert','Seleccioná una colecta.','err'); return; }
+  const tipo=($('c-mov-tipo').value||'ingreso');
+  const desc=($('c-mov-desc').value||'').trim();
+  if(!desc){ cShowAlert('c-mov-alert','La descripción es obligatoria.','err'); return; }
+  const monto=parseFloat($('c-mov-monto').value)||0;
+  const cantidad=parseInt($('c-mov-cant').value)||1;
+  const donante=($('c-mov-donante').value||'').trim();
+  const comercio=($('c-mov-comercio').value||'').trim();
+  const fechaStr=($('c-mov-fecha').value||'');
+  const fecha=fechaStr?firebase.firestore.Timestamp.fromDate(new Date(fechaStr+'T12:00:00')):FV.serverTimestamp();
+  try{
+    let foto_url='';
+    if(cFotoFile && storage){
+      const ref=storage.ref('colectas/'+cColDetId+'/movs/'+Date.now()+'_'+cFotoFile.name);
+      await ref.put(cFotoFile);
+      foto_url=await ref.getDownloadURL();
+    }
+    const data={tipo,descripcion:desc,fecha,foto_url,creado_en:FV.serverTimestamp()};
+    if(tipo!=='especie') data.monto=monto;
+    if(tipo==='especie') data.cantidad=cantidad;
+    if(donante) data.donante=donante;
+    if(comercio) data.comercio=comercio;
+    await db.collection('colectas').doc(cColDetId).collection('movimientos').add(data);
+    await cRecalcularTotales(cColDetId);
+    cShowAlert('c-mov-alert','Movimiento guardado.','ok');
+    // reset form
+    ['c-mov-desc','c-mov-monto','c-mov-cant','c-mov-donante','c-mov-comercio'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+    const prev=$('c-foto-prev'); if(prev){ prev.style.display='none'; prev.src=''; }
+    const inp=$('c-foto-inp'); if(inp) inp.value='';
+    cFotoFile=null;
+    cCargarMovs(cColDetId);
+    cCargarColectas();
+  }catch(e){ cShowAlert('c-mov-alert','Error: '+e.message,'err'); }
+}
+
+async function cRecalcularTotales(colId){
+  const snap=await db.collection('colectas').doc(colId).collection('movimientos').get();
+  let ing=0,gas=0,esp=0;
+  snap.forEach(d=>{
+    const m=d.data();
+    if(m.tipo==='ingreso') ing+=m.monto||0;
+    else if(m.tipo==='egreso') gas+=m.monto||0;
+    else if(m.tipo==='especie') esp+=m.cantidad||1;
+  });
+  await db.collection('colectas').doc(colId).update({total_ingresado:ing,total_gastado:gas,total_especie:esp});
+}
+
+// ── Checklist necesidades ─────────────────────────────────────────────────
+async function cCargarNeedsAdm(colId){
+  const el=$('c-adm-needs'); if(!el) return;
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('necesita').orderBy('orden','asc').get();
+    if(snap.empty){ el.innerHTML='<div class="sin-items">Sin artículos. Agregá abajo.</div>'; return; }
+    let html='';
+    snap.forEach(doc=>{
+      const n=doc.data();
+      html+=`<div class="need-adm">
+        <div class="need-adm-body">
+          <div class="need-adm-nombre">${esc(n.nombre)}</div>
+          <div class="need-adm-prog">${n.cantidad_recibida||0} / ${n.cantidad_requerida||'?'} ${n.unidad||''}</div>
+        </div>
+        <input type="number" min="0" value="${n.cantidad_recibida||0}" class="need-adm-inp"
+          onchange="cActualizarRecibido('${doc.id}',this.value)">
+        <button class="btn-del-need2" onclick="cEliminarNeed('${doc.id}',event)">✕</button>
+      </div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){ el.innerHTML='<div class="sin-items">Error.</div>'; }
+}
+async function cActualizarRecibido(needId,val){
+  if(!cColDetId) return;
+  await db.collection('colectas').doc(cColDetId).collection('necesita').doc(needId)
+    .update({cantidad_recibida:parseInt(val)||0});
+}
+async function cEliminarNeed(needId,evt){
+  evt.stopPropagation();
+  if(!confirm('¿Eliminar este artículo?')) return;
+  await db.collection('colectas').doc(cColDetId).collection('necesita').doc(needId).delete();
+  cCargarNeedsAdm(cColDetId);
+}
+async function cAgregarNeed(){
+  if(!cColDetId){ cShowAlert('c-need-alert','Seleccioná una colecta primero.','err'); return; }
+  const nombre=($('c-need-nombre').value||'').trim();
+  if(!nombre){ cShowAlert('c-need-alert','El nombre es obligatorio.','err'); return; }
+  const snap=await db.collection('colectas').doc(cColDetId).collection('necesita').get();
+  await db.collection('colectas').doc(cColDetId).collection('necesita').add({
+    nombre,
+    cantidad_requerida:parseInt($('c-need-cant').value)||1,
+    cantidad_recibida:parseInt($('c-need-recibida').value)||0,
+    unidad:($('c-need-unidad').value||'').trim()||'unidades',
+    orden:snap.size+1,
+    creado_en:FV.serverTimestamp()
+  });
+  cShowAlert('c-need-alert','Artículo agregado.','ok');
+  ['c-need-nombre','c-need-cant','c-need-recibida','c-need-unidad'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+  cCargarNeedsAdm(cColDetId);
+}
+
+// ── "Yo tengo esto" ───────────────────────────────────────────────────────
+async function cCargarYoTengo(){
+  const el=$('c-yo-lista'); if(!el) return;
+  try{
+    const snap=await db.collection('yo_tengo').orderBy('creado_en','desc').limit(60).get();
+    if(snap.empty){ el.innerHTML='<div class="sin-items">Sin formularios recibidos aún.</div>'; return; }
+    let html='';
+    snap.forEach(doc=>{
+      const y=doc.data();
+      html+=`<div class="yo-item">
+        <div class="yo-header">
+          <div>
+            <div class="yo-nombre">${esc(y.nombre_contacto||'Anónimo')}${y.telefono?' — '+esc(y.telefono):''}</div>
+            <div class="yo-meta">${esc(y.colecta_titulo||'')}${y.item_nombre?' · '+esc(y.item_nombre):''}${y.creado_en?' · '+cFmtFecha(y.creado_en):''}</div>
+          </div>
+          ${!y.leido?'<div class="new-dot2" title="No leído"></div>':''}
+        </div>
+        ${y.detalle?`<div class="yo-detalle">${esc(y.detalle)}</div>`:''}
+        ${y.foto_url?`<img class="yo-foto" src="${esc(y.foto_url)}" loading="lazy" onclick="verImagen('${esc(y.foto_url)}')">`:''}
+        ${!y.leido?`<button class="btn-leer2" onclick="cMarcarLeido('${doc.id}',this)">Marcar como leído</button>`:''}
+      </div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){ el.innerHTML='<div class="sin-items">Error: '+esc(e.message)+'</div>'; }
+}
+async function cMarcarLeido(docId,btn){
+  await db.collection('yo_tengo').doc(docId).update({leido:true});
+  btn.textContent='✓ Leído'; btn.disabled=true;
+  const dot=btn.closest('.yo-item').querySelector('.new-dot2');
+  if(dot) dot.remove();
+}
+
+// Inicializar fecha de hoy en formulario de movimiento cuando se carga el panel
+document.addEventListener('DOMContentLoaded',()=>{
+  const fd=$('c-mov-fecha'); if(fd) fd.value=new Date().toISOString().slice(0,10);
+});
 
 // Poblar el dropdown de organismos del login al cargar.
 loadLoginOrgs();
