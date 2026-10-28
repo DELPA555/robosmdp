@@ -114,8 +114,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
     <label>Email</label>
     <input type="email" id="sa-email" placeholder="admin@robosmdp.com.ar" autocomplete="username">
     <label>Contraseña</label>
-    <input type="password" id="sa-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')saLogin()">
-    <button class="btn-primary" onclick="saLogin()">Entrar</button>
+    <input type="password" id="sa-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')window.saLogin&&window.saLogin()">
+    <button class="btn-primary" id="btn-entrar">Entrar</button>
     <div id="login-err">❌ <span id="login-err-msg">Credenciales incorrectas o sin permisos.</span></div>
   </div>
 </div>
@@ -473,6 +473,9 @@ function saLogout(){
   Object.values(_chatA.unsubs||[]).forEach(u=>{try{u();}catch(e){}});
   _chatA={msgs:[],pres:[],mods:[],bans:[],unsubs:[]};
 }
+window.saLogin=saLogin;
+window.saLogout=saLogout;
+document.getElementById('btn-entrar').addEventListener('click',saLogin);
 auth.onAuthStateChanged(async u=>{
   if(!u){document.getElementById('login-screen').style.display='flex';document.getElementById('panel').style.display='none';return;}
   const tok=await u.getIdTokenResult();
@@ -1209,6 +1212,25 @@ async function colSaMarcarLeido(id){
   try{await db.collection('yo_tengo').doc(id).update({leido:true});colSaLoadYoTengo();showToast('Marcado como leído ✅','g');}
   catch(e){showToast('Error','r');}
 }
+
+// ===== EXPONER FUNCIONES GLOBALES (onclick en HTML) =====
+Object.assign(window,{
+  saTab,saLogout,
+  repSwitch,repResolve,repDel,
+  patSaResolve,patSaDel,
+  objSaResolve,objSaDel,
+  mascSaResolve,mascSaDel,
+  foroSaDel,
+  chatSaDelMsg,chatSaDelAll,chatSaToggleMod,chatSaUnban,chatSaOpenBan,banPick,banConfirm,banClose,
+  rastreoSaDel,rastreoSaExport,
+  orgSaVerDen,orgSaCloseDen,orgSaToggle,
+  colSaSubTab,colSaCrear,colSaToggle,colSaEliminar,
+  colSaAbrirDet,colSaCerrarDet,colSaDetTab,
+  colSaEliminarMov,colSaAgregarMov,
+  colSaNeedInc,colSaNeedDel,colSaAgregarNeed,
+  colSaMarcarLeido,
+  esc
+});
 </script>
 </body>
 </html>
