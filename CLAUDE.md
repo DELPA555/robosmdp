@@ -1,6 +1,6 @@
 # ROBOS MDP — Coordinación compartida ChatGPT + Claude Code
 
-> **Archivo maestro del proyecto.** Última revisión: **2026-10-18**.
+> **Archivo maestro del proyecto.** Última revisión: **2026-10-28**.
 > Este archivo `CLAUDE.md` está en la raíz del repositorio para que **Claude Code lo lea como contexto de trabajo**. **ChatGPT también debe consultarlo mediante GitHub antes de proponer o realizar cambios.**
 > Repositorio: https://github.com/DELPA555/robosmdp · Rama principal: `main` · Sitio: https://robosmdp.com.ar
 
@@ -78,6 +78,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | PERF-01 | MEDIA | Frontend | Reducir peso de imágenes y recursos, modularizar gradualmente `index.html`, mejorar tiempos de carga y evitar regresiones. | IDEA | Sin asignar |
 | APP-02 | MEDIA | Política de privacidad | Página legal para Google Play: `robosmdp/politica-de-privacidad.html` → `robosmdp.com.ar/politica-de-privacidad` (10 secciones, Ley 25.326). Verificada en vivo HTTP 200 (2026-10-19). | DESPLEGADO | Claude Code |
 | ORG-01 | ALTA | Organismos verificados | Panel de organismos, denuncias anónimas, menciones ✓ + FCM y chat a 500 chars. Rama `feature/organismos-verificados`. NO mergeado; reglas NO desplegadas. | PR #10 EN REVISIÓN | Claude Code |
+| COL-01 | ALTA | Colectas vecinales | Página pública `colectas.html` con listado y detalle de colectas (4 tabs: Dinero, Cosas recibidas, Lo que falta, Gastos). Formulario "Yo tengo esto" → `yo_tengo`. Panel admin `admin-colectas.html`: crear/cerrar colectas, cargar movimientos con foto, gestionar checklist, leer formularios recibidos. Balance en tiempo real. Entrada en menú principal. Reglas Firestore incluidas. Rama `feat/colectas-20261028`. NO mergeado; reglas NO desplegadas. | PR #11 EN REVISIÓN | Claude Code |
 
 **Nota histórica:** los estados anteriores de SEG-04 reflejaban una revisión estática anterior; el sistema anti-evasión de tres capas ya está implementado en `main`. Quedan pendientes solamente las pruebas de regresión relacionadas con las modificaciones de seguridad y el despliegue, no volver a programarlo. Las demás observaciones iniciales no implican confirmar las reglas de Firebase efectivamente desplegadas.
 
@@ -96,6 +97,16 @@ Usar este formato para cada entrada nueva:
 - Estado de deploy: NO DESPLEGADO / NETLIFY VERIFICADO / REGLAS FIREBASE VERIFICADAS / ANDROID VERIFICADA
 - Pendientes o riesgos:
 ```
+
+### 2026-10-28 — COL-01 Módulo de colectas vecinales
+- Responsable: Claude Code.
+- Pedido y alcance: implementar el módulo completo de colectas solidarias en rama `feat/colectas-20261028` y abrir PR #11 hacia main (sin merge).
+- Archivos modificados: `robosmdp/colectas.html` (nuevo; página pública con listado de colectas activas y detalle con 4 tabs: Dinero recibido · Cosas en especie · Lo que falta · Gastos, formulario "Yo tengo esto" con foto, lightbox, hash routing `#c-{id}`), `robosmdp/admin-colectas.html` (nuevo; panel privado: login con email/pass + verificación claim admin, crear colectas, agregar movimientos con foto/comprobante, recalcular totales automático, gestionar checklist de necesidades con cantidades, leer y marcar formularios "yo_tengo" como leídos, toggle activa/cerrada), `firestore.rules` (reglas para `colectas/{id}`, `colectas/{id}/movimientos/{id}`, `colectas/{id}/necesita/{id}` — lectura pública, escritura solo admin; `yo_tengo` — create para auth != null, read/update/delete solo admin), `robosmdp/index.html` (entrada "💚 Colectas vecinales" en nav desktop, menú móvil, sidebar de módulos y card en sección de servicios).
+- Resultado: módulo completo construido desde cero en rama feature. Incluye: balance dinámico recaudado/gastado/disponible, barra de progreso si hay meta, checklist público con estado cubierto/parcial/pendiente, formularios que llegan al panel admin con foto.
+- Pruebas realizadas: `node --check` N/A (solo HTML); parseo de scripts inline correcto; coherencia de IDs entre admin y público verificada manualmente; reglas Firestore revisadas.
+- Commit o PR: PR #11 — (ver abajo después del push)
+- Estado de deploy: **NO DESPLEGADO** (sin merge; reglas `colectas` y `yo_tengo` NO publicadas en Firebase).
+- Pendientes (del dueño): publicar las reglas de Firestore actualizadas; crear índices compuestos si Firestore los requiere (`colectas` → `creada_en desc`; `movimientos` → `tipo` + `fecha desc`); mergear PR #11; seed de las dos colectas actuales ("Quique" y "Flor") desde el panel admin.
 
 ### 2026-10-23 — ORG-01 Organismos verificados (panel, denuncias anónimas, FCM, chat 500)
 - Responsable: Claude Code.

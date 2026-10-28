@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" name="viewport"/>
+<title>Admin Colectas - Robos MDP</title>
+<link href="./assets/logo-nuevo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1c;--bg-2:#0d1424;
+  --surface:#141d30;--surface-2:#1a2438;--surface-hi:#202c44;
+  --line:rgba(148,163,184,.10);--line-2:rgba(148,163,184,.16);
+  --ink:#eef2f8;--ink-2:#a4b1c4;--ink-3:#67748a;
+  --red:#ef4444;--green:#22c55e;--amber:#f59e0b;--blue:#5b8def;
+  --disp:'Space Grotesk',sans-serif;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
+body{padding-bottom:env(safe-area-inset-bottom,0)}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:10px;
+  padding:12px max(16px,env(safe-area-inset-left,0px));
+  background:rgba(10,15,28,.95);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line-2)}
+.tb-title{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.tb-sub{font-size:10px;color:var(--ink-3);font-weight:600}
+.tb-right{margin-left:auto;display:flex;gap:8px}
+.btn-s{padding:7px 13px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .15s;font-family:var(--disp)}
+.btn-s:hover{background:var(--surface-hi)}
+.btn-pri{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border-color:transparent}
+.btn-pri:hover{opacity:.9;background:linear-gradient(135deg,#22c55e,#16a34a)}
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:70vh;padding:24px}
+.login-box{background:var(--surface);border:1px solid var(--line-2);border-radius:20px;padding:32px 28px;width:100%;max-width:380px;text-align:center}
+.login-box h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.login-box p{color:var(--ink-3);font-size:13px;margin-bottom:24px}
+/* MAIN */
+.main{max-width:760px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left,0px)) 60px}
+/* PANEL TABS */
+.panel-tabs{display:flex;gap:4px;background:var(--surface);border-radius:14px;padding:4px;border:1px solid var(--line-2);margin-bottom:20px}
+.ptab{flex:1;padding:10px 6px;border-radius:10px;border:none;background:transparent;color:var(--ink-3);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;font-family:var(--disp);transition:all .15s}
+.ptab.active{background:var(--surface-hi);color:var(--ink)}
+.ppanel{display:none}
+.ppanel.active{display:block}
+/* CARDS COLECTAS */
+.col-item{background:var(--surface);border:1px solid var(--line-2);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .15s}
+.col-item:hover{background:var(--surface-2)}
+.col-item-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.col-titulo{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.col-desc{font-size:12px;color:var(--ink-2);margin-top:3px;line-height:1.4}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.badge.activa{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.badge.cerrada{background:rgba(148,163,184,.1);color:var(--ink-3);border:1px solid var(--line-2)}
+.balance-chips{display:flex;gap:8px;flex-wrap:wrap}
+.bchip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px}
+.bchip.verde{background:rgba(34,197,94,.1);color:#22c55e}
+.bchip.amber{background:rgba(245,158,11,.09);color:#f59e0b}
+.bchip.azul{background:rgba(91,141,239,.1);color:#5b8def}
+/* FORM */
+.section-title{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.field input,.field textarea,.field select{width:100%;padding:11px 13px;border-radius:11px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);font-size:13px;font-family:var(--disp);outline:none;transition:border .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#22c55e}
+.field textarea{resize:vertical;min-height:70px}
+.field select option{background:var(--surface)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:400px){.row2{grid-template-columns:1fr}}
+/* FOTO UPLOAD */
+.foto-label{display:flex;align-items:center;gap:8px;padding:11px 13px;border:1.5px dashed var(--line-2);border-radius:11px;cursor:pointer;color:var(--ink-3);font-size:12px;font-weight:600;transition:border .15s}
+.foto-label:hover{border-color:#22c55e}
+.foto-prev{width:52px;height:52px;border-radius:9px;object-fit:cover;border:1px solid var(--line-2);margin-top:8px}
+/* LISTA MOVIMIENTOS ADMIN */
+.adm-mov{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--surface-2);border-radius:12px;margin-bottom:8px}
+.adm-mov-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.adm-mov-body{flex:1;min-width:0}
+.adm-mov-desc{font-size:12px;font-weight:600}
+.adm-mov-meta{font-size:10px;color:var(--ink-3);margin-top:1px}
+.adm-mov-monto{font-size:13px;font-weight:800;flex-shrink:0}
+.adm-mov-foto{width:40px;height:40px;border-radius:7px;object-fit:cover;cursor:pointer}
+.adm-mov-del{padding:4px 8px;border-radius:7px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#ef4444;font-size:9px;font-weight:700;cursor:pointer;margin-left:4px}
+/* NOTIFICACIONES YO_TENGO */
+.yo-item{background:var(--surface);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:14px;margin-bottom:10px}
+.yo-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.yo-nombre{font-size:13px;font-weight:700}
+.yo-meta{font-size:11px;color:var(--ink-3)}
+.yo-detalle{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.4}
+.yo-foto{width:100%;max-height:160px;object-fit:cover;border-radius:9px;margin-top:8px;border:1px solid var(--line-2)}
+.btn-leer{padding:5px 10px;border-radius:8px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-3);font-size:9px;font-weight:700;cursor:pointer;font-family:var(--disp)}
+.new-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;margin-top:4px}
+/* CHECKLIST ADMIN */
+.need-adm{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-2);border-radius:11px;margin-bottom:7px}
+.need-adm-body{flex:1;min-width:0}
+.need-adm-nombre{font-size:12px;font-weight:700}
+.need-adm-prog{font-size:10px;color:var(--ink-3)}
+.btn-del-need{padding:4px 8px;border-radius:7px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#ef4444;font-size:9px;font-weight:700;cursor:pointer;font-family:var(--disp)}
+/* ESTADO */
+.sin-items{text-align:center;padding:32px 16px;color:var(--ink-3);font-size:13px}
+/* ALERT */
+.alert{padding:12px 14px;border-radius:11px;font-size:12px;font-weight:600;margin-bottom:14px;display:none}
+.alert.ok{background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.25)}
+.alert.err{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+/* SEP */
+.sep{height:1px;background:var(--line-2);margin:20px 0}
+/* LIGHTBOX */
+.lb{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:20px;cursor:pointer}
+.lb img{max-width:100%;max-height:90vh;border-radius:14px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div>
+    <div class="tb-title">🛠 Admin Colectas</div>
+    <div class="tb-sub">Panel privado · Robos MDP</div>
+  </div>
+  <div class="tb-right">
+    <a class="btn-s" href="./colectas.html" target="_blank">Ver público ↗</a>
+    <button class="btn-s" id="btn-logout" onclick="logout()" style="display:none">Salir</button>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<div id="login-wrap" class="login-wrap">
+  <div class="login-box">
+    <div style="font-size:36px;margin-bottom:12px">🔒</div>
+    <h2>Acceso administrador</h2>
+    <p>Solo el administrador de Robos MDP puede gestionar las colectas.</p>
+    <div class="field"><label>Email</label><input id="l-email" type="email" placeholder="admin@..."/></div>
+    <div class="field"><label>Contraseña</label><input id="l-pass" type="password" placeholder="••••••••"/></div>
+    <div class="alert" id="l-alert"></div>
+    <button class="btn-s btn-pri" style="width:100%;padding:13px;font-size:13px" onclick="doLogin()">Entrar →</button>
+  </div>
+</div>
+
+<!-- PANEL ADMIN -->
+<main class="main" id="panel-admin" style="display:none">
+
+  <!-- TABS -->
+  <div class="panel-tabs">
+    <button class="ptab active" id="ptab-colectas" onclick="switchPTab('colectas')">📋 Colectas</button>
+    <button class="ptab" id="ptab-nueva" onclick="switchPTab('nueva')">➕ Nueva</button>
+    <button class="ptab" id="ptab-yo" onclick="switchPTab('yo')">💌 Yo tengo</button>
+  </div>
+
+  <!-- PANEL: LISTADO COLECTAS -->
+  <div class="ppanel active" id="ppanel-colectas">
+    <div id="adm-lista"><div class="sin-items">Cargando…</div></div>
+  </div>
+
+  <!-- PANEL: NUEVA COLECTA -->
+  <div class="ppanel" id="ppanel-nueva">
+    <p class="section-title">➕ Nueva colecta</p>
+    <div class="field"><label>Título *</label><input id="n-titulo" maxlength="80" placeholder="Ej: Colecta para Quique (incendio)"/></div>
+    <div class="field"><label>Descripción / historia</label><textarea id="n-desc" maxlength="600" placeholder="Contá brevemente la situación…"></textarea></div>
+    <div class="row2">
+      <div class="field"><label>Beneficiario</label><input id="n-ben" maxlength="60" placeholder="Nombre"/></div>
+      <div class="field"><label>Categoría</label>
+        <select id="n-cat">
+          <option value="">Sin categoría</option>
+          <option value="Incendio">Incendio</option>
+          <option value="Inundación">Inundación</option>
+          <option value="Salud">Salud</option>
+          <option value="Mascota">Mascota</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Meta de dinero (opcional)</label><input id="n-meta" min="0" placeholder="Ej: 50000" type="number"/></div>
+    <div class="alert" id="n-alert"></div>
+    <button class="btn-s btn-pri" onclick="crearColecta()" style="width:100%;padding:13px;font-size:13px">Crear colecta →</button>
+  </div>
+
+  <!-- PANEL: YO TENGO ESTO (formularios recibidos) -->
+  <div class="ppanel" id="ppanel-yo">
+    <p class="section-title">💌 Formularios "Yo tengo esto"</p>
+    <div id="yo-lista"><div class="sin-items">Cargando…</div></div>
+  </div>
+
+  <!-- ────────────────────────────────── -->
+  <!-- DETALLE DE UNA COLECTA (overlay) -->
+  <!-- ────────────────────────────────── -->
+  <div id="det-overlay" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button class="btn-s" onclick="cerrarDetAdm()">← Volver</button>
+      <div style="flex:1;min-width:0">
+        <div id="adm-det-titulo" style="font-size:16px;font-weight:800;letter-spacing:-.01em"></div>
+      </div>
+      <button class="btn-s" id="btn-toggle-estado" onclick="toggleEstadoColecta()"></button>
+    </div>
+    <!-- SUB-TABS -->
+    <div class="panel-tabs" style="margin-bottom:16px">
+      <button class="ptab active" id="sdtab-mov" onclick="switchSDTab('mov')">💰 Movimientos</button>
+      <button class="ptab" id="sdtab-add-mov" onclick="switchSDTab('add-mov')">➕ Agregar</button>
+      <button class="ptab" id="sdtab-need" onclick="switchSDTab('need')">📋 Checklist</button>
+    </div>
+    <!-- Movimientos -->
+    <div class="ppanel active" id="sdpanel-mov">
+      <div id="adm-movs"><div class="sin-items">Cargando…</div></div>
+    </div>
+    <!-- Agregar movimiento -->
+    <div class="ppanel" id="sdpanel-add-mov">
+      <div class="field"><label>Tipo *</label>
+        <select id="mov-tipo">
+          <option value="ingreso">💚 Ingreso de dinero</option>
+          <option value="egreso">🧾 Gasto / egreso</option>
+          <option value="especie">📦 Artículo en especie</option>
+        </select>
+      </div>
+      <div class="field"><label>Descripción *</label><input id="mov-desc" maxlength="200" placeholder="Ej: Donación de Juan Pérez / Compra de colchones..."/></div>
+      <div class="row2">
+        <div class="field" id="mov-monto-wrap"><label>Monto ($)</label><input id="mov-monto" min="0" placeholder="0" type="number"/></div>
+        <div class="field" id="mov-cant-wrap" style="display:none"><label>Cantidad</label><input id="mov-cant" min="1" placeholder="1" type="number"/></div>
+      </div>
+      <div class="field" id="mov-donante-wrap"><label>Donante (opcional)</label><input id="mov-donante" maxlength="60" placeholder="Nombre o anónimo"/></div>
+      <div class="field" id="mov-comercio-wrap" style="display:none"><label>Comercio / lugar (opcional)</label><input id="mov-comercio" maxlength="80" placeholder="Ej: Cetrogar Comodoro"/></div>
+      <div class="field"><label>Fecha</label><input id="mov-fecha" type="date"/></div>
+      <div class="field">
+        <label>Comprobante / foto</label>
+        <label class="foto-label" id="mov-foto-lbl">
+          <span style="font-size:18px">📷</span><span>Adjuntá foto o ticket</span>
+          <input accept="image/*" id="mov-foto-inp" onchange="prevMovFoto(this)" style="display:none" type="file"/>
+        </label>
+        <img alt="" id="mov-foto-prev" src="" style="display:none" class="foto-prev"/>
+      </div>
+      <div class="alert" id="mov-alert"></div>
+      <button class="btn-s btn-pri" onclick="agregarMovimiento()" style="width:100%;padding:13px;font-size:13px">Guardar movimiento →</button>
+    </div>
+    <!-- Checklist necesidades -->
+    <div class="ppanel" id="sdpanel-need">
+      <div id="adm-needs"><div class="sin-items">Cargando…</div></div>
+      <div class="sep"></div>
+      <p class="section-title">Agregar artículo a la lista</p>
+      <div class="row2">
+        <div class="field"><label>Nombre del artículo *</label><input id="need-nombre" maxlength="80" placeholder="Ej: Colchón doble"/></div>
+        <div class="field"><label>Cantidad requerida</label><input id="need-cant" min="1" placeholder="1" type="number"/></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Unidad</label><input id="need-unidad" maxlength="20" placeholder="unidades"/></div>
+        <div class="field"><label>Cantidad recibida</label><input id="need-recibida" min="0" placeholder="0" type="number"/></div>
+      </div>
+      <div class="alert" id="need-alert"></div>
+      <button class="btn-s btn-pri" onclick="agregarNeed()" style="width:100%;padding:13px;font-size:13px">Agregar al checklist →</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" onclick="this.style.display='none'" style="display:none">
+  <img alt="" id="lb-img" src=""/>
+</div>
+
+<script>
+// ─── Firebase ──────────────────────────────────────────────────────────────
+const FB_CONFIG={
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
+};
+firebase.initializeApp(FB_CONFIG);
+const db=firebase.firestore();
+const auth=firebase.auth();
+const storage=firebase.storage();
+const FV=firebase.firestore.FieldValue;
+
+let esAdmin=false;
+let colectaDetId=null;
+let movFotoFile=null;
+
+// ─── AUTH ──────────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user=>{
+  if(!user){mostrarLogin();return;}
+  // Verificar claim admin
+  const tok=await user.getIdTokenResult();
+  if(tok.claims.admin){
+    esAdmin=true;
+    mostrarPanel();
+    cargarColectas();
+    cargarYoTengo();
+  }else{
+    await auth.signOut();
+    mostrarLogin();
+    showAlert('l-alert','No tenés permisos de administrador.','err');
+  }
+});
+
+async function doLogin(){
+  const email=document.getElementById('l-email').value.trim();
+  const pass=document.getElementById('l-pass').value;
+  if(!email||!pass){showAlert('l-alert','Completá email y contraseña.','err');return;}
+  try{
+    await auth.signInWithEmailAndPassword(email,pass);
+  }catch(e){
+    showAlert('l-alert','Email o contraseña incorrectos.','err');
+  }
+}
+
+async function logout(){
+  await auth.signOut();
+  mostrarLogin();
+}
+
+function mostrarLogin(){
+  document.getElementById('login-wrap').style.display='flex';
+  document.getElementById('panel-admin').style.display='none';
+  document.getElementById('btn-logout').style.display='none';
+}
+function mostrarPanel(){
+  document.getElementById('login-wrap').style.display='none';
+  document.getElementById('panel-admin').style.display='block';
+  document.getElementById('btn-logout').style.display='flex';
+}
+
+// ─── TABS PANEL PRINCIPAL ─────────────────────────────────────────────────
+function switchPTab(t){
+  ['colectas','nueva','yo'].forEach(x=>{
+    document.getElementById('ptab-'+x).classList.toggle('active',x===t);
+    document.getElementById('ppanel-'+x).classList.toggle('active',x===t);
+  });
+  // Ocultar detalle si se cambia de tab
+  if(t!=='colectas') cerrarDetAdm();
+}
+
+// ─── CARGAR COLECTAS ──────────────────────────────────────────────────────
+async function cargarColectas(){
+  const el=document.getElementById('adm-lista');
+  try{
+    const snap=await db.collection('colectas').orderBy('creada_en','desc').get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">No hay colectas. Creá la primera.</div>';return;}
+    let html='';
+    snap.forEach(doc=>{
+      const c={id:doc.id,...doc.data()};
+      const activa=c.estado!=='cerrada';
+      const saldo=(c.total_ingresado||0)-(c.total_gastado||0);
+      html+=`
+<div class="col-item" onclick="abrirDetAdm('${c.id}')">
+  <div class="col-item-header">
+    <div>
+      <div class="col-titulo">${esc(c.titulo)}</div>
+      ${c.descripcion?`<div class="col-desc">${esc(c.descripcion.slice(0,80))}${c.descripcion.length>80?'…':''}</div>`:''}
+    </div>
+    <span class="badge ${activa?'activa':'cerrada'}">${activa?'● Activa':'Cerrada'}</span>
+  </div>
+  <div class="balance-chips">
+    <span class="bchip verde">+${fmtPesos(c.total_ingresado||0)}</span>
+    <span class="bchip amber">-${fmtPesos(c.total_gastado||0)}</span>
+    <span class="bchip azul">=${fmtPesos(saldo)}</span>
+    ${(c.total_especie||0)>0?`<span class="bchip" style="background:rgba(148,163,184,.1);color:var(--ink-2)">📦 ${c.total_especie}</span>`:''}
+  </div>
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+// ─── CREAR COLECTA ────────────────────────────────────────────────────────
+async function crearColecta(){
+  const titulo=document.getElementById('n-titulo').value.trim();
+  if(!titulo){showAlert('n-alert','El título es obligatorio.','err');return;}
+  try{
+    await db.collection('colectas').add({
+      titulo,
+      descripcion:document.getElementById('n-desc').value.trim(),
+      beneficiario:document.getElementById('n-ben').value.trim(),
+      categoria:document.getElementById('n-cat').value,
+      meta_dinero:parseFloat(document.getElementById('n-meta').value)||0,
+      estado:'activa',
+      total_ingresado:0,
+      total_gastado:0,
+      total_especie:0,
+      creada_en:FV.serverTimestamp()
+    });
+    showAlert('n-alert','Colecta creada. ¡Ya está pública!','ok');
+    ['n-titulo','n-desc','n-ben','n-meta'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('n-cat').value='';
+    cargarColectas();
+    setTimeout(()=>switchPTab('colectas'),1200);
+  }catch(e){showAlert('n-alert','Error: '+e.message,'err');}
+}
+
+// ─── DETALLE DE COLECTA ───────────────────────────────────────────────────
+function switchSDTab(t){
+  ['mov','add-mov','need'].forEach(x=>{
+    document.getElementById('sdtab-'+x).classList.toggle('active',x===t);
+    document.getElementById('sdpanel-'+x).classList.toggle('active',x===t);
+  });
+}
+
+async function abrirDetAdm(id){
+  colectaDetId=id;
+  // Ocultar lista, mostrar overlay
+  document.getElementById('adm-lista').style.display='none';
+  document.getElementById('det-overlay').style.display='block';
+  switchSDTab('mov');
+  const snap=await db.collection('colectas').doc(id).get();
+  const c=snap.data()||{};
+  document.getElementById('adm-det-titulo').textContent=c.titulo||'';
+  const activa=c.estado!=='cerrada';
+  const btn=document.getElementById('btn-toggle-estado');
+  btn.textContent=activa?'Cerrar colecta':'Reabrir colecta';
+  btn.style.color=activa?'#ef4444':'#22c55e';
+  await Promise.all([cargarMovs(id),cargarNeedsAdm(id)]);
+}
+
+function cerrarDetAdm(){
+  colectaDetId=null;
+  document.getElementById('det-overlay').style.display='none';
+  document.getElementById('adm-lista').style.display='block';
+}
+
+async function toggleEstadoColecta(){
+  if(!colectaDetId) return;
+  const snap=await db.collection('colectas').doc(colectaDetId).get();
+  const activa=snap.data().estado!=='cerrada';
+  if(!confirm(activa?'¿Cerrar la colecta?':'¿Reabrir la colecta?')) return;
+  await db.collection('colectas').doc(colectaDetId).update({estado:activa?'cerrada':'activa'});
+  abrirDetAdm(colectaDetId);
+}
+
+// ─── CARGAR MOVIMIENTOS ADMIN ─────────────────────────────────────────────
+async function cargarMovs(colId){
+  const el=document.getElementById('adm-movs');
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('movimientos')
+      .orderBy('fecha','desc').get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">Sin movimientos aún. Usá "Agregar".</div>';return;}
+    let html='';
+    snap.forEach(doc=>{
+      const m=doc.data();
+      const icon={ingreso:'💚',egreso:'🧾',especie:'📦'}[m.tipo]||'📌';
+      const col={ingreso:'verde',egreso:'amber',especie:'azul'}[m.tipo]||'';
+      const monto=m.tipo==='especie'
+        ?(m.cantidad?m.cantidad+' u.':'—')
+        :(m.tipo==='ingreso'?'+':'-')+fmtPesos(m.monto);
+      html+=`
+<div class="adm-mov">
+  <div class="adm-mov-icon" style="${iconBg(m.tipo)}">${icon}</div>
+  <div class="adm-mov-body">
+    <div class="adm-mov-desc">${esc(m.descripcion||'')}</div>
+    <div class="adm-mov-meta">${m.donante?esc(m.donante)+' · ':''}${fmtFecha(m.fecha)}${m.comercio?' · '+esc(m.comercio):''}</div>
+  </div>
+  <div class="adm-mov-monto ${col}">${monto}</div>
+  ${m.foto_url?`<img class="adm-mov-foto" src="${esc(m.foto_url)}" onclick="abrirLB('${esc(m.foto_url)}')" loading="lazy"/>`:''}
+  <button class="adm-mov-del" onclick="eliminarMov('${doc.id}',event)">✕</button>
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+function iconBg(tipo){
+  return {ingreso:'background:rgba(34,197,94,.12)',egreso:'background:rgba(245,158,11,.1)',especie:'background:rgba(91,141,239,.1)'}[tipo]||'';
+}
+
+async function eliminarMov(movId,evt){
+  evt.stopPropagation();
+  if(!confirm('¿Eliminar este movimiento?')) return;
+  await db.collection('colectas').doc(colectaDetId).collection('movimientos').doc(movId).delete();
+  await recalcularTotales(colectaDetId);
+  cargarMovs(colectaDetId);
+}
+
+// ─── AGREGAR MOVIMIENTO ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('mov-fecha').value=new Date().toISOString().slice(0,10);
+  document.getElementById('mov-tipo').addEventListener('change',onTipoChange);
+});
+
+function onTipoChange(){
+  const t=document.getElementById('mov-tipo').value;
+  document.getElementById('mov-monto-wrap').style.display=t==='especie'?'none':'block';
+  document.getElementById('mov-cant-wrap').style.display=t==='especie'?'block':'none';
+  document.getElementById('mov-donante-wrap').style.display=t==='egreso'?'none':'block';
+  document.getElementById('mov-comercio-wrap').style.display=t==='egreso'?'block':'none';
+}
+
+function prevMovFoto(inp){
+  const f=inp.files[0];
+  if(!f) return;
+  if(f.size>5*1024*1024){alert('La foto no puede superar 5 MB');inp.value='';return;}
+  movFotoFile=f;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById('mov-foto-prev');
+    img.src=e.target.result;img.style.display='block';
+  };
+  reader.readAsDataURL(f);
+}
+
+async function agregarMovimiento(){
+  if(!colectaDetId){showAlert('mov-alert','Seleccioná una colecta.','err');return;}
+  const tipo=document.getElementById('mov-tipo').value;
+  const desc=document.getElementById('mov-desc').value.trim();
+  if(!desc){showAlert('mov-alert','La descripción es obligatoria.','err');return;}
+  const monto=parseFloat(document.getElementById('mov-monto').value)||0;
+  const cantidad=parseInt(document.getElementById('mov-cant').value)||1;
+  const donante=document.getElementById('mov-donante').value.trim();
+  const comercio=document.getElementById('mov-comercio').value.trim();
+  const fechaStr=document.getElementById('mov-fecha').value;
+  const fecha=fechaStr?firebase.firestore.Timestamp.fromDate(new Date(fechaStr+'T12:00:00')):FV.serverTimestamp();
+  try{
+    let foto_url='';
+    if(movFotoFile){
+      const ref=storage.ref('colectas/'+colectaDetId+'/movs/'+Date.now()+'_'+movFotoFile.name);
+      await ref.put(movFotoFile);
+      foto_url=await ref.getDownloadURL();
+    }
+    const data={tipo,descripcion:desc,fecha,foto_url,creado_en:FV.serverTimestamp()};
+    if(tipo!=='especie') data.monto=monto;
+    if(tipo==='especie') data.cantidad=cantidad;
+    if(donante) data.donante=donante;
+    if(comercio) data.comercio=comercio;
+    await db.collection('colectas').doc(colectaDetId).collection('movimientos').add(data);
+    await recalcularTotales(colectaDetId);
+    showAlert('mov-alert','Movimiento guardado.','ok');
+    document.getElementById('mov-desc').value='';
+    document.getElementById('mov-monto').value='';
+    document.getElementById('mov-cant').value='';
+    document.getElementById('mov-donante').value='';
+    document.getElementById('mov-comercio').value='';
+    document.getElementById('mov-foto-prev').style.display='none';
+    movFotoFile=null;
+    document.getElementById('mov-foto-inp').value='';
+    cargarMovs(colectaDetId);
+    cargarColectas();
+  }catch(e){showAlert('mov-alert','Error: '+e.message,'err');}
+}
+
+// Recalcular totales desde subcolección
+async function recalcularTotales(colId){
+  const snap=await db.collection('colectas').doc(colId).collection('movimientos').get();
+  let ing=0,gas=0,esp=0;
+  snap.forEach(d=>{
+    const m=d.data();
+    if(m.tipo==='ingreso') ing+=m.monto||0;
+    else if(m.tipo==='egreso') gas+=m.monto||0;
+    else if(m.tipo==='especie') esp+=m.cantidad||1;
+  });
+  await db.collection('colectas').doc(colId).update({
+    total_ingresado:ing,
+    total_gastado:gas,
+    total_especie:esp
+  });
+}
+
+// ─── CHECKLIST NECESIDADES ────────────────────────────────────────────────
+async function cargarNeedsAdm(colId){
+  const el=document.getElementById('adm-needs');
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('necesita').orderBy('orden','asc').get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">Sin artículos en checklist. Agregá abajo.</div>';return;}
+    let html='';
+    let ord=1;
+    snap.forEach(doc=>{
+      const n=doc.data();
+      html+=`
+<div class="need-adm">
+  <div class="need-adm-body">
+    <div class="need-adm-nombre">${esc(n.nombre)}</div>
+    <div class="need-adm-prog">${n.cantidad_recibida||0} / ${n.cantidad_requerida||'?'} ${n.unidad||''}</div>
+  </div>
+  <input type="number" min="0" value="${n.cantidad_recibida||0}" style="width:52px;padding:4px;border-radius:7px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);font-size:11px;text-align:center"
+    onchange="actualizarRecibido('${doc.id}',this.value)"/>
+  <button class="btn-del-need" onclick="eliminarNeed('${doc.id}',event)">✕</button>
+</div>`;
+      ord++;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error.</div>';}
+}
+
+async function actualizarRecibido(needId,val){
+  if(!colectaDetId) return;
+  await db.collection('colectas').doc(colectaDetId).collection('necesita').doc(needId)
+    .update({cantidad_recibida:parseInt(val)||0});
+}
+
+async function eliminarNeed(needId,evt){
+  evt.stopPropagation();
+  if(!confirm('¿Eliminar este artículo del checklist?')) return;
+  await db.collection('colectas').doc(colectaDetId).collection('necesita').doc(needId).delete();
+  cargarNeedsAdm(colectaDetId);
+}
+
+async function agregarNeed(){
+  if(!colectaDetId){showAlert('need-alert','Seleccioná una colecta primero.','err');return;}
+  const nombre=document.getElementById('need-nombre').value.trim();
+  if(!nombre){showAlert('need-alert','El nombre es obligatorio.','err');return;}
+  // Obtener orden actual
+  const snap=await db.collection('colectas').doc(colectaDetId).collection('necesita').get();
+  const orden=snap.size+1;
+  await db.collection('colectas').doc(colectaDetId).collection('necesita').add({
+    nombre,
+    cantidad_requerida:parseInt(document.getElementById('need-cant').value)||1,
+    cantidad_recibida:parseInt(document.getElementById('need-recibida').value)||0,
+    unidad:document.getElementById('need-unidad').value.trim()||'unidades',
+    orden,
+    creado_en:FV.serverTimestamp()
+  });
+  showAlert('need-alert','Artículo agregado al checklist.','ok');
+  document.getElementById('need-nombre').value='';
+  document.getElementById('need-cant').value='';
+  document.getElementById('need-recibida').value='';
+  document.getElementById('need-unidad').value='';
+  cargarNeedsAdm(colectaDetId);
+}
+
+// ─── "YO TENGO ESTO" RECIBIDOS ────────────────────────────────────────────
+async function cargarYoTengo(){
+  const el=document.getElementById('yo-lista');
+  try{
+    const snap=await db.collection('yo_tengo')
+      .orderBy('creado_en','desc').limit(50).get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">Sin formularios recibidos aún.</div>';return;}
+    let html='';
+    snap.forEach(doc=>{
+      const y=doc.data();
+      html+=`
+<div class="yo-item">
+  <div class="yo-header">
+    <div>
+      <div class="yo-nombre">${esc(y.nombre_contacto||'Anónimo')} — ${esc(y.telefono||'')}</div>
+      <div class="yo-meta">${esc(y.colecta_titulo||'')} · ${esc(y.item_nombre||'')} · ${fmtFecha(y.creado_en)}</div>
+    </div>
+    ${!y.leido?'<div class="new-dot" title="No leído"></div>':''}
+  </div>
+  ${y.detalle?`<div class="yo-detalle">${esc(y.detalle)}</div>`:''}
+  ${y.foto_url?`<img class="yo-foto" src="${esc(y.foto_url)}" loading="lazy" onclick="abrirLB('${esc(y.foto_url)}')"/>`:''}
+  ${!y.leido?`<button class="btn-leer" onclick="marcarLeido('${doc.id}',this)" style="margin-top:8px">Marcar como leído</button>`:''}
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+async function marcarLeido(docId,btn){
+  await db.collection('yo_tengo').doc(docId).update({leido:true});
+  btn.textContent='✓ Leído';
+  btn.disabled=true;
+  // Quitar punto verde
+  const dot=btn.closest('.yo-item').querySelector('.new-dot');
+  if(dot) dot.remove();
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────
+function fmtPesos(n){return '$'+Number(n||0).toLocaleString('es-AR')}
+function fmtFecha(ts){
+  if(!ts) return '';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  return d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
+}
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showAlert(id,msg,tipo){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.style.display='block';
+  el.className='alert '+(tipo==='ok'?'ok':'err');
+  setTimeout(()=>{el.style.display='none';},4000);
+}
+function abrirLB(url){
+  document.getElementById('lb-img').src=url;
+  document.getElementById('lb').style.display='flex';
+}
+</script>
+</body>
+</html>

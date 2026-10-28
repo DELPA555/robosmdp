@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" name="viewport"/>
+<title>Colectas Vecinales - Robos MDP</title>
+<meta content="Colectas solidarias de los vecinos de Mar del Plata. Seguí en tiempo real cuánto se recaudó, en qué se gastó y qué materiales se necesitan." name="description"/>
+<meta content="#E8192C" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<link href="./assets/logo-nuevo.png" rel="icon"/>
+<link href="./assets/logo-nuevo.png" rel="apple-touch-icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1c;--bg-2:#0d1424;
+  --surface:#141d30;--surface-2:#1a2438;--surface-hi:#202c44;
+  --line:rgba(148,163,184,.10);--line-2:rgba(148,163,184,.16);
+  --ink:#eef2f8;--ink-2:#a4b1c4;--ink-3:#67748a;
+  --red:#ef4444;--green:#22c55e;--amber:#f59e0b;--blue:#5b8def;
+  --accent:#22c55e;
+  --disp:'Space Grotesk','Inter',sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+}
+:root.light{
+  --bg:#eef1f7;--bg-2:#ffffff;
+  --surface:#ffffff;--surface-2:#f1f5f9;--surface-hi:#e7ecf3;
+  --line:rgba(71,85,105,.10);--line-2:rgba(71,85,105,.16);
+  --ink:#0f172a;--ink-2:#475569;--ink-3:#7c8aa0;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
+body{padding:0 0 env(safe-area-inset-bottom,0) 0}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:10px;
+  padding:12px max(16px,env(safe-area-inset-left,0px));
+  background:rgba(10,15,28,.92);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line-2)}
+.topbar a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.topbar img{width:32px;height:32px;border-radius:9px;object-fit:cover}
+.topbar-title{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.topbar-sub{font-size:10px;color:var(--ink-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.topbar-right{margin-left:auto;display:flex;gap:8px}
+.btn-top{padding:7px 14px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .15s}
+.btn-top:hover{background:var(--surface-hi)}
+
+/* ── CONTENEDOR PRINCIPAL ── */
+.main{max-width:700px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left,0px)) 60px}
+
+/* ── ESTADO (cargando / error / vacío) ── */
+.estado{text-align:center;padding:60px 24px;color:var(--ink-3);font-size:14px}
+.estado .icono{font-size:36px;margin-bottom:12px}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.badge.activa{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.badge.cerrada{background:rgba(148,163,184,.1);color:var(--ink-3);border:1px solid var(--line-2)}
+
+/* ── CARD COLECTA (listado) ── */
+.colecta-card{background:var(--surface);border:1px solid var(--line-2);border-radius:20px;padding:20px;margin-bottom:14px;cursor:pointer;transition:all .18s;text-decoration:none;display:block;color:inherit}
+.colecta-card:hover{background:var(--surface-2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.card-title{font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1.3}
+.card-desc{font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:4px}
+/* Progreso dinero */
+.prog-wrap{margin-top:14px}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:6px}
+.prog-bar{height:6px;border-radius:999px;background:rgba(148,163,184,.12);overflow:hidden}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#16a34a);transition:width .6s ease}
+.prog-nums{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;font-weight:700}
+.prog-nums .recaudado{color:#22c55e}
+.prog-nums .gastado{color:#f59e0b}
+.prog-nums .saldo{color:var(--ink-2)}
+/* Mini-chips */
+.card-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:700;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+
+/* ── DETALLE COLECTA ── */
+#detalle{display:none}
+.det-back{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--line-2);font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer;margin-bottom:20px;transition:background .15s}
+.det-back:hover{background:var(--surface-hi)}
+.det-titulo{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.2;margin-bottom:6px}
+.det-causa{font-size:13px;color:var(--ink-2);line-height:1.5;margin-bottom:16px}
+/* Balance destacado */
+.balance-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.bal-card{background:var(--surface);border:1px solid var(--line-2);border-radius:16px;padding:14px;text-align:center}
+.bal-card .val{font-size:18px;font-weight:800;letter-spacing:-.03em}
+.bal-card .lbl{font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.bal-card.verde{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06)}
+.bal-card.verde .val{color:#22c55e}
+.bal-card.amber{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.06)}
+.bal-card.amber .val{color:#f59e0b}
+.bal-card.azul{border-color:rgba(91,141,239,.25);background:rgba(91,141,239,.06)}
+.bal-card.azul .val{color:#5b8def}
+/* Tabs */
+.det-tabs{display:flex;gap:4px;background:var(--surface);border-radius:14px;padding:4px;margin-bottom:20px;border:1px solid var(--line-2);overflow-x:auto;scrollbar-width:none}
+.det-tabs::-webkit-scrollbar{display:none}
+.det-tab{flex:1;min-width:80px;padding:9px 6px;border-radius:10px;border:none;background:transparent;color:var(--ink-3);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--disp)}
+.det-tab.active{background:var(--surface-hi);color:var(--ink)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+/* Lista movimientos */
+.mov-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--line-2);border-radius:14px;margin-bottom:10px}
+.mov-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mov-icon.ingreso{background:rgba(34,197,94,.12)}
+.mov-icon.egreso{background:rgba(245,158,11,.1)}
+.mov-icon.especie{background:rgba(91,141,239,.1)}
+.mov-body{flex:1;min-width:0}
+.mov-desc{font-size:13px;font-weight:600;line-height:1.4}
+.mov-meta{font-size:11px;color:var(--ink-3);margin-top:2px}
+.mov-monto{font-size:14px;font-weight:800;flex-shrink:0;align-self:center}
+.mov-monto.verde{color:#22c55e}
+.mov-monto.amber{color:#f59e0b}
+.mov-foto{width:48px;height:48px;border-radius:9px;object-fit:cover;border:1px solid var(--line-2);flex-shrink:0;cursor:pointer}
+/* Checklist necesidades */
+.need-item{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--surface);border:1px solid var(--line-2);border-radius:14px;margin-bottom:8px}
+.need-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--line-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.need-check.ok{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.4);color:#22c55e}
+.need-body{flex:1;min-width:0}
+.need-nombre{font-size:13px;font-weight:600}
+.need-cantidad{font-size:11px;color:var(--ink-3);margin-top:1px}
+.need-badge{padding:3px 9px;border-radius:8px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.need-badge.cubierto{background:rgba(34,197,94,.12);color:#22c55e}
+.need-badge.parcial{background:rgba(245,158,11,.1);color:#f59e0b}
+.need-badge.pendiente{background:rgba(148,163,184,.1);color:var(--ink-3)}
+.btn-yo-tengo{padding:8px 14px;border-radius:10px;border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.08);color:#22c55e;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--disp)}
+.btn-yo-tengo:hover{background:rgba(34,197,94,.16)}
+/* Sin items */
+.sin-items{text-align:center;padding:40px 16px;color:var(--ink-3);font-size:13px}
+/* ── FOTO LIGHTBOX ── */
+.lb{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:20px;cursor:pointer}
+.lb img{max-width:100%;max-height:90vh;border-radius:14px;object-fit:contain}
+/* ── MODAL "YO TENGO ESTO" ── */
+.modal-bg{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal{background:var(--surface);border-radius:24px 24px 0 0;padding:24px max(16px,env(safe-area-inset-left,0px));padding-bottom:max(24px,env(safe-area-inset-bottom,0));width:100%;max-width:700px;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.modal .sub{font-size:13px;color:var(--ink-3);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line-2);background:var(--bg-2, var(--bg));color:var(--ink);font-size:14px;font-family:var(--disp);outline:none;transition:border .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:80px}
+.field select option{background:var(--surface)}
+.btn-primario{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--disp);letter-spacing:.01em;transition:opacity .15s}
+.btn-primario:disabled{opacity:.5;cursor:not-allowed}
+.btn-cerrar{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-2);color:var(--ink-3);font-size:18px;cursor:pointer;flex-shrink:0;margin-left:auto}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+/* ── FOTO UPLOAD ── */
+.foto-label{display:flex;align-items:center;gap:8px;padding:12px 14px;border:1.5px dashed var(--line-2);border-radius:12px;cursor:pointer;color:var(--ink-3);font-size:13px;font-weight:600;transition:border .15s}
+.foto-label:hover{border-color:var(--accent)}
+.foto-prev{width:56px;height:56px;border-radius:9px;object-fit:cover;border:1px solid var(--line-2)}
+/* ── SECCIÓN ESPECIE ── */
+.especie-item{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;background:var(--surface);border:1px solid var(--line-2);border-radius:14px;margin-bottom:8px}
+.especie-foto{width:52px;height:52px;border-radius:9px;object-fit:cover;border:1px solid var(--line-2);flex-shrink:0;cursor:pointer}
+/* ── RESPONSIVE ── */
+@media(max-width:400px){
+  .balance-row{grid-template-columns:1fr 1fr}
+  .bal-card:last-child{grid-column:1/-1}
+  .det-tabs{gap:2px}
+  .det-tab{font-size:9px;padding:8px 5px}
+}
+/* Animación entrada */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .22s ease both}
+</style>
+</head>
+<body>
+<!-- ══════════════════ TOPBAR ══════════════════ -->
+<header class="topbar">
+  <a href="./">
+    <img alt="Robos MDP" src="./assets/logo-nuevo.png"/>
+    <div>
+      <div class="topbar-title">Robos MDP</div>
+      <div class="topbar-sub">Colectas vecinales</div>
+    </div>
+  </a>
+  <div class="topbar-right">
+    <a class="btn-top" href="./chat.html">● Chat</a>
+    <a class="btn-top" href="./">Inicio</a>
+  </div>
+</header>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main class="main">
+
+  <!-- ─── LISTADO ─── -->
+  <div id="listado">
+    <div style="margin-bottom:24px">
+      <h1 style="font-size:24px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px">💚 Colectas vecinales</h1>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">Ayudas solidarias organizadas por la comunidad. Seguí en tiempo real cuánto se recaudó, cómo se usó y qué falta.</p>
+    </div>
+    <div id="lista-wrap">
+      <div class="estado" id="estado-lista">
+        <div class="icono">🔄</div>
+        Cargando colectas…
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── DETALLE ─── -->
+  <div id="detalle">
+    <button class="det-back" onclick="mostrarListado()">← Volver</button>
+
+    <div id="det-badge-wrap" style="margin-bottom:10px"></div>
+    <h2 class="det-titulo" id="det-titulo"></h2>
+    <p class="det-causa" id="det-causa"></p>
+
+    <!-- Balance -->
+    <div class="balance-row fade-up" id="det-balance">
+      <div class="bal-card verde"><div class="val" id="bal-ingreso">$0</div><div class="lbl">Recaudado</div></div>
+      <div class="bal-card amber"><div class="val" id="bal-egreso">$0</div><div class="lbl">Gastado</div></div>
+      <div class="bal-card azul"><div class="val" id="bal-saldo">$0</div><div class="lbl">Disponible</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="det-tabs">
+      <button class="det-tab active" id="tab-btn-dinero" onclick="switchTab('dinero')">💰 Dinero</button>
+      <button class="det-tab" id="tab-btn-especie" onclick="switchTab('especie')">📦 Cosas recibidas</button>
+      <button class="det-tab" id="tab-btn-necesita" onclick="switchTab('necesita')">📋 Lo que falta</button>
+      <button class="det-tab" id="tab-btn-gastos" onclick="switchTab('gastos')">🧾 Gastos</button>
+    </div>
+
+    <!-- Panel: Dinero -->
+    <div class="tab-panel active" id="tab-dinero">
+      <div id="list-dinero"><div class="sin-items">Cargando…</div></div>
+    </div>
+
+    <!-- Panel: Especie -->
+    <div class="tab-panel" id="tab-especie">
+      <div id="list-especie"><div class="sin-items">Cargando…</div></div>
+    </div>
+
+    <!-- Panel: Necesita -->
+    <div class="tab-panel" id="tab-necesita">
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:14px">Si tenés alguno de estos artículos y querés donarlo, tocá el botón correspondiente.</p>
+      <div id="list-necesita"><div class="sin-items">Cargando…</div></div>
+    </div>
+
+    <!-- Panel: Gastos -->
+    <div class="tab-panel" id="tab-gastos">
+      <div id="list-gastos"><div class="sin-items">Cargando…</div></div>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════ MODAL "YO TENGO ESTO" ══════════════════ -->
+<div class="modal-bg" id="modal-yo" style="display:none" onclick="if(event.target===this)cerrarModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3>Yo tengo esto 🙌</h3>
+        <p class="sub" id="yo-nombre-item">Completá el formulario y te contactamos.</p>
+      </div>
+      <button class="btn-cerrar" onclick="cerrarModal()">×</button>
+    </div>
+    <div class="field">
+      <label>Tu nombre o apodo</label>
+      <input id="yo-nombre" maxlength="60" placeholder="¿Cómo te llamás?" type="text"/>
+    </div>
+    <div class="field">
+      <label>Teléfono / WhatsApp</label>
+      <input id="yo-tel" maxlength="30" placeholder="Número de contacto" type="tel"/>
+    </div>
+    <div class="field">
+      <label>¿Qué tenés? (descripción, cantidad, estado…)</label>
+      <textarea id="yo-detalle" maxlength="400" placeholder="Ej: 2 colchones dobles en buen estado, disponibles esta semana"></textarea>
+    </div>
+    <div class="field">
+      <label>Foto (opcional)</label>
+      <label class="foto-label" id="yo-foto-lbl">
+        <span style="font-size:20px">📷</span>
+        <span>Adjuntá una foto</span>
+        <input accept="image/*" id="yo-foto-inp" onchange="prevYoFoto(this)" style="display:none" type="file"/>
+      </label>
+      <img alt="" id="yo-foto-prev" src="" style="display:none;width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:8px;border:1px solid var(--line-2)"/>
+    </div>
+    <div id="yo-msg" style="display:none;padding:12px;border-radius:12px;font-size:13px;font-weight:600;margin-bottom:14px"></div>
+    <button class="btn-primario" id="yo-btn" onclick="enviarYoTengo()">Enviar al administrador →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ LIGHTBOX FOTO ══════════════════ -->
+<div class="lb" id="lb" onclick="document.getElementById('lb').style.display='none'" style="display:none">
+  <img alt="Foto completa" id="lb-img" src=""/>
+</div>
+
+<script>
+// ─── Firebase config ───────────────────────────────────────────────────────
+const FB_CONFIG={
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
+};
+firebase.initializeApp(FB_CONFIG);
+const db=firebase.firestore();
+const auth=firebase.auth();
+const storage=firebase.storage();
+
+// ─── Estado global ─────────────────────────────────────────────────────────
+let colectaActual=null; // doc de Firestore con id
+let necesitaActual=[]; // para saber qué ítem seleccionó el usuario
+
+// ─── Formateo ──────────────────────────────────────────────────────────────
+function fmtPesos(n){
+  if(!n&&n!==0) return '—';
+  return '$'+Number(n).toLocaleString('es-AR');
+}
+function fmtFecha(ts){
+  if(!ts) return '';
+  const d=ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+// ─── LISTADO ───────────────────────────────────────────────────────────────
+async function cargarListado(){
+  const wrap=document.getElementById('lista-wrap');
+  try{
+    const snap=await db.collection('colectas')
+      .orderBy('creada_en','desc')
+      .get();
+    if(snap.empty){
+      wrap.innerHTML='<div class="estado"><div class="icono">💚</div>No hay colectas activas por el momento.</div>';
+      return;
+    }
+    let html='';
+    snap.forEach(doc=>{
+      const c={id:doc.id,...doc.data()};
+      const activa=c.estado!=='cerrada';
+      const pct=c.meta_dinero&&c.meta_dinero>0
+        ? Math.min(100,Math.round((c.total_ingresado||0)/c.meta_dinero*100)) : 0;
+      const saldo=(c.total_ingresado||0)-(c.total_gastado||0);
+      html+=`
+<div class="colecta-card fade-up" onclick="abrirDetalle('${c.id}')">
+  <div class="card-header">
+    <div>
+      <div class="card-title">${esc(c.titulo)}</div>
+      ${c.descripcion?`<div class="card-desc">${esc(c.descripcion)}</div>`:''}
+    </div>
+    <span class="badge ${activa?'activa':'cerrada'}">${activa?'● Activa':'Cerrada'}</span>
+  </div>
+  ${c.meta_dinero?`
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Recaudación</span><span>${pct}%</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="prog-nums">
+      <span class="recaudado">${fmtPesos(c.total_ingresado||0)} recaudado</span>
+      <span class="saldo">Saldo: ${fmtPesos(saldo)}</span>
+    </div>
+  </div>`:''}
+  <div class="card-chips" style="margin-top:12px">
+    ${c.beneficiario?`<span class="chip">🙋 ${esc(c.beneficiario)}</span>`:''}
+    ${c.categoria?`<span class="chip">${esc(c.categoria)}</span>`:''}
+    ${(c.total_especie||0)>0?`<span class="chip">📦 ${c.total_especie} artículo${c.total_especie!==1?'s':''} en especie</span>`:''}
+  </div>
+</div>`;
+    });
+    wrap.innerHTML=html;
+  }catch(e){
+    console.error(e);
+    wrap.innerHTML='<div class="estado"><div class="icono">⚠️</div>No se pudo cargar. Revisá tu conexión.</div>';
+  }
+}
+
+// ─── DETALLE ───────────────────────────────────────────────────────────────
+async function abrirDetalle(id){
+  document.getElementById('listado').style.display='none';
+  document.getElementById('detalle').style.display='block';
+  // Reset UI
+  ['dinero','especie','necesita','gastos'].forEach(t=>{
+    document.getElementById('list-'+t).innerHTML='<div class="sin-items">Cargando…</div>';
+  });
+  switchTab('dinero');
+  window.scrollTo({top:0,behavior:'smooth'});
+  try{
+    const snap=await db.collection('colectas').doc(id).get();
+    if(!snap.exists){
+      document.getElementById('det-titulo').textContent='Colecta no encontrada';
+      return;
+    }
+    const c={id:snap.id,...snap.data()};
+    colectaActual=c;
+    // Header
+    const activa=c.estado!=='cerrada';
+    document.getElementById('det-badge-wrap').innerHTML=`<span class="badge ${activa?'activa':'cerrada'}">${activa?'● Activa':'Cerrada'}</span>`;
+    document.getElementById('det-titulo').textContent=c.titulo||'';
+    document.getElementById('det-causa').textContent=c.descripcion||'';
+    // Balance
+    const ing=c.total_ingresado||0, gas=c.total_gastado||0;
+    document.getElementById('bal-ingreso').textContent=fmtPesos(ing);
+    document.getElementById('bal-egreso').textContent=fmtPesos(gas);
+    document.getElementById('bal-saldo').textContent=fmtPesos(ing-gas);
+    // Movimientos
+    await Promise.all([
+      cargarDinero(id),
+      cargarEspecie(id),
+      cargarNecesita(id),
+      cargarGastos(id)
+    ]);
+  }catch(e){
+    console.error(e);
+    document.getElementById('det-titulo').textContent='Error al cargar';
+  }
+}
+
+function mostrarListado(){
+  document.getElementById('detalle').style.display='none';
+  document.getElementById('listado').style.display='block';
+  colectaActual=null;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(tab){
+  ['dinero','especie','necesita','gastos'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-btn-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+// ─── CARGAR MOVIMIENTOS DE DINERO (ingresos) ───────────────────────────────
+async function cargarDinero(colId){
+  const el=document.getElementById('list-dinero');
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('movimientos')
+      .where('tipo','==','ingreso')
+      .orderBy('fecha','desc')
+      .get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">Sin donaciones registradas aún.</div>';return;}
+    let html='';
+    snap.forEach(doc=>{
+      const m=doc.data();
+      html+=`
+<div class="mov-item fade-up">
+  <div class="mov-icon ingreso">💚</div>
+  <div class="mov-body">
+    <div class="mov-desc">${esc(m.descripcion||'Donación')}</div>
+    <div class="mov-meta">${m.donante?esc(m.donante)+' · ':''} ${fmtFecha(m.fecha)}</div>
+  </div>
+  <div class="mov-monto verde">+${fmtPesos(m.monto)}</div>
+  ${m.foto_url?`<img class="mov-foto" src="${esc(m.foto_url)}" onclick="abrirLB('${esc(m.foto_url)}')" loading="lazy"/>`:''}
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+// ─── CARGAR ESPECIE ────────────────────────────────────────────────────────
+async function cargarEspecie(colId){
+  const el=document.getElementById('list-especie');
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('movimientos')
+      .where('tipo','==','especie')
+      .orderBy('fecha','desc')
+      .get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">No se recibieron artículos en especie aún.</div>';return;}
+    let html='';
+    snap.forEach(doc=>{
+      const m=doc.data();
+      html+=`
+<div class="mov-item fade-up">
+  <div class="mov-icon especie">📦</div>
+  <div class="mov-body">
+    <div class="mov-desc">${esc(m.descripcion||'Artículo en especie')}</div>
+    <div class="mov-meta">${m.donante?esc(m.donante)+' · ':''} ${fmtFecha(m.fecha)}</div>
+    ${m.cantidad?`<div class="mov-meta">Cantidad: ${esc(String(m.cantidad))}</div>`:''}
+  </div>
+  ${m.foto_url?`<img class="especie-foto" src="${esc(m.foto_url)}" onclick="abrirLB('${esc(m.foto_url)}')" loading="lazy"/>`:''}
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+// ─── CARGAR CHECKLIST NECESIDADES ─────────────────────────────────────────
+async function cargarNecesita(colId){
+  const el=document.getElementById('list-necesita');
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('necesita')
+      .orderBy('orden','asc')
+      .get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">No hay lista de necesidades cargada.</div>';return;}
+    necesitaActual=[];
+    let html='';
+    snap.forEach(doc=>{
+      const n={id:doc.id,...doc.data()};
+      necesitaActual.push(n);
+      const pct=n.cantidad_requerida>0?Math.min(100,Math.round((n.cantidad_recibida||0)/n.cantidad_requerida*100)):0;
+      const estado=pct>=100?'cubierto':pct>0?'parcial':'pendiente';
+      const labelEst={cubierto:'✓ Cubierto',parcial:'Parcialmente',pendiente:'Pendiente'};
+      html+=`
+<div class="need-item fade-up">
+  <div class="need-check ${pct>=100?'ok':''}">${pct>=100?'✓':''}</div>
+  <div class="need-body">
+    <div class="need-nombre">${esc(n.nombre)}</div>
+    <div class="need-cantidad">${n.cantidad_recibida||0} / ${n.cantidad_requerida||'?'} ${n.unidad||''}</div>
+  </div>
+  <span class="need-badge ${estado}">${labelEst[estado]}</span>
+  ${pct<100?`<button class="btn-yo-tengo" onclick="abrirYoTengo('${doc.id}','${esc(n.nombre)}')">Yo tengo esto</button>`:''}
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+// ─── CARGAR GASTOS ─────────────────────────────────────────────────────────
+async function cargarGastos(colId){
+  const el=document.getElementById('list-gastos');
+  try{
+    const snap=await db.collection('colectas').doc(colId)
+      .collection('movimientos')
+      .where('tipo','==','egreso')
+      .orderBy('fecha','desc')
+      .get();
+    if(snap.empty){el.innerHTML='<div class="sin-items">No hay gastos registrados aún.</div>';return;}
+    let html='';
+    snap.forEach(doc=>{
+      const m=doc.data();
+      html+=`
+<div class="mov-item fade-up">
+  <div class="mov-icon egreso">🧾</div>
+  <div class="mov-body">
+    <div class="mov-desc">${esc(m.descripcion||'Gasto')}</div>
+    <div class="mov-meta">${fmtFecha(m.fecha)}</div>
+    ${m.comercio?`<div class="mov-meta">📍 ${esc(m.comercio)}</div>`:''}
+  </div>
+  <div class="mov-monto amber">-${fmtPesos(m.monto)}</div>
+  ${m.foto_url?`<img class="mov-foto" src="${esc(m.foto_url)}" onclick="abrirLB('${esc(m.foto_url)}')" loading="lazy"/>`:''}
+</div>`;
+    });
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="sin-items">Error al cargar.</div>';}
+}
+
+// ─── MODAL "YO TENGO ESTO" ────────────────────────────────────────────────
+let yoItemId=null;
+let yoItemNombre='';
+let yoFotoFile=null;
+
+function abrirYoTengo(itemId,nombre){
+  yoItemId=itemId;
+  yoItemNombre=nombre;
+  document.getElementById('yo-nombre-item').textContent='Artículo: '+nombre;
+  document.getElementById('yo-nombre').value='';
+  document.getElementById('yo-tel').value='';
+  document.getElementById('yo-detalle').value='';
+  document.getElementById('yo-foto-prev').style.display='none';
+  document.getElementById('yo-foto-prev').src='';
+  document.getElementById('yo-msg').style.display='none';
+  document.getElementById('yo-btn').disabled=false;
+  yoFotoFile=null;
+  document.getElementById('yo-foto-inp').value='';
+  document.getElementById('modal-yo').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function cerrarModal(){
+  document.getElementById('modal-yo').style.display='none';
+  document.body.style.overflow='';
+}
+
+function prevYoFoto(inp){
+  const f=inp.files[0];
+  if(!f) return;
+  if(f.size>5*1024*1024){alert('La foto no puede superar 5 MB');inp.value='';return;}
+  yoFotoFile=f;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById('yo-foto-prev');
+    img.src=e.target.result;
+    img.style.display='block';
+  };
+  reader.readAsDataURL(f);
+}
+
+async function enviarYoTengo(){
+  const nombre=document.getElementById('yo-nombre').value.trim();
+  const tel=document.getElementById('yo-tel').value.trim();
+  const detalle=document.getElementById('yo-detalle').value.trim();
+  if(!nombre||!tel){
+    mostrarYoMsg('Por favor completá nombre y teléfono.','error');return;
+  }
+  if(!colectaActual){return;}
+  const btn=document.getElementById('yo-btn');
+  btn.disabled=true;
+  btn.textContent='Enviando…';
+  try{
+    let foto_url='';
+    if(yoFotoFile){
+      // Login anónimo para poder subir
+      await auth.signInAnonymously();
+      const ref=storage.ref('colectas_yo_tengo/'+colectaActual.id+'/'+Date.now()+'_'+yoFotoFile.name);
+      await ref.put(yoFotoFile);
+      foto_url=await ref.getDownloadURL();
+    }
+    await db.collection('yo_tengo').add({
+      colecta_id:colectaActual.id,
+      colecta_titulo:colectaActual.titulo||'',
+      item_id:yoItemId,
+      item_nombre:yoItemNombre,
+      nombre_contacto:nombre,
+      telefono:tel,
+      detalle:detalle||'',
+      foto_url,
+      creado_en:firebase.firestore.FieldValue.serverTimestamp(),
+      leido:false
+    });
+    mostrarYoMsg('¡Gracias! El administrador recibirá tu mensaje y se pondrá en contacto.','ok');
+    btn.textContent='¡Enviado!';
+  }catch(e){
+    console.error(e);
+    mostrarYoMsg('Error al enviar. Intentá de nuevo.','error');
+    btn.disabled=false;
+    btn.textContent='Enviar al administrador →';
+  }
+}
+
+function mostrarYoMsg(txt,tipo){
+  const el=document.getElementById('yo-msg');
+  el.textContent=txt;
+  el.style.display='block';
+  el.style.background=tipo==='ok'?'rgba(34,197,94,.12)':'rgba(239,68,68,.12)';
+  el.style.color=tipo==='ok'?'#22c55e':'#ef4444';
+  el.style.border=tipo==='ok'?'1px solid rgba(34,197,94,.3)':'1px solid rgba(239,68,68,.3)';
+}
+
+// ─── LIGHTBOX ──────────────────────────────────────────────────────────────
+function abrirLB(url){
+  document.getElementById('lb-img').src=url;
+  document.getElementById('lb').style.display='flex';
+}
+
+// ─── UTILIDADES ────────────────────────────────────────────────────────────
+function esc(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ─── HASH ROUTING ──────────────────────────────────────────────────────────
+function leerHash(){
+  const h=location.hash.slice(1);
+  if(h&&h.startsWith('c-')){
+    const id=h.slice(2);
+    if(id) abrirDetalle(id);
+  }
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+cargarListado();
+leerHash();
+window.addEventListener('hashchange',leerHash);
+</script>
+</body>
+</html>

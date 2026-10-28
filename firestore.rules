@@ -342,5 +342,34 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ===========================================================
+    //  FEAT/COLECTAS — Colectas vecinales solidarias
+    // ===========================================================
+
+    // Colectas: lectura pública, escritura solo admin
+    match /colectas/{colId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+
+      // Movimientos: lectura pública, escritura solo admin
+      match /movimientos/{movId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+
+      // Checklist de necesidades: lectura pública, escritura solo admin
+      match /necesita/{needId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+    }
+
+    // Formularios "Yo tengo esto": cualquier autenticado puede crear,
+    // solo admin puede leer, actualizar (marcar leído) y borrar.
+    match /yo_tengo/{docId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
+
   }
 }
