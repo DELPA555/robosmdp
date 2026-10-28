@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Super Admin — Robos MDP</title>
+<style>
+/* ===== TOKENS ===== */
+:root{
+  --bg:#0a0e1a;--surface:#141d30;--surface-2:#1a2438;--line:rgba(148,163,184,.16);
+  --t0:#f1f5f9;--t1:#e2e8f0;--t2:#cbd5e1;--t3:#94a3b8;
+  --accent:#0ea5e9;--accent-2:#0284c7;--ok:#22c55e;--err:#ef4444;--warn:#f59e0b;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit;font-size:14px;background:var(--surface-2);color:var(--t0);border:1px solid var(--line);border-radius:10px;padding:9px 13px;outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.hidden{display:none!important}
+
+/* ===== LOGIN ===== */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:36px 32px;width:100%;max-width:400px}
+.login-box h1{font-size:22px;font-weight:800;color:var(--t0);margin-bottom:6px}
+.login-box p{font-size:12px;color:var(--t3);margin-bottom:24px}
+.login-box label{display:block;font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.login-box input{width:100%;margin-bottom:14px}
+.login-box .btn-primary{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;margin-top:4px}
+.login-box .btn-primary:hover{background:var(--accent-2)}
+#login-err{color:var(--err);font-size:12px;margin-top:10px;display:none}
+
+/* ===== PANEL PRINCIPAL ===== */
+#panel{display:none}
+.top-bar{background:var(--surface);border-bottom:1px solid var(--line);padding:0 20px;display:flex;align-items:center;gap:16px;height:54px;position:sticky;top:0;z-index:100}
+.top-bar .logo{font-size:15px;font-weight:800;color:var(--t0);white-space:nowrap}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .spacer{flex:1}
+.top-bar .user-info{font-size:11px;color:var(--t3);white-space:nowrap}
+.btn-logout{padding:6px 14px;background:rgba(239,68,68,.12);color:var(--err);border:1px solid rgba(239,68,68,.28);border-radius:999px;font-size:12px;font-weight:700}
+.btn-logout:hover{background:rgba(239,68,68,.22)}
+
+/* ===== TAB BAR ===== */
+.tab-bar{background:var(--surface);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;gap:2px;padding:0 16px;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:14px 18px;font-size:12px;font-weight:700;color:var(--t3);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tab-btn:hover{color:var(--t1)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-pane{display:none;padding:20px}
+.tab-pane.active{display:block}
+
+/* ===== COMPONENTES COMUNES ===== */
+.section-title{font-size:18px;font-weight:800;color:var(--t0);margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+.card-sm{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.btn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;border:none;transition:opacity .15s}
+.btn:hover{opacity:.8}
+.btn-ok{background:rgba(34,197,94,.14);color:var(--ok);border:1px solid rgba(34,197,94,.3)}
+.btn-err{background:rgba(239,68,68,.14);color:var(--err);border:1px solid rgba(239,68,68,.3)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-warn{background:rgba(245,158,11,.14);color:var(--warn);border:1px solid rgba(245,158,11,.3)}
+.btn-ghost{background:rgba(148,163,184,.1);color:var(--t2);border:1px solid var(--line)}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:800}
+.badge-ok{background:rgba(34,197,94,.15);color:var(--ok)}
+.badge-err{background:rgba(239,68,68,.15);color:var(--err)}
+.badge-warn{background:rgba(245,158,11,.15);color:var(--warn)}
+.badge-accent{background:rgba(14,165,233,.15);color:var(--accent)}
+.search-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-row input{flex:1;min-width:180px}
+.empty{text-align:center;padding:40px 0;color:var(--t3);font-size:12px;font-weight:700}
+.empty-icon{font-size:32px;margin-bottom:8px}
+.meta{font-size:10px;color:var(--t3);font-weight:600}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.kpi .num{font-size:26px;font-weight:800;color:var(--t0)}
+.kpi .lbl{font-size:10px;color:var(--t3);font-weight:700;margin-top:3px}
+
+/* ===== REPORTES ===== */
+.rep-tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.rep-tab-btn{padding:7px 14px;border-radius:10px;font-size:11px;font-weight:700;border:1px solid var(--line);background:transparent;color:var(--t3);transition:all .15s}
+.rep-tab-btn.active{color:#fff;border-color:transparent}
+.rep-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+
+/* ===== CHAT ===== */
+.chat-msg{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.chat-user{border-left:3px solid var(--ok);border-radius:12px;padding:10px 14px;margin-bottom:6px}
+.chat-ban{border-left:3px solid var(--err)}
+
+/* ===== MODAL ===== */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px;width:100%;max-width:440px;max-height:80vh;overflow-y:auto}
+.modal-box h3{font-size:17px;font-weight:800;color:var(--t0);margin-bottom:16px}
+
+/* ===== COLECTAS ===== */
+.col-card{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:10px}
+.col-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* ===== TOAST ===== */
+#sa-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 22px;font-size:13px;font-weight:700;color:var(--t0);z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;white-space:nowrap}
+#sa-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="sa-toast"></div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>🛡️ Super Admin</h1>
+    <p>Robos MDP — Panel unificado de administración</p>
+    <label>Email</label>
+    <input type="email" id="sa-email" placeholder="admin@robosmdp.com.ar" autocomplete="username">
+    <label>Contraseña</label>
+    <input type="password" id="sa-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')saLogin()">
+    <button class="btn-primary" onclick="saLogin()">Entrar</button>
+    <div id="login-err">❌ <span id="login-err-msg">Credenciales incorrectas o sin permisos.</span></div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="panel">
+  <div class="top-bar">
+    <div class="logo">🛡️ <span>Super Admin</span> · Robos MDP</div>
+    <div class="spacer"></div>
+    <div class="user-info" id="sa-user-info"></div>
+    <button class="btn-logout" onclick="saLogout()">Salir</button>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="saTab('reportes')">📋 Reportes</button>
+    <button class="tab-btn" onclick="saTab('patentes')">🔖 Patentes</button>
+    <button class="tab-btn" onclick="saTab('objetos')">🎒 Objetos</button>
+    <button class="tab-btn" onclick="saTab('mascotas')">🐾 Mascotas</button>
+    <button class="tab-btn" onclick="saTab('foro')">💬 Foro</button>
+    <button class="tab-btn" onclick="saTab('chat')">🗨️ Chat</button>
+    <button class="tab-btn" onclick="saTab('rastreo')">📍 Rastreo</button>
+    <button class="tab-btn" onclick="saTab('organismos')">🏛️ Organismos</button>
+    <button class="tab-btn" onclick="saTab('colectas')">💚 Colectas</button>
+  </div>
+
+  <!-- PANES -->
+  <div id="pane-reportes" class="tab-pane active">
+    <div class="section-title">📋 Reportes</div>
+    <div class="rep-tab-bar" id="rep-cat-bar">
+      <button class="rep-tab-btn active" style="background:#ef4444" onclick="repSwitch('robos',this)">🔴 Robos</button>
+      <button class="rep-tab-btn" onclick="repSwitch('basura',this)">🟢 Basura</button>
+      <button class="rep-tab-btn" onclick="repSwitch('pozos',this)">🟡 Pozos</button>
+      <button class="rep-tab-btn" onclick="repSwitch('abandonados',this)">🔵 Abandonados</button>
+      <button class="rep-tab-btn" onclick="repSwitch('luminarias',this)">💡 Luminarias</button>
+    </div>
+    <div class="row">
+      <input id="rep-search" placeholder="Buscar reporte..." oninput="repRender()" style="flex:1;min-width:180px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3)">
+        <input type="checkbox" id="rep-show-resolved" onchange="repRender()"> Mostrar resueltos
+      </label>
+    </div>
+    <div id="rep-list"><div class="empty"><div class="empty-icon">📋</div>Cargando...</div></div>
+  </div>
+
+  <div id="pane-patentes" class="tab-pane">
+    <div class="section-title">🔖 Patentes perdidas / encontradas</div>
+    <div class="search-row">
+      <input id="pat-sa-search" placeholder="Buscar patente..." oninput="patSaRender()">
+      <select id="pat-sa-filter" onchange="patSaRender()">
+        <option value="all">Todas</option>
+        <option value="perdida">Perdidas</option>
+        <option value="encontrada">Encontradas</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3)">
+        <input type="checkbox" id="pat-sa-resolved" onchange="patSaRender()"> Resueltas
+      </label>
+    </div>
+    <div id="pat-sa-list"><div class="empty"><div class="empty-icon">🔖</div>Cargando...</div></div>
+  </div>
+
+  <div id="pane-objetos" class="tab-pane">
+    <div class="section-title">🎒 Objetos perdidos</div>
+    <div class="search-row">
+      <input id="obj-sa-search" placeholder="Buscar objeto..." oninput="objSaRender()">
+      <select id="obj-sa-filter" onchange="objSaRender()">
+        <option value="all">Todos</option>
+        <option value="perdido">Perdidos</option>
+        <option value="encontrado">Encontrados</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3)">
+        <input type="checkbox" id="obj-sa-resolved" onchange="objSaRender()"> Resueltos
+      </label>
+    </div>
+    <div id="obj-sa-list"><div class="empty"><div class="empty-icon">🎒</div>Cargando...</div></div>
+  </div>
+
+  <div id="pane-mascotas" class="tab-pane">
+    <div class="section-title">🐾 Mascotas</div>
+    <div class="search-row">
+      <input id="masc-sa-search" placeholder="Buscar mascota..." oninput="mascSaRender()">
+      <select id="masc-sa-filter" onchange="mascSaRender()">
+        <option value="all">Todas</option>
+        <option value="perdida">Perdidas</option>
+        <option value="encontrada">Encontradas</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3)">
+        <input type="checkbox" id="masc-sa-resolved" onchange="mascSaRender()"> Resueltas
+      </label>
+    </div>
+    <div id="masc-sa-list"><div class="empty"><div class="empty-icon">🐾</div>Cargando...</div></div>
+  </div>
+
+  <div id="pane-foro" class="tab-pane">
+    <div class="section-title">💬 Foro vecinal</div>
+    <div class="search-row">
+      <input id="foro-sa-search" placeholder="Buscar en foro..." oninput="foroSaRender()">
+    </div>
+    <div id="foro-sa-list"><div class="empty"><div class="empty-icon">💬</div>Cargando...</div></div>
+  </div>
+
+  <div id="pane-chat" class="tab-pane">
+    <div class="section-title">🗨️ Chat vecinal</div>
+    <div class="kpi-row" id="chat-sa-kpis"></div>
+    <div style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--t2)">👥 Usuarios en línea</div>
+    <div id="chat-sa-online"></div>
+    <div style="margin:16px 0 10px;font-size:13px;font-weight:700;color:var(--t2)">🚫 Baneados</div>
+    <div id="chat-sa-bans"></div>
+    <div style="margin:16px 0 10px;font-size:13px;font-weight:700;color:var(--t2)">💬 Mensajes recientes</div>
+    <div class="search-row">
+      <input id="chat-sa-search" placeholder="Filtrar mensajes..." oninput="chatSaRenderMsgs()">
+    </div>
+    <div id="chat-sa-msgs"></div>
+  </div>
+
+  <div id="pane-rastreo" class="tab-pane">
+    <div class="section-title">📍 Rastreo vehicular</div>
+    <div class="search-row">
+      <input id="rastreo-sa-search" placeholder="Buscar nombre, patente, barrio..." oninput="rastreoSaRender()">
+      <button class="btn btn-ghost" onclick="rastreoSaExport()">⬇️ Exportar CSV</button>
+    </div>
+    <div id="rastreo-sa-kpis" class="kpi-row"></div>
+    <div id="rastreo-sa-list"><div class="empty"><div class="empty-icon">📍</div>Cargando...</div></div>
+  </div>
+
+  <div id="pane-organismos" class="tab-pane">
+    <div class="section-title">🏛️ Organismos verificados</div>
+    <div class="kpi-row" id="org-sa-kpis"></div>
+    <div class="search-row">
+      <input id="org-sa-search" placeholder="Buscar organismo..." oninput="orgSaRender()">
+    </div>
+    <div id="org-sa-list"><div class="empty"><div class="empty-icon">🏛️</div>Cargando...</div></div>
+    <!-- Detalle denuncias -->
+    <div id="org-denuncias-panel" class="hidden">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button class="btn btn-ghost" onclick="orgSaCloseDen()">← Volver</button>
+        <span id="org-den-title" style="font-size:15px;font-weight:700;color:var(--t0)"></span>
+      </div>
+      <div id="org-den-list"></div>
+    </div>
+  </div>
+
+  <div id="pane-colectas" class="tab-pane">
+    <div class="section-title">💚 Colectas vecinales</div>
+    <!-- Sub-tabs -->
+    <div class="rep-tab-bar">
+      <button class="rep-tab-btn active" style="background:#22c55e" id="col-sa-st-lista" onclick="colSaSubTab('lista',this)">📋 Lista</button>
+      <button class="rep-tab-btn" id="col-sa-st-nueva" onclick="colSaSubTab('nueva',this)">➕ Nueva</button>
+      <button class="rep-tab-btn" id="col-sa-st-yotengo" onclick="colSaSubTab('yotengo',this)">📬 Formularios</button>
+    </div>
+    <div id="col-sa-pane-lista" style="margin-top:14px">
+      <div id="col-sa-list"><div class="empty"><div class="empty-icon">💚</div>Cargando...</div></div>
+    </div>
+    <div id="col-sa-pane-nueva" style="margin-top:14px;display:none">
+      <div class="card">
+        <div style="display:grid;gap:12px">
+          <div><label class="meta">Título</label><input id="col-sa-titulo" placeholder="Colecta para..." style="width:100%;margin-top:5px"></div>
+          <div><label class="meta">Descripción</label><textarea id="col-sa-desc" rows="3" placeholder="Descripción..." style="width:100%;resize:vertical"></textarea></div>
+          <div><label class="meta">Meta (opcional, $)</label><input id="col-sa-meta" type="number" min="0" placeholder="0" style="width:100%;margin-top:5px"></div>
+          <button class="btn btn-ok" onclick="colSaCrear()">✅ Crear colecta</button>
+        </div>
+      </div>
+    </div>
+    <div id="col-sa-pane-yotengo" style="margin-top:14px;display:none">
+      <div id="col-sa-yotengo-list"><div class="empty"><div class="empty-icon">📬</div>Cargando...</div></div>
+    </div>
+    <!-- Overlay detalle colecta -->
+    <div id="col-sa-det" class="hidden">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button class="btn btn-ghost" onclick="colSaCerrarDet()">← Volver</button>
+        <span id="col-sa-det-title" style="font-size:15px;font-weight:700;color:var(--t0)"></span>
+      </div>
+      <div class="rep-tab-bar">
+        <button class="rep-tab-btn active" style="background:#0ea5e9" onclick="colSaDetTab('movs',this)">💰 Movimientos</button>
+        <button class="rep-tab-btn" onclick="colSaDetTab('agregar',this)">➕ Agregar</button>
+        <button class="rep-tab-btn" onclick="colSaDetTab('checklist',this)">📋 Checklist</button>
+      </div>
+      <div id="col-sa-det-movs" style="margin-top:12px">
+        <div id="col-sa-movs-list"></div>
+      </div>
+      <div id="col-sa-det-agregar" style="margin-top:12px;display:none">
+        <div class="card">
+          <div style="display:grid;gap:10px">
+            <div><label class="meta">Tipo</label>
+              <select id="col-sa-mov-tipo" style="width:100%;margin-top:5px">
+                <option value="ingreso">💰 Ingreso</option>
+                <option value="gasto">💸 Gasto</option>
+              </select>
+            </div>
+            <div><label class="meta">Descripción</label><input id="col-sa-mov-desc" placeholder="Descripción..." style="width:100%;margin-top:5px"></div>
+            <div><label class="meta">Monto ($)</label><input id="col-sa-mov-monto" type="number" min="0" placeholder="0" style="width:100%;margin-top:5px"></div>
+            <div><label class="meta">Foto/comprobante (opcional)</label><input type="file" id="col-sa-mov-foto" accept="image/*" style="width:100%;margin-top:5px;color:var(--t2)"></div>
+            <button class="btn btn-ok" onclick="colSaAgregarMov()">✅ Agregar movimiento</button>
+          </div>
+        </div>
+      </div>
+      <div id="col-sa-det-checklist" style="margin-top:12px;display:none">
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;gap:8px">
+            <input id="col-sa-need-label" placeholder="Ítem necesario..." style="flex:1">
+            <input id="col-sa-need-qty" type="number" min="1" placeholder="Cant." style="width:80px">
+            <button class="btn btn-ok" onclick="colSaAgregarNeed()">➕</button>
+          </div>
+        </div>
+        <div id="col-sa-needs-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BANEO -->
+<div id="ban-modal" class="modal-bg hidden">
+  <div class="modal-box">
+    <h3>🚫 Banear usuario</h3>
+    <p id="ban-modal-apodo" style="font-size:13px;color:var(--t2);margin-bottom:16px"></p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px" id="ban-dur-btns">
+      <button class="btn btn-ghost" onclick="banPick(this,'1h')">1 hora</button>
+      <button class="btn btn-ghost" onclick="banPick(this,'6h')">6 horas</button>
+      <button class="btn btn-ghost" onclick="banPick(this,'24h')">24 horas</button>
+      <button class="btn btn-ghost" onclick="banPick(this,'7d')">7 días</button>
+      <button class="btn btn-ghost" onclick="banPick(this,'30d')">30 días</button>
+      <button class="btn btn-ghost" onclick="banPick(this,'indef')">Indefinido</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-err" id="ban-confirm-btn" onclick="banConfirm()" disabled>Confirmar ban</button>
+      <button class="btn btn-ghost" onclick="banClose()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-firestore-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-storage-compat.min.js"></script>
+
+<script>
+// ===== CONFIG =====
+const FB_CFG={
+  apiKey:"AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo",
+  authDomain:"robosmdp-d1ef3.firebaseapp.com",
+  projectId:"robosmdp-d1ef3",
+  storageBucket:"robosmdp-d1ef3.firebasestorage.app",
+  messagingSenderId:"329992862097",
+  appId:"1:329992862097:web:be1166da8fe9380df2c230"
+};
+const ADMIN_EMAIL='admin@robosmdp.com.ar';
+
+firebase.initializeApp(FB_CFG);
+const auth=firebase.auth();
+const db=firebase.firestore();
+const storage=firebase.storage();
+
+// ===== COLECCIONES =====
+const PAT_COL='patentes';
+const OBJ_COL='objetos_perdidos';
+const MASC_COL='mascotas';
+const FORO_COL='foro';
+const RASTREO_COL='rastreo_registros';
+const MOD_CFG={
+  robos:{col:'artifacts/robosmdp-d1ef3/public/data/reports',color:'#ef4444',label:'Robos'},
+  basura:{col:'basura',color:'#22c55e',label:'Basura'},
+  pozos:{col:'pozos',color:'#f59e0b',label:'Pozos'},
+  abandonados:{col:'abandonados',color:'#06b6d4',label:'Abandonados'},
+  luminarias:{col:'luminarias',color:'#3b82f6',label:'Luminarias'}
+};
+
+// ===== ESTADO =====
+let _esAdmin=false;
+let _curUser=null;
+let _curTab='reportes';
+let _loaded={};
+
+// Datos por módulo
+let _rep={cat:'robos',data:{},unsubs:{}};
+let _patData=[];
+let _objData=[];
+let _mascData=[];
+let _foroData=[];
+let _foroUnsub=null;
+let _chatA={msgs:[],pres:[],mods:[],bans:[],unsubs:[]};
+let _rastreoData=[];
+let _orgData=[];
+let _colData=[];
+let _colCurId=null;
+let _colMovsUnsub=null;
+let _colNeedsUnsub=null;
+let _banTarget={uid:'',apodo:'',dur:''};
+
+// ===== UTILS =====
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function tAgo(d){
+  if(!d||!(d instanceof Date)||isNaN(d.getTime())) return '';
+  const s=Math.floor((Date.now()-d.getTime())/1000);
+  if(s<60) return 'ahora';
+  if(s<3600) return Math.floor(s/60)+'m';
+  if(s<86400) return Math.floor(s/3600)+'h';
+  return Math.floor(s/86400)+'d';
+}
+function fmtDate(d){
+  if(!d||isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
+}
+function tsToDate(v){
+  if(!v) return new Date(0);
+  if(v&&v.toDate) return v.toDate();
+  if(v&&typeof v.seconds==='number') return new Date(v.seconds*1000);
+  const d=new Date(v); return isNaN(d.getTime())?new Date(0):d;
+}
+function showToast(msg,type){
+  const t=document.getElementById('sa-toast');
+  t.textContent=msg;
+  t.style.borderColor=type==='g'?'rgba(34,197,94,.4)':type==='r'?'rgba(239,68,68,.4)':'var(--line)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function csvCell(v){const s=String(v==null?'':v);return s.includes(',')||s.includes('"')||s.includes('\n')?'"'+s.replace(/"/g,'""')+'"':s;}
+function downloadCSV(rows,name){
+  const csv=rows.map(r=>r.map(csvCell).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);
+  a.download=name; a.click();
+}
+
+// ===== AUTH =====
+async function saLogin(){
+  const email=(document.getElementById('sa-email').value||'').trim();
+  const pass=document.getElementById('sa-pass').value||'';
+  const errEl=document.getElementById('login-err');
+  const errMsg=document.getElementById('login-err-msg');
+  errEl.style.display='none';
+  try{
+    const cred=await auth.signInWithEmailAndPassword(email,pass);
+    const tok=await cred.user.getIdTokenResult();
+    const isAdm=!!tok.claims.admin||email===ADMIN_EMAIL;
+    if(!isAdm){
+      await auth.signOut();
+      errMsg.textContent='Tu cuenta no tiene permisos de administrador.';
+      errEl.style.display='block'; return;
+    }
+    _esAdmin=true; _curUser=cred.user;
+    initPanel();
+  }catch(e){
+    console.error('saLogin',e);
+    errMsg.textContent=e.code==='auth/wrong-password'||e.code==='auth/user-not-found'
+      ?'Email o contraseña incorrectos.':'Error: '+e.message;
+    errEl.style.display='block';
+  }
+}
+function saLogout(){
+  auth.signOut();
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('panel').style.display='none';
+  _loaded={};_esAdmin=false;_curUser=null;
+  Object.values(_chatA.unsubs||[]).forEach(u=>{try{u();}catch(e){}});
+  _chatA={msgs:[],pres:[],mods:[],bans:[],unsubs:[]};
+}
+auth.onAuthStateChanged(async u=>{
+  if(!u){document.getElementById('login-screen').style.display='flex';document.getElementById('panel').style.display='none';return;}
+  const tok=await u.getIdTokenResult();
+  if(tok.claims.admin||u.email===ADMIN_EMAIL){
+    _esAdmin=true;_curUser=u;
+    initPanel();
+  }else{auth.signOut();}
+});
+
+function initPanel(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('panel').style.display='block';
+  document.getElementById('sa-user-info').textContent=_curUser.email||'';
+  saTab('reportes');
+}
+
+// ===== TABS =====
+function saTab(id){
+  _curTab=id;
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.toggle('active',b.getAttribute('onclick').includes("'"+id+"'"));
+  });
+  document.querySelectorAll('.tab-pane').forEach(p=>{
+    p.classList.toggle('active',p.id==='pane-'+id);
+  });
+  if(!_loaded[id]){
+    _loaded[id]=true;
+    const loaders={
+      reportes:()=>repLoad(_rep.cat),
+      patentes:()=>patSaLoad(),
+      objetos:()=>objSaLoad(),
+      mascotas:()=>mascSaLoad(),
+      foro:()=>foroSaLoad(),
+      chat:()=>chatSaLoad(),
+      rastreo:()=>rastreoSaLoad(),
+      organismos:()=>orgSaLoad(),
+      colectas:()=>colSaLoad()
+    };
+    if(loaders[id]) loaders[id]();
+  }
+}
+
+// ===== REPORTES =====
+const REP_COLORS={robos:'#ef4444',basura:'#22c55e',pozos:'#f59e0b',abandonados:'#06b6d4',luminarias:'#3b82f6'};
+function repSwitch(cat,btn){
+  _rep.cat=cat;
+  document.querySelectorAll('.rep-tab-btn').forEach(b=>{b.classList.remove('active');b.style.background='transparent';b.style.color='';});
+  btn.classList.add('active');
+  btn.style.background=REP_COLORS[cat];
+  btn.style.color='#fff';
+  if(!_rep.data[cat]) repLoad(cat); else repRender();
+}
+async function repLoad(cat){
+  const cfg=MOD_CFG[cat]; if(!cfg) return;
+  document.getElementById('rep-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{
+    const snap=await db.collection(cfg.col).orderBy('timestamp','desc').limit(300).get();
+    _rep.data[cat]=snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){
+    // intentar sin orderBy si falta índice
+    try{const snap=await db.collection(cfg.col).limit(300).get();_rep.data[cat]=snap.docs.map(d=>({id:d.id,...d.data()}));}
+    catch(e2){console.warn('repLoad',cat,e2);_rep.data[cat]=[];}
+  }
+  repRender();
+}
+function repRender(){
+  const cat=_rep.cat;
+  const list=(_rep.data[cat]||[]);
+  const q=(document.getElementById('rep-search')?.value||'').toLowerCase();
+  const showRes=document.getElementById('rep-show-resolved')?.checked;
+  const el=document.getElementById('rep-list');
+  let items=list;
+  if(!showRes) items=items.filter(r=>!r.resolved);
+  if(q) items=items.filter(r=>[r.descripcion,r.barrio,r.tipo,r.subcategoria].join(' ').toLowerCase().includes(q));
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Sin reportes'+( q?' para "'+esc(q)+'"':'')+'</div>';return;}
+  const color=REP_COLORS[cat];
+  el.innerHTML=items.map(r=>{
+    const d=tsToDate(r.timestamp);
+    return '<div class="rep-card" style="border-left:4px solid '+color+';'+(r.resolved?'opacity:.6':'')+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'+
+      '<div style="min-width:0">'+
+        '<span class="meta">'+fmtDate(d)+' · '+esc(r.barrio||'')+'</span>'+
+        '<p style="font-size:13px;color:var(--t1);margin-top:4px;font-weight:600">'+esc(r.subcategoria||r.tipo||cat)+'</p>'+
+        '<p style="font-size:12px;color:var(--t2);margin-top:3px">'+esc(r.descripcion||'')+'</p>'+
+        (r.resolved?'<span class="badge badge-ok" style="margin-top:6px">✓ Resuelto</span>':'')+'</div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'+
+        (!r.resolved?'<button class="btn btn-ok" onclick="repResolve(\''+cat+'\',\''+r.id+'\')">✓ Resolver</button>':'')+'<button class="btn btn-err" onclick="repDel(\''+cat+'\',\''+r.id+'\')">🗑️</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+async function repResolve(cat,id){
+  try{await db.collection(MOD_CFG[cat].col).doc(id).update({resolved:true});_rep.data[cat]=(_rep.data[cat]||[]).map(r=>r.id===id?{...r,resolved:true}:r);repRender();showToast('Marcado como resuelto ✅','g');}
+  catch(e){console.error(e);showToast('Error al resolver','r');}
+}
+async function repDel(cat,id){
+  if(!confirm('¿Eliminar este reporte?')) return;
+  try{await db.collection(MOD_CFG[cat].col).doc(id).delete();_rep.data[cat]=(_rep.data[cat]||[]).filter(r=>r.id!==id);repRender();showToast('Reporte eliminado','g');}
+  catch(e){console.error(e);showToast('Error al eliminar','r');}
+}
+
+// ===== PATENTES =====
+async function patSaLoad(){
+  document.getElementById('pat-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{const snap=await db.collection(PAT_COL).limit(500).get();_patData=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>tsToDate(b.timestamp)-tsToDate(a.timestamp));}
+  catch(e){console.warn(e);_patData=[];}
+  patSaRender();
+}
+function patSaRender(){
+  const q=(document.getElementById('pat-sa-search')?.value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const fil=document.getElementById('pat-sa-filter')?.value||'all';
+  const showRes=document.getElementById('pat-sa-resolved')?.checked;
+  let list=_patData.slice();
+  if(fil!=='all') list=list.filter(p=>p.tipo===fil);
+  if(!showRes) list=list.filter(p=>!p.resuelto);
+  if(q) list=list.filter(p=>String(p.patente||'').toUpperCase().replace(/[^A-Z0-9]/g,'').includes(q));
+  const el=document.getElementById('pat-sa-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔖</div>Sin resultados</div>';return;}
+  el.innerHTML=list.map(p=>{
+    const d=tsToDate(p.timestamp);
+    const lost=p.tipo==='perdida';
+    return '<div class="card-sm" style="border-left:3px solid '+(lost?'#ef4444':'#22c55e')+';'+(p.resuelto?'opacity:.6':'')+'">'+
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+      '<div><span class="badge '+(lost?'badge-err':'badge-ok')+'">'+esc(p.tipo||'')+'</span> '+
+        '<strong style="color:var(--t0);font-size:15px">'+esc(p.patente||'?')+'</strong>'+
+        '<p class="meta" style="margin-top:4px">'+fmtDate(d)+' · '+esc(p.barrio||'')+' · '+esc(p.vehiculo||'')+'</p>'+
+        '<p style="font-size:12px;color:var(--t2);margin-top:3px">'+esc(p.descripcion||'')+'</p></div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'+
+        (!p.resuelto?'<button class="btn btn-ok" onclick="patSaResolve(\''+p.id+'\')">✓</button>':'')+'<button class="btn btn-err" onclick="patSaDel(\''+p.id+'\')">🗑️</button></div>'+
+      '</div></div>';
+  }).join('');
+}
+async function patSaResolve(id){
+  try{await db.collection(PAT_COL).doc(id).update({resuelto:true});_patData=_patData.map(p=>p.id===id?{...p,resuelto:true}:p);patSaRender();showToast('Resuelta ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+async function patSaDel(id){
+  if(!confirm('¿Eliminar patente?')) return;
+  try{await db.collection(PAT_COL).doc(id).delete();_patData=_patData.filter(p=>p.id!==id);patSaRender();showToast('Eliminada','g');}
+  catch(e){showToast('Error','r');}
+}
+
+// ===== OBJETOS =====
+const OBJ_CATS={documento:'📄 Documento',tarjeta:'💳 Tarjeta',llaves:'🔑 Llaves',billetera:'👛 Billetera',celular:'📱 Celular',mochila:'🎒 Mochila',otro:'📦 Otro'};
+async function objSaLoad(){
+  document.getElementById('obj-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{const snap=await db.collection(OBJ_COL).limit(500).get();_objData=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>tsToDate(b.timestamp)-tsToDate(a.timestamp));}
+  catch(e){console.warn(e);_objData=[];}
+  objSaRender();
+}
+function objSaRender(){
+  const q=(document.getElementById('obj-sa-search')?.value||'').toLowerCase();
+  const fil=document.getElementById('obj-sa-filter')?.value||'all';
+  const showRes=document.getElementById('obj-sa-resolved')?.checked;
+  let list=_objData.slice();
+  if(fil!=='all') list=list.filter(o=>o.tipo===fil);
+  if(!showRes) list=list.filter(o=>!o.resuelto);
+  if(q) list=list.filter(o=>[o.categoria,o.descripcion,o.barrio].join(' ').toLowerCase().includes(q));
+  const el=document.getElementById('obj-sa-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎒</div>Sin resultados</div>';return;}
+  el.innerHTML=list.map(o=>{
+    const lost=o.tipo==='perdido';
+    const d=tsToDate(o.timestamp);
+    return '<div class="card-sm" style="border-left:3px solid '+(lost?'#ef4444':'#22c55e')+';'+(o.resuelto?'opacity:.6':'')+'">'+
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+      '<div><span class="badge '+(lost?'badge-err':'badge-ok')+'">'+esc(o.tipo||'perdido')+'</span> '+
+        '<strong style="color:var(--t0)">'+esc(OBJ_CATS[o.categoria]||o.categoria||'Objeto')+'</strong>'+
+        '<p class="meta" style="margin-top:4px">'+fmtDate(d)+' · '+esc(o.barrio||'')+'</p>'+
+        '<p style="font-size:12px;color:var(--t2);margin-top:3px">'+esc(o.descripcion||'')+'</p></div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'+
+        (!o.resuelto?'<button class="btn btn-ok" onclick="objSaResolve(\''+o.id+'\')">✓</button>':'')+'<button class="btn btn-err" onclick="objSaDel(\''+o.id+'\')">🗑️</button></div>'+
+      '</div></div>';
+  }).join('');
+}
+async function objSaResolve(id){
+  try{await db.collection(OBJ_COL).doc(id).update({resuelto:true});_objData=_objData.map(o=>o.id===id?{...o,resuelto:true}:o);objSaRender();showToast('Resuelto ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+async function objSaDel(id){
+  if(!confirm('¿Eliminar objeto?')) return;
+  try{await db.collection(OBJ_COL).doc(id).delete();_objData=_objData.filter(o=>o.id!==id);objSaRender();showToast('Eliminado','g');}
+  catch(e){showToast('Error','r');}
+}
+
+// ===== MASCOTAS =====
+const MASC_ESP={perro:'🐕 Perro',gato:'🐈 Gato',ave:'🦜 Ave',otro:'🐾 Otro'};
+async function mascSaLoad(){
+  document.getElementById('masc-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{const snap=await db.collection(MASC_COL).limit(500).get();_mascData=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>tsToDate(b.timestamp)-tsToDate(a.timestamp));}
+  catch(e){console.warn(e);_mascData=[];}
+  mascSaRender();
+}
+function mascSaRender(){
+  const q=(document.getElementById('masc-sa-search')?.value||'').toLowerCase();
+  const fil=document.getElementById('masc-sa-filter')?.value||'all';
+  const showRes=document.getElementById('masc-sa-resolved')?.checked;
+  let list=_mascData.slice();
+  if(fil!=='all') list=list.filter(m=>m.tipo===fil);
+  if(!showRes) list=list.filter(m=>!m.resuelto);
+  if(q) list=list.filter(m=>[m.especie,m.nombre,m.descripcion,m.barrio].join(' ').toLowerCase().includes(q));
+  const el=document.getElementById('masc-sa-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🐾</div>Sin resultados</div>';return;}
+  el.innerHTML=list.map(m=>{
+    const lost=m.tipo==='perdida';
+    const d=tsToDate(m.timestamp);
+    return '<div class="card-sm" style="border-left:3px solid '+(lost?'#ef4444':'#22c55e')+';'+(m.resuelto?'opacity:.6':'')+'">'+
+      '<div style="display:flex;gap:12px;align-items:flex-start">'+
+      (m.photoBase64?'<img src="'+m.photoBase64+'" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0">':'')+
+      '<div style="flex:1;min-width:0">'+
+        '<span class="badge '+(lost?'badge-err':'badge-ok')+'">'+esc(m.tipo||'perdida')+'</span> '+
+        '<strong style="color:var(--t0)">'+esc(MASC_ESP[m.especie]||m.especie||'Mascota')+'</strong>'+
+        (m.nombre?' — '+esc(m.nombre):'')+
+        '<p class="meta" style="margin-top:4px">'+fmtDate(d)+' · '+esc(m.barrio||'')+'</p>'+
+        '<p style="font-size:12px;color:var(--t2);margin-top:3px">'+esc(m.descripcion||'')+'</p></div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'+
+        (!m.resuelto?'<button class="btn btn-ok" onclick="mascSaResolve(\''+m.id+'\')">✓</button>':'')+'<button class="btn btn-err" onclick="mascSaDel(\''+m.id+'\')">🗑️</button></div>'+
+      '</div></div>';
+  }).join('');
+}
+async function mascSaResolve(id){
+  try{await db.collection(MASC_COL).doc(id).update({resuelto:true});_mascData=_mascData.map(m=>m.id===id?{...m,resuelto:true}:m);mascSaRender();showToast('Resuelta ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+async function mascSaDel(id){
+  if(!confirm('¿Eliminar mascota?')) return;
+  try{await db.collection(MASC_COL).doc(id).delete();_mascData=_mascData.filter(m=>m.id!==id);mascSaRender();showToast('Eliminada','g');}
+  catch(e){showToast('Error','r');}
+}
+
+// ===== FORO =====
+async function foroSaLoad(){
+  document.getElementById('foro-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{const snap=await db.collection(FORO_COL).orderBy('timestamp','desc').limit(300).get();_foroData=snap.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){
+    try{const snap=await db.collection(FORO_COL).limit(300).get();_foroData=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>tsToDate(b.timestamp)-tsToDate(a.timestamp));}
+    catch(e2){console.warn(e2);_foroData=[];}
+  }
+  foroSaRender();
+}
+function foroSaRender(){
+  const q=(document.getElementById('foro-sa-search')?.value||'').toLowerCase();
+  let list=_foroData.slice();
+  if(q) list=list.filter(t=>[t.titulo,t.cuerpo,t.apodo].join(' ').toLowerCase().includes(q));
+  const el=document.getElementById('foro-sa-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">💬</div>Sin temas</div>';return;}
+  el.innerHTML=list.map(t=>{
+    const d=tsToDate(t.timestamp);
+    return '<div class="card-sm">'+
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+      '<div style="min-width:0">'+
+        '<p style="font-size:14px;font-weight:700;color:var(--t0)">'+esc(t.titulo||'(sin título)')+'</p>'+
+        '<p class="meta" style="margin-top:3px"><strong>'+esc(t.apodo||'Vecino')+'</strong> · '+tAgo(d)+' · 💬 '+(t.respuestas_count||0)+'</p>'+
+        '<p style="font-size:12px;color:var(--t2);margin-top:4px">'+esc((t.cuerpo||'').slice(0,120))+'</p></div>'+
+      '<button class="btn btn-err" onclick="foroSaDel(\''+t.id+'\')">🗑️</button>'+
+      '</div></div>';
+  }).join('');
+}
+async function foroSaDel(id){
+  if(!confirm('¿Eliminar este tema y todas sus respuestas?')) return;
+  try{
+    const repSnap=await db.collection(FORO_COL).doc(id).collection('respuestas').get();
+    const batch=db.batch();
+    repSnap.docs.forEach(d=>batch.delete(d.ref));
+    batch.delete(db.collection(FORO_COL).doc(id));
+    await batch.commit();
+    _foroData=_foroData.filter(t=>t.id!==id);
+    foroSaRender();showToast('Tema eliminado','g');
+  }catch(e){console.error(e);showToast('Error al eliminar','r');}
+}
+
+// ===== CHAT =====
+const CHAT_MSG='chat_publico',CHAT_PRES='chat_presencia',CHAT_MOD='chat_moderadores',CHAT_BAN='chat_bans',CHAT_TTL=90000;
+function chatSaLoad(){
+  _chatA.unsubs.forEach(u=>{try{u();}catch(e){}});
+  _chatA.unsubs=[];
+  _chatA.unsubs.push(db.collection(CHAT_MSG).orderBy('timestamp','desc').limit(150).onSnapshot(s=>{_chatA.msgs=s.docs.map(d=>({id:d.id,...d.data()}));chatSaRender();},e=>console.warn('chatMsg',e)));
+  _chatA.unsubs.push(db.collection(CHAT_PRES).onSnapshot(s=>{_chatA.pres=s.docs.map(d=>({id:d.id,...d.data()}));chatSaRender();},e=>console.warn('chatPres',e)));
+  _chatA.unsubs.push(db.collection(CHAT_MOD).onSnapshot(s=>{_chatA.mods=s.docs.map(d=>d.id);chatSaRender();},e=>console.warn('chatMod',e)));
+  _chatA.unsubs.push(db.collection(CHAT_BAN).onSnapshot(s=>{_chatA.bans=s.docs.map(d=>({id:d.id,...d.data()}));chatSaRender();},e=>console.warn('chatBan',e)));
+}
+function chatSaRender(){
+  const now=Date.now();
+  const online=_chatA.pres.filter(p=>{
+    if(_chatA.bans.some(b=>b.uid===p.uid)) return false;
+    const t=tsToDate(p.lastSeen);
+    return (now-t.getTime())<CHAT_TTL&&p.active!==false;
+  });
+  // KPIs
+  document.getElementById('chat-sa-kpis').innerHTML=
+    '<div class="kpi"><div class="num">'+online.length+'</div><div class="lbl">En línea</div></div>'+
+    '<div class="kpi"><div class="num">'+_chatA.bans.length+'</div><div class="lbl">Baneados</div></div>'+
+    '<div class="kpi"><div class="num">'+_chatA.msgs.length+'</div><div class="lbl">Mensajes</div></div>'+
+    '<div class="kpi"><div class="num">'+_chatA.mods.length+'</div><div class="lbl">Moderadores</div></div>';
+  // Online
+  const uniq=[]; const seen=new Set();
+  online.forEach(p=>{if(!seen.has(p.uid)){seen.add(p.uid);uniq.push(p);}});
+  document.getElementById('chat-sa-online').innerHTML=uniq.length?uniq.map(p=>{
+    const isMod=_chatA.mods.includes(p.uid);
+    const geo=p.geo||p.ip_info||null;
+    return '<div class="chat-msg">'+
+      '<div><p style="font-size:13px;font-weight:700;color:var(--t0)">'+esc(p.apodo||'?')+(isMod?' <span class="badge badge-accent">MOD</span>':'')+'</p>'+
+      '<p class="meta">UID: '+esc(p.uid||'')+'</p>'+
+      (geo?'<p class="meta">📍 '+esc(geo.city||geo.ip||'')+(geo.isp?' · '+esc(geo.isp):'')+'</p>':'')+
+      '</div><div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap">'+
+        '<button class="btn btn-'+(isMod?'warn':'ghost')+'" onclick="chatSaToggleMod(\''+p.uid+'\',\''+esc(p.apodo||'')+'\',' +(isMod?'false':'true')+')">'+(isMod?'Quitar MOD':'Hacer MOD')+'</button>'+
+        '<button class="btn btn-err" onclick="chatSaOpenBan(\''+p.uid+'\',\''+esc(p.apodo||'')+'\')">🚫 Banear</button>'+
+        '<button class="btn btn-err" onclick="chatSaDelAll(\''+esc(p.apodo||'')+'\')">🗑️ Borrar msgs</button>'+
+      '</div></div>';
+  }).join(''):'<p class="meta" style="padding:8px">Nadie en línea ahora</p>';
+  // Baneados
+  document.getElementById('chat-sa-bans').innerHTML=_chatA.bans.length?_chatA.bans.map(b=>{
+    const exp=tsToDate(b.expiresAt);
+    const indef=!b.expiresAt||exp.getTime()>Date.now()+1e12;
+    return '<div class="card-sm chat-ban">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">'+
+      '<div><p style="font-size:13px;font-weight:700;color:var(--t0)">'+esc(b.apodo||b.id)+'</p>'+
+      '<p class="meta">'+(indef?'Indefinido':'Hasta '+fmtDate(exp))+'</p></div>'+
+      '<button class="btn btn-ok" onclick="chatSaUnban(\''+b.id+'\')">Desbanear</button>'+
+      '</div></div>';
+  }).join(''):'<p class="meta" style="padding:8px">Sin usuarios baneados</p>';
+  chatSaRenderMsgs();
+}
+function chatSaRenderMsgs(){
+  const q=(document.getElementById('chat-sa-search')?.value||'').toLowerCase();
+  let msgs=_chatA.msgs.slice();
+  if(q) msgs=msgs.filter(m=>[m.apodo,m.texto].join(' ').toLowerCase().includes(q));
+  document.getElementById('chat-sa-msgs').innerHTML=msgs.slice(0,80).map(m=>{
+    const d=tsToDate(m.timestamp);
+    return '<div class="chat-msg">'+
+      '<div style="min-width:0">'+
+        '<p class="meta"><strong style="color:var(--t2)">'+esc(m.apodo||'?')+'</strong> · '+tAgo(d)+'</p>'+
+        '<p style="font-size:13px;color:var(--t1);margin-top:3px;word-break:break-word">'+esc(m.texto||'')+'</p></div>'+
+      '<button class="btn btn-err" style="flex-shrink:0;align-self:flex-start" onclick="chatSaDelMsg(\''+m.id+'\')">🗑️</button>'+
+      '</div>';
+  }).join('');
+}
+async function chatSaDelMsg(id){
+  try{await db.collection(CHAT_MSG).doc(id).delete();_chatA.msgs=_chatA.msgs.filter(m=>m.id!==id);chatSaRenderMsgs();showToast('Mensaje eliminado','g');}
+  catch(e){showToast('Error','r');}
+}
+async function chatSaDelAll(apodo){
+  if(!confirm('¿Eliminar TODOS los mensajes de "'+apodo+'"?')) return;
+  try{
+    const snap=await db.collection(CHAT_MSG).where('apodo','==',apodo).get();
+    const batch=db.batch();snap.docs.forEach(d=>batch.delete(d.ref));await batch.commit();
+    _chatA.msgs=_chatA.msgs.filter(m=>m.apodo!==apodo);chatSaRenderMsgs();showToast('Mensajes eliminados','g');
+  }catch(e){showToast('Error','r');}
+}
+async function chatSaToggleMod(uid,apodo,make){
+  try{
+    if(make) await db.collection(CHAT_MOD).doc(uid).set({uid,apodo,desde:firebase.firestore.FieldValue.serverTimestamp()});
+    else await db.collection(CHAT_MOD).doc(uid).delete();
+    showToast(make?apodo+' es moderador 🎖️':'Moderador removido','g');
+  }catch(e){showToast('Error','r');}
+}
+async function chatSaUnban(uid){
+  try{await db.collection(CHAT_BAN).doc(uid).delete();showToast('Usuario desbaneado ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+function chatSaOpenBan(uid,apodo){
+  _banTarget={uid,apodo,dur:''};
+  document.getElementById('ban-modal-apodo').textContent='Banear a: '+apodo;
+  document.getElementById('ban-confirm-btn').disabled=true;
+  document.querySelectorAll('#ban-dur-btns .btn').forEach(b=>b.style.background='');
+  document.getElementById('ban-modal').classList.remove('hidden');
+}
+function banPick(btn,dur){
+  _banTarget.dur=dur;
+  document.querySelectorAll('#ban-dur-btns .btn').forEach(b=>b.style.background='');
+  btn.style.background='var(--accent)';btn.style.color='#fff';
+  document.getElementById('ban-confirm-btn').disabled=false;
+}
+async function banConfirm(){
+  const {uid,apodo,dur}=_banTarget;
+  if(!uid||!dur) return;
+  const durMap={'1h':3600,'6h':21600,'24h':86400,'7d':604800,'30d':2592000};
+  const secs=durMap[dur];
+  const expiresAt=secs?new Date(Date.now()+secs*1000):null;
+  try{
+    await db.collection(CHAT_BAN).doc(uid).set({uid,apodo,dur,expiresAt,baneadoEn:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection(CHAT_PRES).doc(uid).update({active:false}).catch(()=>{});
+    banClose();showToast('Usuario baneado 🚫','g');
+  }catch(e){console.error(e);showToast('Error al banear','r');}
+}
+function banClose(){document.getElementById('ban-modal').classList.add('hidden');_banTarget={uid:'',apodo:'',dur:''};}
+
+// ===== RASTREO =====
+async function rastreoSaLoad(){
+  document.getElementById('rastreo-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{const snap=await db.collection(RASTREO_COL).limit(1000).get();_rastreoData=snap.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){console.warn(e);_rastreoData=[];}
+  rastreoSaRender();
+}
+function rastreoSaRender(){
+  const q=(document.getElementById('rastreo-sa-search')?.value||'').toLowerCase();
+  let list=_rastreoData.slice();
+  if(q) list=list.filter(r=>[r.nombre,r.patente,r.barrio,r.vehiculo].join(' ').toLowerCase().includes(q));
+  document.getElementById('rastreo-sa-kpis').innerHTML=
+    '<div class="kpi"><div class="num">'+_rastreoData.length+'</div><div class="lbl">Total</div></div>'+
+    '<div class="kpi"><div class="num">'+_rastreoData.filter(r=>r.vehiculo==='auto').length+'</div><div class="lbl">Autos</div></div>'+
+    '<div class="kpi"><div class="num">'+_rastreoData.filter(r=>r.vehiculo==='moto').length+'</div><div class="lbl">Motos</div></div>';
+  const el=document.getElementById('rastreo-sa-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📍</div>Sin registros</div>';return;}
+  el.innerHTML=list.map(r=>{
+    const d=tsToDate(r.timestamp||r.creado_en);
+    const wa=r.telefono?'https://wa.me/54'+String(r.telefono).replace(/\D/g,'').replace(/^0/,''):'';
+    return '<div class="card-sm">'+
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+      '<div style="min-width:0">'+
+        '<p style="font-size:14px;font-weight:700;color:var(--t0)">'+esc(r.nombre||'?')+' — <span style="color:var(--accent)">'+esc(r.patente||'')+'</span></p>'+
+        '<p class="meta" style="margin-top:3px">'+esc(r.vehiculo||'')+' · '+esc(r.barrio||'')+' · '+fmtDate(d)+'</p>'+
+        (r.email?'<p class="meta">✉️ '+esc(r.email)+'</p>':'')+
+        (r.telefono?'<p class="meta">📞 '+esc(r.telefono)+'</p>':'')+
+      '</div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'+
+        (wa?'<a href="'+wa+'" target="_blank" class="btn btn-ok" style="text-decoration:none">💬 WA</a>':'')+
+        '<button class="btn btn-err" onclick="rastreoSaDel(\''+r.id+'\')">🗑️</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+async function rastreoSaDel(id){
+  if(!confirm('¿Eliminar registro de rastreo?')) return;
+  try{await db.collection(RASTREO_COL).doc(id).delete();_rastreoData=_rastreoData.filter(r=>r.id!==id);rastreoSaRender();showToast('Eliminado','g');}
+  catch(e){showToast('Error','r');}
+}
+function rastreoSaExport(){
+  if(!_rastreoData.length){showToast('Sin datos','r');return;}
+  const rows=[['Nombre','Patente','Vehículo','Barrio','Teléfono','Email','Fecha']];
+  _rastreoData.forEach(r=>rows.push([r.nombre||'',r.patente||'',r.vehiculo||'',r.barrio||'',r.telefono||'',r.email||'',fmtDate(tsToDate(r.timestamp||r.creado_en))]));
+  downloadCSV(rows,'rastreo-'+new Date().toISOString().slice(0,10)+'.csv');
+}
+
+// ===== ORGANISMOS =====
+async function orgSaLoad(){
+  document.getElementById('org-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{const snap=await db.collection('chat_organismos').get();_orgData=snap.docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){console.warn(e);_orgData=[];}
+  orgSaRender();
+}
+function orgSaRender(){
+  const q=(document.getElementById('org-sa-search')?.value||'').toLowerCase();
+  let list=_orgData.slice();
+  if(q) list=list.filter(o=>[o.nombre,o.apodo].join(' ').toLowerCase().includes(q));
+  const el=document.getElementById('org-sa-list');
+  if(document.getElementById('org-denuncias-panel')&&!document.getElementById('org-denuncias-panel').classList.contains('hidden')) return;
+  const activos=list.filter(o=>o.activo!==false);
+  const inactivos=list.filter(o=>o.activo===false);
+  document.getElementById('org-sa-kpis').innerHTML=
+    '<div class="kpi"><div class="num">'+list.length+'</div><div class="lbl">Total</div></div>'+
+    '<div class="kpi"><div class="num">'+activos.length+'</div><div class="lbl">Activos</div></div>'+
+    '<div class="kpi"><div class="num">'+inactivos.length+'</div><div class="lbl">Inactivos</div></div>';
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏛️</div>Sin organismos</div>';return;}
+  el.innerHTML=list.map(o=>{
+    const activo=o.activo!==false;
+    return '<div class="card-sm">'+
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+      '<div><span class="badge '+(activo?'badge-ok':'badge-err')+'">'+(activo?'Activo':'Inactivo')+'</span> '+
+        '<strong style="color:var(--t0)">'+esc(o.nombre||o.id)+'</strong>'+
+        '<p class="meta" style="margin-top:3px">@'+esc(o.apodo||o.id)+'</p></div>'+
+      '<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap">'+
+        '<button class="btn btn-ghost" onclick="orgSaVerDen(\''+o.id+'\',\''+esc(o.nombre||o.id)+'\')">📋 Denuncias</button>'+
+        '<button class="btn '+(activo?'btn-warn':'btn-ok')+'" onclick="orgSaToggle(\''+o.id+'\','+(activo?'false':'true')+')">'+( activo?'Desactivar':'Activar')+'</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+async function orgSaVerDen(orgId,nombre){
+  document.getElementById('org-sa-list').classList.add('hidden');
+  document.getElementById('org-sa-kpis').classList.add('hidden');
+  document.getElementById('org-sa-search').closest('.search-row').classList.add('hidden');
+  const panel=document.getElementById('org-denuncias-panel');
+  panel.classList.remove('hidden');
+  document.getElementById('org-den-title').textContent='Denuncias: '+nombre;
+  document.getElementById('org-den-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{
+    const snap=await db.collection('chat_denuncias').where('destinatario','==',orgId).orderBy('creado_en','desc').limit(100).get();
+    const items=snap.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById('org-den-list').innerHTML=items.length?items.map(x=>{
+      const d=tsToDate(x.creado_en);
+      return '<div class="card-sm"><p class="meta">'+fmtDate(d)+'</p><p style="font-size:13px;color:var(--t1);margin-top:5px">'+esc(x.mensaje||'')+'</p></div>';
+    }).join(''):'<div class="empty"><div class="empty-icon">✅</div>Sin denuncias</div>';
+  }catch(e){console.warn(e);document.getElementById('org-den-list').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>Error al cargar (puede requerir índice)</div>';}
+}
+function orgSaCloseDen(){
+  document.getElementById('org-sa-list').classList.remove('hidden');
+  document.getElementById('org-sa-kpis').classList.remove('hidden');
+  document.getElementById('org-sa-search').closest('.search-row').classList.remove('hidden');
+  document.getElementById('org-denuncias-panel').classList.add('hidden');
+}
+async function orgSaToggle(id,activo){
+  try{await db.collection('chat_organismos').doc(id).update({activo});_orgData=_orgData.map(o=>o.id===id?{...o,activo}:o);orgSaRender();showToast(activo?'Activado ✅':'Desactivado','g');}
+  catch(e){showToast('Error','r');}
+}
+
+// ===== COLECTAS =====
+async function colSaLoad(){
+  document.getElementById('col-sa-list').innerHTML='<div class="empty"><div class="empty-icon">⏳</div>Cargando...</div>';
+  try{
+    const snap=await db.collection('colectas').orderBy('creada_en','desc').limit(100).get();
+    _colData=snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){
+    try{const snap=await db.collection('colectas').limit(100).get();_colData=snap.docs.map(d=>({id:d.id,...d.data()}));}
+    catch(e2){console.warn(e2);_colData=[];}
+  }
+  colSaRenderLista();
+  colSaLoadYoTengo();
+}
+function colSaSubTab(id,btn){
+  ['lista','nueva','yotengo'].forEach(t=>{
+    document.getElementById('col-sa-pane-'+t).style.display=t===id?'block':'none';
+  });
+  document.querySelectorAll('[id^="col-sa-st-"]').forEach(b=>{b.classList.remove('active');b.style.background='transparent';b.style.color='';});
+  btn.classList.add('active');btn.style.background='#22c55e';btn.style.color='#fff';
+}
+function colSaRenderLista(){
+  const el=document.getElementById('col-sa-list');
+  if(!_colData.length){el.innerHTML='<div class="empty"><div class="empty-icon">💚</div>Sin colectas</div>';return;}
+  el.innerHTML=_colData.map(c=>{
+    const activa=c.activa!==false;
+    const recaudado=c.recaudado||0;const gastado=c.gastado||0;const disponible=recaudado-gastado;
+    const d=tsToDate(c.creada_en);
+    return '<div class="col-card">'+
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">'+
+      '<div style="min-width:0">'+
+        '<span class="badge '+(activa?'badge-ok':'badge-err')+'">'+(activa?'Activa':'Cerrada')+'</span> '+
+        '<strong style="color:var(--t0);font-size:15px">'+esc(c.titulo||'Sin título')+'</strong>'+
+        '<p class="meta" style="margin-top:4px">'+fmtDate(d)+'</p>'+
+        '<p style="font-size:12px;color:var(--t2);margin-top:4px">'+esc((c.descripcion||'').slice(0,100))+'</p>'+
+        '<div style="display:flex;gap:14px;margin-top:8px">'+
+          '<span style="font-size:12px;color:var(--ok)">💰 Recaudado: $'+recaudado.toLocaleString('es-AR')+'</span>'+
+          '<span style="font-size:12px;color:var(--err)">💸 Gastado: $'+gastado.toLocaleString('es-AR')+'</span>'+
+          '<span style="font-size:12px;color:var(--accent)">✅ Disponible: $'+disponible.toLocaleString('es-AR')+'</span>'+
+        '</div></div>'+
+      '<div class="col-actions">'+
+        '<button class="btn btn-accent" onclick="colSaAbrirDet(\''+c.id+'\')">📋 Ver detalle</button>'+
+        '<button class="btn '+(activa?'btn-warn':'btn-ok')+'" onclick="colSaToggle(\''+c.id+'\','+(activa?'false':'true')+')">'+( activa?'Cerrar':'Reabrir')+'</button>'+
+        '<button class="btn btn-err" onclick="colSaEliminar(\''+c.id+'\',\''+esc(c.titulo||'')+'\')">🗑️ Eliminar</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+async function colSaCrear(){
+  const titulo=(document.getElementById('col-sa-titulo')?.value||'').trim();
+  const desc=(document.getElementById('col-sa-desc')?.value||'').trim();
+  const meta=parseFloat(document.getElementById('col-sa-meta')?.value||'0')||0;
+  if(!titulo){showToast('El título es obligatorio','r');return;}
+  try{
+    const ref=await db.collection('colectas').add({titulo,descripcion:desc,meta,activa:true,recaudado:0,gastado:0,creada_en:firebase.firestore.FieldValue.serverTimestamp()});
+    _colData.unshift({id:ref.id,titulo,descripcion:desc,meta,activa:true,recaudado:0,gastado:0});
+    document.getElementById('col-sa-titulo').value='';
+    document.getElementById('col-sa-desc').value='';
+    document.getElementById('col-sa-meta').value='';
+    colSaRenderLista();
+    colSaSubTab('lista',document.getElementById('col-sa-st-lista'));
+    showToast('Colecta creada ✅','g');
+  }catch(e){console.error(e);showToast('Error al crear','r');}
+}
+async function colSaToggle(id,activa){
+  try{await db.collection('colectas').doc(id).update({activa});_colData=_colData.map(c=>c.id===id?{...c,activa}:c);colSaRenderLista();showToast(activa?'Colecta reabierta ✅':'Colecta cerrada','g');}
+  catch(e){showToast('Error','r');}
+}
+async function colSaEliminar(id,titulo){
+  if(!confirm('¿Eliminar la colecta "'+titulo+'" y todos sus movimientos? Esta acción no se puede deshacer.')) return;
+  try{
+    // Eliminar subcollections
+    const [movSnap,needSnap]=await Promise.all([
+      db.collection('colectas').doc(id).collection('movimientos').get(),
+      db.collection('colectas').doc(id).collection('necesita').get()
+    ]);
+    const batch=db.batch();
+    movSnap.docs.forEach(d=>batch.delete(d.ref));
+    needSnap.docs.forEach(d=>batch.delete(d.ref));
+    batch.delete(db.collection('colectas').doc(id));
+    await batch.commit();
+    _colData=_colData.filter(c=>c.id!==id);
+    colSaRenderLista();
+    showToast('Colecta eliminada','g');
+  }catch(e){console.error(e);showToast('Error al eliminar: '+e.message,'r');}
+}
+function colSaAbrirDet(id){
+  _colCurId=id;
+  const c=_colData.find(x=>x.id===id)||{};
+  document.getElementById('col-sa-det-title').textContent=c.titulo||'Colecta';
+  document.getElementById('col-sa-pane-lista').style.display='none';
+  document.getElementById('col-sa-pane-nueva').style.display='none';
+  document.getElementById('col-sa-pane-yotengo').style.display='none';
+  document.querySelectorAll('[id^="col-sa-st-"]').forEach(b=>{b.closest('.rep-tab-bar')&&b.classList.remove('active');});
+  document.getElementById('col-sa-det').classList.remove('hidden');
+  colSaDetTab('movs',document.querySelector('#col-sa-det .rep-tab-btn'));
+}
+function colSaCerrarDet(){
+  document.getElementById('col-sa-det').classList.add('hidden');
+  if(_colMovsUnsub){try{_colMovsUnsub();}catch(e){}_colMovsUnsub=null;}
+  if(_colNeedsUnsub){try{_colNeedsUnsub();}catch(e){}_colNeedsUnsub=null;}
+  _colCurId=null;
+  colSaSubTab('lista',document.getElementById('col-sa-st-lista'));
+}
+function colSaDetTab(id,btn){
+  ['movs','agregar','checklist'].forEach(t=>{
+    document.getElementById('col-sa-det-'+t).style.display=t===id?'block':'none';
+  });
+  document.querySelectorAll('#col-sa-det .rep-tab-btn').forEach(b=>{b.classList.remove('active');b.style.background='transparent';b.style.color='';});
+  if(btn){btn.classList.add('active');btn.style.background='#0ea5e9';btn.style.color='#fff';}
+  if(id==='movs') colSaLoadMovs();
+  if(id==='checklist') colSaLoadNeeds();
+}
+function colSaLoadMovs(){
+  if(!_colCurId) return;
+  if(_colMovsUnsub){try{_colMovsUnsub();}catch(e){}_colMovsUnsub=null;}
+  _colMovsUnsub=db.collection('colectas').doc(_colCurId).collection('movimientos').orderBy('fecha','desc').onSnapshot(s=>{
+    const el=document.getElementById('col-sa-movs-list');
+    if(!el) return;
+    if(s.empty){el.innerHTML='<div class="empty"><div class="empty-icon">💰</div>Sin movimientos</div>';return;}
+    el.innerHTML=s.docs.map(d=>{
+      const m={id:d.id,...d.data()};
+      const fecha=fmtDate(tsToDate(m.fecha));
+      const ing=m.tipo==='ingreso';
+      return '<div class="card-sm" style="border-left:3px solid '+(ing?'#22c55e':'#ef4444')+'">'+
+        '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+        '<div><span class="badge '+(ing?'badge-ok':'badge-err')+'">'+(ing?'Ingreso':'Gasto')+'</span> '+
+          '<strong style="color:var(--t0)">'+(ing?'+':'-')+'$'+(m.monto||0).toLocaleString('es-AR')+'</strong>'+
+          '<p class="meta" style="margin-top:4px">'+fecha+'</p>'+
+          '<p style="font-size:12px;color:var(--t2);margin-top:3px">'+esc(m.descripcion||'')+'</p>'+
+          (m.fotoURL?'<a href="'+m.fotoURL+'" target="_blank" class="meta" style="color:var(--accent)">🖼️ Ver foto</a>':'')+
+        '</div><button class="btn btn-err" onclick="colSaEliminarMov(\''+m.id+'\')">🗑️</button>'+
+        '</div></div>';
+    }).join('');
+  },e=>{console.warn('colMovs',e);document.getElementById('col-sa-movs-list').innerHTML='<div class="empty">Error: '+esc(e.message)+'</div>';});
+}
+async function colSaEliminarMov(movId){
+  if(!_colCurId||!confirm('¿Eliminar este movimiento?')) return;
+  try{
+    const ref=db.collection('colectas').doc(_colCurId).collection('movimientos').doc(movId);
+    const snap=await ref.get();const m=snap.data()||{};
+    const delta=m.tipo==='ingreso'?-(m.monto||0):(m.monto||0);
+    const gasDelta=m.tipo==='gasto'?-(m.monto||0):0;
+    await db.collection('colectas').doc(_colCurId).update({
+      recaudado:firebase.firestore.FieldValue.increment(m.tipo==='ingreso'?-(m.monto||0):0),
+      gastado:firebase.firestore.FieldValue.increment(m.tipo==='gasto'?-(m.monto||0):0)
+    });
+    await ref.delete();
+    showToast('Movimiento eliminado','g');
+  }catch(e){showToast('Error: '+e.message,'r');}
+}
+async function colSaAgregarMov(){
+  if(!_colCurId){showToast('Sin colecta activa','r');return;}
+  const tipo=document.getElementById('col-sa-mov-tipo')?.value||'ingreso';
+  const desc=(document.getElementById('col-sa-mov-desc')?.value||'').trim();
+  const monto=parseFloat(document.getElementById('col-sa-mov-monto')?.value||'0')||0;
+  const file=document.getElementById('col-sa-mov-foto')?.files?.[0];
+  if(!desc||!monto){showToast('Descripción y monto requeridos','r');return;}
+  try{
+    let fotoURL='';
+    if(file){
+      const ref=storage.ref('colectas/'+_colCurId+'/movimientos/'+Date.now()+'_'+file.name);
+      await ref.put(file);fotoURL=await ref.getDownloadURL();
+    }
+    await db.collection('colectas').doc(_colCurId).collection('movimientos').add({tipo,descripcion:desc,monto,fotoURL,fecha:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection('colectas').doc(_colCurId).update({
+      recaudado:firebase.firestore.FieldValue.increment(tipo==='ingreso'?monto:0),
+      gastado:firebase.firestore.FieldValue.increment(tipo==='gasto'?monto:0)
+    });
+    document.getElementById('col-sa-mov-desc').value='';
+    document.getElementById('col-sa-mov-monto').value='';
+    document.getElementById('col-sa-mov-foto').value='';
+    showToast('Movimiento agregado ✅','g');
+    // Actualizar local
+    _colData=_colData.map(c=>{if(c.id!==_colCurId) return c;return {...c,recaudado:(c.recaudado||0)+(tipo==='ingreso'?monto:0),gastado:(c.gastado||0)+(tipo==='gasto'?monto:0)};});
+  }catch(e){console.error(e);showToast('Error: '+e.message,'r');}
+}
+function colSaLoadNeeds(){
+  if(!_colCurId) return;
+  if(_colNeedsUnsub){try{_colNeedsUnsub();}catch(e){}_colNeedsUnsub=null;}
+  _colNeedsUnsub=db.collection('colectas').doc(_colCurId).collection('necesita').onSnapshot(s=>{
+    const el=document.getElementById('col-sa-needs-list');
+    if(!el) return;
+    if(s.empty){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Sin ítems</div>';return;}
+    el.innerHTML=s.docs.map(d=>{
+      const n={id:d.id,...d.data()};
+      const recibido=n.recibido||0;const total=n.cantidad||1;
+      const pct=Math.min(100,Math.round(recibido/total*100));
+      const done=recibido>=total;
+      return '<div class="card-sm" style="border-left:3px solid '+(done?'#22c55e':'#f59e0b')+'">'+
+        '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center">'+
+        '<div style="min-width:0;flex:1">'+
+          '<p style="font-size:13px;font-weight:700;color:var(--t0)">'+esc(n.label||'')+'</p>'+
+          '<p class="meta">'+recibido+' / '+total+' ('+pct+'%)</p>'+
+          '<div style="height:4px;background:var(--line);border-radius:2px;margin-top:6px"><div style="height:4px;background:'+(done?'#22c55e':'#f59e0b')+';border-radius:2px;width:'+pct+'%"></div></div></div>'+
+        '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0">'+
+          '<button class="btn btn-ok" onclick="colSaNeedInc(\''+n.id+'\','+recibido+','+total+')">+1</button>'+
+          '<button class="btn btn-err" onclick="colSaNeedDel(\''+n.id+'\')">🗑️</button>'+
+        '</div></div></div>';
+    }).join('');
+  });
+}
+async function colSaAgregarNeed(){
+  if(!_colCurId) return;
+  const label=(document.getElementById('col-sa-need-label')?.value||'').trim();
+  const qty=parseInt(document.getElementById('col-sa-need-qty')?.value||'1')||1;
+  if(!label){showToast('Nombre requerido','r');return;}
+  try{await db.collection('colectas').doc(_colCurId).collection('necesita').add({label,cantidad:qty,recibido:0});document.getElementById('col-sa-need-label').value='';document.getElementById('col-sa-need-qty').value='';showToast('Ítem agregado ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+async function colSaNeedInc(id,recibido,total){
+  if(!_colCurId||recibido>=total) return;
+  try{await db.collection('colectas').doc(_colCurId).collection('necesita').doc(id).update({recibido:recibido+1});showToast('+1 recibido ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+async function colSaNeedDel(id){
+  if(!_colCurId||!confirm('¿Eliminar ítem?')) return;
+  try{await db.collection('colectas').doc(_colCurId).collection('necesita').doc(id).delete();showToast('Ítem eliminado','g');}
+  catch(e){showToast('Error','r');}
+}
+async function colSaLoadYoTengo(){
+  const el=document.getElementById('col-sa-yotengo-list');
+  try{
+    const snap=await db.collection('yo_tengo').orderBy('fecha','desc').limit(100).get();
+    if(snap.empty){el.innerHTML='<div class="empty"><div class="empty-icon">📬</div>Sin formularios</div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const x={id:d.id,...d.data()};
+      const fecha=fmtDate(tsToDate(x.fecha));
+      return '<div class="card-sm '+(x.leido?'':''"+" style="'+(x.leido?'opacity:.7':'border-left:3px solid var(--accent)')+'">'+
+        '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
+        '<div style="min-width:0">'+
+          (!x.leido?'<span class="badge badge-accent">Nuevo</span> ':'')+
+          '<strong style="color:var(--t0)">'+esc(x.item||'Ítem')+'</strong>'+
+          '<p class="meta" style="margin-top:3px">'+fecha+(x.nombre?' · '+esc(x.nombre):'')+(x.contacto?' · '+esc(x.contacto):'')+'</p>'+
+          '<p style="font-size:12px;color:var(--t2);margin-top:3px">'+esc(x.nota||'')+'</p></div>'+
+        (!x.leido?'<button class="btn btn-ghost" onclick="colSaMarcarLeido(\''+x.id+'\')">✓ Leído</button>':'')+
+        '</div></div>';
+    }).join('');
+  }catch(e){
+    try{const snap=await db.collection('yo_tengo').limit(100).get();/* fallback without orderBy */}catch(e2){}
+    el.innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>Error al cargar (puede requerir índice)</div>';
+  }
+}
+async function colSaMarcarLeido(id){
+  try{await db.collection('yo_tengo').doc(id).update({leido:true});colSaLoadYoTengo();showToast('Marcado como leído ✅','g');}
+  catch(e){showToast('Error','r');}
+}
+</script>
+</body>
+</html>
