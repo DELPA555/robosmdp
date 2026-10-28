@@ -1193,7 +1193,7 @@ async function colSaLoadYoTengo(){
     el.innerHTML=snap.docs.map(d=>{
       const x={id:d.id,...d.data()};
       const fecha=fmtDate(tsToDate(x.fecha));
-      return '<div class="card-sm '+(x.leido?'':''"+" style="'+(x.leido?'opacity:.7':'border-left:3px solid var(--accent)')+'">'+
+      return '<div class="card-sm" style="'+(x.leido?'opacity:.7':'border-left:3px solid var(--accent)')+'">'+
         '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
         '<div style="min-width:0">'+
           (!x.leido?'<span class="badge badge-accent">Nuevo</span> ':'')+
