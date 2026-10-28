@@ -1,6 +1,6 @@
 # ROBOS MDP — Coordinación compartida ChatGPT + Claude Code
 
-> **Archivo maestro del proyecto.** Última revisión: **2026-10-18**.
+> **Archivo maestro del proyecto.** Última revisión: **2026-10-28**.
 > Este archivo `CLAUDE.md` está en la raíz del repositorio para que **Claude Code lo lea como contexto de trabajo**. **ChatGPT también debe consultarlo mediante GitHub antes de proponer o realizar cambios.**
 > Repositorio: https://github.com/DELPA555/robosmdp · Rama principal: `main` · Sitio: https://robosmdp.com.ar
 
@@ -23,6 +23,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | [#7](https://github.com/DELPA555/robosmdp/pull/7) | ChatGPT | `integration/mejoras-robosmdp-20261018`: integración de PR #3–#6, frontend, backend Netlify, reglas Firebase y pruebas conjuntas | EN REVISIÓN; NO DESPLEGADO. Candidato conjunto; migración IP/huellas, retención push y validación E2E pendientes |
 | [#8](https://github.com/DELPA555/robosmdp/pull/8) | ChatGPT | GPS voluntario temporal de chat; lectura privada por titular/admin, caducidad, revocación y pruebas | INTEGRADO EN CÓDIGO DE PR #7; NO DESPLEGADO. Mantener consentimiento y verificar permisos Android |
 | [#9](https://github.com/DELPA555/robosmdp/pull/9) | ChatGPT | Tablero `/admin-analitica`: KPI reales, barrios, pendientes, categorías y CSV con aviso de muestras | INTEGRADO EN CÓDIGO DE PR #7; NO DESPLEGADO. Validar cobertura y autenticación admin |
+| [#12](https://github.com/DELPA555/robosmdp/pull/12) | Claude Code | `feat/colectas-panel-unificado`: módulo Colectas admin integrado como pestaña en `panel-organismos.html` (Lista, Nueva, Yo tengo esto; overlay con Movimientos, Agregar+foto, Checklist) | EN REVISIÓN; NO DESPLEGADO. Requiere prueba funcional y aprobación del propietario |
 
 **Importante al integrar:** las PR #3, #4, #5 y #6 modifican `CLAUDE.md` y `robosmdp/index.html`; también #3 y #6 modifican `firestore.rules`. Resolver conflictos conservando todas las mejoras. Los PR #5 y #6 tampoco están desplegados. Al fusionar, conservar los dos cambios en frontend y las dos entradas del historial, resolviendo conflictos. No fusionar el PR #3 antes de migrar las IP/huellas históricas y probar la seguridad en producción. El PR #4 incorporó una segunda fase con estados internos e historial administrativo; no implica confirmación de un trámite oficial. Requiere prueba funcional de punta a punta antes de publicar. Ver instrucciones de despliegue en cada rama.
 
@@ -96,6 +97,16 @@ Usar este formato para cada entrada nueva:
 - Estado de deploy: NO DESPLEGADO / NETLIFY VERIFICADO / REGLAS FIREBASE VERIFICADAS / ANDROID VERIFICADA
 - Pendientes o riesgos:
 ```
+
+### 2026-10-28 — COL-02 Colectas integradas en panel-organismos.html (pestaña admin unificada)
+- Responsable: Claude Code.
+- Pedido y alcance: integrar el módulo admin de colectas como pestaña "💚 Colectas" dentro de `panel-organismos.html` (visible solo para admin), en lugar de página separada `admin-colectas.html`.
+- Archivos modificados: `robosmdp/panel-organismos.html` (+496 líneas: CSS, HTML overlay+sub-tabs, JS completo con prefijo `c`).
+- Resultado: nueva pestaña con sub-tabs Lista / Nueva colecta / Yo tengo esto. Overlay de detalle con 3 sub-tabs: 💰 Movimientos, ➕ Agregar (con foto a Storage), 📋 Checklist. Lazy-load con `_colectasLoaded`. SDK Storage agregado con try/catch. Funciones y CSS con prefijo `c` para no colisionar.
+- Pruebas realizadas: verificación de presencia de todos los IDs clave (`csdtab-need`, `csdpane-need`, `cCargarNeedsAdm`, `cSwitchSDTab`) en el HTML. Sin prueba funcional en producción.
+- Commit o PR: commit `39e1159` — PR [#12](https://github.com/DELPA555/robosmdp/pull/12)
+- Estado de deploy: **NO DESPLEGADO** (rama `feat/colectas-panel-unificado`; sin merge a main).
+- Pendientes: prueba funcional del sub-tab Checklist y subida de fotos; aprobación del propietario; merge a main.
 
 ### 2026-10-23 — ORG-01 Organismos verificados (panel, denuncias anónimas, FCM, chat 500)
 - Responsable: Claude Code.
