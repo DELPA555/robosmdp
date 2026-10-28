@@ -24,6 +24,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 | [#8](https://github.com/DELPA555/robosmdp/pull/8) | ChatGPT | GPS voluntario temporal de chat; lectura privada por titular/admin, caducidad, revocación y pruebas | INTEGRADO EN CÓDIGO DE PR #7; NO DESPLEGADO. Mantener consentimiento y verificar permisos Android |
 | [#9](https://github.com/DELPA555/robosmdp/pull/9) | ChatGPT | Tablero `/admin-analitica`: KPI reales, barrios, pendientes, categorías y CSV con aviso de muestras | INTEGRADO EN CÓDIGO DE PR #7; NO DESPLEGADO. Validar cobertura y autenticación admin |
 | [#12](https://github.com/DELPA555/robosmdp/pull/12) | Claude Code | `feat/colectas-panel-unificado`: módulo Colectas admin integrado como pestaña en `panel-organismos.html` (Lista, Nueva, Yo tengo esto; overlay con Movimientos, Agregar+foto, Checklist) | EN REVISIÓN; NO DESPLEGADO. Requiere prueba funcional y aprobación del propietario |
+| [#13](https://github.com/DELPA555/robosmdp/pull/13) | Claude Code | `feat/super-admin-unificado`: `super-admin.html` panel único con 9 tabs (Reportes, Patentes, Objetos, Mascotas, Foro, Chat, Rastreo, Organismos, Colectas). Reemplaza `panel-organismos.html` y `admin-colectas.html` para el admin. Login Firebase, lazy-load, ban modal, eliminar colecta completa (batch). | EN REVISIÓN; NO DESPLEGADO. Requiere prueba funcional, merge y decisión del propietario sobre qué paneles reemplazar |
 
 **Importante al integrar:** las PR #3, #4, #5 y #6 modifican `CLAUDE.md` y `robosmdp/index.html`; también #3 y #6 modifican `firestore.rules`. Resolver conflictos conservando todas las mejoras. Los PR #5 y #6 tampoco están desplegados. Al fusionar, conservar los dos cambios en frontend y las dos entradas del historial, resolviendo conflictos. No fusionar el PR #3 antes de migrar las IP/huellas históricas y probar la seguridad en producción. El PR #4 incorporó una segunda fase con estados internos e historial administrativo; no implica confirmación de un trámite oficial. Requiere prueba funcional de punta a punta antes de publicar. Ver instrucciones de despliegue en cada rama.
 
@@ -98,6 +99,16 @@ Usar este formato para cada entrada nueva:
 - Estado de deploy: NO DESPLEGADO / NETLIFY VERIFICADO / REGLAS FIREBASE VERIFICADAS / ANDROID VERIFICADA
 - Pendientes o riesgos:
 ```
+
+### 2026-10-28 — SA-01 Super Admin panel unificado (super-admin.html)
+- Responsable: Claude Code.
+- Pedido y alcance: el propietario quiere un único panel de admin en vez de dos (`panel-organismos.html` + `admin-colectas.html`). Opción B elegida: nuevo `super-admin.html` autónomo con todos los módulos.
+- Archivos modificados: `robosmdp/super-admin.html` (nuevo; 1214 líneas).
+- Resultado: 9 tabs en una sola página — Reportes (5 tipos), Patentes, Objetos perdidos, Mascotas, Foro, Chat, Rastreo vehicular, Organismos verificados, Colectas. Login propio Firebase Auth con verificación claim admin. Lazy-load por tab. Ban modal con duración, desbanear, moderadores. Colectas: crear, cerrar/reabrir, **eliminar colecta completa** (batch que borra movimientos + necesita + doc padre), movimientos con foto a Storage, checklist, formularios Yo tengo esto.
+- Pruebas realizadas: verificación de presencia de todas las funciones clave en el HTML (colSaEliminar, chatSaOpenBan, banConfirm, etc.). Sin prueba funcional en producción (requiere reglas Firestore de COL-01 publicadas).
+- Commit o PR: commit `2857798` — PR [#13](https://github.com/DELPA555/robosmdp/pull/13)
+- Estado de deploy: **NO DESPLEGADO** (rama `feat/super-admin-unificado`; sin merge a main).
+- Pendientes: prueba funcional de cada tab; decidir si se redirige `panel-organismos.html` y `admin-colectas.html` hacia `super-admin.html`; publicar reglas Firestore COL-01 antes de probar tab Colectas; aprobación y merge del propietario.
 
 ### 2026-10-28 — COL-02 Colectas integradas en panel-organismos.html (pestaña admin unificada)
 - Responsable: Claude Code.
