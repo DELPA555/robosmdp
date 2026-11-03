@@ -4145,6 +4145,18 @@ const ADS = {
 // WhatsApp para consultar por publicidad (link provisto, ya URL-encodeado)
 const PUB_WA = 'https://wa.me/5491138574444?text=Hola!%20Me%20interesa%20publicitar%20en%20Robos%20MDP.%20%C2%BFPueden%20darme%20informaci%C3%B3n%20sobre%20espacios%20disponibles%20y%20precios%3F';
 
+function trackAdClick(slotId,titulo){
+  try{
+    const uid=firebase.auth().currentUser?firebase.auth().currentUser.uid:null;
+    db.collection('ad_clicks').add({
+      slotId:slotId,
+      titulo:titulo||slotId,
+      ts:firebase.firestore.FieldValue.serverTimestamp(),
+      uid:uid,
+      ua:navigator.userAgent.substring(0,200)
+    });
+  }catch(e){}
+}
 function renderAd(slotId){
   const el=document.getElementById(slotId); if(!el) return;
   const ad=ADS[slotId];
@@ -4153,7 +4165,7 @@ function renderAd(slotId){
     el.style.borderStyle='solid';
     el.style.padding='0';
     el.style.background='transparent';
-    el.innerHTML='<a href="'+esc(ad.link||'#')+'" target="_blank" rel="noopener" style="display:block;text-decoration:none">'+
+    el.innerHTML='<a href="'+esc(ad.link||'#')+'" target="_blank" rel="noopener" style="display:block;text-decoration:none" onclick="trackAdClick(\''+esc(slotId)+'\',\''+esc(ad.titulo||slotId)+'\')">'+
       '<img src="'+esc(ad.imagen)+'" alt="'+esc(ad.titulo||'Publicidad')+'" style="width:100%;border-radius:13px;display:block">'+
       (ad.titulo?'<p style="font-size:11px;color:var(--t2);font-weight:600;margin-top:8px;text-align:center">'+esc(ad.titulo)+'</p>':'')+
       '</a>';

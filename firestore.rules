@@ -371,5 +371,12 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // Clics en banners publicitarios: cualquiera puede registrar,
+    // solo admin puede leer y borrar.
+    match /ad_clicks/{docId} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+    }
+
   }
 }
