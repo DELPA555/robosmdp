@@ -378,5 +378,37 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
+    // NWS-01: redacción periodística. No se publican borradores ni envíos
+    // de vecinos. El admin puede editar, publicar o volver a borrador.
+    match /noticias/{slug} {
+      allow get, list: if isAdmin() || resource.data.estado == 'publicado';
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Bandeja privada de colaboraciones. Antispam básico por forma/longitud;
+    // complementar con moderación y protección del servicio si crece el volumen.
+    match /noticias_envios/{id} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly([
+          'nombre','contacto','zona','categoria','mensaje','fuente_url','uid','estado','fecha'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.estado == 'pendiente'
+        && request.resource.data.fecha == request.time
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() <= 100
+        && request.resource.data.contacto is string
+        && request.resource.data.contacto.size() <= 140
+        && request.resource.data.zona is string
+        && request.resource.data.zona.size() <= 120
+        && request.resource.data.categoria in ['seguridad','investigaciones','ciudad','comerciantes','justicia','comunidad']
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() >= 30
+        && request.resource.data.mensaje.size() <= 3000
+        && request.resource.data.fuente_url is string
+        && request.resource.data.fuente_url.size() <= 500;
+      allow read, update, delete: if isAdmin();
+    }
+
   }
 }
