@@ -136,6 +136,27 @@ body{background:#fafafa}
   .front-investigations{grid-template-columns:1fr}
   .investigation-side{display:grid;grid-template-columns:1fr 1fr}
 }
+
+/* Publicidad: anuncios señalizados y separados del contenido informativo. */
+.nav-commercial{color:#ff9aa4!important;font-weight:800!important}
+.sponsor-section{padding:28px 0 52px;border-bottom:1px solid #dce1e7}
+.sponsor-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;border-top:3px solid #182538;padding-top:15px;margin-bottom:18px;font-size:10px;font-weight:800;letter-spacing:.08em;color:#87909c}
+.sponsor-heading a{color:#a92334}
+.sponsor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.sponsor-card{display:flex;flex-direction:column;min-width:0;min-height:226px;background:#fff;border:1px solid #dbe1e8;padding:11px;gap:10px;overflow:hidden}
+.sponsor-card>span{font-size:9px;letter-spacing:.12em;color:#7b8795;font-weight:800}
+.sponsor-card img{width:100%;height:145px;object-fit:contain;background:#eef1f4}
+.sponsor-card strong{font-size:10px;letter-spacing:.035em;color:#263242;margin-top:auto}
+.sponsor-card:hover{border-color:#b6293b}
+.sponsor-vacant{background:#17263a;border-color:#17263a;color:#fff;padding:15px}
+.sponsor-vacant>span{color:#e99dab}.sponsor-vacant>div{display:flex;flex-direction:column;justify-content:center;flex:1}
+.sponsor-vacant small{font:800 42px/.96 'Space Grotesk',sans-serif;letter-spacing:-.075em}
+.sponsor-vacant p{font-size:11px;color:#b2c0d3;line-height:1.5;margin:9px 0 0;max-width:270px}
+.sponsor-vacant strong{color:#f7abb3}
+.sponsor-disclosure{font-size:10px;color:#7a8694;line-height:1.5;margin:12px 0 0}
+.article-sponsor{border:1px solid #dde2e8;background:#fff;padding:13px;margin-top:18px}.article-sponsor>span{font-size:9px;font-weight:800;letter-spacing:.12em;color:#7e8997}.article-sponsor img{width:100%;display:block;margin:10px 0;max-height:200px;object-fit:contain}.article-sponsor small{display:block;font-size:10px;color:#778492;line-height:1.5}.article-sponsor-cta{display:block;margin-top:13px;border-top:1px solid #eceef1;padding-top:12px;color:#b22a3e!important;font-size:11px;font-weight:800}
+@media(max-width:850px){.sponsor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:570px){.sponsor-heading{align-items:start}.sponsor-heading a{max-width:130px;text-align:right}.sponsor-grid{grid-template-columns:1fr}.sponsor-card{min-height:200px}.sponsor-card img{height:160px}}
 @media(max-width:800px){
   .news-wrap{width:calc(100% - 32px)}
   .news-mini .mini-links a:nth-child(2){display:none}

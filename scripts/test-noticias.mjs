@@ -68,3 +68,15 @@ test('portada periodística con titular central, últimas e investigaciones sin 
   assert.ok(js.includes("filter(a => a.categoria === 'investigaciones')"));
   assert.ok(js.includes("filter(a => a.categoria === category)"));
 });
+
+test('espacios publicitarios visibles y contacto comercial sin afectar el mapa y chat', () => {
+  const portada=fs.readFileSync(new URL('../robosmdp/noticias.html',import.meta.url),'utf8');
+  const contratar=fs.readFileSync(new URL('../robosmdp/contratar.html',import.meta.url),'utf8');
+  const redirects=fs.readFileSync(new URL('../robosmdp/_redirects',import.meta.url),'utf8');
+  assert.ok(portada.includes('ESPACIOS COMERCIALES'));
+  assert.ok(portada.includes('sponsor-francotirador.jpg') && portada.includes('banner-nikro.jpg'));
+  assert.ok(portada.includes('Ningún anunciante interviene'));
+  assert.ok(contratar.includes('https://wa.me/5491138574444'));
+  assert.ok(contratar.includes('PUBLICIDAD') && contratar.includes('SERVICIOS'));
+  assert.ok(redirects.includes('/contratar'));
+});
