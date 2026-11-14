@@ -8,6 +8,7 @@ Se incorpora un diario digital dentro del repositorio y dominio actuales.
 No se reemplazan index.html, el mapa, chat, foro, colectas, rastreo ni la app Android.
 
 - /noticias: portada editorial, filtros y búsqueda.
+- Portada de diario actualizada: cabecera compacta, sumario al día, titular principal, noticias secundarias, cronología de últimas noticias, reportajes de gasto público y secciones de seguridad y ciudad. La jerarquía toma patrones generales de portales de noticias consolidados, con diseño y marca propios.
 - /noticias/:slug: nota completa mediante función Netlify news-story.mjs y su ruta nativa `config.path`, con metadatos, autor, fecha y NewsArticle.
 - /admin-noticias: panel de redacción protegido con Firebase Auth y el criterio admin existente.
 - /enviar-noticia: colaboración vecinal con bandeja privada.

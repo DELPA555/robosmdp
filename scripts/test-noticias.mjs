@@ -49,3 +49,15 @@ test('el acceso a mapas y chat permanece en la landing', () => {
   assert.ok(home.includes('enterApp(\'robos\')'));
   assert.ok(home.includes('href="./noticias.html"'));
 });
+
+test('portada periodística con titular central, últimas e investigaciones sin datos inventados', () => {
+  const html = fs.readFileSync(new URL('../robosmdp/noticias.html', import.meta.url), 'utf8');
+  const js = fs.readFileSync(new URL('../robosmdp/assets/noticias-app.mjs', import.meta.url), 'utf8');
+  for (const id of ['news-featured','news-latest','news-investigations','news-security','news-city','news-results','news-ticker-link']) {
+    assert.ok(html.includes(`id="${id}"`), `falta ${id}`);
+  }
+  assert.ok(html.includes('Últimas noticias'));
+  assert.ok(html.includes('Gastos bajo la lupa'));
+  assert.ok(js.includes("filter(a => a.categoria === 'investigaciones')"));
+  assert.ok(js.includes("filter(a => a.categoria === category)"));
+});

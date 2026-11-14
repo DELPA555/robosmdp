@@ -110,6 +110,7 @@ Usar este formato para cada entrada nueva:
 - Commit/PR: rama feat/portal-noticias-20261114, PR #14 en borrador. Ruta de notas dinámicas corregida tras la primera prueba del Deploy Preview.
 - Despliegue: **NO DESPLEGADO**, sin cambios en main ni publicación de reglas.
 - Pendientes: validar permisos de borradores, colaboraciones, anti-spam y móvil; coordinar integración con PR anteriores y autorización del propietario para publicar reglas.
+- 2026-11-14 · Edición visual solicitada: portada reorganizada con lógica de diario (titular principal, secundarias, últimas noticias, investigaciones, seguridad y ciudad), inspirada en patrones generales de Infobae y Clarín, con marca propia. Sigue en PR #14, no se publicó en main.
 
 ### 2026-10-28 — SA-01 Super Admin panel unificado (super-admin.html)
 - Responsable: Claude Code.

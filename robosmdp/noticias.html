@@ -21,21 +21,26 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <div class="news-mini"><div class="news-wrap news-mini-inner"><span><i class="status-dot"></i> MAR DEL PLATA · ARGENTINA <span id="fecha-hoy"></span></span><a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">INSTAGRAM ↗</a></div></div>
+  <div class="news-mini"><div class="news-wrap news-mini-inner"><span><i class="status-dot"></i> MAR DEL PLATA · ARGENTINA <span id="fecha-hoy"></span></span><div class="mini-links"><a href="#ultimas">ÚLTIMAS NOTICIAS</a><a href="/">MAPA DEL DELITO</a><a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">INSTAGRAM ↗</a></div></div></div>
   <header class="news-head"><div class="news-wrap head-row">
     <a href="/noticias" class="news-logo"><img src="/assets/logo-nuevo.png" alt="Logo Robos MDP"><span><strong>ROBOS <b>MDP</b></strong><small>NOTICIAS</small></span></a>
-    <span class="head-claim">LA CIUDAD. LOS HECHOS.<br><strong>LOS DOCUMENTOS.</strong></span>
-    <a class="news-button" href="/enviar-noticia">ENVIAR NOTICIA <span>↗</span></a>
+    <span class="head-claim">PERIODISMO CIUDADANO<br><strong>INDEPENDIENTE Y LOCAL</strong></span>
+    <a class="news-button" href="/enviar-noticia">CONTANOS TU NOTICIA <span>↗</span></a>
   </div></header>
-  <nav class="news-nav"><div class="news-wrap news-nav-row"><a href="/noticias" class="nav-current">PORTADA</a><a href="/noticias?categoria=seguridad">Seguridad</a><a href="/noticias?categoria=investigaciones">Gastos bajo la lupa</a><a href="/noticias?categoria=ciudad">Mar del Plata</a><a href="/noticias?categoria=comerciantes">Comerciantes</a><a href="/noticias?categoria=comunidad">Comunidad</a><a href="/" class="nav-map">← VOLVER AL MAPA Y CHAT</a></div></nav>
+  <nav class="news-nav" aria-label="Secciones del diario"><div class="news-wrap news-nav-row"><a href="/noticias" class="nav-current">INICIO</a><a href="#ultimas">Últimas noticias</a><a href="/noticias?categoria=seguridad">Seguridad</a><a href="/noticias?categoria=investigaciones">Investigaciones</a><a href="/noticias?categoria=ciudad">La ciudad</a><a href="/noticias?categoria=justicia">Justicia</a><a href="/noticias?categoria=comerciantes">Comerciantes</a><a href="/noticias?categoria=comunidad">Barrios</a><a href="/" class="nav-map">MAPA Y CHAT ↗</a></div></nav>
   <main>
-    <div class="news-alert"><div class="news-wrap news-alert-inner"><strong>● EN FOCO</strong><span>Investigaciones con documentos, noticias locales y la voz de los vecinos.</span><a href="/noticias?categoria=investigaciones">INVESTIGACIONES ↗</a></div></div>
+    <div class="news-alert"><div class="news-wrap news-alert-inner"><strong>AL DÍA</strong><a id="news-ticker-link" class="news-ticker" href="#ultimas">Las noticias que importan en Mar del Plata, con fuentes verificables.</a><a class="news-ticker-all" href="#ultimas">VER ÚLTIMAS ↗</a></div></div>
     <section class="news-wrap news-lead">
-      <div class="lead-text"><div><p class="section-tag"><i></i> INDEPENDIENTE · MAR DEL PLATA</p><h1>La ciudad que vivimos.<br><em>La información que importa.</em></h1></div><p>Un espacio para contar lo que pasa en Mar del Plata, escuchar a los vecinos e investigar los hechos con documentación.</p></div>
+      <div class="lead-text"><div><p class="section-tag"><i></i> PORTADA · MAR DEL PLATA</p><h1>Las noticias de <em>Mar del Plata.</em></h1></div><p>Actualidad, seguridad e investigaciones. Los hechos, el contexto y los documentos.</p></div>
       <div id="news-featured" class="featured-grid" aria-live="polite"><div class="loading-card">Preparando la portada informativa…</div></div>
     </section>
+    <div class="news-wrap editorial-stream">
+      <section class="front-focus" aria-labelledby="focus-title"><div class="front-heading"><div><span class="front-kicker">INVESTIGACIÓN Y CONTROL CIUDADANO</span><h2 id="focus-title">Gastos bajo la lupa</h2></div><a href="/noticias?categoria=investigaciones">TODAS LAS INVESTIGACIONES ↗</a></div><div id="news-investigations" class="front-investigations"></div><div class="front-note">Datos y documentos públicos. Una contratación o una observación administrativa no prueban por sí mismas la comisión de un delito.</div></section>
+      <aside class="latest-box" id="ultimas" aria-labelledby="latest-title"><div class="latest-heading"><div><span class="latest-dot"></span><h2 id="latest-title">Últimas noticias</h2></div><small>EN ORDEN CRONOLÓGICO</small></div><div id="news-latest" class="latest-list"></div><a href="#explorar" class="latest-all">VER TODAS LAS NOTICIAS ↗</a></aside>
+    </div>
+    <section class="news-wrap city-sections" aria-label="Noticias por sección"><div class="beat-block"><div class="beat-heading"><span>01 / SEGURIDAD</span><a href="/noticias?categoria=seguridad">VER SECCIÓN ↗</a></div><h2>Lo que pasa en nuestras calles</h2><div id="news-security" class="beat-content"></div></div><div class="beat-block"><div class="beat-heading"><span>02 / MAR DEL PLATA</span><a href="/noticias?categoria=ciudad">VER SECCIÓN ↗</a></div><h2>La ciudad y sus barrios</h2><div id="news-city" class="beat-content"></div></div></section>
     <section class="news-wrap article-section" id="explorar">
-      <div class="section-heading"><div><p class="section-tag"><i></i> LA REDACCIÓN</p><h2>Las noticias de la ciudad</h2></div><span id="news-total" class="section-info"></span></div>
+      <div class="section-heading"><div><p class="section-tag"><i></i> ARCHIVO DEL DIARIO</p><h2>Todas las noticias</h2></div><span id="news-total" class="section-info"></span></div>
       <div id="news-filters" class="filter-bar" aria-label="Filtrar noticias por sección"></div>
       <div class="search-row"><label for="news-search" class="sr-only">Buscar noticias</label><input id="news-search" placeholder="Buscar noticias por tema, barrio o palabra clave…"><span>⌕</span></div>
       <div id="news-results" class="news-card-grid" aria-live="polite"></div>
