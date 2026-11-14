@@ -14,6 +14,11 @@ test('archivo inicial: identificadores únicos, fuentes verificables y fechas re
     assert.ok(new Date(a.fecha).getTime() > Date.parse('2026-01-01'));
     assert.ok(a.fuentes.length >= 1);
     for (const f of a.fuentes) assert.match(f.url, /^https:\/\//);
+    assert.match(a.imagen, /^https:\/\/commons\.wikimedia\.org\/wiki\/Special:FilePath\//);
+    assert.ok(a.alt_imagen.includes('Mar del Plata') || a.alt_imagen.includes('Auditorium'));
+    assert.match(a.credito_imagen, /Foto de archivo/);
+    assert.match(a.fuente_imagen, /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);
+    assert.match(a.licencia_imagen, /^https:\/\/creativecommons\.org\/licenses\/by-sa\//);
   }
 });
 
@@ -27,7 +32,9 @@ test('nota documental: render HTML SSR con metadatos y fuente', async () => {
   assert.ok(html.includes('application/ld+json'));
   assert.ok(html.includes('/noticias/'+a.id));
   assert.ok(html.includes('Fuentes y documentos'));
-  assert.ok(html.includes('ILUSTRACIÓN EDITORIAL'));
+  assert.ok(html.includes('Foto de archivo'));
+  assert.ok(html.includes('Ver fotografía original'));
+  assert.ok(html.includes('Licencia'));
 });
 
 test('ruta inválida no busca ni muestra datos', async () => {
