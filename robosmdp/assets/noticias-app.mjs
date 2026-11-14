@@ -59,7 +59,7 @@ function render() {
 
   const front = filter === 'todas' ? all : all.filter(a => a.categoria === filter);
   const lead = front.find(a => a.destacada) || front[0];
-  const side = front.filter(a => a.id !== lead?.id).slice(0,3);
+  const side = front.filter(a => a.id !== lead?.id).slice(0,2);
   if (!lead) { featured.innerHTML = '<div class="loading-card">Todavía no hay noticias verificadas en esta sección. Seguimos trabajando para informar con responsabilidad.</div>'; return; }
   featured.innerHTML = `<a class="feature-primary" href="${newsHref(lead)}">${art(lead)}<div class="feature-content"><span class="pill">${esc(labelFor(lead.categoria))}</span><h2>${esc(lead.titulo)}</h2><p>${esc(lead.bajada)}</p><div class="feature-foot"><span>REDACCIÓN ROBOS MDP · ${esc(format(lead.fecha))}</span><span>LEER NOTICIA ↗</span></div></div></a>
     <div class="feature-side"><div class="side-heading"><span>MÁS NOTICIAS DESTACADAS</span><span>EN PORTADA</span></div>${side.map((a,i) => `<a class="side-item" href="${newsHref(a)}"><span class="side-number">0${i+1}</span><div><span class="cat">${esc(labelFor(a.categoria))}</span><h3>${esc(a.titulo)}</h3><p>${esc(a.bajada)}</p><time>${esc(format(a.fecha))}</time></div></a>`).join('')}<a href="#ultimas" class="side-promo"><strong>La actualidad, en un solo lugar ↗</strong><p>Últimas noticias e investigaciones sobre nuestra ciudad.</p><span>IR A ÚLTIMAS NOTICIAS</span></a></div>`;
