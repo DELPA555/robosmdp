@@ -22,7 +22,11 @@ export function escapeHtml(value) {
 
 export function publicImage(value) {
   if (!value) return '';
-  try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch { return ''; }
+  try {
+    if (/^\/assets\/noticias\/[a-z0-9-]+\.webp$/.test(value)) return value;
+    const u = new URL(value);
+    return u.protocol === 'https:' ? u.href : '';
+  } catch { return ''; }
 }
 
 export function articleDate(value) {

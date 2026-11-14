@@ -5,6 +5,7 @@ import { ARCHIVO, CATEGORIAS } from '../../robosmdp/assets/noticias-data.mjs';
 const PROJECT = 'robosmdp-d1ef3';
 const escapeHtml = value => String(value == null ? '' : value).replace(/[&<>"']/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const safeUrl = value => { try { const u = new URL(value); return ['https:','http:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } };
+const imagePath = value => /^\/assets\/noticias\/[a-z0-9-]+\.webp$/.test(value || '') ? value : safeUrl(value);
 const dateOf = value => {
   if (value && typeof value === 'object' && typeof value.seconds === 'number') return new Date(value.seconds * 1000);
   const d = new Date(value || 0); return Number.isNaN(d.valueOf()) ? new Date(0) : d;
@@ -12,7 +13,7 @@ const dateOf = value => {
 const format = value => dateOf(value).toLocaleDateString('es-AR', {day:'numeric',month:'long',year:'numeric',timeZone:'America/Argentina/Buenos_Aires'});
 const labelFor = value => CATEGORIAS.find(x => x[0] === value)?.[1] || 'Actualidad';
 const renderImage = a => {
-  const image = safeUrl(a.imagen);
+  const image = imagePath(a.imagen);
   if (image) return `<figure><div class="news-art article-image"><img src="${escapeHtml(image)}" alt="${escapeHtml(a.alt_imagen || a.titulo)}"></div><figcaption class="photo-credit">${escapeHtml(a.credito_imagen || 'Imagen aportada a Robos MDP')}${safeUrl(a.fuente_imagen) ? ` · <a href="${escapeHtml(safeUrl(a.fuente_imagen))}" target="_blank" rel="noopener noreferrer">Ver fotografía original</a>` : ''}${safeUrl(a.licencia_imagen) ? ` · <a href="${escapeHtml(safeUrl(a.licencia_imagen))}" target="_blank" rel="noopener noreferrer">Licencia</a>` : ''}</figcaption></figure>`;
   return `<figure><div class="news-art news-art--${['cine','ciudad','documentos'].includes(a.arte) ? a.arte : 'documentos'} article-image"><span class="art-label">ROBOS MDP · ILUSTRACIÓN EDITORIAL</span><span class="art-icon">${a.arte === 'cine' ? '◉' : a.arte === 'ciudad' ? 'MDP' : '§'}</span><span class="art-footer">MAR DEL PLATA / NOTICIAS</span></div><figcaption class="photo-credit">Ilustración editorial. No representa un registro fotográfico del hecho.</figcaption></figure>`;
 };
@@ -58,7 +59,7 @@ export default async (request, context) => {
   const title = escapeHtml(a.titulo);
   const desc = escapeHtml(a.bajada);
   const url = 'https://robosmdp.com.ar/noticias/' + encodeURIComponent(slug);
-  const img = safeUrl(a.imagen) || 'https://robosmdp.com.ar/assets/banner-robos.jpg';
+  const img = imagePath(a.imagen).startsWith('/') ? 'https://robosmdp.com.ar' + imagePath(a.imagen) : (imagePath(a.imagen) || 'https://robosmdp.com.ar/assets/banner-robos.jpg');
   const sources = Array.isArray(a.fuentes) ? a.fuentes.filter(s => typeof s === 'object' && safeUrl(s.url)).slice(0,12) : [];
   const body = String(a.texto || '').split(/\n\s*\n/).filter(Boolean).map(p => '<p>' + escapeHtml(p).replace(/\n/g,'<br>') + '</p>').join('');
   const jsonLd = JSON.stringify({'@context':'https://schema.org','@type':'NewsArticle',headline:a.titulo,description:a.bajada,datePublished:dateOf(a.fecha).toISOString(),dateModified:dateOf(a.actualizado || a.fecha).toISOString(),author:{'@type':'Organization',name:'Robos MDP Noticias'},publisher:{'@type':'Organization',name:'Robos MDP Noticias',logo:{'@type':'ImageObject',url:'https://robosmdp.com.ar/assets/logo-nuevo.png'}},mainEntityOfPage:url,image:[img]}).replace(/</g,'\\u003c');

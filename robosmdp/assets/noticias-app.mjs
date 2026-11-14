@@ -6,7 +6,7 @@ const format = dt => articleDate(dt).toLocaleDateString('es-AR', { day: 'numeric
 const artIcon = a => ({ cine:'◉', ciudad:'MDP', documentos:'§' })[a.arte] || 'MDP';
 function art(a) {
   const img = publicImage(a.imagen);
-  if (img) return `<div class="news-art"><img loading="lazy" src="${esc(img)}" alt="${esc(a.alt_imagen || 'Imagen de la noticia')}"></div>`;
+  if (img) return `<div class="news-art"><img loading="eager" decoding="async" src="${esc(img)}" alt="${esc(a.alt_imagen || 'Imagen de la noticia')}"></div>`;
   return `<div class="news-art news-art--${esc(a.arte || 'documentos')}"><span class="art-label">ROBOS MDP · ILUSTRACIÓN EDITORIAL</span><span class="art-icon">${esc(artIcon(a))}</span><span class="art-footer">MAR DEL PLATA / NOTICIAS</span></div>`;
 }
 function card(a) {

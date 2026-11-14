@@ -15,8 +15,8 @@ No se reemplazan index.html, el mapa, chat, foro, colectas, rastreo ni la app An
 - Nuevas colecciones Firestore: noticias y noticias_envios.
 - Nuevo directorio Firebase Storage: noticias/{slug}/{archivo}.
 - Cinco notas documentales iniciales en assets/noticias-data.mjs, conservadas con sus fechas y fuentes.
-- Cinco fotografías auténticas de Mar del Plata tomadas de Wikimedia Commons, con autor, enlace al original, licencia CC BY-SA y contexto de archivo en cada artículo. No se presentan como fotos de los contratos investigados ni de hechos recientes.
-- Banners comerciales identificados en portada (se reutilizan creatividades y enlaces actualmente presentes en el sitio) y en artículos, con rótulo PUBLICIDAD, separación editorial y enlace de contratación.
+- Cinco fotografías auténticas de Mar del Plata tomadas de Wikimedia Commons, con autor, enlace al original, licencia CC BY-SA y contexto de archivo en cada artículo. Copias redimensionadas/convertidas a WebP y alojadas bajo /assets/noticias en el mismo Netlify para evitar demoras, fallos de enlaces externos y layouts sin imágenes. No se presentan como fotos de los contratos investigados ni de hechos recientes.
+- Banners comerciales identificados en portada (se reutilizan creatividades y enlaces actualmente presentes en el sitio) y en artículos, con rótulo PUBLICIDAD, separación editorial y enlace de contratación. La fila publicitaria se redujo a tres módulos compactos y los anuncios en artículos a formato lateral pequeño, tras revisión de tamaño.
 - /contratar: página comercial con formatos de banners, campañas y servicios, formulario que compone una consulta por WhatsApp al número ya publicado en el sitio. No presupone un pago ni una reserva sin confirmación.
 - /admin-noticias: se ingresa por Firebase Auth con una cuenta autorizada; el correo configurado en código es admin@robosmdp.com.ar o una cuenta con claim admin. La contraseña no se crea ni se almacena en el repositorio, y debe ser la vigente de Firebase Auth. No se despliegan reglas sin pruebas.
 
