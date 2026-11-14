@@ -8,7 +8,7 @@ Se incorpora un diario digital dentro del repositorio y dominio actuales.
 No se reemplazan index.html, el mapa, chat, foro, colectas, rastreo ni la app Android.
 
 - /noticias: portada editorial, filtros y búsqueda.
-- /noticias/:slug: nota completa mediante función Netlify news-story.mjs, con metadatos, autor, fecha y NewsArticle.
+- /noticias/:slug: nota completa mediante función Netlify news-story.mjs y su ruta nativa `config.path`, con metadatos, autor, fecha y NewsArticle.
 - /admin-noticias: panel de redacción protegido con Firebase Auth y el criterio admin existente.
 - /enviar-noticia: colaboración vecinal con bandeja privada.
 - Nuevas colecciones Firestore: noticias y noticias_envios.

@@ -42,9 +42,16 @@ async function findNews(slug) {
     return row.estado === 'publicado' && row.titulo && row.texto ? {id:slug,...row} : null;
   } catch { return null; }
 }
-export default async (request) => {
+// El enrutamiento nativo de Netlify entrega :slug en context.params.
+// En una reescritura 200, Netlify no interpola de forma fiable :slug
+// dentro de un query string de destino.
+export const config = { path: '/noticias/:slug' };
+
+export default async (request, context) => {
   if (request.method !== 'GET') return new Response('Método no permitido', {status:405});
-  const slug = new URL(request.url).searchParams.get('slug') || '';
+  const requestUrl = new URL(request.url);
+  const pathSlug = requestUrl.pathname.match(/^\/noticias\/([^/]+)\/?$/)?.[1];
+  const slug = context?.params?.slug || pathSlug || requestUrl.searchParams.get('slug') || '';
   if (!/^[a-z0-9][a-z0-9-]{1,115}$/.test(slug)) return new Response('Noticia no encontrada', {status:404});
   const a = await findNews(slug);
   if (!a) return new Response('<h1>Noticia no encontrada</h1><p><a href="/noticias">Volver al diario</a></p>',{status:404,headers:{'content-type':'text/html; charset=utf-8'}});

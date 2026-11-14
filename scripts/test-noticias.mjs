@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { ARCHIVO, CATEGORIAS } from '../robosmdp/assets/noticias-data.mjs';
-import newsStory from '../netlify/functions/news-story.mjs';
+import newsStory, { config as storyConfig } from '../netlify/functions/news-story.mjs';
 
 test('archivo inicial: identificadores únicos, fuentes verificables y fechas reales', () => {
   assert.ok(ARCHIVO.length >= 4);
@@ -19,7 +19,7 @@ test('archivo inicial: identificadores únicos, fuentes verificables y fechas re
 
 test('nota documental: render HTML SSR con metadatos y fuente', async () => {
   const a = ARCHIVO[0];
-  const res = await newsStory(new Request('https://robosmdp.com.ar/.netlify/functions/news-story?slug='+a.id));
+  const res = await newsStory(new Request('https://robosmdp.com.ar/noticias/'+a.id), {params:{slug:a.id}});
   assert.equal(res.status, 200);
   assert.match(res.headers.get('content-type'), /text\/html/);
   const html = await res.text();
@@ -35,10 +35,11 @@ test('ruta inválida no busca ni muestra datos', async () => {
   assert.equal(res.status, 404);
 });
 
-test('las rutas de noticias preceden al fallback existente', () => {
+test('Netlify enruta las noticias directamente sin perder su slug', () => {
   const redirects = fs.readFileSync(new URL('../robosmdp/_redirects', import.meta.url), 'utf8');
-  assert.ok(redirects.indexOf('/noticias/:slug') > 0);
-  assert.ok(redirects.indexOf('/noticias/:slug') < redirects.indexOf('/*'));
+  assert.equal(storyConfig.path, '/noticias/:slug');
+  assert.ok(redirects.indexOf('/noticias                     ') >= 0);
+  assert.ok(!redirects.includes('/noticias/:slug '));
   assert.ok(redirects.includes('/chat'));
 });
 

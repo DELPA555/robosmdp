@@ -107,7 +107,7 @@ Usar este formato para cada entrada nueva:
 - Archivos modificados: noticias.html, enviar-noticia.html, admin-noticias.html, assets/noticias-*.mjs, assets/noticias.css, netlify/functions/news-story.mjs, reglas Firestore y Storage, _redirects, sitemap.xml, navegación mínima de index.html y super-admin.html, documentación y pruebas.
 - Resultado: portada con archivo documentado y buscador, artículos HTML con metadatos, redacción Firebase con estados privados y públicos, bandeja de colaboraciones. El radar diario de noticias es una automatización separada que todavía no escribe en Firestore.
 - Pruebas: cinco tests de Node y sintaxis JavaScript aprobados. Pruebas reales de Firebase Auth/Firestore/Storage, Deploy Preview y Android pendientes.
-- Commit/PR: rama feat/portal-noticias-20261114 (PR en preparación).
+- Commit/PR: rama feat/portal-noticias-20261114, PR #14 en borrador. Ruta de notas dinámicas corregida tras la primera prueba del Deploy Preview.
 - Despliegue: **NO DESPLEGADO**, sin cambios en main ni publicación de reglas.
 - Pendientes: validar permisos de borradores, colaboraciones, anti-spam y móvil; coordinar integración con PR anteriores y autorización del propietario para publicar reglas.
 
