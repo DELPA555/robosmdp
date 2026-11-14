@@ -1,6 +1,6 @@
 # Robos MDP Noticias — integración con la web existente
 
-Fecha: 2026-11-14. Estado: EN REVISIÓN; no desplegado en producción.
+Fecha: 2026-11-14. Estado: DESPLEGADO EN NETLIFY (web). Reglas Firebase aún pendientes de publicación y pruebas funcionales.
 
 ## Alcance
 
@@ -20,9 +20,9 @@ No se reemplazan index.html, el mapa, chat, foro, colectas, rastreo ni la app An
 - /contratar: página comercial con formatos de banners, campañas y servicios, formulario que compone una consulta por WhatsApp al número ya publicado en el sitio. No presupone un pago ni una reserva sin confirmación.
 - /admin-noticias: se ingresa por Firebase Auth con una cuenta autorizada; el correo configurado en código es admin@robosmdp.com.ar o una cuenta con claim admin. La contraseña no se crea ni se almacena en el repositorio, y debe ser la vigente de Firebase Auth. No se despliegan reglas sin pruebas.
 
-## Antes de lanzar
+## Publicación verificada y tareas pendientes
 
-1. Revisar Deploy Preview de Netlify: portada, artículo, formulario, enlaces y mapa/chat, también desde celular. No fusionar sin pruebas.
+1. La PR #14 ya está fusionada en main (commit `c05c9adb741fc08eeac5e983c4bc8b27036b7262`). El deploy Netlify de producción `6af8b93f9a6348f87a4230e9` está listo. Portada pública: https://robosmdp.com.ar/noticias, menú Noticias en web principal, anuncios compactos, fotos locales cargadas, páginas /contratar y /admin-noticias. Comprobar también desde celular/Android.
 2. Evaluar las reglas nuevas de firestore.rules y storage.rules contra las reglas publicadas. Netlify NO despliega automáticamente reglas Firebase: su publicación es separada, con autorización del propietario.
 3. Probar con el administrador real creación y edición de borradores, subida de fotos y cambio a publicado, y comprobar que otro usuario no pueda leer notas privadas o colaboraciones.
 4. Probar el envío anónimo. El campo oculto y la validación de longitud son controles básicos: para gran volumen conviene añadir App Check/CAPTCHA y límites de tasa en servidor.
@@ -41,4 +41,5 @@ Un radar diario de noticias locales comienza el 15/11/2026 y existe además una 
 
 - node --test scripts/test-noticias.mjs: siete pruebas aprobadas; incluyen control de procedencia y licencias de fotografías y presencia comercial identificada.
 - node --check de los módulos JavaScript y la función Netlify: aprobado.
-- Autenticación Firebase/Firestore/Storage reales, Deploy Preview y Android: pendientes.
+- Deploy Preview y publicación web de Netlify: verificadas. Las fotos locales WebP cargan en producción (naturalWidth > 0). La sección comercial y artículos se renderizan.
+- Autenticación Firebase/Firestore/Storage reales, reglas en consola y Android: pendientes. El estado público del panel no garantiza aún que se puedan guardar noticias ni recibir colaboraciones.
