@@ -36,6 +36,18 @@ service firebase.storage {
       allow read, update, delete: if false;
     }
 
+    // Noticias: fotos de la redacción, máximo 8 MiB, solo admin.
+    // Las imágenes publicadas deben ser propias, autorizadas o licenciadas.
+    match /noticias/{articleId}/{file} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && (request.auth.token.email == 'admin@robosmdp.com.ar'
+            || request.auth.token.admin == true)
+        && request.resource.size <= 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow update, delete: if false;
+    }
+
     // Todo lo demás del bucket: denegado por defecto.
   }
 }

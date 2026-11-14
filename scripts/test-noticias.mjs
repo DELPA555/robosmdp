@@ -1,0 +1,50 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { ARCHIVO, CATEGORIAS } from '../robosmdp/assets/noticias-data.mjs';
+import newsStory from '../netlify/functions/news-story.mjs';
+
+test('archivo inicial: identificadores únicos, fuentes verificables y fechas reales', () => {
+  assert.ok(ARCHIVO.length >= 4);
+  assert.equal(new Set(ARCHIVO.map(a => a.id)).size, ARCHIVO.length);
+  for (const a of ARCHIVO) {
+    assert.match(a.id, /^[a-z0-9][a-z0-9-]+$/);
+    assert.ok(CATEGORIAS.some(([id]) => id === a.categoria));
+    assert.ok(a.titulo.length > 25 && a.bajada.length > 40 && a.texto.length > 200);
+    assert.ok(new Date(a.fecha).getTime() > Date.parse('2026-01-01'));
+    assert.ok(a.fuentes.length >= 1);
+    for (const f of a.fuentes) assert.match(f.url, /^https:\/\//);
+  }
+});
+
+test('nota documental: render HTML SSR con metadatos y fuente', async () => {
+  const a = ARCHIVO[0];
+  const res = await newsStory(new Request('https://robosmdp.com.ar/.netlify/functions/news-story?slug='+a.id));
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-type'), /text\/html/);
+  const html = await res.text();
+  assert.ok(html.includes('<h1 class="article-title">'));
+  assert.ok(html.includes('application/ld+json'));
+  assert.ok(html.includes('/noticias/'+a.id));
+  assert.ok(html.includes('Fuentes y documentos'));
+  assert.ok(html.includes('ILUSTRACIÓN EDITORIAL'));
+});
+
+test('ruta inválida no busca ni muestra datos', async () => {
+  const res = await newsStory(new Request('https://robosmdp.com.ar/.netlify/functions/news-story?slug=..%2Fprivate'));
+  assert.equal(res.status, 404);
+});
+
+test('las rutas de noticias preceden al fallback existente', () => {
+  const redirects = fs.readFileSync(new URL('../robosmdp/_redirects', import.meta.url), 'utf8');
+  assert.ok(redirects.indexOf('/noticias/:slug') > 0);
+  assert.ok(redirects.indexOf('/noticias/:slug') < redirects.indexOf('/*'));
+  assert.ok(redirects.includes('/chat'));
+});
+
+test('el acceso a mapas y chat permanece en la landing', () => {
+  const home = fs.readFileSync(new URL('../robosmdp/index.html', import.meta.url),'utf8');
+  assert.ok(home.includes('href="./chat.html"'));
+  assert.ok(home.includes('enterApp(\'robos\')'));
+  assert.ok(home.includes('href="./noticias.html"'));
+});

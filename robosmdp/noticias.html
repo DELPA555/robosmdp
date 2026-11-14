@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1019">
+  <title>Noticias de Mar del Plata | Robos MDP Noticias</title>
+  <meta name="description" content="Noticias de Mar del Plata: inseguridad, investigaciones sobre gasto público, comercios, barrios y actualidad. Información local con fuentes.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://robosmdp.com.ar/noticias">
+  <meta property="og:type" content="website"><meta property="og:locale" content="es_AR">
+  <meta property="og:title" content="Robos MDP Noticias · Mar del Plata">
+  <meta property="og:description" content="La ciudad, los hechos y los documentos. Periodismo local independiente.">
+  <meta property="og:image" content="https://robosmdp.com.ar/assets/banner-robos.jpg">
+  <link rel="icon" href="/assets/logo-nuevo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/noticias.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="news-mini"><div class="news-wrap news-mini-inner"><span><i class="status-dot"></i> MAR DEL PLATA · ARGENTINA <span id="fecha-hoy"></span></span><a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">INSTAGRAM ↗</a></div></div>
+  <header class="news-head"><div class="news-wrap head-row">
+    <a href="/noticias" class="news-logo"><img src="/assets/logo-nuevo.png" alt="Logo Robos MDP"><span><strong>ROBOS <b>MDP</b></strong><small>NOTICIAS</small></span></a>
+    <span class="head-claim">LA CIUDAD. LOS HECHOS.<br><strong>LOS DOCUMENTOS.</strong></span>
+    <a class="news-button" href="/enviar-noticia">ENVIAR NOTICIA <span>↗</span></a>
+  </div></header>
+  <nav class="news-nav"><div class="news-wrap news-nav-row"><a href="/noticias" class="nav-current">PORTADA</a><a href="/noticias?categoria=seguridad">Seguridad</a><a href="/noticias?categoria=investigaciones">Gastos bajo la lupa</a><a href="/noticias?categoria=ciudad">Mar del Plata</a><a href="/noticias?categoria=comerciantes">Comerciantes</a><a href="/noticias?categoria=comunidad">Comunidad</a><a href="/" class="nav-map">← VOLVER AL MAPA Y CHAT</a></div></nav>
+  <main>
+    <div class="news-alert"><div class="news-wrap news-alert-inner"><strong>● EN FOCO</strong><span>Investigaciones con documentos, noticias locales y la voz de los vecinos.</span><a href="/noticias?categoria=investigaciones">INVESTIGACIONES ↗</a></div></div>
+    <section class="news-wrap news-lead">
+      <div class="lead-text"><div><p class="section-tag"><i></i> INDEPENDIENTE · MAR DEL PLATA</p><h1>La ciudad que vivimos.<br><em>La información que importa.</em></h1></div><p>Un espacio para contar lo que pasa en Mar del Plata, escuchar a los vecinos e investigar los hechos con documentación.</p></div>
+      <div id="news-featured" class="featured-grid" aria-live="polite"><div class="loading-card">Preparando la portada informativa…</div></div>
+    </section>
+    <section class="news-wrap article-section" id="explorar">
+      <div class="section-heading"><div><p class="section-tag"><i></i> LA REDACCIÓN</p><h2>Las noticias de la ciudad</h2></div><span id="news-total" class="section-info"></span></div>
+      <div id="news-filters" class="filter-bar" aria-label="Filtrar noticias por sección"></div>
+      <div class="search-row"><label for="news-search" class="sr-only">Buscar noticias</label><input id="news-search" placeholder="Buscar noticias por tema, barrio o palabra clave…"><span>⌕</span></div>
+      <div id="news-results" class="news-card-grid" aria-live="polite"></div>
+      <div id="news-empty" class="news-empty" hidden>No encontramos noticias con esos filtros. Probá con otra búsqueda.</div>
+    </section>
+    <section class="news-join"><div class="news-wrap join-grid"><div><p class="section-tag"><i></i> LA VOZ DE LOS VECINOS</p><h2>La próxima noticia<br>puede estar <em>en tu barrio.</em></h2><p>Un robo, una calle rota, problemas de iluminación, un reclamo comercial o una historia que merece contarse.</p><a href="/enviar-noticia" class="news-button">COMPARTIR INFORMACIÓN ↗</a></div><div class="join-symbol" aria-hidden="true"><span>38°00′ S / 57°33′ O</span><strong>MDP</strong><small>MAR DEL PLATA</small></div></div></section>
+  </main>
+  <footer class="news-footer"><div class="news-wrap footer-grid"><div><a href="/noticias" class="footer-brand">ROBOS <b>MDP</b> <span>NOTICIAS</span></a><p>Información ciudadana, fuentes verificables e independencia partidaria.</p></div><div><strong>NAVEGACIÓN</strong><a href="/">Mapa ciudadano</a><a href="/chat">Chat vecinal</a><a href="/colectas">Colectas</a></div><div><strong>REDACCIÓN</strong><a href="/enviar-noticia">Enviar una noticia</a><a href="/admin-noticias">Acceso editorial</a><a href="https://www.instagram.com/robos.mdp/" target="_blank" rel="noopener">Instagram ↗</a></div></div><div class="news-wrap footer-small">© 2026 ROBOS MDP · MAR DEL PLATA <span>INFORMAR TAMBIÉN ES CUIDAR.</span></div></footer>
+  <script type="module" src="/assets/noticias-app.mjs"></script>
+</body>
+</html>

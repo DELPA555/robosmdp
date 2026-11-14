@@ -1,6 +1,6 @@
 # ROBOS MDP — Coordinación compartida ChatGPT + Claude Code
 
-> **Archivo maestro del proyecto.** Última revisión: **2026-10-28**.
+> **Archivo maestro del proyecto.** Última revisión: **2026-11-14**.
 > Este archivo `CLAUDE.md` está en la raíz del repositorio para que **Claude Code lo lea como contexto de trabajo**. **ChatGPT también debe consultarlo mediante GitHub antes de proponer o realizar cambios.**
 > Repositorio: https://github.com/DELPA555/robosmdp · Rama principal: `main` · Sitio: https://robosmdp.com.ar
 
@@ -64,6 +64,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 
 | ID | Prioridad | Área | Trabajo / criterio principal | Estado inicial | Responsable |
 | --- | --- | --- | --- | --- | --- |
+| NEWS-01 | ALTA | Noticias y redacción | Módulo en /noticias, páginas por artículo, panel Firebase de borradores, fotos, publicación y formulario vecinal privado, investigaciones documentadas. Preserva chat y mapas. Rama feat/portal-noticias-20261114. Ver docs/NOTICIAS-ROBOS-MDP.md. | EN REVISIÓN / NO DESPLEGADO | ChatGPT |
 | SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT — PR #3 |
@@ -99,6 +100,16 @@ Usar este formato para cada entrada nueva:
 - Estado de deploy: NO DESPLEGADO / NETLIFY VERIFICADO / REGLAS FIREBASE VERIFICADAS / ANDROID VERIFICADA
 - Pendientes o riesgos:
 ```
+
+### 2026-11-14 — NEWS-01 Portal periodístico integrado
+- Responsable: ChatGPT.
+- Pedido y alcance: añadir noticias originales e investigaciones a la misma web, preservando chat, mapas, reportes, Android y los proyectos en revisión.
+- Archivos modificados: noticias.html, enviar-noticia.html, admin-noticias.html, assets/noticias-*.mjs, assets/noticias.css, netlify/functions/news-story.mjs, reglas Firestore y Storage, _redirects, sitemap.xml, navegación mínima de index.html y super-admin.html, documentación y pruebas.
+- Resultado: portada con archivo documentado y buscador, artículos HTML con metadatos, redacción Firebase con estados privados y públicos, bandeja de colaboraciones. El radar diario de noticias es una automatización separada que todavía no escribe en Firestore.
+- Pruebas: cinco tests de Node y sintaxis JavaScript aprobados. Pruebas reales de Firebase Auth/Firestore/Storage, Deploy Preview y Android pendientes.
+- Commit/PR: rama feat/portal-noticias-20261114 (PR en preparación).
+- Despliegue: **NO DESPLEGADO**, sin cambios en main ni publicación de reglas.
+- Pendientes: validar permisos de borradores, colaboraciones, anti-spam y móvil; coordinar integración con PR anteriores y autorización del propietario para publicar reglas.
 
 ### 2026-10-28 — SA-01 Super Admin panel unificado (super-admin.html)
 - Responsable: Claude Code.
