@@ -64,7 +64,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 
 | ID | Prioridad | Área | Trabajo / criterio principal | Estado inicial | Responsable |
 | --- | --- | --- | --- | --- | --- |
-| NEWS-01 | ALTA | Noticias y redacción | Módulo en /noticias, páginas por artículo, panel Firebase de borradores, fotos, publicación y formulario vecinal privado, investigaciones documentadas. Preserva chat y mapas. Rama feat/portal-noticias-20261114. Ver docs/NOTICIAS-ROBOS-MDP.md. | EN REVISIÓN / NO DESPLEGADO | ChatGPT |
+| NEWS-01 | ALTA | Noticias y redacción | Módulo en /noticias, artículos, panel Firebase, formulario vecinal, fotos locales WebP, banners compactos y /contratar. Menú Noticias integrado sin reemplazar mapa/chat. PR #14 fusionada; ver docs/NOTICIAS-ROBOS-MDP.md. | DESPLEGADO (web) / reglas Firebase pendientes | ChatGPT |
 | SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT — PR #3 |
@@ -104,13 +104,13 @@ Usar este formato para cada entrada nueva:
 ### 2026-11-14 — NEWS-01 Portal periodístico integrado
 - Responsable: ChatGPT.
 - Pedido y alcance: añadir noticias originales e investigaciones a la misma web, preservando chat, mapas, reportes, Android y los proyectos en revisión.
-- Archivos modificados: noticias.html, enviar-noticia.html, admin-noticias.html, assets/noticias-*.mjs, assets/noticias.css, netlify/functions/news-story.mjs, reglas Firestore y Storage, _redirects, sitemap.xml, navegación mínima de index.html y super-admin.html, documentación y pruebas.
-- Resultado: portada con archivo documentado y buscador, artículos HTML con metadatos, redacción Firebase con estados privados y públicos, bandeja de colaboraciones. El radar diario de noticias es una automatización separada que todavía no escribe en Firestore.
-- Pruebas: cinco tests de Node y sintaxis JavaScript aprobados. Pruebas reales de Firebase Auth/Firestore/Storage, Deploy Preview y Android pendientes.
-- Commit/PR: rama feat/portal-noticias-20261114, PR #14 en borrador. Ruta de notas dinámicas corregida tras la primera prueba del Deploy Preview.
-- Despliegue: **NO DESPLEGADO**, sin cambios en main ni publicación de reglas.
-- Pendientes: validar permisos de borradores, colaboraciones, anti-spam y móvil; coordinar integración con PR anteriores y autorización del propietario para publicar reglas.
-- 2026-11-14 · Edición visual solicitada: portada reorganizada con lógica de diario (titular principal, secundarias, últimas noticias, investigaciones, seguridad y ciudad), inspirada en patrones generales de Infobae y Clarín, con marca propia. Sigue en PR #14, no se publicó en main.
+- Archivos modificados: noticias.html, enviar-noticia.html, admin-noticias.html, contratar.html, assets/noticias-*.mjs, assets/noticias.css, cinco fotografías WebP locales, netlify/functions/news-story.mjs, reglas Firestore y Storage, _redirects, sitemap.xml, navegación mínima de index.html y super-admin.html, documentación y pruebas.
+- Resultado: portada periodística con artículos documentados y buscador, páginas de notas con metadatos, panel Firebase y bandeja de colaboraciones pendientes de habilitar reglas, banners compactos y página /contratar. El radar diario de noticias es una automatización separada que todavía no escribe en Firestore.
+- Pruebas: siete tests Node y sintaxis JavaScript aprobados. Deploy Preview comprobada, Netlify producción operativa, imágenes WebP locales cargadas correctamente en el navegador. Pruebas reales de Firebase Auth/Firestore/Storage y Android pendientes.
+- Commit/PR: [PR #14](https://github.com/DELPA555/robosmdp/pull/14) fusionada en `main` por squash `c05c9adb741fc08eeac5e983c4bc8b27036b7262`.
+- Despliegue: **NETLIFY EN PRODUCCIÓN VERIFICADO** el 2026-11-14: https://robosmdp.com.ar/noticias, https://robosmdp.com.ar/contratar, https://robosmdp.com.ar/admin-noticias. **REGLAS FIREBASE NO DESPLEGADAS**; la portada muestra notas semilla, pero editor y envíos no deben considerarse funcionales hasta publicarlas y probarlos.
+- Pendientes: publicar reglas Firebase después de comparar con versión actual y probar permisos de borradores, colaboraciones y anti-spam; comprobar experiencia móvil/Android. No publicar automáticamente noticias de medios sin investigación, derechos de imagen y control editorial.
+- 2026-11-14 · Edición visual solicitada y desplegada: portada reorganizada con lógica de diario (titular principal, secundarias, últimas noticias, investigaciones, seguridad y ciudad), inspirada en patrones generales de Infobae y Clarín, con marca propia. Imágenes locales reales licenciadas y fila de publicidad reducida a módulos compactos.
 
 ### 2026-10-28 — SA-01 Super Admin panel unificado (super-admin.html)
 - Responsable: Claude Code.
