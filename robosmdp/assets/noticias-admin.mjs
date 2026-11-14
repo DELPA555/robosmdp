@@ -16,6 +16,16 @@ $('login-form').addEventListener('submit', async ev => {
   try { await auth.signInWithEmailAndPassword($('login-email').value.trim(),$('login-pass').value); }
   catch (error) { status('No se pudo ingresar. Revisá tus credenciales.', false, 'login-status'); console.error(error.code); }
 });
+$('reset-password').addEventListener('click', async () => {
+  const email = $('login-email').value.trim() || ADMIN_EMAIL;
+  if (!/^\S+@\S+\.\S+$/.test(email)) return status('Ingresá un correo válido para recuperar la contraseña.',false,'login-status');
+  try {
+    await auth.sendPasswordResetEmail(email);
+    status('Si el correo está registrado, recibirás las instrucciones para restablecer tu contraseña.',true,'login-status');
+  } catch (error) {
+    status('No se pudo solicitar la recuperación. Revisá el email o intentá nuevamente.',false,'login-status');
+  }
+});
 $('logout').addEventListener('click', () => auth.signOut());
 auth.onAuthStateChanged(async user => {
   let authorized = false;
