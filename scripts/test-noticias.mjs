@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { ARCHIVO, CATEGORIAS } from '../robosmdp/assets/noticias-data.mjs';
+import { ARCHIVO, PUBLICADAS, CATEGORIAS } from '../robosmdp/assets/noticias-data.mjs';
+import { AUTOMATICAS } from '../robosmdp/assets/noticias-auto.mjs';
 import newsStory, { config as storyConfig } from '../netlify/functions/news-story.mjs';
 
 test('archivo inicial: identificadores únicos, fuentes verificables y fechas reales', () => {
@@ -22,6 +23,18 @@ test('archivo inicial: identificadores únicos, fuentes verificables y fechas re
     assert.match(a.fuente_imagen, /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);
     assert.match(a.licencia_imagen, /^https:\/\/creativecommons\.org\/licenses\/by-sa\//);
   }
+});
+
+test('publicaciones diarias automáticas: archivo separado, formato validado y rutas compartidas', () => {
+  assert.ok(Array.isArray(AUTOMATICAS));
+  assert.equal(PUBLICADAS.length, ARCHIVO.length + AUTOMATICAS.length,
+    'cada noticia automática debe ser válida y tener un ID diferente del archivo');
+  assert.equal(new Set(PUBLICADAS.map(a => a.id)).size, PUBLICADAS.length);
+  const app = fs.readFileSync(new URL('../robosmdp/assets/noticias-app.mjs',import.meta.url),'utf8');
+  const ssr = fs.readFileSync(new URL('../netlify/functions/news-story.mjs',import.meta.url),'utf8');
+  assert.match(app, /PUBLICADAS/);
+  assert.match(ssr, /PUBLICADAS/);
+  assert.match(app, /36\*60\*60\*1000/);
 });
 
 test('nota documental: render HTML SSR con metadatos y fuente', async () => {

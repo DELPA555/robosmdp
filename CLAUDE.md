@@ -64,7 +64,7 @@ Mantener una única fuente de verdad accesible para el propietario, ChatGPT y Cl
 
 | ID | Prioridad | Área | Trabajo / criterio principal | Estado inicial | Responsable |
 | --- | --- | --- | --- | --- | --- |
-| NEWS-01 | ALTA | Noticias y redacción | Módulo en /noticias, artículos, panel Firebase, formulario vecinal, fotos locales WebP, banners compactos y /contratar. Menú Noticias integrado sin reemplazar mapa/chat. PR #14 fusionada; ver docs/NOTICIAS-ROBOS-MDP.md. | DESPLEGADO (web) / reglas Firebase pendientes | ChatGPT |
+| NEWS-01 | ALTA | Noticias y redacción | Módulo en /noticias, artículos, panel Firebase, formulario vecinal, fotos WebP, banners compactos y /contratar. Nueva carga automática GitHub/Netlify desde noticias-auto.mjs, sin revisión previa por autorización del dueño; ver docs/AUTOPUBLICACION-NOTICIAS.md. | DESPLEGADO (web) / automatización de publicación por verificar / reglas Firebase pendientes | ChatGPT |
 | SEG-01 | CRÍTICA | Privacidad del chat | Segregar IP/ciudad/ISP de `chat_presencia` legible por usuarios autenticados. Permitir lectura de datos sensibles únicamente al admin en colección o servicio separado, **sin quitarle visibilidad en su panel**. Añadir pruebas negativas de acceso. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-02 | CRÍTICA | Función `chat-ip` | Autenticar al solicitante, validar que `uid` y `sessionId` correspondan a su sesión, y evitar que un tercero sobreescriba datos de otra presencia mediante la credencial de servidor. Evaluar geolocalización por canal seguro. | EN REVISIÓN | ChatGPT — PR #3 |
 | SEG-03 | ALTA | Reglas de reportes | Restringir la modificación de `resolved` a personas autorizadas; revisar incremento de contadores y demás escrituras públicas contra manipulación/abuso. Preservar el alta vecinal. | EN REVISIÓN | ChatGPT — PR #3 |
@@ -111,6 +111,13 @@ Usar este formato para cada entrada nueva:
 - Despliegue: **NETLIFY EN PRODUCCIÓN VERIFICADO** el 2026-11-14: https://robosmdp.com.ar/noticias, https://robosmdp.com.ar/contratar, https://robosmdp.com.ar/admin-noticias. **REGLAS FIREBASE NO DESPLEGADAS**; la portada muestra notas semilla, pero editor y envíos no deben considerarse funcionales hasta publicarlas y probarlos.
 - Pendientes: publicar reglas Firebase después de comparar con versión actual y probar permisos de borradores, colaboraciones y anti-spam; comprobar experiencia móvil/Android. No publicar automáticamente noticias de medios sin investigación, derechos de imagen y control editorial.
 - 2026-11-14 · Edición visual solicitada y desplegada: portada reorganizada con lógica de diario (titular principal, secundarias, últimas noticias, investigaciones, seguridad y ciudad), inspirada en patrones generales de Infobae y Clarín, con marca propia. Imágenes locales reales licenciadas y fila de publicidad reducida a módulos compactos.
+
+### 2026-11-14 — NEWS-02 Publicación de noticias sin revisión previa
+- Pedido y autorización: Robos MDP tendrá carga diaria automática al portal, sin aprobación caso por caso, con máxima prioridad para inseguridad y prevención en Mar del Plata.
+- Nueva vía: robosmdp/assets/noticias-auto.mjs exporta AUTOMATICAS. noticias-data.mjs incluye las entradas válidas en PUBLICADAS; portada y función news-story leen la misma lista y el titular principal ya no queda anclado a una nota destacada antigua.
+- La automatización diaria deberá escribir en GitHub main a través de herramientas autorizadas; Netlify despliega esa actualización sin requerir reglas Firebase nuevas. No afecta el chat, mapa ni los paneles existentes.
+- Seguridad editorial obligatoria aun sin revisión humana: no acusar sin sustento, diferenciar denuncias de sentencias, proteger datos personales, contenido original con fuentes enlazadas y fotos con licencia.
+- Pruebas locales: ocho pruebas de Node aprobadas. La primera ejecución diaria desatendida y la verificación del nuevo despliegue quedan pendientes; no afirmar que está funcionando automáticamente hasta observarlo. Ver docs/AUTOPUBLICACION-NOTICIAS.md.
 
 ### 2026-10-28 — SA-01 Super Admin panel unificado (super-admin.html)
 - Responsable: Claude Code.

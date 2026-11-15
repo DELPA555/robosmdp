@@ -1,4 +1,4 @@
-import { ARCHIVO, CATEGORIAS } from './noticias-data.mjs';
+import { PUBLICADAS, CATEGORIAS } from './noticias-data.mjs';
 import { initNewsFirebase, escapeHtml as esc, publicImage, articleDate, newsHref } from './noticias-firebase.mjs';
 
 const labelFor = id => CATEGORIAS.find(([k]) => k === id)?.[1] || 'Actualidad';
@@ -13,7 +13,7 @@ function card(a) {
   return `<a class="news-card" href="${newsHref(a)}">${art(a)}<div class="news-card-body"><span class="cat">${esc(labelFor(a.categoria))}</span><h3>${esc(a.titulo)}</h3><p>${esc(a.bajada)}</p><div class="news-card-foot"><span>${esc(format(a.fecha))}</span><span>↗</span></div></div></a>`;
 }
 
-let all = ARCHIVO.slice().sort((a,b) => articleDate(b.fecha) - articleDate(a.fecha));
+let all = PUBLICADAS.slice().sort((a,b) => articleDate(b.fecha) - articleDate(a.fecha));
 let filter = new URLSearchParams(location.search).get('categoria') || 'todas';
 let query = '';
 const results = document.getElementById('news-results');
@@ -58,7 +58,12 @@ function render() {
   }));
 
   const front = filter === 'todas' ? all : all.filter(a => a.categoria === filter);
-  const lead = front.find(a => a.destacada) || front[0];
+  // Una nota marcada como destacada no debe fijar indefinidamente la portada:
+  // si aparecen noticias más nuevas, éstas recuperan el titular principal.
+  const marked = front.find(a => a.destacada);
+  const lead = marked && front[0]
+    && articleDate(front[0].fecha) - articleDate(marked.fecha) < 36*60*60*1000
+    ? marked : front[0];
   const side = front.filter(a => a.id !== lead?.id).slice(0,2);
   if (!lead) { featured.innerHTML = '<div class="loading-card">Todavía no hay noticias verificadas en esta sección. Seguimos trabajando para informar con responsabilidad.</div>'; return; }
   featured.innerHTML = `<a class="feature-primary" href="${newsHref(lead)}">${art(lead)}<div class="feature-content"><span class="pill">${esc(labelFor(lead.categoria))}</span><h2>${esc(lead.titulo)}</h2><p>${esc(lead.bajada)}</p><div class="feature-foot"><span>REDACCIÓN ROBOS MDP · ${esc(format(lead.fecha))}</span><span>LEER NOTICIA ↗</span></div></div></a>
@@ -71,7 +76,7 @@ try {
   const fb = initNewsFirebase();
   const snapshot = await fb.firestore().collection('noticias').where('estado', '==', 'publicado').limit(100).get();
   const docs = snapshot.docs.map(doc => ({ ...doc.data(), id:doc.id })).filter(a => a.titulo && a.bajada && a.fecha);
-  const byId = new Map([...ARCHIVO, ...docs].map(a => [a.id,a]));
+  const byId = new Map([...PUBLICADAS, ...docs].map(a => [a.id,a]));
   all = [...byId.values()].sort((a,b) => articleDate(b.fecha) - articleDate(a.fecha));
   render();
 } catch (error) {

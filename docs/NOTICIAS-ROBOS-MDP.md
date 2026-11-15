@@ -15,6 +15,7 @@ No se reemplazan index.html, el mapa, chat, foro, colectas, rastreo ni la app An
 - Nuevas colecciones Firestore: noticias y noticias_envios.
 - Nuevo directorio Firebase Storage: noticias/{slug}/{archivo}.
 - Cinco notas documentales iniciales en assets/noticias-data.mjs, conservadas con sus fechas y fuentes.
+- Publicación diaria desatendida en assets/noticias-auto.mjs, separado del archivo inicial, validado antes de aparecer en portada y notas individuales. Las actualizaciones de ese archivo en main se despliegan automáticamente en Netlify sin depender de Firebase. Ver docs/AUTOPUBLICACION-NOTICIAS.md.
 - Cinco fotografías auténticas de Mar del Plata tomadas de Wikimedia Commons, con autor, enlace al original, licencia CC BY-SA y contexto de archivo en cada artículo. Copias redimensionadas/convertidas a WebP y alojadas bajo /assets/noticias en el mismo Netlify para evitar demoras, fallos de enlaces externos y layouts sin imágenes. No se presentan como fotos de los contratos investigados ni de hechos recientes.
 - Banners comerciales identificados en portada (se reutilizan creatividades y enlaces actualmente presentes en el sitio) y en artículos, con rótulo PUBLICIDAD, separación editorial y enlace de contratación. La fila publicitaria se redujo a tres módulos compactos y los anuncios en artículos a formato lateral pequeño, tras revisión de tamaño.
 - /contratar: página comercial con formatos de banners, campañas y servicios, formulario que compone una consulta por WhatsApp al número ya publicado en el sitio. No presupone un pago ni una reserva sin confirmación.
@@ -35,11 +36,11 @@ Separar licitaciones, adjudicaciones y pagos; no calificar de corrupción lo no 
 
 ## Automatizaciones actuales
 
-Un radar diario de noticias locales comienza el 15/11/2026 y existe además una búsqueda diaria separada de gastos públicos. Ambas investigaciones generan alertas y borradores en ChatGPT para revisión. Todavía no existe un canal de publicación automática en Firestore y NO se afirma que la web vaya a recibir artículos nuevos sin intervención.
+El radar diario de noticias locales comienza el 15/11/2026, con prioridad absoluta para inseguridad, y existe además una búsqueda diaria separada de gastos públicos. Por autorización expresa del propietario, el radar puede publicar directamente notas originales verificadas en GitHub, sin revisión previa caso por caso. Se conserva un umbral de seguridad para evitar hechos sin verificar, datos sensibles y fotos sin permiso. La actualización usa GitHub/Netlify, no Firebase. La ejecución real de la primera publicación automática debe verificarse después del primer ciclo.
 
 ## Verificación
 
-- node --test scripts/test-noticias.mjs: siete pruebas aprobadas; incluyen control de procedencia y licencias de fotografías y presencia comercial identificada.
+- node --test scripts/test-noticias.mjs: ocho pruebas aprobadas; incluyen control de procedencia y licencias de fotografías, espacios comerciales y entradas automáticas válidas.
 - node --check de los módulos JavaScript y la función Netlify: aprobado.
 - Deploy Preview y publicación web de Netlify: verificadas. Las fotos locales WebP cargan en producción (naturalWidth > 0). La sección comercial y artículos se renderizan.
 - Autenticación Firebase/Firestore/Storage reales, reglas en consola y Android: pendientes. El estado público del panel no garantiza aún que se puedan guardar noticias ni recibir colaboraciones.

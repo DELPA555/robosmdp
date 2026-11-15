@@ -1,6 +1,6 @@
 /* Nota periodística servida con metadatos propios, apta para enlaces y buscadores.
    Archivo de notas cotejadas + noticias publicadas en Firebase Firestore. */
-import { ARCHIVO, CATEGORIAS } from '../../robosmdp/assets/noticias-data.mjs';
+import { PUBLICADAS, CATEGORIAS } from '../../robosmdp/assets/noticias-data.mjs';
 
 const PROJECT = 'robosmdp-d1ef3';
 const escapeHtml = value => String(value == null ? '' : value).replace(/[&<>"']/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
@@ -29,7 +29,7 @@ function decodeFirestore(value) {
   return null;
 }
 async function findNews(slug) {
-  const archived = ARCHIVO.find(a => a.id === slug);
+  const archived = PUBLICADAS.find(a => a.id === slug);
   if (archived) return archived;
   // Reglas Firebase: solo artículos publicados son accesibles sin credenciales.
   // La clave web pública es la misma del frontend; las reglas Firestore
