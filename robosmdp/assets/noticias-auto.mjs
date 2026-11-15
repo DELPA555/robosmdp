@@ -118,5 +118,85 @@ export const AUTOMATICAS = [
         "url": "https://quedigital.com.ar/policiales/detuvieron-a-un-joven-que-entro-a-robar-a-un-galpon-del-ente-de-vialidad/"
       }
     ]
+  },
+  {
+    "id": "prefectura-cables-san-carlos-captura-20261115",
+    "titulo": "Robaron cables en San Carlos: Prefectura detuvo a un sospechoso con pedido de captura",
+    "bajada": "El procedimiento ocurrió el sábado 14 de noviembre cerca de Almafuerte al 300. La Policía recuperó cables y una luminaria; el detenido tenía una orden de captura previa.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T14:12:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Un aviso al 911 por la sustracción de cables eléctricos en el barrio San Carlos derivó en un operativo de Prefectura Naval Argentina durante el sábado 14 de noviembre. La novedad se difundió este domingo 15. La alerta situaba el episodio en las inmediaciones de Almafuerte al 300 y describía la vestimenta de quien se había retirado del lugar.\n\nPersonal del Operativo Seguridad Mar del Plata recorrió la zona y localizó a un hombre a aproximadamente cien metros del punto denunciado. Según la información del procedimiento, llevaba una bolsa con cables y una lámpara LED. Al verificar sus antecedentes, los agentes constataron que existía un pedido de captura anterior, vigente desde hacía más de un año; no se informó en esa publicación el expediente que originó la medida.\n\nLa Fiscalía de Flagrancia, a cargo de Facundo de la Canale, dispuso secuestrar los elementos y trasladar al aprehendido, de 36 años, a la Unidad Penal 44 de Batán. La detención y el secuestro son actuaciones informadas; la responsabilidad por el hecho deberá determinarse judicialmente. El robo de cableado también representa un riesgo para la iluminación y la seguridad de los espacios públicos.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 15/11/2026; procedimiento de Prefectura",
+        "url": "https://www.infobrisas.com/noticias/2026/11/15/114825-prefectura-detuvo-a-un-hombre-que-tenia-un-pedido-de-captura-hace-mas-de-un-ano"
+      }
+    ]
+  },
+  {
+    "id": "allanamientos-autos-conductor-app-menores-20261115",
+    "titulo": "Investigaron dos robos de vehículos y un asalto a un conductor: cuatro adolescentes identificados",
+    "bajada": "Dos allanamientos realizados en Mar del Plata permitieron secuestrar un arma y otros elementos vinculados a hechos del 2 de noviembre. No se dispusieron restricciones de libertad.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T14:13:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "La investigación de dos episodios denunciados el 2 de noviembre avanzó con allanamientos en dos inmuebles de Mar del Plata. La información se hizo pública el sábado 14 y refiere al hurto de un Volkswagen Gol y al asalto de un conductor de una aplicación de viajes, quien habría sido amenazado con armas de fuego y agredido.\n\nPersonal de la Comisaría Duodécima trabajó sobre declaraciones, imágenes de cámaras y publicaciones en redes sociales antes de solicitar las medidas judiciales. Durante los procedimientos se secuestró un revólver y otros elementos que deberán ser peritados y relacionados con los hechos investigados. Fueron identificados cuatro adolescentes de entre 16 y 17 años.\n\nLa Fiscalía interviniente no dispuso medidas restrictivas de la libertad para los jóvenes. Esa decisión procesal no implica una absolución ni confirma su responsabilidad. Por tratarse de menores de edad, Robos MDP omite identidades y domicilios particulares. El caso sigue abierto y requiere conocer el resultado de las pericias y las eventuales decisiones judiciales posteriores.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 14/11/2026; investigación policial",
+        "url": "https://www.infobrisas.com/noticias/2026/11/14/114792-cuatro-adolescentes-identificados-tras-allanamientos-por-el-robo-de-autos-en-mar-del-plata"
+      }
+    ]
+  },
+  {
+    "id": "allanamiento-cuatro-robos-acantilados-serena-20261115",
+    "titulo": "Un allanamiento vinculó herramientas recuperadas con cuatro robos en Los Acantilados y Playa Serena",
+    "bajada": "La investigación reúne denuncias de septiembre, octubre y noviembre. Secuestraron materiales eléctricos, herramientas y una computadora; no había ocupantes durante el operativo.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-15T14:14:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "La Subcomisaría Los Acantilados avanzó en una investigación que reúne cuatro denuncias de robos y hurtos en viviendas de la zona sur de Mar del Plata. La actuación fue difundida el 13 de noviembre y comprende episodios ocurridos entre septiembre y el 8 de noviembre, algunos bajo la modalidad de escruche, cuando los propietarios no estaban presentes.\n\nTras analizar cámaras privadas y realizar tareas de campo, la Justicia autorizó un allanamiento en el sector de Los Acantilados. Los policías secuestraron una bordeadora, herramientas, rollos de cable, componentes eléctricos, una netbook y otros objetos. Parte de los efectos fue reconocida por una de las víctimas. En uno de los casos, el damnificado había estimado en alrededor de diez millones de pesos el valor de herramientas y máquinas sustraídas de una obra.\n\nNo había personas dentro del inmueble al momento de la diligencia y la publicación consultada no informa detenciones por este procedimiento. Intervienen la UFI 6 y el Juzgado de Garantías 3. Los elementos recuperados deberán ser vinculados individualmente con cada denuncia; el secuestro de bienes no equivale por sí mismo a una condena.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 13/11/2026; parte de investigación",
+        "url": "https://www.infobrisas.com/noticias/2026/11/13/114749-allanaron-una-casa-en-los-acantilados-y-esclarecieron-cuatro-robos-y-hurtos"
+      }
+    ]
+  },
+  {
+    "id": "detenido-dos-asaltos-almacenes-cuchillo-20261115",
+    "titulo": "Detuvieron a un sospechoso por dos asaltos con cuchillo a almacenes de Mar del Plata",
+    "bajada": "Los hechos investigados ocurrieron en agosto en García Lorca y Cerrito. La DDI analizó cámaras y concretó la detención el viernes 13 de noviembre.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T14:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Dos robos denunciados por comerciantes durante agosto desembocaron en la detención de un hombre de 48 años el viernes 13 de noviembre. El primer episodio se produjo el 8 de agosto en un almacén de la zona de García Lorca al 5400: según la denuncia, un hombre exhibió un arma blanca, amenazó al encargado y escapó con aproximadamente cien mil pesos. El 11 de agosto se registró una modalidad similar en un autoservicio de Cerrito al 2500.\n\nEl Gabinete de Robos a Comercios de la DDI reunió registros de cámaras y sostuvo como hipótesis que una misma persona había intervenido en ambos hechos. Con una orden judicial, los investigadores localizaron al sospechoso en el área de Edison y Jorge Newbery y concretaron su detención. Durante la requisa se informó el hallazgo de un arma blanca, por lo que también se iniciaron actuaciones contravencionales.\n\nEl detenido fue trasladado a la Unidad Penal 44 de Batán y la causa quedó bajo la órbita de la UFI 14. Los dos robos son hechos denunciados y la participación del imputado debe establecerse en sede judicial. Para comerciantes, el caso vuelve a mostrar la utilidad de conservar registros de cámaras y formalizar denuncias aun cuando el episodio no se esclarezca de inmediato.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 13/11/2026; investigación DDI",
+        "url": "https://www.infobrisas.com/noticias/2026/11/13/114743-dos-almacenes-fueron-asaltados-con-un-arma-blanca-y-detuvieron-al-sospechoso"
+      }
+    ]
+  },
+  {
+    "id": "entradera-anciana-kangoo-encubrimiento-20261115",
+    "titulo": "Tras una entradera a una mujer mayor, allanaron y recuperaron una camioneta robada",
+    "bajada": "La investigación por el asalto del 6 de noviembre derivó en dos procedimientos el viernes 13. Un hombre quedó aprehendido por presunto encubrimiento de bienes vinculados a otros robos.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T14:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Una investigación por la entradera sufrida por una mujer de 80 años el 6 de noviembre avanzó el viernes 13 con dos allanamientos en Mar del Plata. De acuerdo con la denuncia, tres personas encapuchadas ingresaron de madrugada a la vivienda, redujeron a la víctima y le ataron las manos antes de escapar con dinero y dispositivos electrónicos. La mujer no presentó lesiones según la información difundida.\n\nEl análisis de cámaras del Centro de Operaciones y Monitoreo y de registros particulares permitió seguir una Renault Kangoo presuntamente utilizada en la huida. Durante los procedimientos se secuestró una camioneta cuya identificación original registraba pedido de secuestro por hurto automotor, además de dispositivos de comunicación, municiones, herramientas y una cafetera comercial vinculada a otro robo denunciado en agosto.\n\nUn hombre de 28 años fue aprehendido por dos hechos de encubrimiento, bajo intervención de la UFI 13. Es importante distinguir esa imputación de la autoría de la entradera: la publicación consultada no confirma que el aprehendido sea uno de los tres asaltantes. La investigación continúa y los secuestros requieren pericias y reconocimiento de las víctimas.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 13/11/2026; actuaciones DDI y fiscalía",
+        "url": "https://www.infobrisas.com/noticias/2026/11/13/114725-un-aprehendido-por-dos-hechos-de-encubrimiento-tras-una-entradera-en-mar-del-plata"
+      }
+    ]
   }
 ];
