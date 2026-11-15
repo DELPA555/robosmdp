@@ -198,5 +198,43 @@ export const AUTOMATICAS = [
         "url": "https://www.infobrisas.com/noticias/2026/11/13/114725-un-aprehendido-por-dos-hechos-de-encubrimiento-tras-una-entradera-en-mar-del-plata"
       }
     ]
+  },
+  {
+    "id": "tentativa-robo-cementerio-la-loma-cobre-bronce-20261115",
+    "titulo": "Intervinieron en La Loma tras detectar a un hombre con cobre y objetos de bronce",
+    "bajada": "Trabajadores del cementerio municipal dieron aviso al 911; Prefectura interceptó a un sospechoso y la Fiscalía abrió una causa por tentativa de robo.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T15:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un procedimiento realizado el sábado 14 de noviembre en el Cementerio de La Loma, Mar del Plata, terminó con la aprehensión de un hombre de 36 años. La intervención comenzó cuando trabajadores municipales advirtieron movimientos sospechosos entre las galerías de nichos y comunicaron la situación al servicio de emergencias 911.\n\nSegún el reporte policial publicado por 0223, efectivos de Prefectura Naval Argentina acudieron al predio y encontraron al hombre en el sector de salida hacia avenida Paso. Allí dejó una bolsa negra que, al ser revisada ante testigos, contenía cables trifásicos de cobre, una lámpara LED y un portarretratos de bronce. Un trabajador lo reconoció como la persona observada dentro del cementerio.\n\nLa Fiscalía de Flagrancia dispuso el secuestro de los objetos y actuaciones por robo en grado de tentativa, además del traslado del aprehendido a la Unidad Penal 44 de Batán. La investigación deberá determinar el origen de cada elemento y las circunstancias del episodio; la aprehensión y la imputación no equivalen a una condena. El caso vuelve a plantear la importancia de prevenir sustracciones y daños en espacios públicos de especial sensibilidad para las familias.",
+    "fuentes": [
+      {
+        "nombre": "0223, 14/11/2026, crónica de procedimiento policial",
+        "url": "https://www.0223.com.ar/nota/2026-11-14-19-39-0-merodeaba-entre-los-nichos-del-cementerio-la-loma-e-intento-escapar-con-cables-y-un-portarretratos-de-bronce"
+      }
+    ]
+  },
+  {
+    "id": "hurto-frustrado-paseo-portuario-prefectura-20261115",
+    "titulo": "Un testigo siguió a dos sospechosos de hurto en el paseo portuario y Prefectura los interceptó",
+    "bajada": "Un hombre y una mujer fueron aprehendidos cerca de la dependencia de Prefectura; la Fiscalía 14 intervino por tentativa de hurto.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T15:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La Prefectura Naval Argentina informó sobre un hurto frustrado en el paseo portuario de Mar del Plata, ocurrido el viernes 13 de noviembre y difundido posteriormente en un parte oficial del 15. El hecho se registró en un sector bajo jurisdicción de la autoridad marítima nacional, donde dos personas fueron señaladas como presuntas responsables de una tentativa de sustracción.\n\nDe acuerdo con la información institucional, un hombre y una mujer emprendieron la fuga a pie hacia una de las salidas del puerto mientras un testigo los seguía. Esa situación llamó la atención de efectivos que prestaban servicio en la zona, quienes intervinieron y los interceptaron a unos doscientos metros del lugar, cerca de la dependencia de la fuerza.\n\nAmbas personas quedaron a disposición de la Unidad Funcional de Instrucción y Juicio 14, que ordenó recibir declaraciones a la víctima y al testigo y notificarlas de la imputación por tentativa de hurto. No se informó una sentencia ni corresponde atribuir responsabilidad penal definitiva. La actuación permite reconstruir una respuesta rápida ante una alerta ciudadana en un espacio de circulación turística y comercial.",
+    "fuentes": [
+      {
+        "nombre": "Ministerio de Seguridad Nacional / Prefectura Naval Argentina, parte oficial del 15/11/2026",
+        "url": "https://www.argentina.gob.ar/noticias/mar-del-plata-prefectura-detuvo-un-hombre-que-tenia-un-pedido-de-captura-vigente"
+      },
+      {
+        "nombre": "QZ Noticias, 14/11/2026",
+        "url": "https://www.qznoticias.com/policiales/intentaron-robar-en-el-paseo-portuario-escaparon-a-pie-y-prefectura-los-detuvo-a-dos-cuadras"
+      }
+    ]
   }
 ];
