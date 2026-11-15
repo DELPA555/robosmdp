@@ -54,5 +54,69 @@ export const AUTOMATICAS = [
         "url": "https://www.0223.com.ar/nota/2026-11-14-20-5-0-tiene-16-anos-lo-investigaban-por-un-asalto-a-mano-armada-y-encontraron-en-su-casa-el-celular-robado"
       }
     ]
+  },
+  {
+    "id": "estafas-digitales-encuesta-fasta-mar-del-plata-20261115",
+    "titulo": "Alerta por estafas digitales: casi la mitad de los encuestados dijo haber sufrido un ciberdelito",
+    "bajada": "Un relevamiento de la Universidad FASTA a 500 adultos de Mar del Plata registró un 48,2% de experiencias declaradas de fraude o delitos digitales y expuso dificultades para denunciarlos.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T13:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "documentos",
+    "texto": "Una encuesta difundida el 14 de noviembre volvió a poner en primer plano los riesgos de estafas por internet en Mar del Plata. El Observatorio Universitario de la Ciudad de la Universidad FASTA consultó a 500 personas adultas: el 48,2% declaró haber atravesado al menos una de las experiencias de ciberdelito contempladas en el cuestionario. Es un resultado de esa muestra, no una medición de denuncias policiales ni una estimación comprobada de todas las víctimas de la ciudad.\n\nOtro dato relevante para la prevención: el 66% dijo haber recibido contactos sospechosos o conocer situaciones de ese tipo durante el último año, incluyendo mensajes sobre supuestos premios, pedidos de dinero que aparentaban venir de conocidos y solicitudes de códigos de seguridad. Ese porcentaje no significa que el 66% haya sido estafado. La comparación presentada en el relevamiento ubica las experiencias declaradas en 48,2%, frente a 32% de una medición previa.\n\nEl informe también señala que siete de cada diez encuestados desconocían canales oficiales de denuncia. Desde Robos MDP recordamos que ante una solicitud inesperada de claves, códigos o transferencias conviene cortar el contacto, verificar por un canal independiente y conservar capturas y comprobantes para denunciar. La encuesta no identifica responsables individuales ni acredita una ola de hechos ocurridos este fin de semana.",
+    "fuentes": [
+      {
+        "nombre": "Qué Digital, 14/11/2026; relevamiento del Observatorio Universitario FASTA",
+        "url": "https://quedigital.com.ar/sociedad/una-encuesta-advirtio-por-un-aumento-en-las-estafas-digitales-en-mar-del-plata/"
+      }
+    ]
+  },
+  {
+    "id": "robo-equipos-fotografia-parapente-playa-serena-20261115",
+    "titulo": "Rompieron un vidrio y robaron equipos de fotografía y parapente en Playa Serena",
+    "bajada": "El hecho ocurrió el jueves 12 de noviembre por la tarde. Las víctimas buscan recuperar cámaras, lentes y equipamiento de vuelo sustraído de un automóvil estacionado en la zona sur.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T13:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Un grupo de visitantes denunció que le rompieron un vidrio del automóvil que habían estacionado en la zona de Playa Serena, al sur de Mar del Plata, y le sustrajeron equipos de fotografía, filmación y parapente. El episodio habría ocurrido el jueves 12 de noviembre alrededor de las 16 y fue difundido públicamente el viernes 13. No debe confundirse la fecha del robo con la de esta actualización.\n\nEntre los objetos que las víctimas buscan recuperar figuran una cámara Canon EOS 90D, lentes fotográficos, micrófonos, una cámara Insta360, una radio Yaesu FT-270 y un parapente Niviuk Hook 3, además de mochila, arnés y accesorios. La enumeración de modelos puede ayudar a reconocer publicaciones de reventa sospechosas; no implica que todos los equipos estén identificados por números de serie públicos.\n\nLas personas afectadas informaron que estaban realizando la denuncia y pidieron colaboración para detectar eventuales ofrecimientos de los artículos. Si alguien reconoce elementos similares, lo prudente es guardar capturas, ubicación del anuncio y datos verificables, y comunicarlo a las autoridades sin enfrentar a posibles vendedores. Hasta el momento de esta publicación no contamos con una confirmación independiente sobre recuperaciones o personas detenidas.",
+    "fuentes": [
+      {
+        "nombre": "0223, 13/11/2026; testimonio de víctimas publicado por el medio",
+        "url": "https://www.0223.com.ar/nota/2026-11-13-14-42-0-les-rompieron-el-vidrio-del-auto-robaron-un-costoso-equipo-de-fotografia-y-parapente-y-buscan-ayuda"
+      }
+    ]
+  },
+  {
+    "id": "robo-galpon-emvial-el-gaucho-detencion-20261115",
+    "titulo": "Detuvieron a un joven cuando intentaba llevarse cobre y luminarias de un galpón municipal",
+    "bajada": "El procedimiento ocurrió el viernes 13 de noviembre en el predio El Gaucho. La Policía también encontró una motocicleta con pedido de secuestro por robo.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T13:12:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Personal policial que custodiaba el predio del Distrito Descentralizado El Gaucho, en el sector de Juan B. Justo y Reforma Universitaria, intervino durante la madrugada del viernes 13 de noviembre ante un presunto robo en un galpón del Ente Municipal de Vialidad y Alumbrado (EMVIAL).\n\nDe acuerdo con la información policial difundida por Qué Digital, los agentes interceptaron a un joven de 24 años que llevaba una bolsa con once bobinas de cobre destinadas a luminarias y dos lámparas de alumbrado público. En las inmediaciones localizaron una motocicleta sin patente que tenía pedido de secuestro por un robo anterior. También se constataron daños en un sector de acceso al predio.\n\nLa Fiscalía de Flagrancia dispuso actuaciones por tentativa de robo y encubrimiento, y ordenó que el aprehendido compareciera ante la Justicia. Se trata de acusaciones que deberán determinarse judicialmente; no se informó una sentencia. El caso también plantea la necesidad de reforzar la protección del material destinado al alumbrado público, cuya sustracción puede afectar servicios para los vecinos.",
+    "fuentes": [
+      {
+        "nombre": "Qué Digital, 13/11/2026; información policial",
+        "url": "https://quedigital.com.ar/policiales/detuvieron-a-un-joven-que-entro-a-robar-a-un-galpon-del-ente-de-vialidad/"
+      }
+    ]
+  },
+  {
+    "id": "intento-robo-centro-barrial-juramento-20261115",
+    "titulo": "Una alarma vecinal permitió detener a un sospechoso en un centro barrial de Juramento",
+    "bajada": "La Policía acudió a un espacio comunitario en Padre Dutto al 2300 durante la noche del jueves 12. Un hombre de 26 años fue aprehendido y quedó investigado por tentativa de robo.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T13:13:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Una alerta por la activación de una alarma movilizó al Comando de Patrullas Sur hacia un centro barrial parroquial ubicado en la zona de Padre Dutto al 2300, barrio Juramento, durante la noche del jueves 12 de noviembre. El procedimiento se conoció públicamente el viernes 13.\n\nSegún la información policial recogida por Qué Digital, el personal ingresó con autorización de un responsable del establecimiento y constató daños en un ventiluz del depósito donde se guardaba mercadería. En esas circunstancias detectaron la salida de un hombre por esa abertura y lo interceptaron poco después en las inmediaciones. Le encontraron dos destornilladores.\n\nEl aprehendido, de 26 años, fue trasladado a una dependencia policial y quedó a disposición de la Fiscalía de Flagrancia bajo una imputación por tentativa de robo. No se informó una condena ni una sustracción consumada. El episodio muestra la importancia de los avisos tempranos y la respuesta policial ante alarmas en espacios comunitarios.",
+    "fuentes": [
+      {
+        "nombre": "Qué Digital, 13/11/2026; segundo procedimiento informado en la crónica policial",
+        "url": "https://quedigital.com.ar/policiales/detuvieron-a-un-joven-que-entro-a-robar-a-un-galpon-del-ente-de-vialidad/"
+      }
+    ]
   }
 ];
