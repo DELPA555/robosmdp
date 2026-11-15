@@ -1,5 +1,7 @@
 /* Archivo documental verificado, conservado con su fecha original.
-   Los futuros artículos nuevos se almacenan en la colección Firestore 'noticias'. */
+   Las noticias diarias automáticas viven en noticias-auto.mjs y las
+   publicaciones manuales del panel usan Firestore 'noticias'. */
+import { AUTOMATICAS } from './noticias-auto.mjs';
 export const CATEGORIAS = [
   ['todas', 'Todas'], ['seguridad', 'Seguridad'], ['investigaciones', 'Gastos bajo la lupa'],
   ['ciudad', 'Mar del Plata'], ['comerciantes', 'Comerciantes'],
@@ -116,3 +118,23 @@ Un presupuesto de licitación no equivale a una contratación ni a un gasto efec
     fuentes: [{ nombre: 'Licitación publicada en el Boletín Oficial municipal', url: 'https://sibom.slyt.gba.gob.ar/bulletins/16124/contents/2471690/download_annex?annex_id=70873' }]
   }
 ];
+
+// Un artículo automático incompleto nunca llega a portada ni a las rutas
+// públicas. La validación es deliberadamente conservadora.
+const esNoticiaAutomatica = a => a && typeof a === 'object'
+  && typeof a.id === 'string' && /^[a-z0-9][a-z0-9-]{1,115}$/.test(a.id)
+  && CATEGORIAS.some(([id]) => id === a.categoria && id !== 'todas')
+  && typeof a.titulo === 'string' && a.titulo.trim().length >= 20
+  && typeof a.bajada === 'string' && a.bajada.trim().length >= 45
+  && typeof a.texto === 'string' && a.texto.trim().length >= 250
+  && typeof a.fecha === 'string' && Number.isFinite(Date.parse(a.fecha))
+  && Array.isArray(a.fuentes) && a.fuentes.length > 0
+  && a.fuentes.every(f => f && typeof f.nombre === 'string'
+    && typeof f.url === 'string' && /^https:\/\//.test(f.url))
+  && (!a.imagen || (typeof a.imagen === 'string'
+    && typeof a.credito_imagen === 'string' && a.credito_imagen.trim().length >= 10));
+
+export const PUBLICADAS = [...new Map([
+  ...ARCHIVO,
+  ...AUTOMATICAS.filter(esNoticiaAutomatica),
+].map(a => [a.id, a])).values()];
