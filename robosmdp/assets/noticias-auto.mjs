@@ -4,6 +4,27 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "robo-moto-disparos-los-pinares-20261116",
+    "titulo": "Robaron una moto y hubo disparos en Los Pinares: investigan el ataque",
+    "bajada": "Un motociclista fue interceptado por delincuentes el domingo por la noche. Un vecino intervino y se registraron disparos; el episodio quedó filmado.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-16T20:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un robo de motocicleta ocurrido el domingo 15 de noviembre por la noche en el barrio Los Pinares, en Mar del Plata, terminó con disparos de arma de fuego. Según las coberturas periodísticas publicadas el lunes 16, el ataque ocurrió alrededor de las 21:10, cuando un motociclista llegaba a una vivienda y fue interceptado por varios delincuentes que circulaban en motos. El episodio quedó registrado en cámaras de seguridad de la zona.\n\nLas crónicas coinciden en que los asaltantes se llevaron el rodado y que un vecino intervino armado, momento en el que se produjeron detonaciones. Las fuentes difieren en la ubicación exacta: una sitúa el episodio en las inmediaciones de Falkner y Roffo y otra en Río Negro y Roffo. Por eso se informa únicamente el barrio y el sector de calle Roffo, sin presentar una esquina como confirmada.\n\nHasta el momento de esta publicación no se dispone de un parte judicial que precise si hubo heridos, la cantidad de disparos, la identidad de los atacantes o eventuales aprehensiones. La existencia de imágenes de seguridad no reemplaza la investigación oficial. Se recomienda no enfrentar a personas armadas, resguardarse y comunicar de inmediato al 911 cualquier información sobre hechos similares. Esta nota se publica el 16 de noviembre y refiere a un hecho ocurrido el día anterior.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 16/11/2026",
+        "url": "https://www.lacapitalmdp.com/video-el-robo-de-una-moto-derivo-en-un-tiroteo-en-el-barrio-los-pinares/"
+      },
+      {
+        "nombre": "0223, 16/11/2026, 19:42",
+        "url": "https://www.0223.com.ar/nota/2026-11-16-19-42-0-video-un-vecino-de-los-pinares-enfrento-a-un-grupo-de-motochorros-a-los-tiros"
+      }
+    ]
+  },
+  {
     "id": "arrebato-cadena-garay-olavarria-adolescente-20261116",
     "titulo": "Recuperaron una cadena de oro tras un arrebato en la zona de Güemes",
     "bajada": "Una mujer de 33 años denunció el robo de su cadena en Garay y Olavarría. Un adolescente fue aprehendido y el objeto fue restituido.",
