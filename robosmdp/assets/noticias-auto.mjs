@@ -4,6 +4,44 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "arrebato-cadena-garay-olavarria-adolescente-20261116",
+    "titulo": "Recuperaron una cadena de oro tras un arrebato en la zona de Güemes",
+    "bajada": "Una mujer de 33 años denunció el robo de su cadena en Garay y Olavarría. Un adolescente fue aprehendido y el objeto fue restituido.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-16T19:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un operativo policial permitió recuperar una cadena de oro que había sido arrebatada a una mujer de 33 años en la zona de Garay, entre Olavarría y Alsina, en Mar del Plata. El caso fue difundido el lunes 16 de noviembre de 2026; la información disponible no precisa la hora exacta del hecho. Según el reporte policial publicado, la intervención se inició después de una alerta y contó con el aporte de un testigo.\\n\\nEfectivos del Comando de Patrullas Norte localizaron en Güemes y Castelli a un adolescente de 17 años que se desplazaba en bicicleta. Durante el procedimiento encontraron la cadena entre sus prendas y secuestraron el rodado. El elemento recuperado fue restituido a la denunciante, según la información difundida.\\n\\nIntervino la Fiscalía de Responsabilidad Penal Juvenil N.º 4, que dispuso el traslado del adolescente al Centro Especializado de Aprehensión. Su participación y responsabilidad deberán establecerse judicialmente: la aprehensión no equivale a una condena. Por tratarse de un menor de edad, no se publica su identidad. Ante un arrebato en curso, se recomienda evitar confrontaciones, pedir asistencia al 911 y conservar los datos de posibles testigos.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 16/11/2026; información policial",
+        "url": "https://www.infobrisas.com/noticias/2026/11/16/114993-otro-robo-de-una-cadena-de-oro-en-mar-del-plata-detuvieron-a-un-adolescente"
+      }
+    ]
+  },
+  {
+    "id": "busqueda-erika-romero-costa-azul-20261116",
+    "titulo": "Buscan a una mujer desaparecida en Costa Azul y sus allegados reclamaron avances",
+    "bajada": "La familia no tiene noticias de Erika Romero desde el 11 de noviembre. Hubo una manifestación frente a la comisaría de Playa Serena y piden información al 911.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-16T19:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Familiares y organizaciones solidarias mantienen la búsqueda de Erika Ayelén Romero, de 41 años, cuyo paradero se desconoce desde el miércoles 11 de noviembre de 2026. Según el relato de su familia, salió del barrio Costa Azul, al sur de Mar del Plata, para realizar un trabajo de limpieza y no regresó. La búsqueda fue difundida por Red Solidaria y medios locales este lunes 16.\\n\\nDurante la tarde del lunes, allegados se concentraron frente a la Comisaría Decimotercera de Playa Serena para pedir avances. De acuerdo con la cobertura periodística, representantes policiales recibieron a manifestantes y señalaron que trabajan en el caso. La familia comunicó sospechas sobre una posible retención contra su voluntad, pero no existe confirmación oficial de secuestro ni de participación de una organización criminal. Esas hipótesis deben investigarse y no pueden presentarse como hechos probados.\\n\\nComo datos útiles para identificarla, sus allegados indicaron que vestía una calza rosa con bordó y una campera rosa larga, y que tiene un tatuaje de mariposa en una mano. Quien disponga de información concreta puede comunicarla al 911. Se omiten domicilios, contactos privados y circunstancias personales que no aportan a la búsqueda. La situación puede cambiar rápidamente: esta información refleja las publicaciones disponibles al momento de redactar la nota.",
+    "fuentes": [
+      {
+        "nombre": "Qué Digital, 16/11/2026; búsqueda difundida por Red Solidaria",
+        "url": "https://quedigital.com.ar/policiales/buscan-en-mar-del-plata-a-una-mujer-desaparecida-desde-hace-cinco-dias/"
+      },
+      {
+        "nombre": "0223, 16/11/2026, 16:36; reclamo ante comisaría",
+        "url": "https://www.0223.com.ar/nota/2026-11-16-16-36-0-protesta-y-manifestacion-en-la-comisaria-de-playa-serena-por-la-desaparicion-de-erika-romero"
+      }
+    ]
+  },
+  {
     "id": "herramientas-robadas-auto-peralta-ramos-oeste-20261116",
     "titulo": "Recuperaron herramientas sustraídas de un auto en Peralta Ramos Oeste: un aprehendido",
     "bajada": "La Policía interceptó a un hombre de 37 años y restituyó herramientas eléctricas y otros elementos retirados de un Renault Sandero.",
