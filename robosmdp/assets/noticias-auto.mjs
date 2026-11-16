@@ -236,5 +236,29 @@ export const AUTOMATICAS = [
         "url": "https://www.qznoticias.com/policiales/intentaron-robar-en-el-paseo-portuario-escaparon-a-pie-y-prefectura-los-detuvo-a-dos-cuadras"
       }
     ]
+  },
+  {
+    "id": "agresion-chofer-aplicacion-independencia-libertad-20261115",
+    "titulo": "Denunció una agresión tras un choque en La Perla: dos personas quedaron imputadas",
+    "bajada": "Un conductor de aplicación denunció golpes después de una colisión en Independencia y Libertad. El otro automovilista registró 2,39 g/l de alcohol en sangre.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-15T22:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "texto": "Un incidente vial ocurrido durante la madrugada del sábado 14 de noviembre en las inmediaciones de Independencia y Libertad, barrio La Perla, derivó en una denuncia por agresiones físicas. El denunciante, un policía fuera de servicio que trabajaba como chofer de una aplicación de viajes, sostuvo que fue golpeado por varias personas después de discutir por una colisión con un Peugeot 207.\n\nTras la denuncia al 911, el vehículo fue localizado en el sector de Alberti y Jujuy. En el operativo intervinieron efectivos policiales y personal municipal. La prueba de alcoholemia practicada al conductor arrojó 2,39 gramos de alcohol por litro de sangre; también se informaron infracciones de tránsito y el secuestro del automóvil.\n\nLa Fiscalía de Flagrancia inició actuaciones por lesiones leves contra el conductor y su acompañante, que fueron notificados de la causa y recuperaron la libertad. Es importante distinguir la denuncia de una agresión de su comprobación judicial: según las crónicas consultadas, no se identificaron testigos independientes y la cámara municipal del lugar no registró la confrontación. La investigación deberá determinar cómo ocurrió la pelea y quiénes intervinieron. La publicación de esta nota corresponde al 15 de noviembre; el episodio investigado ocurrió el día 14.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 14/11/2026",
+        "url": "https://www.lacapitalmdp.com/un-policia-que-manejaba-un-auto-de-aplicacion-denuncio-haber-sido-atacado-tras-un-choque/"
+      },
+      {
+        "nombre": "0223, 14/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-14-9-20-0-madrugada-violenta-en-la-perla-conductor-borracho-choco-a-un-policia-fuera-de-servicio-y-lo-golpearon-entre-varios"
+      },
+      {
+        "nombre": "Qué Digital, 14/11/2026",
+        "url": "https://quedigital.com.ar/policiales/choques-golpes-y-escape-a-contramano-de-un-conductor-alcoholizado/"
+      }
+    ]
   }
 ];
