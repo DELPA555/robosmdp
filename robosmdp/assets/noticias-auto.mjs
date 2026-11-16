@@ -4,6 +4,44 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "robo-cables-reflectores-iglesia-tetamanti-mario-bravo-20261116",
+    "titulo": "Dos aprehendidos tras el robo de cables y reflectores de una iglesia en la zona sur",
+    "bajada": "Un aviso vecinal permitió localizar a dos jóvenes con cableado y un reflector. La Fiscalía de Flagrancia inició actuaciones por robo.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-16T09:29:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un aviso de un transeúnte permitió a efectivos de la Comisaría Decimosexta intervenir ante la sustracción de materiales de una iglesia situada en las inmediaciones de Tetamanti y Mario Bravo, en la zona sur de Mar del Plata. El episodio ocurrió durante la madrugada del sábado 14 de noviembre y fue difundido este lunes 16. La fecha de publicación no debe confundirse con la del hecho.\n\nLos policías recorrieron un sendero que atraviesa un descampado hacia Olazar y Manrique y allí interceptaron a dos jóvenes de 20 y 21 años. Según los procedimientos informados, uno llevaba un reflector con cable cortado y una herramienta de corte, mientras el otro tenía un rollo de cable y un guante. Al regresar al establecimiento, los agentes constataron faltantes de cableado y daños en una conexión del frente, compatibles con los elementos hallados.\n\nLa Fiscalía de Flagrancia dispuso la aprehensión de ambos y su traslado a sede judicial para declarar. Se trata de personas investigadas, no condenadas. El robo de cableado y luminarias en instituciones comunitarias genera perjuicios materiales y puede afectar la iluminación y la prevención en el entorno. No se difundieron identidades ni domicilios particulares.",
+    "fuentes": [
+      {
+        "nombre": "0223, 16/11/2026, 09:20",
+        "url": "https://www.0223.com.ar/nota/2026-11-16-9-20-0-robaron-reflectores-y-cables-de-una-iglesia"
+      },
+      {
+        "nombre": "Radio 10 Mar del Plata, 16/11/2026",
+        "url": "https://radio10mardelplata.com.ar/dos-jovenes-fueron-aprehendidos-tras-robar-elementos-de-una-iglesia-en-mar-del-plata/"
+      }
+    ]
+  },
+  {
+    "id": "asalto-jubilado-cerca-estadio-minella-20261116",
+    "titulo": "Un jubilado fue golpeado durante un robo y recuperó su celular tras una persecución policial",
+    "bajada": "La víctima, de 78 años, denunció una agresión dentro de su vivienda en inmediaciones de Irala y De las Olimpiadas. Un hombre fue aprehendido cerca del estadio Minella.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-16T09:29:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un hombre de 78 años sufrió lesiones durante un robo denunciado en una vivienda de la zona de Irala y avenida De las Olimpiadas, cerca del estadio José María Minella. El hecho fue situado por la información difundida en la tarde del 15 de noviembre, alrededor de las 19, y se conoció públicamente este lunes 16. La fecha exacta del día del hecho requiere una precisión adicional porque la crónica consultada lo denomina sábado 15, pese a que el 15 fue domingo.\n\nSegún el reporte publicado, el adulto mayor denunció que un desconocido lo golpeó, lo arrastró hasta una habitación y tomó su teléfono celular. La víctima consiguió salir y pedir ayuda. Policías que participaban del dispositivo de seguridad de un encuentro de fútbol observaron a un hombre que corría por el sector y lo interceptaron. Durante el procedimiento, varias personas intentaron agredir al aprehendido y los agentes solicitaron apoyo para resguardar la intervención.\n\nUn teléfono encontrado posteriormente en las inmediaciones fue reconocido por la víctima y restituido. La Fiscalía de Flagrancia dispuso actuaciones por robo en grado de tentativa y el traslado del sospechoso, de 40 años, a sede judicial. La calificación procesal informada no equivale a una sentencia. Se aguarda información oficial sobre la evolución de las lesiones y la causa.",
+    "fuentes": [
+      {
+        "nombre": "Radio 10 Mar del Plata, 16/11/2026",
+        "url": "https://radio10mardelplata.com.ar/golpeo-brutalmente-a-un-jubilado-de-78-anos-para-robarle-el-celular-y-fue-detenido-cerca-del-minella/"
+      }
+    ]
+  },
+  {
     "id": "detenido-rejas-garaje-fortunato-plaza-20261115",
     "titulo": "Intentó ingresar a un garaje y terminó detenido al quedar atrapado entre las rejas",
     "bajada": "En Fortunato de la Plaza, un hombre de 36 años fue reducido por los moradores después de intentar escapar por una ventana. Intervino la Fiscalía de Flagrancia.",
