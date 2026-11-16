@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "herramientas-robadas-auto-peralta-ramos-oeste-20261116",
+    "titulo": "Recuperaron herramientas sustraídas de un auto en Peralta Ramos Oeste: un aprehendido",
+    "bajada": "La Policía interceptó a un hombre de 37 años y restituyó herramientas eléctricas y otros elementos retirados de un Renault Sandero.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-16T15:20:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un procedimiento del Comando de Patrullas Sur permitió recuperar herramientas denunciadas como sustraídas del interior de un automóvil en el barrio Peralta Ramos Oeste de Mar del Plata. La información se difundió el lunes 16 de noviembre a las 12:19; el reporte consultado no precisa la hora ni la fecha exacta en que ocurrió el hecho, por lo que no corresponde asignarlas sin confirmación. Según la información policial publicada, el vehículo afectado era un Renault Sandero estacionado en el sector de Ortiz de Zárate y Casilda Villar. Se informó que una ventanilla había sido dañada.\n\nLos efectivos aprehendieron a un hombre de 37 años en inmediaciones de San Salvador y Canosa. Entre los objetos recuperados se mencionaron herramientas eléctricas, un compresor a batería, martillo, destornilladores y pinzas. Los elementos fueron secuestrados durante el procedimiento y posteriormente restituidos a su propietario, según el parte difundido por la prensa local.\n\nLa Fiscalía de Flagrancia dispuso la formación de una causa por robo y el traslado del aprehendido a Tribunales. La aprehensión y la imputación no equivalen a una condena. Para prevenir sustracciones en vehículos estacionados, se recomienda evitar dejar herramientas y otros objetos a la vista, y comunicar inmediatamente al 911 cualquier episodio en curso. La publicación omite identidades y domicilios particulares.",
+    "fuentes": [
+      {
+        "nombre": "0223, 16/11/2026, 12:19",
+        "url": "https://www.0223.com.ar/nota/2026-11-16-12-19-0-rompio-la-ventanilla-de-un-auto-robo-herramientas-y-lo-detuvieron"
+      }
+    ]
+  },
+  {
     "id": "rueda-auxilio-malvinas-argentinas-20261116",
     "titulo": "Recuperaron una rueda de auxilio robada tras una alerta vecinal en Malvinas Argentinas",
     "bajada": "Un hombre de 51 años fue aprehendido luego de ocultarse entre plantas. La Policía constató daños en la sujeción de la rueda de una camioneta.",
