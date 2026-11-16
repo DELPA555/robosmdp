@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "rueda-auxilio-malvinas-argentinas-20261116",
+    "titulo": "Recuperaron una rueda de auxilio robada tras una alerta vecinal en Malvinas Argentinas",
+    "bajada": "Un hombre de 51 años fue aprehendido luego de ocultarse entre plantas. La Policía constató daños en la sujeción de la rueda de una camioneta.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-16T12:22:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un vecino alertó a la Policía sobre la presunta sustracción de una rueda de auxilio de una Ford Ranger gris en el barrio Malvinas Argentinas, en Mar del Plata. El episodio ocurrió el domingo 15 de noviembre y fue difundido el lunes 16 a las 10:02. Según la información policial publicada, efectivos del Comando de Patrullas Norte observaron a un hombre alejándose del vehículo y, al advertir su presencia, el sospechoso se ocultó entre las plantas de una propiedad de la calle Balcarce.\n\nLos agentes localizaron al hombre, de 51 años, y constataron el faltante de la rueda y daños en la cadena de sujeción. La rueda fue restituida a su poseedor. La Fiscalía de Flagrancia dispuso actuaciones por robo en grado de tentativa y el traslado del aprehendido a Tribunales. Se trata de una imputación inicial, no de una condena judicial.\n\nEl caso muestra la utilidad de dar aviso inmediato al 911 ante una sustracción en curso. Para prevenir riesgos, es preferible no confrontar directamente con una persona sospechosa. No se difunden identidades de personas investigadas ni domicilios particulares.",
+    "fuentes": [
+      {
+        "nombre": "0223, 16/11/2026, 10:02",
+        "url": "https://www.0223.com.ar/nota/2026-11-16-10-2-0-robo-una-rueda-de-auxilio-y-se-escondio-entre-los-arbustos-cuando-llego-la-policia"
+      }
+    ]
+  },
+  {
     "id": "robo-cables-reflectores-iglesia-tetamanti-mario-bravo-20261116",
     "titulo": "Dos aprehendidos tras el robo de cables y reflectores de una iglesia en la zona sur",
     "bajada": "Un aviso vecinal permitió localizar a dos jóvenes con cableado y un reflector. La Fiscalía de Flagrancia inició actuaciones por robo.",
