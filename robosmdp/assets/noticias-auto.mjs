@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "robo-vivienda-luis-vernet-dos-aprehendidos-20261117",
+    "titulo": "Forzaron una vivienda en Luis Vernet: dos hombres fueron aprehendidos y recuperaron herramientas",
+    "bajada": "Un aviso al 911 y registros de cámaras vecinales permitieron localizar a dos sospechosos tras un robo en una casa de la zona sur de Mar del Plata.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T18:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un llamado al 911 alertó sobre el ingreso de dos personas a una vivienda de Luis Vernet al 3700, en Mar del Plata. Al llegar, el personal del Comando de Patrullas observó signos de violencia en el acceso al garaje y ventanas abiertas. La denuncia y las imágenes aportadas por vecinos permitieron orientar la búsqueda policial hacia la zona de Pesquero Halcón al 2900, donde fueron aprehendidos dos hombres de 25 y 32 años, de acuerdo con la información policial difundida este martes 17 de noviembre.\n\nEn poder de los sospechosos se encontraron una desmalezadora, un bolso con tres reeles, dos cuchillos y prendas de vestir que fueron reconocidos como parte de los objetos sustraídos. Los elementos recuperados fueron restituidos a su propietario, según el reporte. Intervino la comisaría quinta y el fiscal Daniel Vicente dispuso actuaciones por robo agravado por efracción. Los aprehendidos fueron trasladados a la Unidad Penal 44 de Batán.\n\nEl procedimiento no constituye una condena y todavía no se informó una resolución judicial posterior. El caso muestra la importancia de conservar las grabaciones de seguridad sin difundir datos personales de víctimas ni interferir con la investigación. La fecha exacta del robo no fue precisada en el reporte consultado; la difusión periodística corresponde al 17 de noviembre.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 17/11/2026 — procedimiento policial en Luis Vernet",
+        "url": "https://www.infobrisas.com/noticias/2026/11/17/115107-dos-hombres-terminaron-en-la-carcel-tras-robar-elementos-de-una-vivienda"
+      }
+    ]
+  },
+  {
     "fecha": "2026-11-17T17:11:00-03:00",
     "autor": "Redacción Robos MDP",
     "arte": "ciudad",
