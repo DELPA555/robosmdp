@@ -4,6 +4,40 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "asalto-repartidor-correo-siete-paquetes-san-salvador-20261117",
+    "titulo": "Asaltaron a un repartidor y se llevaron siete paquetes: dos detenidos y dos prófugos",
+    "bajada": "Cuatro personas armadas interceptaron a un trabajador de correo en el sector de San Salvador al 7700. La Policía detuvo a dos sospechosos y busca a los restantes.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T04:20:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un trabajador que realizaba entregas para un servicio privado de correo fue asaltado en el sector de San Salvador al 7700, en Mar del Plata. Según la información policial difundida el lunes 16 de noviembre, cuatro personas armadas lo interceptaron y sustrajeron siete paquetes de la distribución. El episodio motivó una intervención de la comisaría decimosexta y del Comando de Patrullas Sur tras una comunicación al 911.\n\nDos hombres de 19 y 26 años fueron aprehendidos en inmediaciones de Vértiz y pasaje Evita. Durante el procedimiento se secuestraron tres municiones calibre .22. Los otros dos participantes señalados en la reconstrucción policial no habían sido detenidos al momento de la publicación de la información. La Fiscalía de Flagrancia inició actuaciones por robo doblemente agravado por haberse cometido presuntamente en poblado y en banda y con arma de fuego; ordenó el traslado de los dos imputados a la Unidad Penal 44 de Batán.\n\nLa aprehensión y la calificación provisoria no equivalen a una condena. No se informó oficialmente la recuperación de los siete paquetes ni la identidad de sus destinatarios. Robos MDP seguirá las novedades judiciales del caso y la eventual restitución de los envíos.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 16/11/2026 — informe policial sobre asalto a repartidor",
+        "url": "https://www.lacapitalmdp.com/asaltaron-a-repartidor-de-correo-privado-y-le-robaron-siete-paquetes/"
+      }
+    ]
+  },
+  {
+    "id": "intento-robo-moto-colon-santa-fe-detenido-20261117",
+    "titulo": "Intentaron llevarse una moto estacionada en Colón y Santa Fe: un detenido",
+    "bajada": "La Patrulla Municipal intervino ante un presunto intento de robo de una Gilera 110 en el centro. El vehículo presentaba daños en el encendido y en sus plásticos.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T04:20:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un hombre de 28 años fue detenido tras un presunto intento de robo de una motocicleta estacionada en avenida Colón y Santa Fe, en pleno centro de Mar del Plata. El episodio ocurrió durante la madrugada del lunes 16 de noviembre y fue difundido el martes 17. Según el reporte publicado por MMX, personal de la Patrulla Municipal intervino en el lugar donde se encontraba una Gilera 110 con daños en el tambor de ignición y en los plásticos delanteros.\n\nTras la intervención, el sospechoso fue trasladado a la Unidad Penal 44 de Batán. La fiscal de Flagrancia María Isabel Sánchez quedó a cargo de las actuaciones, inicialmente encuadradas como robo agravado de vehículo dejado en la vía pública. No se informó que la motocicleta hubiera llegado a ser sustraída ni se difundieron otros detenidos vinculados con este procedimiento.\n\nLa calificación legal comunicada es provisoria y deberá ser evaluada por la Justicia. El hecho vuelve a poner el foco en los vehículos estacionados en sectores céntricos, aunque este episodio aislado no permite establecer por sí solo una tendencia estadística. Se recomienda utilizar dispositivos de seguridad adecuados y comunicar inmediatamente al 911 cualquier maniobra sospechosa.",
+    "fuentes": [
+      {
+        "nombre": "MMX, 17/11/2026 — procedimiento en Colón y Santa Fe",
+        "url": "https://dev.mmx.com.ar/locales/intento-robar-una-moto-y-lo-detuvieron/"
+      }
+    ]
+  },
+  {
     "id": "montenegro-cinco-designaciones-antecedentes-costo-20261116",
     "titulo": "Cinco designaciones de Montenegro: antecedentes, fechas retroactivas y preguntas sobre el costo municipal",
     "bajada": "El Ejecutivo oficializó cambios en Obras, Gobierno Digital, el Puerto y dos direcciones generales. Qué se sabe de los funcionarios y qué información presupuestaria falta conocer.",
