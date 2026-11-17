@@ -7,7 +7,7 @@ const artIcon = a => ({ cine:'◉', ciudad:'MDP', documentos:'§' })[a.arte] || 
 function art(a) {
   const img = publicImage(a.imagen);
   if (img) return `<div class="news-art"><img loading="eager" decoding="async" src="${esc(img)}" alt="${esc(a.alt_imagen || 'Imagen de la noticia')}"></div>`;
-  return `<div class="news-art news-art--${esc(a.arte || 'documentos')}"><span class="art-label">ROBOS MDP · ILUSTRACIÓN EDITORIAL</span><span class="art-icon">${esc(artIcon(a))}</span><span class="art-footer">MAR DEL PLATA / NOTICIAS</span></div>`;
+  return `<div class="news-art"><img loading="lazy" decoding="async" src="/assets/noticias/imagen-editorial.svg" alt="Imagen editorial de Robos MDP; no representa el hecho narrado"></div>`;
 }
 function card(a) {
   return `<a class="news-card" href="${newsHref(a)}">${art(a)}<div class="news-card-body"><span class="cat">${esc(labelFor(a.categoria))}</span><h3>${esc(a.titulo)}</h3><p>${esc(a.bajada)}</p><div class="news-card-foot"><span>${esc(format(a.fecha))}</span><span>↗</span></div></div></a>`;
