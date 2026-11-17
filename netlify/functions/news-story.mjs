@@ -30,18 +30,18 @@ function decodeFirestore(value) {
 }
 async function findNews(slug) {
   const archived = PUBLICADAS.find(a => a.id === slug);
-  if (archived) return archived;
+  // Primero comprobar cambios editoriales en Firebase, incluso para noticias del archivo.
   // Reglas Firebase: solo artículos publicados son accesibles sin credenciales.
   // La clave web pública es la misma del frontend; las reglas Firestore
   // restringen la lectura de cualquier borrador o artículo sin publicar.
   const url = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/noticias/${encodeURIComponent(slug)}?key=AIzaSyCm2rB0jOpvoi_wLpxVSMk0nip1pR62mjo`;
   try {
     const res = await fetch(url, {headers:{accept:'application/json'},signal:AbortSignal.timeout(7000)});
-    if (!res.ok) return null;
+    if (!res.ok) return archived || null;
     const data = await res.json();
     const row = Object.fromEntries(Object.entries(data.fields || {}).map(([k,v]) => [k,decodeFirestore(v)]));
-    return row.estado === 'publicado' && row.titulo && row.texto ? {id:slug,...row} : null;
-  } catch { return null; }
+    return row.estado === 'publicado' && row.titulo && row.texto ? {id:slug,...archived,...row} : (archived && !row.estado ? archived : null);
+  } catch { return archived || null; }
 }
 // El enrutamiento nativo de Netlify entrega :slug en context.params.
 // En una reescritura 200, Netlify no interpola de forma fiable :slug
