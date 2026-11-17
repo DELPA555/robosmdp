@@ -6,7 +6,7 @@
       vieja entre deploys; igual funciona offline desde cache.)
    - Resto de assets estáticos (imágenes/CSS/JS/fuentes): cache-first con runtime caching.
 */
-const CACHE_NAME = 'robosmdp-v1';
+const CACHE_NAME = 'robosmdp-v2-news-fresh';
 const ASSETS = [
   '/',
   '/index.html',
@@ -76,6 +76,24 @@ self.addEventListener('fetch', (event) => {
           || (await caches.match('/index.html'))
           || (await caches.match('/'))
           || Response.error();
+      }
+    })());
+    return;
+  }
+
+  // Noticias y sus módulos: network-first para evitar versiones viejas tras cada publicación.
+  // En caso de estar sin conexión, usar solo una copia del mismo recurso.
+  if (url.origin === self.location.origin && (/^\/assets\/noticias(?:-auto|-data|-app|-firebase|-admin)?\.(?:mjs|js|css)$/.test(url.pathname) || url.pathname.startsWith('/assets/noticias/'))) {
+    event.respondWith((async () => {
+      try {
+        const net = await fetch(req, { cache: 'no-store' });
+        if (net.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(req, net.clone());
+        }
+        return net;
+      } catch (_) {
+        return (await caches.match(req)) || Response.error();
       }
     })());
     return;
