@@ -4,6 +4,31 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "detenido-segundo-acusado-homicidio-matias-peralta-20261116",
+    "titulo": "Detuvieron al segundo acusado por el homicidio de Matías Peralta tras meses de búsqueda",
+    "bajada": "La DDI interceptó en Ortiz de Zárate y Yapeyú a un joven buscado por el asesinato ocurrido el 25 de febrero. La investigación judicial continúa.",
+    "categoria": "justicia",
+    "fecha": "2026-11-16T21:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La Dirección Departamental de Investigaciones (DDI) de Mar del Plata detuvo este lunes 16 de noviembre a un joven de 21 años que era buscado en la investigación por el homicidio de Matías Peralta, ocurrido el 25 de febrero de 2026. El procedimiento se concretó en las inmediaciones de Ortiz de Zárate y Yapeyú, donde los investigadores localizaron al sospechoso mientras circulaba en una motocicleta negra. La detención constituye una novedad judicial de hoy, aunque el crimen investigado ocurrió meses atrás.\n\nSegún la información policial difundida por distintos medios locales, el joven intentó escapar al advertir la presencia de efectivos de civil y habría realizado una maniobra contra una integrante del operativo. Otras personas intentaron intervenir para impedir la aprehensión y los agentes utilizaron munición antitumulto. No se reportaron lesionados durante el procedimiento. El detenido fue trasladado a dependencias policiales y se informó su posterior alojamiento en la Unidad Penal 44 de Batán.\n\nPeralta, de 27 años, fue atacado a tiros el 25 de febrero en el sector de Gaboto y calle 214 y murió luego en el Hospital Interzonal General de Agudos. La investigación a cargo del fiscal Fernando Berlingeri ya había derivado en la detención de otro acusado en junio. Las detenciones y las hipótesis sobre el móvil del crimen no constituyen sentencias ni acreditan por sí solas la responsabilidad penal de los investigados. No se difundieron domicilios particulares ni datos de testigos. Esta nota seguirá la evolución procesal cuando existan nuevas resoluciones verificables.",
+    "fuentes": [
+      {
+        "nombre": "0223, 16/11/2026, 17:33; procedimiento DDI",
+        "url": "https://www.0223.com.ar/nota/2026-11-16-17-33-0-cayo-otro-de-los-acusados-de-matar-a-tiros-a-un-hombre-en-un-ajuste-de-cuentas"
+      },
+      {
+        "nombre": "La Capital, 16/11/2026; detención y antecedentes",
+        "url": "https://www.lacapitalmdp.com/cayo-otro-de-los-profugos-por-el-crimen-de-matias-peralta-asesinado-horas-despues-de-salir-de-la-carcel/"
+      },
+      {
+        "nombre": "Radio Brisas, 16/11/2026; operativo policial",
+        "url": "https://www.infobrisas.com/noticias/2026/11/16/114990-detuvieron-al-segundo-sospechoso-por-el-homicidio-de-matias-peralta"
+      }
+    ]
+  },
+  {
     "id": "robo-moto-disparos-los-pinares-20261116",
     "titulo": "Robaron una moto y hubo disparos en Los Pinares: investigan el ataque",
     "bajada": "Un motociclista fue interceptado por delincuentes el domingo por la noche. Un vecino intervino y se registraron disparos; el episodio quedó filmado.",
