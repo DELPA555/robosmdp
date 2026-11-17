@@ -4,6 +4,40 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "fecha": "2026-11-17T17:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "id": "entradera-ataron-vecino-lopez-de-gomara-20261117",
+    "titulo": "Entradera en López de Gomara: tres asaltantes ataron a un vecino y escaparon con dinero",
+    "bajada": "Un hombre fue sorprendido cuando ingresaba a su vivienda durante la madrugada del lunes. La Fiscalía investiga el hecho.",
+    "categoria": "seguridad",
+    "texto": "Un vecino de 42 años sufrió una entradera en el barrio López de Gomara de Mar del Plata durante la madrugada del lunes 16 de noviembre. Según la información policial publicada el martes 17, tres personas lo sorprendieron alrededor de las dos de la mañana cuando llegaba a su casa, en el sector de Della Paolera al 200. Los agresores lo redujeron y lo mantuvieron atado durante aproximadamente media hora.\n\nLos autores escaparon con dinero en efectivo, un teléfono celular y documentación. No trascendió el monto sustraído. Después de pedir ayuda, la víctima recibió asistencia y se dio intervención a personal de la comisaría sexta. La investigación quedó bajo la órbita del fiscal Mariano Moyano, con peritajes y medidas destinadas a identificar a los responsables. No se informó de detenciones por este hecho.\n\nEl episodio ocurrió cerca de otro robo de motocicleta que terminó con disparos durante el fin de semana, aunque no existe información que permita vincular ambos casos. Robos MDP seguirá las novedades de la causa.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 17/11/2026 — denuncia de entradera e investigación",
+        "url": "https://www.lacapitalmdp.com/violenta-entradera-en-el-barrio-lopez-de-gomara-lo-ataron-y-le-robaron-en-su-casa/"
+      }
+    ]
+  },
+  {
+    "fecha": "2026-11-17T17:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "id": "asalto-almacen-las-avenidas-platanos-20261117",
+    "titulo": "Cuarto asalto a un almacén de Las Avenidas: encapuchados se llevaron mercadería y la caja",
+    "bajada": "El robo ocurrió el lunes en un comercio de Los Plátanos al 700. Las cámaras registraron el ingreso de varios asaltantes.",
+    "categoria": "comerciantes",
+    "texto": "Un almacén del barrio Las Avenidas, en Mar del Plata, volvió a ser blanco de un asalto. El hecho ocurrió el lunes 16 de noviembre y fue difundido el martes 17 mediante imágenes de seguridad y el relato del comercio. Al menos cuatro personas encapuchadas llegaron en un automóvil gris e ingresaron al local situado en el sector de Los Plátanos al 700.\n\nLos asaltantes se llevaron la caja registradora y mercadería, entre ella bebidas, hamburguesas y productos envasados. Las grabaciones difundidas muestran momentos de angustia entre las trabajadoras y la asistencia posterior de vecinos. Los responsables del negocio señalaron que es el cuarto robo sufrido en un período breve, un antecedente que corresponde a su testimonio y requiere seguimiento de las denuncias.\n\nAl cierre no se contaba con información oficial sobre detenciones, lesiones físicas ni una calificación judicial definitiva. Robos MDP seguirá el caso y los reclamos de prevención para los pequeños comercios. No se reproducen fotografías ni fotogramas de terceros sin permiso verificable.",
+    "fuentes": [
+      {
+        "nombre": "0223, 17/11/2026 — cámaras y testimonio del comercio",
+        "url": "https://www.0223.com.ar/nota/2026-11-17-13-26-0-se-llevaron-chizitos-hamburguesas-y-gaseosas-mientras-la-almacenera-lloraba-no-es-justo"
+      }
+    ]
+  },
+  {
     "id": "allanamiento-robo-moto-autopartes-municiones-20261117",
     "titulo": "Tras el robo de una moto, allanaron una vivienda y secuestraron autopartes y municiones",
     "bajada": "El asalto ocurrió el 10 de noviembre en la zona de Ayacucho al 6100. La investigación derivó en un procedimiento este martes y la identificación de dos jóvenes, sin detenciones.",
