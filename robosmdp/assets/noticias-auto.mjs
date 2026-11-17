@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "mujer-armada-obra-abandonada-champagnat-20261117",
+    "titulo": "Aprehendieron a una mujer armada cerca de una obra abandonada: una policía resultó herida",
+    "bajada": "El procedimiento ocurrió en Champagnat y Primera Junta, donde vecinos vienen reclamando mayor seguridad.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T10:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una mujer de 27 años fue aprehendida cerca de Champagnat y Primera Junta, en Mar del Plata, según un informe difundido por La Capital este martes 17 de noviembre. Durante el procedimiento habría intentado atacar con una navaja al personal policial. Una agente sufrió lesiones leves, de acuerdo con esa publicación. La aprehensión no constituye una condena y todavía no se dispone de información oficial sobre la calificación judicial del episodio.\n\nEl operativo se desarrolló cerca de una construcción abandonada sobre la que los vecinos ya habían manifestado preocupación por distintos hechos de inseguridad. La proximidad del procedimiento con ese inmueble no demuestra por sí misma que la mujer estuviera vinculada con denuncias anteriores. Es necesario distinguir los antecedentes denunciados, la intervención policial de este martes y cualquier eventual imputación posterior.\n\nRobos MDP continuará siguiendo los reclamos del sector, las medidas de prevención y la evolución de las actuaciones. Al cierre de esta nota no se obtuvo una segunda confirmación independiente ni una respuesta oficial sobre las medidas judiciales posteriores.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 17/11/2026 — procedimiento en Champagnat y Primera Junta",
+        "url": "https://www.lacapitalmdp.com/detuvieron-a-una-mujer-armada-con-una-navaja-en-la-construccion-abandonada-que-preocupa-a-los-vecinos/"
+      }
+    ]
+  },
+  {
     "id": "asalto-repartidor-correo-siete-paquetes-san-salvador-20261117",
     "titulo": "Asaltaron a un repartidor y se llevaron siete paquetes: dos detenidos y dos prófugos",
     "bajada": "Cuatro personas armadas interceptaron a un trabajador de correo en el sector de San Salvador al 7700. La Policía detuvo a dos sospechosos y busca a los restantes.",
