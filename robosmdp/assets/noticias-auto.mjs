@@ -3,7 +3,24 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
-  {
+    {
+    "id": "robo-herramientas-camioneta-cordoba-aprehendido-20261117",
+    "titulo": "Robaron herramientas de una camioneta estacionada y aprehendieron a un sospechoso",
+    "bajada": "Testigos alertaron sobre la sustracción de herramientas de una Ford Ranger en la zona de calle Córdoba. La Policía recuperó los elementos y dio intervención a Flagrancia.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T19:17:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una Ford Ranger estacionada en las inmediaciones de calle Córdoba, en Mar del Plata, fue violentada y sufrió la sustracción de herramientas. Según información policial publicada el martes 17 de noviembre, testigos advirtieron la maniobra y señalaron a dos hombres como presuntos participantes. La Policía aprehendió a uno de ellos, de 30 años, y lo trasladó a la Comisaría Primera. La información disponible no precisa la altura de la calle ni la hora exacta del hecho.\n\nDurante la intervención se recuperaron las herramientas denunciadas como sustraídas y se secuestró una prenda de vestir. La investigación también menciona a otro hombre, de 25 años, pero no se informó su aprehensión en el procedimiento. La Fiscalía de Flagrancia, a cargo de Daniel Vicente, dispuso las actuaciones y el traslado del aprehendido a la Unidad Penal 44 de Batán.\n\nLa aprehensión y el traslado a una unidad penitenciaria no constituyen una condena. Tampoco se difundió una resolución judicial definitiva ni una segunda confirmación independiente. Robos MDP continuará atento a las actuaciones y recuerda la importancia de denunciar inmediatamente cualquier sustracción y preservar grabaciones de cámaras sin difundir datos personales de terceros.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 17/11/2026 — procedimiento por sustracción de herramientas",
+        "url": "https://www.infobrisas.com/noticias/2026/11/17/115143-robo-herramientas-de-una-ford-ranger-y-resulto-aprehendido"
+      }
+    ]
+  },
+{
     "id": "robo-vivienda-luis-vernet-dos-aprehendidos-20261117",
     "titulo": "Forzaron una vivienda en Luis Vernet: dos hombres fueron aprehendidos y recuperaron herramientas",
     "bajada": "Un aviso al 911 y registros de cámaras vecinales permitieron localizar a dos sospechosos tras un robo en una casa de la zona sur de Mar del Plata.",
