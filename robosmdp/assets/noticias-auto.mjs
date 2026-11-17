@@ -4,6 +4,40 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "rotura-vidrios-autos-colon-lamadrid-20261117",
+    "titulo": "Daños a autos estacionados en el centro: aprehendieron a un hombre tras las denuncias de testigos",
+    "bajada": "Un procedimiento policial en la zona de Colón y Lamadrid terminó con una aprehensión luego de que vecinos advirtieran roturas de ventanillas en varios vehículos.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T13:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una serie de daños a automóviles estacionados movilizó a la Policía en el sector de avenida Colón, entre Las Heras y Lamadrid, en Mar del Plata. De acuerdo con información policial difundida este martes 17 de noviembre por Radio Brisas, una mujer pidió la intervención de efectivos al advertir que una persona golpeaba y rompía cristales de vehículos en la vía pública. Trabajadores de un local gastronómico también aportaron testimonios sobre la secuencia.\n\nUn hombre de 40 años fue aprehendido en las inmediaciones. La información publicada señala que presentaba lesiones superficiales en las manos y fragmentos de vidrio en su ropa. Entre los vehículos afectados se mencionó un Renault Sandero estacionado en Rawson y Arenales. No se informó que el sospechoso intentara sustraer objetos del interior de los autos: por eso el episodio se presenta como una investigación por daños y no como un robo consumado.\n\nEl aprehendido quedó a disposición de la Fiscalía de Flagrancia, sin que ello implique una condena. Al momento de esta publicación no se cuenta con una resolución judicial posterior ni con un balance oficial definitivo de vehículos afectados. Para los propietarios de la zona, el caso vuelve a poner el foco en la vigilancia de calles de alta circulación y la importancia de denunciar cada daño para documentar los hechos.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 17/11/2026 — procedimiento policial y testimonios",
+        "url": "https://www.infobrisas.com/noticias/2026/11/17/115047-aprehenden-a-un-sujeto-que-danaba-cristales-de-automoviles-estacionados-en-via-publica"
+      }
+    ]
+  },
+  {
+    "id": "datos-adultos-mayores-estafas-carceles-nuevos-detenidos-20261117",
+    "titulo": "Estafas desde cárceles: investigan el uso de datos de más de 22 mil adultos mayores",
+    "bajada": "Una investigación judicial con sede en Mar del Plata sumó un detenido y nuevas medidas por una presunta red de engaños telefónicos y entraderas.",
+    "categoria": "justicia",
+    "fecha": "2026-11-17T13:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "documentos",
+    "imagen": "",
+    "texto": "La investigación de una presunta organización que coordinaba estafas telefónicas desde establecimientos penitenciarios bonaerenses sumó novedades este martes 17 de noviembre. Según las actuaciones de la Fiscalía N.º 13, difundidas por La Capital, fue detenido en Mar del Plata un hombre acusado de facilitar una base de datos con información de 22.871 personas mayores de distintas ciudades argentinas. El material habría servido para seleccionar posibles víctimas de llamados engañosos.\n\nLa causa, encabezada por el fiscal Mariano Moyano, también avanzó sobre otros dos presuntos integrantes. En un allanamiento a una unidad penitenciaria de Olmos se secuestraron dispositivos electrónicos y anotaciones, mientras que se ordenó la captura de una mujer a quien los investigadores atribuyen tareas de coordinación de pagos y verificación de ubicaciones. La existencia de órdenes de captura e imputaciones no equivale a culpabilidad judicialmente establecida.\n\nLa pesquisa había comenzado a tomar estado público en octubre y abarca maniobras que, de acuerdo con la hipótesis fiscal, podían pasar del engaño telefónico a visitas a domicilios y robos. El nuevo avance no debe confundirse con una condena ni con la comprobación de que todas las personas incluidas en la base hayan sufrido delitos. Como prevención, Robos MDP recuerda que ninguna supuesta urgencia policial o familiar justifica entregar dinero o datos por una llamada sin verificar antes la identidad mediante un canal independiente.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 17/11/2026 — nuevas medidas en investigación de Fiscalía N.º 13",
+        "url": "https://www.lacapitalmdp.com/call-center-penitenciario-cayo-el-acusado-de-aportar-datos-de-mas-de-22-mil-adultos-mayores/"
+      }
+    ]
+  },
+  {
     "id": "mujer-armada-obra-abandonada-champagnat-20261117",
     "titulo": "Aprehendieron a una mujer armada cerca de una obra abandonada: una policía resultó herida",
     "bajada": "El procedimiento ocurrió en Champagnat y Primera Junta, donde vecinos vienen reclamando mayor seguridad.",
