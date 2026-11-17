@@ -3,7 +3,24 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
-    {
+  {
+    "id": "entradera-violenta-acantilados-robo-suran-20261117",
+    "titulo": "Entradera en Los Acantilados: golpearon a un padre delante de sus hijos y escaparon con su auto",
+    "bajada": "Tres encapuchados sorprendieron a un vecino cuando salía para llevar a sus hijos al colegio. La denuncia describe golpes, robo de dispositivos, dinero y una Volkswagen Suran.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T20:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una familia de Los Acantilados sufrió una violenta entradera durante la mañana del martes 17 de noviembre. Según la denuncia policial difundida ese mismo día, alrededor de las 6:40 tres personas con el rostro cubierto interceptaron a un hombre de 44 años cuando se disponía a llevar a sus hijos al colegio, en la zona de calle 501. Dos de los atacantes habrían portado armas. La víctima fue golpeada y sufrió cortes en la cabeza mientras sus hijos se encontraban cerca.\n\nLos asaltantes rompieron una puerta vidriada para ingresar y se llevaron un televisor, tres computadoras portátiles, una consola de videojuegos y dinero en efectivo. También escaparon en una Volkswagen Suran gris perteneciente a la familia. La información publicada consigna la sustracción de 1.000 dólares y 200.000 pesos, cifras que corresponden a la denuncia inicial y no a un inventario judicial definitivo.\n\nEl vecino recibió asistencia médica en el lugar. Trabajó Policía Científica y tomó intervención la Unidad Funcional de Instrucción N.º 13. Hasta el momento no se informó oficialmente la identificación de los responsables, detenciones ni recuperación del vehículo. Robos MDP continuará el seguimiento del caso y solicita que cualquier información útil sea aportada a las autoridades, evitando difundir datos personales de la familia.",
+    "fuentes": [
+      {
+        "nombre": "0223, 17/11/2026 — denuncia e intervención policial en Los Acantilados",
+        "url": "https://www.0223.com.ar/nota/2026-11-17-16-58-0-violenta-y-brutal-entradera-en-el-sur-lo-golpearon-delante-de-sus-hijos-y-huyeron-con-su-auto"
+      }
+    ]
+  },
+  {
     "id": "robo-herramientas-camioneta-cordoba-aprehendido-20261117",
     "titulo": "Robaron herramientas de una camioneta estacionada y aprehendieron a un sospechoso",
     "bajada": "Testigos alertaron sobre la sustracción de herramientas de una Ford Ranger en la zona de calle Córdoba. La Policía recuperó los elementos y dio intervención a Flagrancia.",
@@ -20,7 +37,7 @@ export const AUTOMATICAS = [
       }
     ]
   },
-{
+  {
     "id": "robo-vivienda-luis-vernet-dos-aprehendidos-20261117",
     "titulo": "Forzaron una vivienda en Luis Vernet: dos hombres fueron aprehendidos y recuperaron herramientas",
     "bajada": "Un aviso al 911 y registros de cámaras vecinales permitieron localizar a dos sospechosos tras un robo en una casa de la zona sur de Mar del Plata.",
@@ -105,7 +122,6 @@ export const AUTOMATICAS = [
       }
     ]
   },
-
   {
     "id": "rotura-vidrios-autos-colon-lamadrid-20261117",
     "titulo": "Daños a autos estacionados en el centro: aprehendieron a un hombre tras las denuncias de testigos",
