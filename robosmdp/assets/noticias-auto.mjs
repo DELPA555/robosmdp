@@ -4,6 +4,41 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "allanamiento-robo-moto-autopartes-municiones-20261117",
+    "titulo": "Tras el robo de una moto, allanaron una vivienda y secuestraron autopartes y municiones",
+    "bajada": "El asalto ocurrió el 10 de noviembre en la zona de Ayacucho al 6100. La investigación derivó en un procedimiento este martes y la identificación de dos jóvenes, sin detenciones.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T16:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una investigación por el robo de una motocicleta ocurrido el 10 de noviembre en la zona de Ayacucho al 6100, en Mar del Plata, derivó este martes 17 en un allanamiento realizado por personal de la Comisaría Cuarta. Según información policial publicada por Radio Brisas, un hombre de 62 años fue abordado cuando llegaba a su vivienda por dos personas que circulaban en otra moto. Los atacantes llevaban cascos y se produjo un forcejeo antes de que la víctima perdiera su rodado.\n\nEl análisis de cámaras privadas y testimonios orientó la pesquisa hacia una motocicleta que, de acuerdo con los investigadores, habría sido ofrecida en redes sociales. Con una orden judicial, efectivos registraron un inmueble en la zona de Alberti al 8600 y secuestraron piezas de una Honda XR 150L, otras autopartes, llaves de motocicletas y ocho proyectiles de calibre 9 milímetros. La procedencia de esos elementos quedó bajo investigación.\n\nDurante el operativo fueron identificados dos hermanos de 19 y 20 años, pero no se dispusieron restricciones de libertad. La causa está bajo intervención de la Fiscalía de Delitos contra la Propiedad Automotor, a cargo de Eduardo Layús, y del Juzgado de Garantías N.º 4. La identificación de personas en un procedimiento no equivale a una condena ni acredita por sí sola su participación en el robo. Tampoco se informó oficialmente que la motocicleta sustraída haya sido recuperada completa.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 17/11/2026 — allanamiento por robo de motocicleta",
+        "url": "https://www.infobrisas.com/noticias/2026/11/17/115110-secuestraron-autopartes-y-municiones-en-un-allanamiento-por-el-robo-a-una-moto"
+      }
+    ]
+  },
+  {
+    "id": "robo-puesto-pochoclos-rivadavia-santa-fe-20261117",
+    "titulo": "Rompieron un puesto de pochoclos del centro y detuvieron a un sospechoso tras una persecución",
+    "bajada": "El hecho ocurrió durante la madrugada en Rivadavia y Santa Fe. Un aviso al 911 y el seguimiento de cámaras municipales permitieron orientar el operativo policial.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-17T16:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un puesto comercial de venta de pochoclos situado en Rivadavia y Santa Fe, en el centro de Mar del Plata, sufrió un robo durante la madrugada de este martes 17 de noviembre. Según el procedimiento policial difundido por Radio Brisas, una persona rompió un vidrio del local, ingresó y retiró elementos. El aviso de un trabajador de seguridad privada al 911 activó la búsqueda y la intervención del Centro de Operaciones y Monitoreo (COM).\n\nLos operadores municipales siguieron por cámaras el recorrido de un sospechoso que se alejaba por Santa Fe hacia San Martín. Personal del Comando de Patrullas Norte lo localizó posteriormente en inmediaciones de diagonal Pueyrredón. Tras una nueva fuga a pie, un hombre de 26 años fue aprehendido en la esquina de 25 de Mayo e Hipólito Yrigoyen. Otro móvil constató daños en el puesto y desorden en la mercadería.\n\nIntervino la Fiscalía de Flagrancia, a cargo de María Isabel Sánchez, que ordenó actuaciones por robo y el traslado del aprehendido a sede judicial. La aprehensión no constituye una sentencia y no se informó un inventario definitivo de lo sustraído ni una resolución judicial posterior. El caso destaca la importancia de los avisos oportunos, el aporte de testigos y las cámaras para reconstruir hechos contra pequeños comerciantes.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 17/11/2026 — robo en puesto de pochoclos y procedimiento",
+        "url": "https://www.infobrisas.com/noticias/2026/11/17/115035-detuvieron-a-un-hombre-tras-robar-en-un-puesto-de-pochoclos-del-centro"
+      }
+    ]
+  },
+
+  {
     "id": "rotura-vidrios-autos-colon-lamadrid-20261117",
     "titulo": "Daños a autos estacionados en el centro: aprehendieron a un hombre tras las denuncias de testigos",
     "bajada": "Un procedimiento policial en la zona de Colón y Lamadrid terminó con una aprehensión luego de que vecinos advirtieran roturas de ventanillas en varios vehículos.",
