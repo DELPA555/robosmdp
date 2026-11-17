@@ -15,7 +15,7 @@ const labelFor = value => CATEGORIAS.find(x => x[0] === value)?.[1] || 'Actualid
 const renderImage = a => {
   const image = imagePath(a.imagen);
   if (image) return `<figure><div class="news-art article-image"><img src="${escapeHtml(image)}" alt="${escapeHtml(a.alt_imagen || a.titulo)}"></div><figcaption class="photo-credit">${escapeHtml(a.credito_imagen || 'Imagen aportada a Robos MDP')}${safeUrl(a.fuente_imagen) ? ` · <a href="${escapeHtml(safeUrl(a.fuente_imagen))}" target="_blank" rel="noopener noreferrer">Ver fotografía original</a>` : ''}${safeUrl(a.licencia_imagen) ? ` · <a href="${escapeHtml(safeUrl(a.licencia_imagen))}" target="_blank" rel="noopener noreferrer">Licencia</a>` : ''}</figcaption></figure>`;
-  return `<figure><div class="news-art news-art--${['cine','ciudad','documentos'].includes(a.arte) ? a.arte : 'documentos'} article-image"><span class="art-label">ROBOS MDP · ILUSTRACIÓN EDITORIAL</span><span class="art-icon">${a.arte === 'cine' ? '◉' : a.arte === 'ciudad' ? 'MDP' : '§'}</span><span class="art-footer">MAR DEL PLATA / NOTICIAS</span></div><figcaption class="photo-credit">Ilustración editorial. No representa un registro fotográfico del hecho.</figcaption></figure>`;
+  return `<figure><div class="news-art article-image"><img src="/assets/noticias/imagen-editorial.svg" alt="Imagen editorial ilustrativa; no es fotografía del hecho"></div><figcaption class="photo-credit">Ilustración editorial. No representa un registro fotográfico del hecho.</figcaption></figure>`;
 };
 function decodeFirestore(value) {
   if (!value || typeof value !== 'object') return null;
