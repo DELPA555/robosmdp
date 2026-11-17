@@ -1,3 +1,4 @@
+import { PUBLICADAS } from './noticias-data.mjs';
 import { initNewsFirebase, escapeHtml as esc, publicImage, articleDate } from './noticias-firebase.mjs';
 
 const fb = initNewsFirebase();
@@ -43,9 +44,11 @@ auth.onAuthStateChanged(async user => {
 async function loadArticles() {
   try {
     const snap = await col.limit(150).get();
-    articles = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b) => articleDate(b.actualizado || b.fecha) - articleDate(a.actualizado || a.fecha));
+    const editable = snap.docs.map(d => ({id:d.id,...d.data()}));
+    const overrides = new Map(editable.map(a => [a.id,a]));
+    articles = [...PUBLICADAS.map(a => ({...a,estado:'publicado',...overrides.get(a.id)})), ...editable.filter(a => !PUBLICADAS.some(p => p.id === a.id))].sort((a,b) => articleDate(b.actualizado || b.fecha) - articleDate(a.actualizado || a.fecha));
     $('edit-count').textContent = '('+articles.length+')';
-    $('editor-list').innerHTML = articles.length ? articles.map(a => `<div class="editor-item" data-id="${esc(a.id)}"><span class="badge">${esc(a.estado)}</span><b>${esc(a.titulo)}</b><small>${esc(a.categoria)} · ${articleDate(a.fecha).toLocaleDateString('es-AR')}</small></div>`).join('') : '<p class="editor-hint">Aún no hay artículos propios. Los informes del archivo inicial se muestran en la portada y no forman parte de este listado.</p>';
+    $('editor-list').innerHTML = articles.length ? articles.map(a => `<div class="editor-item" data-id="${esc(a.id)}"><span class="badge">${esc(a.estado)}</span><b>${esc(a.titulo)}</b><small>${esc(a.categoria)} · ${articleDate(a.fecha).toLocaleDateString('es-AR')}</small></div>`).join('') : '<p class="editor-hint">Todavía no hay publicaciones.</p>';
   } catch (error) { $('editor-list').textContent = 'Error al cargar. Revisá las reglas de Firebase.'; console.error(error); }
 }
 $('editor-list').addEventListener('click', ev => { const el = ev.target.closest('[data-id]'); if (el) selectArticle(el.dataset.id); });
