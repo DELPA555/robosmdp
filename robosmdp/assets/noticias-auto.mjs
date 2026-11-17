@@ -93,14 +93,14 @@ export const AUTOMATICAS = [
   },
   {
     "id": "busqueda-erika-romero-costa-azul-20261116",
-    "titulo": "Buscan a una mujer desaparecida en Costa Azul y sus allegados reclamaron avances",
-    "bajada": "La familia no tiene noticias de Erika Romero desde el 11 de noviembre. Hubo una manifestación frente a la comisaría de Playa Serena y piden información al 911.",
+    "titulo": "Actualización: encontraron en Sierra de los Padres a la mujer buscada desde el miércoles",
+    "bajada": "La Policía confirmó el hallazgo de la vecina de Costa Azul el lunes 16 por la noche. Según fuentes policiales, manifestó que se había ausentado por voluntad propia.",
     "categoria": "seguridad",
     "fecha": "2026-11-16T19:11:00-03:00",
     "autor": "Redacción Robos MDP",
     "arte": "ciudad",
     "imagen": "",
-    "texto": "Familiares y organizaciones solidarias mantienen la búsqueda de Erika Ayelén Romero, de 41 años, cuyo paradero se desconoce desde el miércoles 11 de noviembre de 2026. Según el relato de su familia, salió del barrio Costa Azul, al sur de Mar del Plata, para realizar un trabajo de limpieza y no regresó. La búsqueda fue difundida por Red Solidaria y medios locales este lunes 16.\\n\\nDurante la tarde del lunes, allegados se concentraron frente a la Comisaría Decimotercera de Playa Serena para pedir avances. De acuerdo con la cobertura periodística, representantes policiales recibieron a manifestantes y señalaron que trabajan en el caso. La familia comunicó sospechas sobre una posible retención contra su voluntad, pero no existe confirmación oficial de secuestro ni de participación de una organización criminal. Esas hipótesis deben investigarse y no pueden presentarse como hechos probados.\\n\\nComo datos útiles para identificarla, sus allegados indicaron que vestía una calza rosa con bordó y una campera rosa larga, y que tiene un tatuaje de mariposa en una mano. Quien disponga de información concreta puede comunicarla al 911. Se omiten domicilios, contactos privados y circunstancias personales que no aportan a la búsqueda. La situación puede cambiar rápidamente: esta información refleja las publicaciones disponibles al momento de redactar la nota.",
+    "texto": "ACTUALIZACIÓN DEL 17/11/2026: La búsqueda difundida durante el lunes 16 concluyó con la localización de la mujer en Sierra de los Padres. Según informó Qué Digital citando fuentes policiales, fue encontrada por efectivos y manifestó que se había retirado por voluntad propia y que no deseaba regresar. La Fiscalía N.º 7 dispuso tomarle declaración testimonial y realizar un examen médico. No corresponde mantener un pedido de búsqueda activo ni presentar como probado un secuestro. Esta actualización rectifica expresamente el estado que reflejaba la publicación inicial.\\n\\nINFORMACIÓN ORIGINAL DEL 16/11/2026: Familiares y allegados habían denunciado que desconocían su paradero desde el miércoles 11, cuando salió del barrio Costa Azul. Red Solidaria difundió el pedido de colaboración y vecinos se manifestaron frente a la comisaría de Playa Serena para reclamar avances. En ese momento se habían difundido sospechas familiares sobre una eventual retención, sin corroboración oficial. La posterior localización no confirma esas hipótesis.\\n\\nRobos MDP preserva la cronología de la cobertura y corrige su estado para evitar la circulación de alertas desactualizadas. Por respeto a la privacidad de la persona encontrada, se omiten detalles personales y no se reproduce el pedido original de datos para identificarla.",
     "fuentes": [
       {
         "nombre": "Qué Digital, 16/11/2026; búsqueda difundida por Red Solidaria",
@@ -109,6 +109,10 @@ export const AUTOMATICAS = [
       {
         "nombre": "0223, 16/11/2026, 16:36; reclamo ante comisaría",
         "url": "https://www.0223.com.ar/nota/2026-11-16-16-36-0-protesta-y-manifestacion-en-la-comisaria-de-playa-serena-por-la-desaparicion-de-erika-romero"
+      },
+      {
+        "nombre": "Qué Digital, 16/11/2026; confirmación policial del hallazgo",
+        "url": "https://quedigital.com.ar/policiales/encontraron-a-la-mujer-desaparecida-desde-el-miercoles-dijo-que-se-fue-por-voluntad-propia/"
       }
     ]
   },
