@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "prefectura-tres-aprehendidos-disturbios-cuidacoches-puerto-20261118",
+    "titulo": "Tres cuidacoches aprehendidos en el Puerto: investigan disturbios y secuestraron una varilla con punta",
+    "bajada": "Prefectura intervino en dos procedimientos durante la tarde y la noche del martes. Tres personas fueron trasladadas a la comisaría tercera y quedaron a disposición de Flagrancia.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T00:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Tres personas que realizaban tareas de cuidacoches fueron aprehendidas en dos intervenciones de Prefectura Naval Argentina en la zona del Puerto de Mar del Plata, según información policial difundida el martes 17 de noviembre. Los procedimientos ocurrieron durante recorridas preventivas de la fuerza, en horarios de tarde y noche, y dieron lugar a actuaciones contravencionales. No se informó una condena ni una resolución judicial definitiva.\n\nEn la primera intervención, efectivos observaron a un hombre y una mujer que discutían en la vía pública. De acuerdo con el reporte, cuando el personal intervino y les pidió retirarse, ambos respondieron con insultos y amenazas. Fueron aprehendidos y trasladados a la Comisaría Tercera. La Fiscalía de Flagrancia, a cargo de María Sánchez, intervino por disturbios en la vía pública.\n\nEl segundo procedimiento se desarrolló por la noche en avenida de los Trabajadores y Gaboto. Allí, los efectivos indicaron que un cuidacoches increpaba a automovilistas. Durante la identificación se produjo una resistencia y, según el informe difundido, se encontró una varilla de hierro con punta de aproximadamente treinta centímetros. La actuación fue calificada como contravención por disturbios y tenencia de arma blanca. La información disponible no permite afirmar que se haya utilizado ese elemento para atacar a alguien ni que se haya cometido un robo. Robos MDP continuará atento a la evolución de ambas actuaciones y a los reclamos de prevención en los sectores de estacionamiento del Puerto.",
+    "fuentes": [
+      {
+        "nombre": "0223, 17/11/2026, 20:35 — procedimientos de Prefectura en el Puerto",
+        "url": "https://www.0223.com.ar/nota/2026-11-17-20-35-0-detienen-a-tres-trapitos-por-disturbios-en-la-calle-uno-tenia-un-arma-blanca"
+      }
+    ]
+  },
+  {
     "id": "entradera-violenta-acantilados-robo-suran-20261117",
     "titulo": "Entradera en Los Acantilados: golpearon a un padre delante de sus hijos y escaparon con su auto",
     "bajada": "Tres encapuchados sorprendieron a un vecino cuando salía para llevar a sus hijos al colegio. La denuncia describe golpes, robo de dispositivos, dinero y una Volkswagen Suran.",
