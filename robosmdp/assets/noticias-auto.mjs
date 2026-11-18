@@ -830,5 +830,23 @@ export const AUTOMATICAS = [
         "url": "https://www.0223.com.ar/nota/2026-11-18-12-35-0-mato-a-un-hombre-en-el-barrio-parque-pena-y-lo-condenaron-a-13-anos-de-prision"
       }
     ]
+  },
+  {
+    "id": "operacion-proteccion-infancias-viii-allanamientos-mar-del-plata-20261118",
+    "titulo": "Operativo contra el abuso sexual infantil en línea: hubo allanamientos en Mar del Plata",
+    "bajada": "La ciudad participó de una investigación coordinada en 75 localidades bonaerenses. El balance provincial incluye 136 allanamientos, 123 personas identificadas y dispositivos secuestrados; aún no se informó el desglose local.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T20:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "documentos",
+    "imagen": "",
+    "texto": "Mar del Plata fue una de las localidades incluidas este miércoles 18 de noviembre en la Operación Provincial Protección de las Infancias VIII, un despliegue judicial y policial dirigido a investigar la circulación de material de abuso sexual infantil, su posible producción y casos de acoso sexual a menores mediante medios digitales. En el ámbito local, los procedimientos estuvieron bajo la conducción de la fiscal Graciela Trill y el ayudante fiscal Emiliano Fortunato, según la información difundida sobre el operativo.\n\nLa intervención abarcó 75 localidades de la provincia de Buenos Aires, con 136 allanamientos. El balance provincial informado menciona 123 personas identificadas, 70 computadoras, 176 teléfonos celulares y 95 dispositivos de almacenamiento secuestrados. También se detectaron siete posibles víctimas y 91 menores que convivían con personas investigadas. Estas cifras corresponden al conjunto de la provincia: no deben interpretarse como resultados exclusivos de Mar del Plata.\n\nLa investigación se desarrolla en el marco del Ministerio Público bonaerense y de fiscalías especializadas. Los dispositivos incautados deberán ser examinados y los hallazgos valorados por la Justicia. La identificación de una persona o el secuestro de equipos no constituyen por sí mismos una condena ni acreditan responsabilidad penal. Hasta el momento de esta publicación no se comunicó un desglose verificable de domicilios allanados, personas imputadas o medidas cautelares correspondientes específicamente a General Pueyrredon.\n\nLa protección de niñas, niños y adolescentes requiere preservar sus identidades y evitar la difusión de archivos o detalles que puedan revictimizarlos. Robos MDP seguirá la evolución de las actuaciones locales y publicará las precisiones que se confirmen por canales judiciales u oficiales, sin exponer datos sensibles.",
+    "fuentes": [
+      {
+        "nombre": "0223, 18/11/2026, 18:23 — operativo provincial y participación de Mar del Plata",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-18-8-0-realizaron-136-allanamientos-por-abuso-sexual-infantil-en-la-provincia-hubo-procedimientos-en-mar-del-plata"
+      }
+    ]
   }
+
 ];
