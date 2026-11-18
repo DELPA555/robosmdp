@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "robo-bicicleta-hotel-centro-buenos-aires-falucho-20261118",
+    "titulo": "Entró a un hotel del centro durante una descarga y escapó con una bicicleta",
+    "bajada": "El hurto ocurrió en Buenos Aires y Falucho mientras proveedores descargaban mercadería. Las cámaras registraron el ingreso y la salida del sospechoso.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T04:13:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un hombre ingresó a un hotel de la zona de Buenos Aires y Falucho, en el centro de Mar del Plata, y se llevó una bicicleta que se encontraba en el sector de estacionamiento. El episodio ocurrió el martes 17 de noviembre alrededor de las 13:30, según la reconstrucción periodística basada en las cámaras de seguridad del establecimiento. La noticia fue difundida esa misma tarde; su incorporación a Robos MDP se realiza el miércoles 18.\n\nDe acuerdo con el registro descripto por el medio que difundió el caso, el acceso al estacionamiento estaba abierto por la descarga de mercadería de proveedores. El hombre aprovechó esa circunstancia para bajar hacia donde se guardaban los rodados, tomar una bicicleta que no estaba asegurada y volver hacia el portón. Como la salida ya estaba cerrada, pidió a una trabajadora de recepción que le abriera, y consiguió retirarse pedaleando.\n\nLa secuencia habría quedado captada por tres cámaras del hotel, un elemento que podría resultar útil para una eventual investigación. No se informó en la fuente consultada sobre una detención, recupero del rodado ni intervención fiscal confirmada. Por eso, Robos MDP presenta el episodio como un hurto registrado por cámaras y no atribuye identidad ni responsabilidad penal definitiva a ninguna persona. El caso también muestra cómo los accesos abiertos durante tareas de carga y descarga pueden facilitar sustracciones en edificios comerciales.",
+    "fuentes": [
+      {
+        "nombre": "0223, 17/11/2026, 16:46 — secuencia de cámaras de hotel en Buenos Aires y Falucho",
+        "url": "https://www.0223.com.ar/nota/2026-11-17-16-46-0-se-infiltro-en-un-hotel-del-centro-pidio-que-le-abrieran-el-porton-y-escapo-con-una-bicicleta"
+      }
+    ]
+  },
+  {
     "id": "fuga-comisaria-novena-detenido-cementerio-la-loma-20261118",
     "titulo": "Investigan cómo escapó de la comisaría novena un detenido por el intento de robo en el Cementerio de La Loma",
     "bajada": "El hombre estaba bajo custodia policial por un hecho investigado en el cementerio. La Justicia abrió una causa por la evasión y la Policía inició un sumario interno.",
