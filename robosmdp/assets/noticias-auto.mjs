@@ -3,6 +3,23 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
+  {
+  "id": "recupero-gol-robado-cambio-patentes-20261118",
+  "titulo": "Recuperaron un Volkswagen Gol robado y detectaron un cambio de patentes",
+  "bajada": "El auto había sido sustraído el 10 de noviembre. Un joven de 19 años fue aprehendido y notificado de una causa por encubrimiento.",
+  "categoria": "recuperados",
+  "fecha": "2026-11-18T13:12:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "La Policía recuperó en Mar del Plata un Volkswagen Gol que había sido sustraído el 10 de noviembre en las inmediaciones de San Martín, entre Jujuy y Salta. La información del procedimiento se difundió el miércoles 18 de noviembre. Según el reporte policial recogido por la prensa, una investigación de la comisaría primera permitió ubicar el vehículo y organizar una vigilancia en el sector.\n\nLos efectivos observaron a un joven de 19 años que retiraba las chapas patentes del rodado y colocaba otras. Después de verificar las numeraciones de motor y chasis y el grabado de cristales, secuestraron el automóvil y un destornillador. El joven fue aprehendido y se le notificó la formación de una causa por encubrimiento, con intervención de la fiscalía especializada en delitos contra la propiedad automotor. La imputación no es una condena y tampoco demuestra que el joven haya participado en el hurto original. La investigación deberá establecer el origen de las patentes y las responsabilidades.",
+  "fuentes": [
+    {
+      "nombre": "0223, 18/11/2026, 10:53 — procedimiento y recupero",
+      "url": "https://www.0223.com.ar/nota/2026-11-18-10-53-0-le-cambiaba-las-patentes-a-un-auto-robado-pero-lo-engancharon"
+    }
+  ]
+},
     {
     "id": "robo-comercio-intento-fuga-higa-sarmiento-garay-20261118",
     "titulo": "Rompieron el acceso de un comercio y el detenido intentó escapar del HIGA con una sábana",
