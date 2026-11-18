@@ -114,7 +114,7 @@ auth.onAuthStateChanged(async user => {
   $('editor-main').hidden = !authorized;
   $('login-area').hidden = authorized;
   if (!authorized) { status(user ? 'Esta cuenta no tiene permisos editoriales.' : '', false, 'login-status'); return; }
-  await Promise.all([loadArticles(),loadTips()]);
+  await Promise.all([loadArticles(),loadTips(),loadPendingComments()]);
 });
 
 async function loadArticles() {
@@ -141,6 +141,7 @@ function clearArticle() {
   $('editor-heading').textContent = 'Nueva noticia';
   $('view-article').hidden = true;
   $('current-photo').textContent = 'Se utiliza una ilustración editorial si no se carga fotografía.';
+  $('published-comments').textContent = 'Seleccioná una noticia.';
   status('');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -164,6 +165,7 @@ function selectArticle(id) {
   $('current-photo').textContent = a.imagen ? 'Foto cargada. Elegí otra para reemplazarla.' : 'Sin foto cargada; se utiliza ilustración editorial.';
   $('view-article').href = '/noticias/' + encodeURIComponent(id);
   $('view-article').hidden = a.estado !== 'publicado';
+  loadPublishedComments(id);
   status('');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -237,3 +239,72 @@ async function loadTips() {
     }));
   } catch (error) { $('tips-list').textContent='No se pudieron cargar los mensajes ('+(error.code || 'error desconocido')+'). Revisá las reglas de Firestore publicadas y los permisos de administrador.'; console.error('Firestore noticias_envios:',error); }
 }
+
+async function commentsRequest(method, params = {}, data = null) {
+  const user = auth.currentUser;
+  if (!user) throw new Error('Iniciá sesión nuevamente para moderar comentarios.');
+  const token = await user.getIdToken();
+  const url = '/api/noticias-comentarios' + (method === 'GET' ? '?' + new URLSearchParams(params).toString() : '');
+  const res = await fetch(url, {
+    method,
+    headers:{authorization:'Bearer ' + token,...(method === 'POST' ? {'content-type':'application/json'} : {})},
+    body:method === 'POST' ? JSON.stringify(data) : undefined,
+    cache:'no-store'
+  });
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.error || 'No se pudo gestionar el comentario.');
+  return result;
+}
+function commentDate(date) {
+  if (!date) return 'Fecha no disponible';
+  const d = new Date(date);
+  return Number.isNaN(d.valueOf()) ? 'Fecha no disponible' : d.toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires'});
+}
+async function loadPendingComments() {
+  try {
+    const result = await commentsRequest('GET',{moderacion:'pendientes'});
+    const pending = Array.isArray(result.comentarios) ? result.comentarios : [];
+    $('comments-pending-count').textContent = `(${pending.length} pendientes)`;
+    $('pending-comments').innerHTML = pending.length ? pending.map(c => {
+      const newsTitle = articles.find(a => a.id === c.noticia)?.titulo || c.noticia;
+      return `<article class="comment-moderation-card"><small>${esc(commentDate(c.fecha))} · <a href="/noticias/${encodeURIComponent(c.noticia)}" target="_blank" rel="noopener noreferrer">${esc(newsTitle)} ↗</a></small><strong>${esc(c.nombre)}</strong><p>${esc(c.texto)}</p><div class="comment-moderation-buttons"><button class="primary" type="button" data-comment-action="aprobar" data-comment-id="${esc(c.id)}">APROBAR Y PUBLICAR</button><button type="button" data-comment-action="rechazar" data-comment-id="${esc(c.id)}">RECHAZAR</button></div></article>`;
+    }).join('') : '<p class="editor-hint">No hay comentarios pendientes de moderación.</p>';
+  } catch (error) {
+    $('pending-comments').textContent = 'No se pudo cargar la moderación: ' + error.message;
+    console.error('Comentarios pendientes:',error);
+  }
+}
+async function loadPublishedComments(id) {
+  try {
+    const result = await commentsRequest('GET',{moderacion:'publicados',slug:id});
+    if (selected !== id) return;
+    const comments = Array.isArray(result.comentarios) ? result.comentarios : [];
+    $('published-comments').innerHTML = comments.length ? comments.map(c => `
+      <article class="comment-moderation-card"><small>${esc(commentDate(c.fecha))} · ${c.visible ? 'VISIBLE AL PÚBLICO' : 'OCULTO'}</small><strong>${esc(c.nombre)}</strong><p>${esc(c.texto)}</p><div class="comment-moderation-buttons"><button type="button" data-comment-action="${c.visible ? 'ocultar' : 'restaurar'}" data-comment-id="${esc(c.id)}" data-comment-slug="${esc(id)}">${c.visible ? 'OCULTAR DEL DIARIO' : 'VOLVER A PUBLICAR'}</button></div></article>
+    `).join('') : '<p class="editor-hint">Esta noticia todavía no tiene comentarios aprobados.</p>';
+  } catch (error) {
+    if (selected === id) $('published-comments').textContent = 'No se pudieron cargar los comentarios: ' + error.message;
+    console.error('Comentarios publicados:',error);
+  }
+}
+$('refresh-comments').addEventListener('click', async () => {
+  await loadPendingComments();
+  if (selected) await loadPublishedComments(selected);
+});
+$('comment-moderation').addEventListener('click', async ev => {
+  const button = ev.target.closest('[data-comment-action]');
+  if (!button || button.disabled) return;
+  const accion = button.dataset.commentAction;
+  if (accion === 'rechazar' && !window.confirm('Rechazar este comentario? No podrá recuperarse desde el panel.')) return;
+  button.disabled = true;
+  try {
+    await commentsRequest('POST',{}, {
+      accion,id:button.dataset.commentId,...(button.dataset.commentSlug ? {slug:button.dataset.commentSlug} : {})
+    });
+    await loadPendingComments();
+    if (selected) await loadPublishedComments(selected);
+  } catch (error) {
+    alert('No se pudo actualizar el comentario: ' + error.message);
+    button.disabled = false;
+  }
+});

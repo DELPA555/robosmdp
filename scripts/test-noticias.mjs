@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { ARCHIVO, PUBLICADAS, CATEGORIAS } from '../robosmdp/assets/noticias-data.mjs';
 import { AUTOMATICAS } from '../robosmdp/assets/noticias-auto.mjs';
 import newsStory, { config as storyConfig } from '../netlify/functions/news-story.mjs';
+import newsComments, { config as commentsConfig } from '../netlify/functions/news-comments.mjs';
 
 test('archivo inicial: identificadores únicos, fuentes verificables y fechas reales', () => {
   assert.ok(ARCHIVO.length >= 4);
@@ -51,6 +52,9 @@ test('nota documental: render HTML SSR con metadatos y fuente', async () => {
   assert.ok(html.includes('Foto de archivo'));
   assert.ok(html.includes('Ver fotografía original'));
   assert.ok(html.includes('Licencia'));
+  assert.ok(html.includes('id="news-comment-form"'));
+  assert.ok(html.includes('id="news-comments-list"'));
+  assert.ok(html.includes('/assets/noticias-comentarios.mjs'));
 });
 
 test('el editor permite agregar y administrar múltiples fotos sin reemplazar la portada', () => {
@@ -64,6 +68,25 @@ test('el editor permite agregar y administrar múltiples fotos sin reemplazar la
   assert.match(js, /galeria:galleryDraft\.map/);
   assert.match(js, /data-gallery-remove/);
   assert.match(js, /await uploadPhoto\(item\.file, id\)/);
+});
+
+test('comentarios: formulario público, moderación privada y límites antispam', async () => {
+  const html = fs.readFileSync(new URL('../robosmdp/admin-noticias.html',import.meta.url),'utf8');
+  const admin = fs.readFileSync(new URL('../robosmdp/assets/noticias-admin.mjs',import.meta.url),'utf8');
+  const client = fs.readFileSync(new URL('../robosmdp/assets/noticias-comentarios.mjs',import.meta.url),'utf8');
+  const server = fs.readFileSync(new URL('../netlify/functions/news-comments.mjs',import.meta.url),'utf8');
+  assert.equal(commentsConfig.path, '/api/noticias-comentarios');
+  assert.ok(html.includes('id="pending-comments"'));
+  assert.ok(html.includes('id="published-comments"'));
+  assert.ok(admin.includes("accion === 'rechazar'"));
+  assert.ok(admin.includes('data-comment-action="aprobar"'));
+  assert.ok(client.includes("status.textContent = 'Gracias!"));
+  assert.match(server,/verifyIdToken/);
+  assert.match(server,/noticias_comentarios_pendientes/);
+  assert.match(server,/const MAX_COMMENTS_PER_WINDOW = 3/);
+  assert.match(server,/visible:action === 'restaurar'/);
+  const response = await newsComments(new Request('https://robosmdp.com.ar/api/noticias-comentarios',{method:'PUT'}));
+  assert.equal(response.status,405);
 });
 
 test('la nota pública muestra su galería con crédito, enlaces y textos seguros', async () => {
