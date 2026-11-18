@@ -53,6 +53,47 @@ test('nota documental: render HTML SSR con metadatos y fuente', async () => {
   assert.ok(html.includes('Licencia'));
 });
 
+test('el editor permite agregar y administrar múltiples fotos sin reemplazar la portada', () => {
+  const html = fs.readFileSync(new URL('../robosmdp/admin-noticias.html', import.meta.url), 'utf8');
+  const js = fs.readFileSync(new URL('../robosmdp/assets/noticias-admin.mjs', import.meta.url), 'utf8');
+  for (const id of ['a-photo', 'a-gallery', 'gallery-list', 'gallery-count']) {
+    assert.ok(html.includes(`id="${id}"`), `falta ${id} en el editor`);
+  }
+  assert.match(html, /id="a-gallery"[^>]*multiple/);
+  assert.match(js, /const MAX_GALLERY = 16/);
+  assert.match(js, /galeria:galleryDraft\.map/);
+  assert.match(js, /data-gallery-remove/);
+  assert.match(js, /await uploadPhoto\(item\.file, id\)/);
+});
+
+test('la nota pública muestra su galería con crédito, enlaces y textos seguros', async () => {
+  const previousFetch = globalThis.fetch;
+  const photo = {mapValue:{fields:{
+    url:{stringValue:'https://example.com/imagen-del-hecho.jpg'},
+    alt:{stringValue:'Foto del operativo'},
+    credito:{stringValue:'Fotógrafo autorizado <prueba>'}
+  }}};
+  globalThis.fetch = async () => new Response(JSON.stringify({fields:{
+    estado:{stringValue:'publicado'},
+    titulo:{stringValue:ARCHIVO[0].titulo},
+    texto:{stringValue:ARCHIVO[0].texto},
+    galeria:{arrayValue:{values:[photo]}}
+  }}), {status:200,headers:{'content-type':'application/json'}});
+  try {
+    const a = ARCHIVO[0];
+    const res = await newsStory(new Request('https://robosmdp.com.ar/noticias/'+a.id), {params:{slug:a.id}});
+    const html = await res.text();
+    assert.match(html, /Más imágenes de la noticia/);
+    assert.match(html, /article-gallery-grid/);
+    assert.match(html, /https:\/\/example\.com\/imagen-del-hecho\.jpg/);
+    assert.match(html, /Foto del operativo/);
+    assert.match(html, /Fotógrafo autorizado &lt;prueba&gt;/);
+    assert.ok(!html.includes('Fotógrafo autorizado <prueba>'));
+  } finally {
+    globalThis.fetch = previousFetch;
+  }
+});
+
 test('ruta inválida no busca ni muestra datos', async () => {
   const res = await newsStory(new Request('https://robosmdp.com.ar/.netlify/functions/news-story?slug=..%2Fprivate'));
   assert.equal(res.status, 404);

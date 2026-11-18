@@ -17,6 +17,16 @@ const renderImage = a => {
   if (image) return `<figure><div class="news-art article-image"><img src="${escapeHtml(image)}" alt="${escapeHtml(a.alt_imagen || a.titulo)}"></div><figcaption class="photo-credit">${escapeHtml(a.credito_imagen || 'Imagen aportada a Robos MDP')}${safeUrl(a.fuente_imagen) ? ` · <a href="${escapeHtml(safeUrl(a.fuente_imagen))}" target="_blank" rel="noopener noreferrer">Ver fotografía original</a>` : ''}${safeUrl(a.licencia_imagen) ? ` · <a href="${escapeHtml(safeUrl(a.licencia_imagen))}" target="_blank" rel="noopener noreferrer">Licencia</a>` : ''}</figcaption></figure>`;
   return `<figure><div class="news-art article-image"><img src="/assets/noticias/imagen-editorial.svg" alt="Imagen editorial ilustrativa; no es fotografía del hecho"></div><figcaption class="photo-credit">Ilustración editorial. No representa un registro fotográfico del hecho.</figcaption></figure>`;
 };
+const renderGallery = a => {
+  const photos = (Array.isArray(a.galeria) ? a.galeria : [])
+    .filter(item => item && typeof item === 'object' && imagePath(item.url))
+    .slice(0, 16);
+  if (!photos.length) return '';
+  return `<section class="article-gallery" aria-label="Galería de imágenes complementarias"><h2>Más imágenes de la noticia</h2><p>Seleccioná una foto para verla en tamaño completo.</p><div class="article-gallery-grid">${photos.map((item, i) => {
+    const image = imagePath(item.url);
+    return `<figure class="article-gallery-item"><a href="${escapeHtml(image)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir imagen ${i + 1} en tamaño completo"><img src="${escapeHtml(image)}" alt="${escapeHtml(item.alt || `Imagen complementaria ${i + 1}`)}" loading="lazy" decoding="async"></a><figcaption><strong>IMAGEN ${i + 1} DE ${photos.length}</strong>${item.credito ? ` · ${escapeHtml(item.credito)}` : ''}${item.alt ? `<span>${escapeHtml(item.alt)}</span>` : ''}</figcaption></figure>`;
+  }).join('')}</div></section>`;
+};
 function decodeFirestore(value) {
   if (!value || typeof value !== 'object') return null;
   if ('stringValue' in value) return value.stringValue;
@@ -76,7 +86,7 @@ export default async (request, context) => {
 <main class="news-wrap"><div class="article-breadcrumb"><a href="/noticias">ROBOS MDP NOTICIAS</a><span>/</span><a href="/noticias?categoria=${encodeURIComponent(a.categoria)}">${escapeHtml(labelFor(a.categoria))}</a></div><div class="article-layout"><article>
 <span class="cat">${escapeHtml(labelFor(a.categoria))}</span><h1 class="article-title">${title}</h1><p class="article-deck">${desc}</p>
 <div class="article-byline"><span>${escapeHtml(a.autor || 'Redacción Robos MDP')}</span><time datetime="${dateOf(a.fecha).toISOString()}">${escapeHtml(format(a.fecha))}</time><span>MAR DEL PLATA</span><a href="https://wa.me/?text=${encodeURIComponent(a.titulo+' · '+url)}" target="_blank" rel="noopener noreferrer" style="color:#ba2132">COMPARTIR POR WHATSAPP ↗</a></div>
-${renderImage(a)}<div class="article-copy">${body}</div>
+${renderImage(a)}<div class="article-copy">${body}</div>${renderGallery(a)}
 <section class="sources"><h3>Fuentes y documentos</h3><p>Podés consultar la documentación mencionada en este artículo.</p>${sources.length ? sources.map(s => `<a href="${escapeHtml(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer">↗ ${escapeHtml(s.nombre || s.url)}</a>`).join('') : '<p>No se incorporaron enlaces documentales a esta nota.</p>'}</section>
 </article><aside class="article-aside"><div class="aside-box"><p class="section-tag">PERIODISMO CIUDADANO</p><h3>Tenés algo para contarnos?</h3><p>Ayudanos a investigar lo que sucede en tu barrio.</p><a href="/enviar-noticia">ENVIAR INFORMACIÓN ↗</a></div>
 <div class="disclaimer-box">ROBOS MDP NOTICIAS · Diferenciamos hechos verificados de denuncias y opiniones. Una investigación no implica una condena ni prueba automática de un delito.</div>

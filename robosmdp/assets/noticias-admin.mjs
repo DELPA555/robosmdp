@@ -8,8 +8,84 @@ const $ = id => document.getElementById(id);
 const col = db.collection('noticias');
 let articles = [], selected = null, submitting = false;
 let email = null;
+const MAX_GALLERY = 16;
+const PHOTO_TYPES = ['image/jpeg','image/png','image/webp'];
+let galleryDraft = [];
 function slugify(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,108); }
 function status(msg, ok = true, target = 'edit-status') { $(target).textContent = msg; $(target).className = 'form-status ' + (ok ? 'ok' : 'error'); }
+
+function checkPhoto(file) {
+  if (!PHOTO_TYPES.includes(file.type) || file.size > 8 * 1024 * 1024 || !file.size) {
+    throw new Error('Cada foto debe ser JPEG, PNG o WebP y pesar hasta 8 MB.');
+  }
+}
+function resetGallery() {
+  galleryDraft.forEach(item => { if (item.preview?.startsWith('blob:')) URL.revokeObjectURL(item.preview); });
+  galleryDraft = [];
+  $('a-gallery').value = '';
+  renderGallery();
+}
+function renderGallery() {
+  $('gallery-count').textContent = galleryDraft.length
+    ? `${galleryDraft.length} foto${galleryDraft.length === 1 ? '' : 's'} complementaria${galleryDraft.length === 1 ? '' : 's'} · se guardan con la noticia.`
+    : 'Todavía no hay imágenes complementarias.';
+  $('gallery-list').innerHTML = galleryDraft.map((item, index) => {
+    const src = item.file ? item.preview : publicImage(item.url);
+    return `<div class="gallery-edit-card"><img src="${esc(src)}" alt="Vista previa de foto complementaria ${index + 1}"><span class="gallery-tag">FOTO ${index + 1} · ${item.file ? 'NUEVA, PENDIENTE DE SUBIR' : 'GUARDADA'}</span>
+      <label>DESCRIPCIÓN / TEXTO ALTERNATIVO<input data-gallery-alt="${index}" maxlength="200" value="${esc(item.alt || '')}" placeholder="Qué muestra esta foto" required></label>
+      <label>AUTOR / CRÉDITO<input data-gallery-credit="${index}" maxlength="120" value="${esc(item.credito || '')}" placeholder="Autor o titular de la imagen" required></label>
+      <button type="button" data-gallery-remove="${index}">QUITAR DE LA NOTICIA</button></div>`;
+  }).join('');
+}
+function loadGallery(article) {
+  resetGallery();
+  galleryDraft = (Array.isArray(article.galeria) ? article.galeria : [])
+    .filter(item => item && typeof item === 'object' && publicImage(item.url))
+    .slice(0, MAX_GALLERY)
+    .map(item => ({url:publicImage(item.url),alt:String(item.alt || ''),credito:String(item.credito || '')}));
+  renderGallery();
+}
+$('a-gallery').addEventListener('change', ev => {
+  const files = [...ev.target.files];
+  ev.target.value = '';
+  if (submitting || !files.length) return;
+  if (galleryDraft.length + files.length > MAX_GALLERY) return status(`Podés tener hasta ${MAX_GALLERY} fotos complementarias por noticia.`, false);
+  try { files.forEach(checkPhoto); }
+  catch (error) { return status(error.message, false); }
+  files.forEach(file => galleryDraft.push({file,preview:URL.createObjectURL(file),alt:'',credito:''}));
+  renderGallery();
+  status('Fotos preparadas. Completá sus descripciones y créditos y guardá la noticia para subirlas.');
+});
+$('gallery-list').addEventListener('input', ev => {
+  if (submitting) return;
+  if ('galleryAlt' in ev.target.dataset) galleryDraft[Number(ev.target.dataset.galleryAlt)].alt = ev.target.value;
+  if ('galleryCredit' in ev.target.dataset) galleryDraft[Number(ev.target.dataset.galleryCredit)].credito = ev.target.value;
+});
+$('gallery-list').addEventListener('click', ev => {
+  const button = ev.target.closest('[data-gallery-remove]');
+  if (!button || submitting) return;
+  const index = Number(button.dataset.galleryRemove);
+  if (!Number.isInteger(index) || index < 0 || index >= galleryDraft.length) return;
+  const [removed] = galleryDraft.splice(index, 1);
+  if (removed.preview?.startsWith('blob:')) URL.revokeObjectURL(removed.preview);
+  renderGallery();
+  status('Foto quitada de la nota. Guardá la noticia para confirmar el cambio.');
+});
+async function uploadPhoto(file, id) {
+  checkPhoto(file);
+  const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g,'-').slice(-75);
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2,10)}-${safeName}`;
+  const ref = storage.ref(`noticias/${id}/${filename}`);
+  try {
+    await ref.put(file, {contentType:file.type});
+    return await ref.getDownloadURL();
+  } catch (error) {
+    if (error.code === 'storage/unauthorized' || error.code === 'storage/unauthenticated') {
+      throw new Error('Firebase Storage rechazó una imagen por permisos. La noticia NO se guardó. Revisá las reglas del bucket robosmdp-d1ef3.firebasestorage.app y tu cuenta administradora.');
+    }
+    throw error;
+  }
+}
 
 $('login-form').addEventListener('submit', async ev => {
   ev.preventDefault();
@@ -58,6 +134,7 @@ $('clear-article').addEventListener('click', clearArticle);
 function clearArticle() {
   selected = null;
   $('news-edit-form').reset();
+  resetGallery();
   $('a-status').value = 'borrador';
   $('a-author').value = 'Redacción Robos MDP';
   $('a-slug').disabled = false;
@@ -82,6 +159,8 @@ function selectArticle(id) {
   $('a-status').value = a.estado || 'borrador';
   $('a-alt').value = a.alt_imagen || '';
   $('a-credit').value = a.credito_imagen || '';
+  $('a-photo').value = '';
+  loadGallery(a);
   $('current-photo').textContent = a.imagen ? 'Foto cargada. Elegí otra para reemplazarla.' : 'Sin foto cargada; se utiliza ilustración editorial.';
   $('view-article').href = '/noticias/' + encodeURIComponent(id);
   $('view-article').hidden = a.estado !== 'publicado';
@@ -106,25 +185,27 @@ $('news-edit-form').addEventListener('submit', async ev => {
   if (!selected && articles.some(x=>x.id===id)) return status('Esa dirección ya está usada. Cambiala.',false);
   let sources;
   try { sources = linksFrom($('a-sources').value); } catch (e) {return status(e.message,false);}
+  if (galleryDraft.some(item => !item.alt.trim() || !item.credito.trim())) {
+    return status('Completá la descripción y el crédito de cada foto complementaria antes de guardar.', false);
+  }
   submitting=true; $('save-article').disabled=true;
   try {
     const old=articles.find(x=>x.id===id);
     const file=$('a-photo').files[0];
     let image=old?.imagen || '';
     if (file) {
-      if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 8*1024*1024) throw new Error('La foto debe ser JPEG, PNG o WebP y pesar hasta 8 MB.');
-      status('Subiendo imagen…');
-      const safeName=file.name.replace(/[^a-zA-Z0-9_.-]/g,'-').slice(-75);
-      const ref=storage.ref('noticias/'+id+'/'+Date.now()+'-'+safeName);
-      try {
-        await ref.put(file,{contentType:file.type});
-        image=await ref.getDownloadURL();
-      } catch (uploadError) {
-        if (uploadError.code === 'storage/unauthorized' || uploadError.code === 'storage/unauthenticated') {
-          throw new Error('Firebase Storage rechazó la imagen (permisos). La noticia NO se guardó y el formulario sigue intacto. Revisá las reglas publicadas del bucket robosmdp-d1ef3.firebasestorage.app y que tu sesión tenga permisos de administrador. Podés quitar la foto para guardar el texto y volver a agregarla cuando se corrijan los permisos.');
-        }
-        throw uploadError;
-      }
+      status('Subiendo imagen de portada…');
+      image = await uploadPhoto(file, id);
+    }
+    for (let i = 0; i < galleryDraft.length; i++) {
+      const item = galleryDraft[i];
+      if (!item.file) continue;
+      status(`Subiendo foto complementaria ${i + 1} de ${galleryDraft.length}…`);
+      const url = await uploadPhoto(item.file, id);
+      if (item.preview?.startsWith('blob:')) URL.revokeObjectURL(item.preview);
+      item.url = url;
+      item.preview = url;
+      delete item.file;
     }
     const now=new Date().toISOString();
     const data={
@@ -132,6 +213,7 @@ $('news-edit-form').addEventListener('submit', async ev => {
       autor:$('a-author').value.trim() || 'Redacción Robos MDP',
       estado:$('a-status').value,
       fuentes:sources,imagen:image,
+      galeria:galleryDraft.map(item => ({url:item.url,alt:item.alt.trim(),credito:item.credito.trim()})),
       alt_imagen:$('a-alt').value.trim(),credito_imagen:$('a-credit').value.trim(),
       fecha:old?.fecha || now,actualizado:now
     };
