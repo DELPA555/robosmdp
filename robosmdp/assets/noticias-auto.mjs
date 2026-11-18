@@ -3,6 +3,44 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
+    {
+    "id": "robo-comercio-intento-fuga-higa-sarmiento-garay-20261118",
+    "titulo": "Rompieron el acceso de un comercio y el detenido intentó escapar del HIGA con una sábana",
+    "bajada": "Tras recuperar objetos sustraídos de un local de indumentaria de Sarmiento y Garay, la Policía custodió al sospechoso en el hospital, donde intentó huir desde un primer piso.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T11:18:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un robo a un comercio de indumentaria y accesorios de la zona de Sarmiento y Garay, en Mar del Plata, derivó en una detención y en un posterior intento de fuga desde el Hospital Interzonal General de Agudos. El hecho delictivo ocurrió durante la noche del martes 17 de noviembre y su evolución fue difundida durante la mañana del miércoles 18. Según la información policial recogida por medios locales, una alerta al 911 movilizó al Comando de Patrullas Norte, que interceptó a un hombre de 45 años que se alejaba con una mochila y una bolsa. Entre los elementos que el comerciante reconoció figuraban teléfonos, prendas y un dispositivo de cobro. Las cámaras del local habrían registrado daños en el acceso para ingresar.\n\nEl hombre fue trasladado al HIGA por una necesidad de atención médica vinculada con una bolsa de colostomía. Mientras permanecía bajo custodia, intentó salir por una ventana del primer piso utilizando una sábana y cayó desde unos seis metros. Fue localizado en la parte posterior de la guardia, recibió asistencia y quedó pendiente de evaluación por posibles fracturas. La Fiscalía de Flagrancia dispuso actuaciones por robo. La aprehensión y la imputación no equivalen a una condena; tampoco se informó una evasión consumada, ya que el hombre fue localizado en el predio hospitalario. Se trata de un único episodio con dos etapas, el robo investigado y el intento posterior de escape.",
+    "fuentes": [
+      {
+        "nombre": "0223, 18/11/2026, 09:54 — detención, objetos recuperados e intento de fuga",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-9-54-0-detenido-en-el-hospital-uso-una-sabana-en-intento-de-fuga-salto-seis-metros-y-lo-atraparon"
+      },
+      {
+        "nombre": "Radio 10 Mar del Plata, 18/11/2026 — seguimiento del procedimiento",
+        "url": "https://radio10mardelplata.com.ar/robo-un-comercio-en-mar-del-plata-fue-detenido-y-luego-intento-escapar-del-higa-por-una-ventana/"
+      }
+    ]
+  },
+  {
+    "id": "ataque-arma-blanca-casa-don-bosco-20261118",
+    "titulo": "Un joven quedó en terapia intensiva tras una pelea con arma blanca en Don Bosco",
+    "bajada": "El ataque ocurrió alrededor de las seis de la mañana en la zona de Castelli y Chaco. Un hombre fue detenido y la Fiscalía investiga una tentativa de homicidio.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T11:18:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un episodio de violencia registrado durante la mañana del miércoles 18 de noviembre en el barrio Don Bosco terminó con un hombre de 26 años internado en cuidados intensivos y otro detenido. La información periodística sitúa el enfrentamiento alrededor de las 6 en una vivienda ocupada de la zona de Castelli y Chaco, en Mar del Plata. De acuerdo con la reconstrucción inicial, durante una pelea entre dos hombres uno de ellos sufrió heridas de arma blanca en el cuello, el rostro y el torso, además de otros traumatismos. Fue asistido y trasladado en ambulancia al Hospital Interzonal General de Agudos.\n\nPersonal de la comisaría cuarta intervino en el procedimiento y detuvo al hombre señalado como agresor. La fiscal María Florencia Salas abrió una investigación por homicidio en grado de tentativa y dispuso citarlo a declarar como imputado. La causa se encuentra en etapa de investigación: todavía no se conocen públicamente todos los detalles de la discusión ni existe una sentencia que determine responsabilidades. La referencia a la ocupación de la vivienda describe el contexto informado y no acredita por sí misma un delito de usurpación. El estado de salud del herido y las medidas judiciales posteriores requieren seguimiento.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 18/11/2026 — ataque y actuaciones fiscales en Don Bosco",
+        "url": "https://www.lacapitalmdp.com/dos-hombres-se-pelearon-en-una-casa-tomada-y-uno-apunalo-al-otro-esta-grave/"
+      }
+    ]
+  },
   {
     "id": "robo-bicicleta-hotel-centro-buenos-aires-falucho-20261118",
     "titulo": "Entró a un hotel del centro durante una descarga y escapó con una bicicleta",
