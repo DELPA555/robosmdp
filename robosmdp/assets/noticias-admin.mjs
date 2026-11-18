@@ -49,7 +49,7 @@ async function loadArticles() {
     articles = [...PUBLICADAS.map(a => ({...a,estado:'publicado',...overrides.get(a.id)})), ...editable.filter(a => !PUBLICADAS.some(p => p.id === a.id))].sort((a,b) => articleDate(b.actualizado || b.fecha) - articleDate(a.actualizado || a.fecha));
     $('edit-count').textContent = '('+articles.length+')';
     $('editor-list').innerHTML = articles.length ? articles.map(a => `<div class="editor-item" data-id="${esc(a.id)}"><span class="badge">${esc(a.estado)}</span><b>${esc(a.titulo)}</b><small>${esc(a.categoria)} · ${articleDate(a.fecha).toLocaleDateString('es-AR')}</small></div>`).join('') : '<p class="editor-hint">Todavía no hay publicaciones.</p>';
-  } catch (error) { $('editor-list').textContent = 'Error al cargar. Revisá las reglas de Firebase.'; console.error(error); }
+  } catch (error) { $('editor-list').textContent = 'No se pudo consultar Firestore (' + (error.code || 'error desconocido') + '). Revisá las reglas de Firestore publicadas y los permisos de tu cuenta. Las noticias del sitio no se borraron.'; console.error('Firestore noticias:',error); }
 }
 $('editor-list').addEventListener('click', ev => { const el = ev.target.closest('[data-id]'); if (el) selectArticle(el.dataset.id); });
 $('a-title').addEventListener('input', () => { if (!selected) $('a-slug').value = slugify($('a-title').value); });
@@ -153,5 +153,5 @@ async function loadTips() {
       try { await db.collection('noticias_envios').doc(button.dataset.tip).update({estado:'revisado'}); await loadTips(); }
       catch (error) { alert('No se pudo actualizar el mensaje.'); }
     }));
-  } catch (error) { $('tips-list').textContent='No se pudieron cargar los mensajes. Revisá las reglas de Firestore.'; console.error(error); }
+  } catch (error) { $('tips-list').textContent='No se pudieron cargar los mensajes ('+(error.code || 'error desconocido')+'). Revisá las reglas de Firestore publicadas y los permisos de administrador.'; console.error('Firestore noticias_envios:',error); }
 }
