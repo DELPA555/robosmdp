@@ -116,8 +116,15 @@ $('news-edit-form').addEventListener('submit', async ev => {
       status('Subiendo imagen…');
       const safeName=file.name.replace(/[^a-zA-Z0-9_.-]/g,'-').slice(-75);
       const ref=storage.ref('noticias/'+id+'/'+Date.now()+'-'+safeName);
-      await ref.put(file,{contentType:file.type});
-      image=await ref.getDownloadURL();
+      try {
+        await ref.put(file,{contentType:file.type});
+        image=await ref.getDownloadURL();
+      } catch (uploadError) {
+        if (uploadError.code === 'storage/unauthorized' || uploadError.code === 'storage/unauthenticated') {
+          throw new Error('Firebase Storage rechazó la imagen (permisos). La noticia NO se guardó y el formulario sigue intacto. Revisá las reglas publicadas del bucket robosmdp-d1ef3.firebasestorage.app y que tu sesión tenga permisos de administrador. Podés quitar la foto para guardar el texto y volver a agregarla cuando se corrijan los permisos.');
+        }
+        throw uploadError;
+      }
     }
     const now=new Date().toISOString();
     const data={
