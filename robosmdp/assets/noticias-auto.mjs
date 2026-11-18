@@ -4,6 +4,27 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "fuga-comisaria-novena-detenido-cementerio-la-loma-20261118",
+    "titulo": "Investigan cómo escapó de la comisaría novena un detenido por el intento de robo en el Cementerio de La Loma",
+    "bajada": "El hombre estaba bajo custodia policial por un hecho investigado en el cementerio. La Justicia abrió una causa por la evasión y la Policía inició un sumario interno.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T01:13:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La fuga de un hombre que permanecía bajo custodia policial abrió una nueva investigación en Mar del Plata. Había sido aprehendido durante el fin de semana por un presunto intento de sustracción de cables y otros elementos del Cementerio de La Loma. La novedad no es otro robo en el cementerio, sino la evasión posterior de una dependencia policial y las responsabilidades institucionales que ahora deberán esclarecerse.\n\nDe acuerdo con las informaciones publicadas el martes 17 de noviembre, el detenido se encontraba alojado en la comisaría novena, en la zona de Almafuerte al 700, cuando consiguió escapar. Una de las crónicas señala que habría forzado una reja. La mecánica precisa de la evasión sigue bajo investigación y no corresponde darla por establecida. La Fiscalía a cargo de Carlos Russo solicitó documentación sobre lo ocurrido, mientras la Jefatura Departamental inició un sumario administrativo.\n\nLa Capital informó que el mismo hombre había protagonizado otra fuga del Hospital Interzonal General de Agudos en marzo de 2025 y que luego fue recapturado. Ese antecedente refuerza las preguntas sobre las condiciones de custodia y los controles aplicados en este caso, pero no determina por sí mismo responsabilidades individuales. Al cierre de esta publicación no se obtuvo confirmación oficial de una nueva recaptura. Robos MDP seguirá la investigación judicial y administrativa, diferenciando las imputaciones del intento de robo original de la nueva causa por evasión.",
+    "fuentes": [
+      {
+        "nombre": "0223, 17/11/2026, 20:49 — fuga de detenido vinculado al Cementerio de La Loma",
+        "url": "https://www.0223.com.ar/nota/2026-11-17-20-49-0-se-fugo-de-la-comisaria-un-hombre-que-habia-sido-detenido-por-robar-en-el-cementerio-de-la-loma"
+      },
+      {
+        "nombre": "La Capital, 17/11/2026 — investigación de evasión y sumario policial",
+        "url": "https://www.lacapitalmdp.com/investigan-la-fuga-de-un-preso-de-la-comisaria-ya-habia-huido-del-higa/"
+      }
+    ]
+  },
+  {
     "id": "prefectura-tres-aprehendidos-disturbios-cuidacoches-puerto-20261118",
     "titulo": "Tres cuidacoches aprehendidos en el Puerto: investigan disturbios y secuestraron una varilla con punta",
     "bajada": "Prefectura intervino en dos procedimientos durante la tarde y la noche del martes. Tres personas fueron trasladadas a la comisaría tercera y quedaron a disposición de Flagrancia.",
