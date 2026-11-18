@@ -9,6 +9,8 @@ import { PUBLICADAS } from '../../robosmdp/assets/noticias-data.mjs';
 export const config = { path: '/api/noticias-comentarios' };
 
 const ADMIN_EMAIL = 'admin@robosmdp.com.ar';
+const PROJECT = 'robosmdp-d1ef3';
+const FIREBASE_CERTS = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,115}$/;
 const ID_RE = /^[A-Za-z0-9_-]{5,80}$/;
 const WINDOW_MS = 10 * 60 * 1000;
@@ -26,13 +28,53 @@ let services;
 async function firebaseServices() {
   if (services) return services;
   const { initializeApp, getApps, cert } = await import('firebase-admin/app');
-  const { getAuth } = await import('firebase-admin/auth');
   const { getFirestore, FieldValue } = await import('firebase-admin/firestore');
   const raw = globalThis.Netlify?.env?.get('FIREBASE_SERVICE_ACCOUNT') || process.env.FIREBASE_SERVICE_ACCOUNT;
   if (!raw) throw new Error('Falta FIREBASE_SERVICE_ACCOUNT');
   if (!getApps().length) initializeApp({ credential:cert(JSON.parse(raw)) });
-  services = { db:getFirestore(), auth:getAuth(), FieldValue, secret:raw };
+  services = { db:getFirestore(), FieldValue, secret:raw };
   return services;
+}
+
+// Firebase publica certificados X.509 rotativos para verificar ID tokens
+// sin cargar el SDK de Auth. La firma y TODOS los claims de seguridad se
+// validan antes de otorgar acceso a la moderación.
+let publicCerts = null;
+let certsValidUntil = 0;
+async function getPublicCerts() {
+  if (publicCerts && Date.now() < certsValidUntil) return publicCerts;
+  const response = await fetch(FIREBASE_CERTS, {signal:AbortSignal.timeout(7000)});
+  if (!response.ok) throw new Error('No se pudieron verificar las claves públicas de Firebase');
+  const keys = await response.json();
+  if (!keys || typeof keys !== 'object') throw new Error('Certificados de Firebase inválidos');
+  const maxAge = Number(response.headers.get('cache-control')?.match(/max-age=(\d+)/)?.[1] || 3600);
+  publicCerts = keys;
+  certsValidUntil = Date.now() + Math.min(Math.max(maxAge,0),21600) * 1000;
+  return keys;
+}
+export async function verifyFirebaseIdToken(token) {
+  if (typeof token !== 'string' || token.length > 12000) return null;
+  const pieces = token.split('.');
+  if (pieces.length !== 3) return null;
+  let header, claims;
+  try {
+    header = JSON.parse(Buffer.from(pieces[0],'base64url').toString('utf8'));
+    claims = JSON.parse(Buffer.from(pieces[1],'base64url').toString('utf8'));
+  } catch { return null; }
+  if (header?.alg !== 'RS256' || typeof header.kid !== 'string' || header.kid.length > 200) return null;
+  const now = Math.floor(Date.now()/1000);
+  if (claims?.aud !== PROJECT || claims.iss !== `https://securetoken.google.com/${PROJECT}`) return null;
+  if (typeof claims.sub !== 'string' || !claims.sub.length || claims.sub.length > 128) return null;
+  if (![claims.iat,claims.exp,claims.auth_time].every(Number.isInteger)) return null;
+  if (claims.iat > now || claims.auth_time > now || claims.exp <= now) return null;
+  const cert = (await getPublicCerts())[header.kid];
+  if (typeof cert !== 'string') return null;
+  try {
+    const verifier = crypto.createVerify('RSA-SHA256');
+    verifier.update(pieces[0] + '.' + pieces[1]);
+    verifier.end();
+    return verifier.verify(cert,Buffer.from(pieces[2],'base64url')) ? claims : null;
+  } catch { return null; }
 }
 
 function clientIp(req) {
@@ -47,12 +89,12 @@ function publicComment(doc) {
     fecha:data.fecha?.toDate?.().toISOString() || null
   };
 }
-async function checkStaff(req, auth) {
+async function checkStaff(req) {
   const bearer = req.headers.get('authorization')?.match(/^Bearer (\S+)$/i)?.[1];
   if (!bearer) return false;
   try {
-    const claims = await auth.verifyIdToken(bearer);
-    return claims.admin === true || claims.email?.toLowerCase() === ADMIN_EMAIL;
+    const claims = await verifyFirebaseIdToken(bearer);
+    return claims?.admin === true || claims?.email?.toLowerCase() === ADMIN_EMAIL;
   } catch { return false; }
 }
 async function isPublished(db, slug) {
@@ -61,11 +103,11 @@ async function isPublished(db, slug) {
   return PUBLICADAS.some(article => article.id === slug);
 }
 
-async function getComments(req, url, db, auth) {
+async function getComments(req, url, db) {
   const mode = url.searchParams.get('moderacion');
   const slug = url.searchParams.get('slug') || '';
   if (mode) {
-    if (!await checkStaff(req, auth)) return json({error:'No autorizado'}, 403);
+    if (!await checkStaff(req)) return json({error:'No autorizado'}, 403);
     if (mode === 'pendientes') {
       const snap = await db.collection('noticias_comentarios_pendientes').orderBy('fecha','desc').limit(150).get();
       return json({comentarios:snap.docs.map(doc => ({...publicComment(doc),noticia:doc.get('noticia')}))});
@@ -82,8 +124,8 @@ async function getComments(req, url, db, auth) {
   return json({comentarios:snap.docs.filter(doc => doc.get('visible') !== false).slice(0,60).map(publicComment)},200,'public, max-age=30, stale-while-revalidate=30');
 }
 
-async function moderateComment(req, body, db, auth) {
-  if (!await checkStaff(req,auth)) return json({error:'No autorizado'},403);
+async function moderateComment(req, body, db) {
+  if (!await checkStaff(req)) return json({error:'No autorizado'},403);
   const action = body.accion;
   const id = typeof body.id === 'string' ? body.id : '';
   if (!ID_RE.test(id)) return json({error:'Identificador inválido'},400);
@@ -148,14 +190,14 @@ async function submitComment(req, body, db, FieldValue, secret) {
 export default async (req) => {
   if (!['GET','POST'].includes(req.method)) return json({error:'Método no permitido'},405);
   try {
-    const {db,auth,FieldValue,secret} = await firebaseServices();
-    if (req.method === 'GET') return await getComments(req,new URL(req.url),db,auth);
+    const {db,FieldValue,secret} = await firebaseServices();
+    if (req.method === 'GET') return await getComments(req,new URL(req.url),db);
     const raw = await req.text();
     if (raw.length > 6000) return json({error:'Mensaje demasiado largo'},413);
     let body;
     try { body = JSON.parse(raw); } catch { return json({error:'Formato inválido'},400); }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return json({error:'Formato inválido'},400);
-    if (body.accion) return await moderateComment(req,body,db,auth);
+    if (body.accion) return await moderateComment(req,body,db);
     return await submitComment(req,body,db,FieldValue,secret);
   } catch (error) {
     console.error('noticias-comentarios:', error?.stack || error);

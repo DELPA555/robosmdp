@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { generateKeyPairSync, createSign } from 'node:crypto';
 import { ARCHIVO, PUBLICADAS, CATEGORIAS } from '../robosmdp/assets/noticias-data.mjs';
 import { AUTOMATICAS } from '../robosmdp/assets/noticias-auto.mjs';
 import newsStory, { config as storyConfig } from '../netlify/functions/news-story.mjs';
-import newsComments, { config as commentsConfig } from '../netlify/functions/news-comments.mjs';
+import newsComments, { config as commentsConfig, verifyFirebaseIdToken } from '../netlify/functions/news-comments.mjs';
 
 test('archivo inicial: identificadores únicos, fuentes verificables y fechas reales', () => {
   assert.ok(ARCHIVO.length >= 4);
@@ -81,12 +82,39 @@ test('comentarios: formulario público, moderación privada y límites antispam'
   assert.ok(admin.includes("accion === 'rechazar'"));
   assert.ok(admin.includes('data-comment-action="aprobar"'));
   assert.ok(client.includes("status.textContent = 'Gracias!"));
-  assert.match(server,/verifyIdToken/);
+  assert.match(server,/verifyFirebaseIdToken/);
   assert.match(server,/noticias_comentarios_pendientes/);
   assert.match(server,/const MAX_COMMENTS_PER_WINDOW = 3/);
   assert.match(server,/visible:action === 'restaurar'/);
   const response = await newsComments(new Request('https://robosmdp.com.ar/api/noticias-comentarios',{method:'PUT'}));
   assert.equal(response.status,405);
+});
+
+test('moderación: solo acepta firmas válidas, audiencia e issuer del proyecto', async () => {
+  const {publicKey,privateKey} = generateKeyPairSync('rsa',{modulusLength:2048});
+  const pub = publicKey.export({type:'spki',format:'pem'});
+  const oldFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({testKid:pub}),{
+    status:200,headers:{'cache-control':'public, max-age=300'}
+  });
+  const now = Math.floor(Date.now()/1000);
+  const claims = {aud:'robosmdp-d1ef3',iss:'https://securetoken.google.com/robosmdp-d1ef3',sub:'test-admin',
+    iat:now-30,exp:now+300,auth_time:now-50,email:'admin@robosmdp.com.ar'};
+  const encode = obj => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const tokenFor = data => {
+    const payload = encode({alg:'RS256',kid:'testKid',typ:'JWT'})+'.'+encode(data);
+    const signer = createSign('RSA-SHA256');signer.update(payload);signer.end();
+    return payload+'.'+signer.sign(privateKey).toString('base64url');
+  };
+  try {
+    assert.equal((await verifyFirebaseIdToken(tokenFor(claims))).email,'admin@robosmdp.com.ar');
+    assert.equal(await verifyFirebaseIdToken(tokenFor({...claims,aud:'otro-proyecto'})),null);
+    assert.equal(await verifyFirebaseIdToken(tokenFor({...claims,exp:now-1})),null);
+    const valid = tokenFor(claims);
+    const modified = valid.split('.');
+    modified[1] = encode({...claims,email:'intruso@ejemplo.com'});
+    assert.equal(await verifyFirebaseIdToken(modified.join('.')),null);
+  } finally { globalThis.fetch = oldFetch; }
 });
 
 test('la nota pública muestra su galería con crédito, enlaces y textos seguros', async () => {
