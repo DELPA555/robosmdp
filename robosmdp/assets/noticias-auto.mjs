@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "amenaza-cuchillo-chofer-colectivo-571-gardel-irala-20261118",
+    "titulo": "Amenazaron con un cuchillo a un chofer de la línea 571: hubo un detenido",
+    "bajada": "Un conductor de colectivo denunció una amenaza con arma blanca en Gardel e Irala. La Patrulla Municipal aprehendió a un hombre de 30 años y secuestró un cuchillo.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-18T14:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un chofer de la línea 571 vivió una situación de violencia durante la noche del martes 17 de noviembre en la intersección de la avenida Carlos Gardel e Irala, en Mar del Plata. Según la información del procedimiento difundida este miércoles, un pasajero lo amenazó con un cuchillo y lanzó una estocada que no llegó a alcanzarlo. El episodio terminó con una aprehensión y el secuestro del arma blanca.\n\nEl conflicto se inició cuando subieron al colectivo dos hombres y una mujer y solicitaron tarjetas SUBE a otros pasajeros. El conductor les ofreció venderles los boletos para evitar molestias al resto de los usuarios. Dos personas descendieron, pero el tercero discutió con el trabajador, lo amenazó verbalmente y extrajo un cuchillo, según la reconstrucción del procedimiento.\n\nTras el episodio, el chofer avisó a personal de la Patrulla Municipal que realizaba tareas en las inmediaciones. Los agentes interceptaron a un hombre de 30 años a pocos metros y secuestraron un cuchillo con mango de madera. Se informó la formación de una causa por amenazas calificadas, con intervención del fiscal de Flagrancia Daniel Vicente, ante quien el aprehendido debía comparecer.\n\nLa existencia de una aprehensión y una imputación no equivale a una condena. Hasta esta publicación no se informó una resolución judicial definitiva ni lesiones físicas del conductor. El caso vuelve a poner el foco en las condiciones de seguridad de quienes trabajan en el transporte público y en la importancia de activar asistencia inmediata frente a amenazas con armas.",
+    "fuentes": [
+      {
+        "nombre": "0223 — procedimiento en Gardel e Irala, publicado el 18/11/2026 a las 10:17",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-10-17-0-yo-soy-chorro-y-no-me-cabe-una-amenazo-a-colectivero-con-un-cuchillo"
+      }
+    ]
+  },
+  {
     "id": "montenegro-cuentas-fans-relato-redes-investigacion-20261118",
     "titulo": "La obsesión por instalar otra realidad: Montenegro y las cuentas no oficiales que lo presentan como el salvador de Mar del Plata",
     "bajada": "Robos MDP examinó capturas de perfiles de fans que usan nombres e imágenes de periodistas para difundir mensajes favorables a Montenegro. La coordinación comercial y el financiamiento siguen sin acreditarse.",
