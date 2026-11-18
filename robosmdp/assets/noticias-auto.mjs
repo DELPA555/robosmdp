@@ -809,5 +809,26 @@ export const AUTOMATICAS = [
         "url": "https://quedigital.com.ar/policiales/choques-golpes-y-escape-a-contramano-de-un-conductor-alcoholizado/"
       }
     ]
+  },
+  {
+    "id": "condena-homicidio-parque-pena-tribunal-oral-20261118",
+    "titulo": "Parque Peña: condenaron a 13 años de prisión al autor de un homicidio ocurrido en 2023",
+    "bajada": "El Tribunal Oral en lo Criminal N° 3 dictó sentencia por el asesinato de Maximiliano Pérez. La defensa sostuvo que hubo legítima defensa, pero los jueces no aceptaron esa versión.",
+    "categoria": "justicia",
+    "fecha": "2026-11-18T17:12:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "documentos",
+    "imagen": "",
+    "texto": "El Tribunal Oral en lo Criminal N° 3 de Mar del Plata condenó este miércoles 18 de noviembre de 2026 a Carlos Adrián Sosa Intaschi a 13 años de prisión por el homicidio de Maximiliano Pérez, cometido el 31 de agosto de 2023 en el barrio Parque Peña. La noticia de hoy es la decisión judicial: el asesinato no ocurrió durante esta jornada.\n\nDurante el juicio se discutió si el disparo mortal había sido un ataque intencional o el resultado de una situación de legítima defensa. La defensa solicitó la absolución y planteó que había existido un enfrentamiento previo y un forcejeo. La fiscalía, en cambio, pidió una pena de 13 años, mientras que la representación de la familia de la víctima reclamó 17 años.\n\nLa prueba audiovisual fue determinante en el debate. De acuerdo con las crónicas judiciales publicadas este miércoles, una cámara registró la llegada del acusado en automóvil y el momento en que la víctima cayó tras recibir un disparo. El tribunal consideró acreditada su responsabilidad y resolvió imponer la pena solicitada por la fiscalía. Tras la lectura de la decisión, también se revocó el arresto domiciliario del condenado y se ordenó su traslado al complejo penitenciario de Batán.\n\nEl expediente incluyó la revisión de la actuación de familiares y allegados que llevaron al herido al Hospital Interzonal General de Agudos. Las imágenes permitieron aclarar su intervención y fueron sobreseídos. Es importante distinguir esta sentencia condenatoria de una condena firme: las fuentes consultadas no informan que se hayan agotado las posibles vías de recurso. Robos MDP seguirá cualquier apelación o modificación judicial que se conozca.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 18/11/2026 — sentencia y fundamentos expuestos en el debate",
+        "url": "https://www.lacapitalmdp.com/condenaron-a-13-anos-de-prision-a-un-hombre-que-mato-de-un-disparo-a-otro-en-el-barrio-parque-pena/"
+      },
+      {
+        "nombre": "0223, 18/11/2026, 12:35 — fallo y traslado a Batán",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-12-35-0-mato-a-un-hombre-en-el-barrio-parque-pena-y-lo-condenaron-a-13-anos-de-prision"
+      }
+    ]
   }
 ];
