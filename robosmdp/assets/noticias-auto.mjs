@@ -948,5 +948,26 @@ export const AUTOMATICAS = [
       "url": "https://www.0223.com.ar/nota/2026-11-18-13-11-0-quiso-robar-una-joyeria-disfrazado-de-mujer-y-escapo-en-una-camioneta-con-patente-de-mar-del-plata"
     }
   ]
+},
+{
+  "id": "allanamiento-entradera-san-jacinto-hilux-armas-20261119",
+  "titulo": "Entradera en San Jacinto: un allanamiento permitió secuestrar armas y equipos inhibidores",
+  "bajada": "El asalto del 1 de octubre dejó a dos familiares atados y sin su camioneta. La DDI avanzó con un allanamiento y una aprehensión por tenencia de armas.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-19T16:14:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "La investigación por una violenta entradera ocurrida el 1 de octubre en el barrio San Jacinto de Mar del Plata tuvo un avance este jueves 19 de noviembre: personal de la DDI allanó una vivienda, secuestró un revólver, municiones, teléfonos celulares y equipos inhibidores, y aprehendió a un joven de 24 años por una imputación vinculada con la tenencia de armas. La medida no implica que esté probada su participación en el robo original.\n\nEl asalto investigado ocurrió cerca de las 7.15, cuando tres personas armadas y con los rostros cubiertos sorprendieron a un hombre de 46 años que salía a trabajar. Según la denuncia, lo obligaron a regresar a la vivienda, redujeron a un primo y ataron a ambos con cables. Escaparon con herramientas, un televisor, teléfonos y una Toyota Hilux bordó. Se omite la dirección precisa de la casa para proteger a las víctimas.\n\nA partir de cámaras y registros de comunicaciones, los investigadores señalaron a un hombre de 31 años como posible participante del asalto. En un domicilio relacionado con familiares de ese investigado, el operativo permitió incautar un revólver calibre .22, cartuchos de varios calibres, vainas servidas, cuatro celulares y dos dispositivos inhibidores. El secuestro de estos objetos no acredita por sí mismo que hayan sido empleados en la entradera.\n\nDe acuerdo con la información publicada por La Capital, dos moradores fueron aprehendidos durante el procedimiento, pero la mujer recuperó posteriormente la libertad. El joven fue trasladado a Batán. La investigación del asalto continúa bajo intervención del fiscal Mariano Moyano. Es fundamental diferenciar al sospechoso de participación en el robo de las personas investigadas por tenencia de armas y recordar que ninguna imputación equivale a una sentencia.\n\nRobos MDP seguirá la evolución judicial y cualquier información confirmada sobre la camioneta sustraída. Los vecinos pueden colaborar preservando grabaciones de cámaras y realizando denuncias ante las autoridades, sin difundir datos privados de los damnificados.",
+  "fuentes": [
+    {
+      "nombre": "La Capital — procedimiento por entradera, 19/11/2026",
+      "url": "https://www.lacapitalmdp.com/un-detenido-por-el-robo-de-una-camioneta-durante-una-entradera/"
+    },
+    {
+      "nombre": "0223 — investigación en San Jacinto, 19/11/2026",
+      "url": "https://www.0223.com.ar/nota/2026-11-19-14-51-0-esclarecen-entradera-y-secuestran-municiones-y-celulares"
+    }
+  ]
 }
 ];
