@@ -71,23 +71,23 @@ export const AUTOMATICAS = [
     ]
   },
   {
-  "id": "recupero-gol-robado-cambio-patentes-20261118",
-  "titulo": "Recuperaron un Volkswagen Gol robado y detectaron un cambio de patentes",
-  "bajada": "El auto había sido sustraído el 10 de noviembre. Un joven de 19 años fue aprehendido y notificado de una causa por encubrimiento.",
-  "categoria": "recuperados",
-  "fecha": "2026-11-18T13:12:00-03:00",
-  "autor": "Redacción Robos MDP",
-  "arte": "ciudad",
-  "imagen": "",
-  "texto": "La Policía recuperó en Mar del Plata un Volkswagen Gol que había sido sustraído el 10 de noviembre en las inmediaciones de San Martín, entre Jujuy y Salta. La información del procedimiento se difundió el miércoles 18 de noviembre. Según el reporte policial recogido por la prensa, una investigación de la comisaría primera permitió ubicar el vehículo y organizar una vigilancia en el sector.\n\nLos efectivos observaron a un joven de 19 años que retiraba las chapas patentes del rodado y colocaba otras. Después de verificar las numeraciones de motor y chasis y el grabado de cristales, secuestraron el automóvil y un destornillador. El joven fue aprehendido y se le notificó la formación de una causa por encubrimiento, con intervención de la fiscalía especializada en delitos contra la propiedad automotor. La imputación no es una condena y tampoco demuestra que el joven haya participado en el hurto original. La investigación deberá establecer el origen de las patentes y las responsabilidades.",
-  "fuentes": [
-    {
-      "nombre": "0223, 18/11/2026, 10:53 — procedimiento y recupero",
-      "url": "https://www.0223.com.ar/nota/2026-11-18-10-53-0-le-cambiaba-las-patentes-a-un-auto-robado-pero-lo-engancharon"
-    }
-  ]
-},
-    {
+    "id": "recupero-gol-robado-cambio-patentes-20261118",
+    "titulo": "Recuperaron un Volkswagen Gol robado y detectaron un cambio de patentes",
+    "bajada": "El auto había sido sustraído el 10 de noviembre. Un joven de 19 años fue aprehendido y notificado de una causa por encubrimiento.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-18T13:12:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La Policía recuperó en Mar del Plata un Volkswagen Gol que había sido sustraído el 10 de noviembre en las inmediaciones de San Martín, entre Jujuy y Salta. La información del procedimiento se difundió el miércoles 18 de noviembre. Según el reporte policial recogido por la prensa, una investigación de la comisaría primera permitió ubicar el vehículo y organizar una vigilancia en el sector.\n\nLos efectivos observaron a un joven de 19 años que retiraba las chapas patentes del rodado y colocaba otras. Después de verificar las numeraciones de motor y chasis y el grabado de cristales, secuestraron el automóvil y un destornillador. El joven fue aprehendido y se le notificó la formación de una causa por encubrimiento, con intervención de la fiscalía especializada en delitos contra la propiedad automotor. La imputación no es una condena y tampoco demuestra que el joven haya participado en el hurto original. La investigación deberá establecer el origen de las patentes y las responsabilidades.",
+    "fuentes": [
+      {
+        "nombre": "0223, 18/11/2026, 10:53 — procedimiento y recupero",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-10-53-0-le-cambiaba-las-patentes-a-un-auto-robado-pero-lo-engancharon"
+      }
+    ]
+  },
+  {
     "id": "robo-comercio-intento-fuga-higa-sarmiento-garay-20261118",
     "titulo": "Rompieron el acceso de un comercio y el detenido intentó escapar del HIGA con una sábana",
     "bajada": "Tras recuperar objetos sustraídos de un local de indumentaria de Sarmiento y Garay, la Policía custodió al sospechoso en el hospital, donde intentó huir desde un primer piso.",
@@ -865,109 +865,168 @@ export const AUTOMATICAS = [
       }
     ]
   },
-{
-  "id": "muerte-hotel-antartida-custodio-investigado-20261119",
-  "titulo": "Investigan una muerte frente al Hotel Antártida y la actuación de un empleado de seguridad",
-  "bajada": "Un hombre de 31 años falleció tras un episodio en el acceso al subsuelo. La Fiscalía imputó provisionalmente a un custodio y espera el resultado de la autopsia.",
-  "categoria": "justicia",
-  "fecha": "2026-11-19T13:16:00-03:00",
-  "autor": "Redacción Robos MDP",
-  "arte": "ciudad",
-  "imagen": "",
-  "texto": "La muerte de un hombre de 31 años frente al Hotel Antártida, en el sector de avenida Luro y la costa de Mar del Plata, motivó una investigación penal sobre la intervención de personal de seguridad. El hecho ocurrió durante la noche del miércoles 18 de noviembre y se conoció públicamente el jueves 19.\n\nSegún la información policial difundida, un primer llamado al 911 alertó sobre una persona que habría intentado ingresar a un sector restringido del subsuelo. Poco después, otra comunicación informó que el hombre estaba tendido en la vereda. Una trabajadora declaró que un compañero lo había sujetado de la ropa para retirarlo. Esa versión deberá contrastarse con las cámaras y los peritajes.\n\nAl llegar los efectivos, un custodio realizaba maniobras de reanimación cardiopulmonar. El SAME continuó la asistencia, pero constató el fallecimiento cerca de las 23:50. Intervinieron Policía Científica y la Morgue Judicial, mientras se preservaron registros de video y otros elementos relevantes.\n\nLa fiscal Florencia Salas, de la UFI 1, dispuso la formación de causa contra un empleado de seguridad de 63 años, bajo la calificación provisoria de homicidio preterintencional. No existe condena y la imputación no permite establecer todavía cómo murió el hombre. Radio Brisas informó que la autopsia está prevista para el viernes 20 de noviembre a las 9. Sus resultados serán centrales para confirmar o revisar la hipótesis fiscal. No se obtuvo una versión pública formal de la defensa del trabajador investigado.",
-  "fuentes": [
-    {
-      "nombre": "La Capital, 19/11/2026 — investigación y actuaciones policiales",
-      "url": "https://www.lacapitalmdp.com/hallan-muerto-a-un-hombre-en-un-hotel-e-investigan-al-empleado-de-seguridad/"
-    },
-    {
-      "nombre": "Radio Brisas, 19/11/2026 — fiscalía y autopsia programada",
-      "url": "https://www.infobrisas.com/noticias/2026/11/19/115332-investigan-la-muerte-de-un-hombre-frente-a-un-hotel-centrico-e-imputan-a-un-empleado-de-seguridad"
-    },
-    {
-      "nombre": "0223, 19/11/2026 — procedimiento inicial",
-      "url": "https://www.0223.com.ar/nota/2026-11-19-8-43-0-hallaron-muerto-a-un-hombre-en-el-subsuelo-de-un-hotel-investigan-al-empleado-de-seguridad"
-    }
-  ]
-},
-{
-  "id": "robo-ecosport-vuelta-obligado-costa-20261119",
-  "titulo": "Dos personas en moto interceptaron a un conductor y escaparon con su camioneta en la costa norte",
-  "bajada": "Una Ford EcoSport negra fue sustraída el miércoles por la tarde en Vuelta de Obligado y la costa. La maniobra quedó registrada por cámaras; no se confirmó recupero.",
-  "categoria": "seguridad",
-  "fecha": "2026-11-19T13:16:00-03:00",
-  "autor": "Redacción Robos MDP",
-  "arte": "ciudad",
-  "imagen": "",
-  "texto": "Un conductor fue interceptado por dos personas que circulaban en motocicleta y sufrió el robo de su Ford EcoSport negra en la zona norte de Mar del Plata. El episodio ocurrió el miércoles 18 de noviembre, minutos antes de las 15, en inmediaciones de Vuelta de Obligado y la costa, entre Pasteur y avenida Félix U. Camet. La información se difundió ese mismo día y Robos MDP incorpora el seguimiento el jueves 19.\n\nLa reconstrucción periodística basada en cámaras de seguridad muestra a los sospechosos llegando en moto y abordando al conductor del vehículo. Según la cobertura, lograron quitarle las llaves: uno escapó al volante de la camioneta y el otro se retiró en la motocicleta. El registro visual aporta evidencia del episodio, aunque no determina la identidad de los participantes ni permite afirmar una modalidad de amenaza no confirmada.\n\nLa información disponible no reportó lesiones en la víctima. Tampoco se confirmó una detención ni la recuperación del vehículo. La investigación deberá establecer la identidad de quienes intervinieron y el destino del rodado. Ante una posible ubicación de la camioneta, corresponde comunicar la información al 911 sin intentar enfrentar a los ocupantes. Robos MDP continuará atento a los recuperos y novedades judiciales, preservando los datos privados del damnificado.",
-  "fuentes": [
-    {
-      "nombre": "Radio Brisas, 18/11/2026 — imágenes y descripción del robo",
-      "url": "https://www.infobrisas.com/noticias/2026/11/18/115302-impunidad-a-pleno-dia-asi-robaron-un-vehiculo-en-vuelta-de-obligado-y-la-costa"
-    }
-  ]
-},
-{
-  "id": "intento-robo-picaportes-bronce-mitre-20261119",
-  "titulo": "Intentó sustraer piezas de bronce y fue aprehendido con picaportes y herrajes",
-  "bajada": "Un joven de 20 años fue interceptado en La Rioja y Primera Junta. La Policía secuestró una bolsa con piezas metálicas y un destornillador; intervino Flagrancia.",
-  "categoria": "seguridad",
-  "fecha": "2026-11-19T13:16:00-03:00",
-  "autor": "Redacción Robos MDP",
-  "arte": "ciudad",
-  "imagen": "",
-  "texto": "Un intento de sustracción de accesorios de bronce en la zona de Mitre y San Lorenzo, en Mar del Plata, terminó con un joven de 20 años aprehendido el miércoles 18 de noviembre. El caso fue difundido públicamente esa tarde y se incorpora al radar de Robos MDP el jueves 19.\n\nSegún el procedimiento policial informado por medios locales, los efectivos interceptaron al sospechoso en la esquina de La Rioja y Primera Junta, después de recibir información sobre el intento de robo de un picaporte. Durante la requisa secuestraron un destornillador y una bolsa que contenía piezas de bronce, entre ellas picaportes, herrajes, números y letras metálicas.\n\nEl hallazgo de esos elementos no demuestra por sí solo que todos hayan sido sustraídos del mismo inmueble. La Fiscalía de Flagrancia, a cargo de Facundo De La Canale, dispuso las actuaciones y el traslado del aprehendido a la Unidad Penal 44 de Batán. La aprehensión y la imputación no equivalen a una sentencia condenatoria.\n\nLa sustracción de herrajes puede dejar accesos dañados y ocasionar gastos a vecinos y consorcios. Para colaborar con investigaciones similares, conviene conservar grabaciones de cámaras y formalizar las denuncias sin confrontar directamente con los sospechosos.",
-  "fuentes": [
-    {
-      "nombre": "0223, 18/11/2026 — procedimiento policial",
-      "url": "https://www.0223.com.ar/nota/2026-11-18-17-56-0-quiso-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
-    },
-    {
-      "nombre": "Radio Brisas, 18/11/2026 — intervención fiscal",
-      "url": "https://www.infobrisas.com/noticias/2026/11/18/115293-intento-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
-    }
-  ]
-},
-{
-  "id": "recuperaron-dos-camionetas-robadas-mar-del-plata-villa-gesell-20261119",
-  "titulo": "Recuperaron en Villa Gesell dos camionetas buscadas por robos en Mar del Plata",
-  "bajada": "Una Peugeot Expert vinculada con un intento de robo a una joyería y una Chevrolet Tracker fueron localizadas con pedidos de secuestro por hechos ocurridos en Mar del Plata.",
-  "categoria": "recuperados",
-  "fecha": "2026-11-19T15:16:00-03:00",
-  "autor": "Redacción Robos MDP",
-  "arte": "ciudad",
-  "imagen": "",
-  "texto": "Dos vehículos con pedidos de secuestro originados en investigaciones por delitos ocurridos en Mar del Plata fueron encontrados en Villa Gesell durante la última semana. El dato aporta una novedad concreta al seguimiento de los robos de automotores en la ciudad, aunque las actuaciones judiciales todavía deben determinar quiénes intervinieron en cada sustracción y cómo llegaron los rodados al partido vecino.\n\nEl hallazgo más reciente corresponde a una Peugeot Expert gris, abandonada en inmediaciones de Paseo 118 y avenida 14 de Villa Gesell tras un operativo policial relacionado con el intento de robo a una joyería. La verificación de sus identificaciones permitió establecer que tenía un pedido de secuestro activo desde el 28 de octubre por una causa de hurto agravado ocurrida en Mar del Plata. La Unidad Funcional de Instrucción y Debate 6 de Villa Gesell intervino en las pericias y el secuestro del vehículo.\n\nEl segundo caso es una Chevrolet Tracker blanca localizada el 14 de noviembre en una vivienda de avenida 30, entre los paseos 212 y 122. Según la información policial difundida, el control del grabado de los cristales permitió constatar un pedido de secuestro por una causa de robo en Mar del Plata. En esas actuaciones intervino la UFID 7 de Villa Gesell.\n\nLa recuperación de ambos vehículos no implica que sus ocupantes o las personas vinculadas a los lugares de hallazgo sean responsables de los robos originales. Tampoco se informó que los rodados hayan sido restituidos a sus propietarios. Las investigaciones continúan abiertas y deberán aclarar las circunstancias de las sustracciones, sus posibles conexiones y la eventual participación de otras personas. Quienes tengan información relevante pueden aportarla a las autoridades competentes sin difundir datos privados de las víctimas.",
-  "fuentes": [
-    {
-      "nombre": "0223 — dos vehículos robados en Mar del Plata hallados en Villa Gesell, 19/11/2026",
-      "url": "https://www.0223.com.ar/nota/2026-11-19-13-52-0-dos-vehiculos-robados-en-mar-del-plata-fueron-encontrados-en-villa-gesell-en-una-semana"
-    },
-    {
-      "nombre": "0223 — intento de robo a joyería y vehículo investigado, 18/11/2026",
-      "url": "https://www.0223.com.ar/nota/2026-11-18-13-11-0-quiso-robar-una-joyeria-disfrazado-de-mujer-y-escapo-en-una-camioneta-con-patente-de-mar-del-plata"
-    }
-  ]
-},
-{
-  "id": "allanamiento-entradera-san-jacinto-hilux-armas-20261119",
-  "titulo": "Entradera en San Jacinto: un allanamiento permitió secuestrar armas y equipos inhibidores",
-  "bajada": "El asalto del 1 de octubre dejó a dos familiares atados y sin su camioneta. La DDI avanzó con un allanamiento y una aprehensión por tenencia de armas.",
-  "categoria": "seguridad",
-  "fecha": "2026-11-19T16:14:00-03:00",
-  "autor": "Redacción Robos MDP",
-  "arte": "ciudad",
-  "imagen": "",
-  "texto": "La investigación por una violenta entradera ocurrida el 1 de octubre en el barrio San Jacinto de Mar del Plata tuvo un avance este jueves 19 de noviembre: personal de la DDI allanó una vivienda, secuestró un revólver, municiones, teléfonos celulares y equipos inhibidores, y aprehendió a un joven de 24 años por una imputación vinculada con la tenencia de armas. La medida no implica que esté probada su participación en el robo original.\n\nEl asalto investigado ocurrió cerca de las 7.15, cuando tres personas armadas y con los rostros cubiertos sorprendieron a un hombre de 46 años que salía a trabajar. Según la denuncia, lo obligaron a regresar a la vivienda, redujeron a un primo y ataron a ambos con cables. Escaparon con herramientas, un televisor, teléfonos y una Toyota Hilux bordó. Se omite la dirección precisa de la casa para proteger a las víctimas.\n\nA partir de cámaras y registros de comunicaciones, los investigadores señalaron a un hombre de 31 años como posible participante del asalto. En un domicilio relacionado con familiares de ese investigado, el operativo permitió incautar un revólver calibre .22, cartuchos de varios calibres, vainas servidas, cuatro celulares y dos dispositivos inhibidores. El secuestro de estos objetos no acredita por sí mismo que hayan sido empleados en la entradera.\n\nDe acuerdo con la información publicada por La Capital, dos moradores fueron aprehendidos durante el procedimiento, pero la mujer recuperó posteriormente la libertad. El joven fue trasladado a Batán. La investigación del asalto continúa bajo intervención del fiscal Mariano Moyano. Es fundamental diferenciar al sospechoso de participación en el robo de las personas investigadas por tenencia de armas y recordar que ninguna imputación equivale a una sentencia.\n\nRobos MDP seguirá la evolución judicial y cualquier información confirmada sobre la camioneta sustraída. Los vecinos pueden colaborar preservando grabaciones de cámaras y realizando denuncias ante las autoridades, sin difundir datos privados de los damnificados.",
-  "fuentes": [
-    {
-      "nombre": "La Capital — procedimiento por entradera, 19/11/2026",
-      "url": "https://www.lacapitalmdp.com/un-detenido-por-el-robo-de-una-camioneta-durante-una-entradera/"
-    },
-    {
-      "nombre": "0223 — investigación en San Jacinto, 19/11/2026",
-      "url": "https://www.0223.com.ar/nota/2026-11-19-14-51-0-esclarecen-entradera-y-secuestran-municiones-y-celulares"
-    }
-  ]
-}
+  {
+    "id": "muerte-hotel-antartida-custodio-investigado-20261119",
+    "titulo": "Investigan una muerte frente al Hotel Antártida y la actuación de un empleado de seguridad",
+    "bajada": "Un hombre de 31 años falleció tras un episodio en el acceso al subsuelo. La Fiscalía imputó provisionalmente a un custodio y espera el resultado de la autopsia.",
+    "categoria": "justicia",
+    "fecha": "2026-11-19T13:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La muerte de un hombre de 31 años frente al Hotel Antártida, en el sector de avenida Luro y la costa de Mar del Plata, motivó una investigación penal sobre la intervención de personal de seguridad. El hecho ocurrió durante la noche del miércoles 18 de noviembre y se conoció públicamente el jueves 19.\n\nSegún la información policial difundida, un primer llamado al 911 alertó sobre una persona que habría intentado ingresar a un sector restringido del subsuelo. Poco después, otra comunicación informó que el hombre estaba tendido en la vereda. Una trabajadora declaró que un compañero lo había sujetado de la ropa para retirarlo. Esa versión deberá contrastarse con las cámaras y los peritajes.\n\nAl llegar los efectivos, un custodio realizaba maniobras de reanimación cardiopulmonar. El SAME continuó la asistencia, pero constató el fallecimiento cerca de las 23:50. Intervinieron Policía Científica y la Morgue Judicial, mientras se preservaron registros de video y otros elementos relevantes.\n\nLa fiscal Florencia Salas, de la UFI 1, dispuso la formación de causa contra un empleado de seguridad de 63 años, bajo la calificación provisoria de homicidio preterintencional. No existe condena y la imputación no permite establecer todavía cómo murió el hombre. Radio Brisas informó que la autopsia está prevista para el viernes 20 de noviembre a las 9. Sus resultados serán centrales para confirmar o revisar la hipótesis fiscal. No se obtuvo una versión pública formal de la defensa del trabajador investigado.",
+    "fuentes": [
+      {
+        "nombre": "La Capital, 19/11/2026 — investigación y actuaciones policiales",
+        "url": "https://www.lacapitalmdp.com/hallan-muerto-a-un-hombre-en-un-hotel-e-investigan-al-empleado-de-seguridad/"
+      },
+      {
+        "nombre": "Radio Brisas, 19/11/2026 — fiscalía y autopsia programada",
+        "url": "https://www.infobrisas.com/noticias/2026/11/19/115332-investigan-la-muerte-de-un-hombre-frente-a-un-hotel-centrico-e-imputan-a-un-empleado-de-seguridad"
+      },
+      {
+        "nombre": "0223, 19/11/2026 — procedimiento inicial",
+        "url": "https://www.0223.com.ar/nota/2026-11-19-8-43-0-hallaron-muerto-a-un-hombre-en-el-subsuelo-de-un-hotel-investigan-al-empleado-de-seguridad"
+      }
+    ]
+  },
+  {
+    "id": "robo-ecosport-vuelta-obligado-costa-20261119",
+    "titulo": "Dos personas en moto interceptaron a un conductor y escaparon con su camioneta en la costa norte",
+    "bajada": "Una Ford EcoSport negra fue sustraída el miércoles por la tarde en Vuelta de Obligado y la costa. La maniobra quedó registrada por cámaras; no se confirmó recupero.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-19T13:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un conductor fue interceptado por dos personas que circulaban en motocicleta y sufrió el robo de su Ford EcoSport negra en la zona norte de Mar del Plata. El episodio ocurrió el miércoles 18 de noviembre, minutos antes de las 15, en inmediaciones de Vuelta de Obligado y la costa, entre Pasteur y avenida Félix U. Camet. La información se difundió ese mismo día y Robos MDP incorpora el seguimiento el jueves 19.\n\nLa reconstrucción periodística basada en cámaras de seguridad muestra a los sospechosos llegando en moto y abordando al conductor del vehículo. Según la cobertura, lograron quitarle las llaves: uno escapó al volante de la camioneta y el otro se retiró en la motocicleta. El registro visual aporta evidencia del episodio, aunque no determina la identidad de los participantes ni permite afirmar una modalidad de amenaza no confirmada.\n\nLa información disponible no reportó lesiones en la víctima. Tampoco se confirmó una detención ni la recuperación del vehículo. La investigación deberá establecer la identidad de quienes intervinieron y el destino del rodado. Ante una posible ubicación de la camioneta, corresponde comunicar la información al 911 sin intentar enfrentar a los ocupantes. Robos MDP continuará atento a los recuperos y novedades judiciales, preservando los datos privados del damnificado.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas, 18/11/2026 — imágenes y descripción del robo",
+        "url": "https://www.infobrisas.com/noticias/2026/11/18/115302-impunidad-a-pleno-dia-asi-robaron-un-vehiculo-en-vuelta-de-obligado-y-la-costa"
+      }
+    ]
+  },
+  {
+    "id": "intento-robo-picaportes-bronce-mitre-20261119",
+    "titulo": "Intentó sustraer piezas de bronce y fue aprehendido con picaportes y herrajes",
+    "bajada": "Un joven de 20 años fue interceptado en La Rioja y Primera Junta. La Policía secuestró una bolsa con piezas metálicas y un destornillador; intervino Flagrancia.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-19T13:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un intento de sustracción de accesorios de bronce en la zona de Mitre y San Lorenzo, en Mar del Plata, terminó con un joven de 20 años aprehendido el miércoles 18 de noviembre. El caso fue difundido públicamente esa tarde y se incorpora al radar de Robos MDP el jueves 19.\n\nSegún el procedimiento policial informado por medios locales, los efectivos interceptaron al sospechoso en la esquina de La Rioja y Primera Junta, después de recibir información sobre el intento de robo de un picaporte. Durante la requisa secuestraron un destornillador y una bolsa que contenía piezas de bronce, entre ellas picaportes, herrajes, números y letras metálicas.\n\nEl hallazgo de esos elementos no demuestra por sí solo que todos hayan sido sustraídos del mismo inmueble. La Fiscalía de Flagrancia, a cargo de Facundo De La Canale, dispuso las actuaciones y el traslado del aprehendido a la Unidad Penal 44 de Batán. La aprehensión y la imputación no equivalen a una sentencia condenatoria.\n\nLa sustracción de herrajes puede dejar accesos dañados y ocasionar gastos a vecinos y consorcios. Para colaborar con investigaciones similares, conviene conservar grabaciones de cámaras y formalizar las denuncias sin confrontar directamente con los sospechosos.",
+    "fuentes": [
+      {
+        "nombre": "0223, 18/11/2026 — procedimiento policial",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-17-56-0-quiso-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
+      },
+      {
+        "nombre": "Radio Brisas, 18/11/2026 — intervención fiscal",
+        "url": "https://www.infobrisas.com/noticias/2026/11/18/115293-intento-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
+      }
+    ]
+  },
+  {
+    "id": "recuperaron-dos-camionetas-robadas-mar-del-plata-villa-gesell-20261119",
+    "titulo": "Recuperaron en Villa Gesell dos camionetas buscadas por robos en Mar del Plata",
+    "bajada": "Una Peugeot Expert vinculada con un intento de robo a una joyería y una Chevrolet Tracker fueron localizadas con pedidos de secuestro por hechos ocurridos en Mar del Plata.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-19T15:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Dos vehículos con pedidos de secuestro originados en investigaciones por delitos ocurridos en Mar del Plata fueron encontrados en Villa Gesell durante la última semana. El dato aporta una novedad concreta al seguimiento de los robos de automotores en la ciudad, aunque las actuaciones judiciales todavía deben determinar quiénes intervinieron en cada sustracción y cómo llegaron los rodados al partido vecino.\n\nEl hallazgo más reciente corresponde a una Peugeot Expert gris, abandonada en inmediaciones de Paseo 118 y avenida 14 de Villa Gesell tras un operativo policial relacionado con el intento de robo a una joyería. La verificación de sus identificaciones permitió establecer que tenía un pedido de secuestro activo desde el 28 de octubre por una causa de hurto agravado ocurrida en Mar del Plata. La Unidad Funcional de Instrucción y Debate 6 de Villa Gesell intervino en las pericias y el secuestro del vehículo.\n\nEl segundo caso es una Chevrolet Tracker blanca localizada el 14 de noviembre en una vivienda de avenida 30, entre los paseos 212 y 122. Según la información policial difundida, el control del grabado de los cristales permitió constatar un pedido de secuestro por una causa de robo en Mar del Plata. En esas actuaciones intervino la UFID 7 de Villa Gesell.\n\nLa recuperación de ambos vehículos no implica que sus ocupantes o las personas vinculadas a los lugares de hallazgo sean responsables de los robos originales. Tampoco se informó que los rodados hayan sido restituidos a sus propietarios. Las investigaciones continúan abiertas y deberán aclarar las circunstancias de las sustracciones, sus posibles conexiones y la eventual participación de otras personas. Quienes tengan información relevante pueden aportarla a las autoridades competentes sin difundir datos privados de las víctimas.",
+    "fuentes": [
+      {
+        "nombre": "0223 — dos vehículos robados en Mar del Plata hallados en Villa Gesell, 19/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-19-13-52-0-dos-vehiculos-robados-en-mar-del-plata-fueron-encontrados-en-villa-gesell-en-una-semana"
+      },
+      {
+        "nombre": "0223 — intento de robo a joyería y vehículo investigado, 18/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-18-13-11-0-quiso-robar-una-joyeria-disfrazado-de-mujer-y-escapo-en-una-camioneta-con-patente-de-mar-del-plata"
+      }
+    ]
+  },
+  {
+    "id": "allanamiento-entradera-san-jacinto-hilux-armas-20261119",
+    "titulo": "Entradera en San Jacinto: un allanamiento permitió secuestrar armas y equipos inhibidores",
+    "bajada": "El asalto del 1 de octubre dejó a dos familiares atados y sin su camioneta. La DDI avanzó con un allanamiento y una aprehensión por tenencia de armas.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-19T16:14:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La investigación por una violenta entradera ocurrida el 1 de octubre en el barrio San Jacinto de Mar del Plata tuvo un avance este jueves 19 de noviembre: personal de la DDI allanó una vivienda, secuestró un revólver, municiones, teléfonos celulares y equipos inhibidores, y aprehendió a un joven de 24 años por una imputación vinculada con la tenencia de armas. La medida no implica que esté probada su participación en el robo original.\n\nEl asalto investigado ocurrió cerca de las 7.15, cuando tres personas armadas y con los rostros cubiertos sorprendieron a un hombre de 46 años que salía a trabajar. Según la denuncia, lo obligaron a regresar a la vivienda, redujeron a un primo y ataron a ambos con cables. Escaparon con herramientas, un televisor, teléfonos y una Toyota Hilux bordó. Se omite la dirección precisa de la casa para proteger a las víctimas.\n\nA partir de cámaras y registros de comunicaciones, los investigadores señalaron a un hombre de 31 años como posible participante del asalto. En un domicilio relacionado con familiares de ese investigado, el operativo permitió incautar un revólver calibre .22, cartuchos de varios calibres, vainas servidas, cuatro celulares y dos dispositivos inhibidores. El secuestro de estos objetos no acredita por sí mismo que hayan sido empleados en la entradera.\n\nDe acuerdo con la información publicada por La Capital, dos moradores fueron aprehendidos durante el procedimiento, pero la mujer recuperó posteriormente la libertad. El joven fue trasladado a Batán. La investigación del asalto continúa bajo intervención del fiscal Mariano Moyano. Es fundamental diferenciar al sospechoso de participación en el robo de las personas investigadas por tenencia de armas y recordar que ninguna imputación equivale a una sentencia.\n\nRobos MDP seguirá la evolución judicial y cualquier información confirmada sobre la camioneta sustraída. Los vecinos pueden colaborar preservando grabaciones de cámaras y realizando denuncias ante las autoridades, sin difundir datos privados de los damnificados.",
+    "fuentes": [
+      {
+        "nombre": "La Capital — procedimiento por entradera, 19/11/2026",
+        "url": "https://www.lacapitalmdp.com/un-detenido-por-el-robo-de-una-camioneta-durante-una-entradera/"
+      },
+      {
+        "nombre": "0223 — investigación en San Jacinto, 19/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-19-14-51-0-esclarecen-entradera-y-secuestran-municiones-y-celulares"
+      }
+    ]
+  },
+  {
+    "id": "entradera-cinco-asaltantes-playa-grande-20261119",
+    "titulo": "Cinco asaltantes irrumpieron en una casa de Playa Grande y escaparon con dinero y joyas",
+    "bajada": "El asalto ocurrió este jueves por la mañana cerca del Parque San Martín. Tres personas fueron reducidas y la Fiscalía investiga las cámaras de la zona.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-19T19:17:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una vivienda de Playa Grande, en las inmediaciones del Parque San Martín, fue escenario de un asalto cometido por cinco personas con los rostros cubiertos durante la mañana del jueves 19 de noviembre. De acuerdo con la reconstrucción periodística basada en fuentes de la investigación, los intrusos ingresaron por el garaje poco después de las 9, cuando estaban presentes el propietario, su pareja y una trabajadora de la casa.\n\nLos asaltantes redujeron a las tres personas y exigieron dinero. Según la información disponible, uno de ellos exhibió un arma de fuego. Se llevaron aproximadamente 1.600.000 pesos, joyas y otros objetos, y escaparon en un automóvil después de permanecer unos veinte minutos en el lugar. No se difundió una confirmación de lesiones ni de personas detenidas.\n\nIntervino personal de la comisaría novena y se dio aviso al fiscal Mariano Moyano. La investigación incluye pericias y búsqueda de imágenes de cámaras cercanas, además de testimonios vecinales. La denuncia y las medidas de investigación no permiten identificar todavía a los responsables. Robos MDP omite la dirección residencial exacta para proteger a las víctimas y seguirá cualquier avance comprobado sobre el vehículo utilizado y los autores.",
+    "fuentes": [
+      {
+        "nombre": "La Capital — asalto en Playa Grande, 19/11/2026",
+        "url": "https://www.lacapitalmdp.com/asaltan-a-un-empresario-en-su-casa-de-playa-grande/"
+      }
+    ]
+  },
+  {
+    "id": "allanamientos-peugeot-308-entraderas-20261119",
+    "titulo": "Un robo de automóvil llevó a tres allanamientos y abrió pistas sobre otras entraderas",
+    "bajada": "La investigación de un Peugeot 308 sustraído el 7 de noviembre derivó en secuestros de objetos y una imputación por encubrimiento. Analizan vínculos con otros tres robos.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-19T19:17:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una investigación iniciada por el robo armado de un Peugeot 308 ocurrido el 7 de noviembre en Mar del Plata derivó en tres allanamientos y en nuevas líneas de trabajo sobre otros tres hechos delictivos. Según la información policial difundida este jueves 19 de noviembre, dos de esos episodios relacionados se investigan como entraderas. La conexión entre los casos forma parte de las actuaciones y no constituye una sentencia sobre sus responsables.\n\nPersonal de la Comisaría Quinta realizó procedimientos en distintos sectores de la ciudad, después de analizar cámaras, testimonios, registros y datos de comunicaciones. Los efectivos secuestraron carteras, billeteras, perfumes, prendas de vestir, calzado, anteojos y otros objetos que serán evaluados como posible evidencia. Se omiten los domicilios exactos de los allanamientos porque no son necesarios para comprender el avance de la investigación.\n\nDurante uno de los operativos fue aprehendida una mujer de 27 años, notificada de una imputación por encubrimiento y luego liberada conforme al artículo 161 del Código Procesal Penal bonaerense. El principal investigado por los hechos permanece alojado en la Unidad Penal 44, de acuerdo con la cobertura disponible. Intervino la UFIJE 1 a cargo de María Florencia Salas. Ni los secuestros ni la imputación acreditan por sí solos la autoría de los robos; queda pendiente conocer resultados periciales y decisiones judiciales posteriores.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas — tres allanamientos y robos investigados, 19/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/19/115389-tres-allanamientos-en-mar-del-plata-permitieron-descubrir-una-serie-de-robos"
+      }
+    ]
+  },
+  {
+    "id": "cierre-planta-la-campagnola-75-trabajadores-20261119",
+    "titulo": "La Campagnola confirmó el cierre de su planta marplatense y 75 trabajadores esperan definiciones",
+    "bajada": "La empresa anunció que no reanudará la producción en el establecimiento del puerto. Ofrece reubicaciones, pero aún no se conocen las condiciones ni cuántas personas las aceptarán.",
+    "categoria": "comerciantes",
+    "fecha": "2026-11-19T19:17:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La planta de conservas de pescado La Campagnola, perteneciente al grupo Arcor, dejará de producir definitivamente en Mar del Plata. La decisión, comunicada el jueves 19 de noviembre, afecta a 75 trabajadores de un establecimiento que ya atravesaba un período de inactividad. La compañía sostuvo que los cambios en la producción mundial de conservas y las dificultades para abastecerse de materia prima hacen inviable mantener ese proceso industrial local.\n\nLa empresa informó que ofrecerá alternativas de traslado a otras fábricas del grupo y que aplicará los mecanismos laborales correspondientes a quienes no opten por esa posibilidad. Sin embargo, todavía no se conocen públicamente las plantas de destino, las condiciones de traslado ni cuántos empleados conservarán sus puestos mediante una reubicación. Es importante distinguir la oferta anunciada de una solución laboral efectivamente concretada.\n\nEl cierre tiene consecuencias para la actividad industrial y las familias vinculadas con la cadena conservera marplatense. La empresa continuará comercializando sus productos, pero dejará de efectuar aquí una etapa del procesamiento. Las explicaciones empresariales sobre la falta de materia prima y la competencia internacional deben diferenciarse de las preocupaciones de los trabajadores por la pérdida de empleo local. Robos MDP seguirá las definiciones laborales y las respuestas de los actores involucrados.",
+    "fuentes": [
+      {
+        "nombre": "La Capital — comunicado empresarial y situación laboral, 19/11/2026",
+        "url": "https://www.lacapitalmdp.com/la-campagnola-confirmo-el-cierre-definitivo-de-su-planta-en-mar-del-plata-afecta-a-75-trabajadores/"
+      },
+      {
+        "nombre": "Qué Digital — trabajadores y cierre, 19/11/2026",
+        "url": "https://quedigital.com.ar/sociedad/cerro-la-campagnola-en-mar-del-plata-y-75-trabajadores-quedan-en-vilo-se-veia-venir/"
+      },
+      {
+        "nombre": "La Nación — anuncio del grupo Arcor, 19/11/2026",
+        "url": "https://www.lanacion.com.ar/economia/negocios/arcor-cierra-la-planta-de-la-campagnola-en-mar-del-plata-nid19112026/"
+      }
+    ]
+  }
 ];
