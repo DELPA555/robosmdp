@@ -889,5 +889,43 @@ export const AUTOMATICAS = [
       "url": "https://www.0223.com.ar/nota/2026-11-19-8-43-0-hallaron-muerto-a-un-hombre-en-el-subsuelo-de-un-hotel-investigan-al-empleado-de-seguridad"
     }
   ]
+},
+{
+  "id": "robo-ecosport-vuelta-obligado-costa-20261119",
+  "titulo": "Dos personas en moto interceptaron a un conductor y escaparon con su camioneta en la costa norte",
+  "bajada": "Una Ford EcoSport negra fue sustraída el miércoles por la tarde en Vuelta de Obligado y la costa. La maniobra quedó registrada por cámaras; no se confirmó recupero.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-19T13:16:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Un conductor fue interceptado por dos personas que circulaban en motocicleta y sufrió el robo de su Ford EcoSport negra en la zona norte de Mar del Plata. El episodio ocurrió el miércoles 18 de noviembre, minutos antes de las 15, en inmediaciones de Vuelta de Obligado y la costa, entre Pasteur y avenida Félix U. Camet. La información se difundió ese mismo día y Robos MDP incorpora el seguimiento el jueves 19.\n\nLa reconstrucción periodística basada en cámaras de seguridad muestra a los sospechosos llegando en moto y abordando al conductor del vehículo. Según la cobertura, lograron quitarle las llaves: uno escapó al volante de la camioneta y el otro se retiró en la motocicleta. El registro visual aporta evidencia del episodio, aunque no determina la identidad de los participantes ni permite afirmar una modalidad de amenaza no confirmada.\n\nLa información disponible no reportó lesiones en la víctima. Tampoco se confirmó una detención ni la recuperación del vehículo. La investigación deberá establecer la identidad de quienes intervinieron y el destino del rodado. Ante una posible ubicación de la camioneta, corresponde comunicar la información al 911 sin intentar enfrentar a los ocupantes. Robos MDP continuará atento a los recuperos y novedades judiciales, preservando los datos privados del damnificado.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas, 18/11/2026 — imágenes y descripción del robo",
+      "url": "https://www.infobrisas.com/noticias/2026/11/18/115302-impunidad-a-pleno-dia-asi-robaron-un-vehiculo-en-vuelta-de-obligado-y-la-costa"
+    }
+  ]
+},
+{
+  "id": "intento-robo-picaportes-bronce-mitre-20261119",
+  "titulo": "Intentó sustraer piezas de bronce y fue aprehendido con picaportes y herrajes",
+  "bajada": "Un joven de 20 años fue interceptado en La Rioja y Primera Junta. La Policía secuestró una bolsa con piezas metálicas y un destornillador; intervino Flagrancia.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-19T13:16:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Un intento de sustracción de accesorios de bronce en la zona de Mitre y San Lorenzo, en Mar del Plata, terminó con un joven de 20 años aprehendido el miércoles 18 de noviembre. El caso fue difundido públicamente esa tarde y se incorpora al radar de Robos MDP el jueves 19.\n\nSegún el procedimiento policial informado por medios locales, los efectivos interceptaron al sospechoso en la esquina de La Rioja y Primera Junta, después de recibir información sobre el intento de robo de un picaporte. Durante la requisa secuestraron un destornillador y una bolsa que contenía piezas de bronce, entre ellas picaportes, herrajes, números y letras metálicas.\n\nEl hallazgo de esos elementos no demuestra por sí solo que todos hayan sido sustraídos del mismo inmueble. La Fiscalía de Flagrancia, a cargo de Facundo De La Canale, dispuso las actuaciones y el traslado del aprehendido a la Unidad Penal 44 de Batán. La aprehensión y la imputación no equivalen a una sentencia condenatoria.\n\nLa sustracción de herrajes puede dejar accesos dañados y ocasionar gastos a vecinos y consorcios. Para colaborar con investigaciones similares, conviene conservar grabaciones de cámaras y formalizar las denuncias sin confrontar directamente con los sospechosos.",
+  "fuentes": [
+    {
+      "nombre": "0223, 18/11/2026 — procedimiento policial",
+      "url": "https://www.0223.com.ar/nota/2026-11-18-17-56-0-quiso-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
+    },
+    {
+      "nombre": "Radio Brisas, 18/11/2026 — intervención fiscal",
+      "url": "https://www.infobrisas.com/noticias/2026/11/18/115293-intento-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
+    }
+  ]
 }
 ];
