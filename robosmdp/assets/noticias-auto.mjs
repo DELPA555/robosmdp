@@ -864,6 +864,30 @@ export const AUTOMATICAS = [
         "url": "https://www.0223.com.ar/nota/2026-11-18-18-8-0-realizaron-136-allanamientos-por-abuso-sexual-infantil-en-la-provincia-hubo-procedimientos-en-mar-del-plata"
       }
     ]
-  }
-
+  },
+{
+  "id": "muerte-hotel-antartida-custodio-investigado-20261119",
+  "titulo": "Investigan una muerte frente al Hotel Antártida y la actuación de un empleado de seguridad",
+  "bajada": "Un hombre de 31 años falleció tras un episodio en el acceso al subsuelo. La Fiscalía imputó provisionalmente a un custodio y espera el resultado de la autopsia.",
+  "categoria": "justicia",
+  "fecha": "2026-11-19T13:16:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "La muerte de un hombre de 31 años frente al Hotel Antártida, en el sector de avenida Luro y la costa de Mar del Plata, motivó una investigación penal sobre la intervención de personal de seguridad. El hecho ocurrió durante la noche del miércoles 18 de noviembre y se conoció públicamente el jueves 19.\n\nSegún la información policial difundida, un primer llamado al 911 alertó sobre una persona que habría intentado ingresar a un sector restringido del subsuelo. Poco después, otra comunicación informó que el hombre estaba tendido en la vereda. Una trabajadora declaró que un compañero lo había sujetado de la ropa para retirarlo. Esa versión deberá contrastarse con las cámaras y los peritajes.\n\nAl llegar los efectivos, un custodio realizaba maniobras de reanimación cardiopulmonar. El SAME continuó la asistencia, pero constató el fallecimiento cerca de las 23:50. Intervinieron Policía Científica y la Morgue Judicial, mientras se preservaron registros de video y otros elementos relevantes.\n\nLa fiscal Florencia Salas, de la UFI 1, dispuso la formación de causa contra un empleado de seguridad de 63 años, bajo la calificación provisoria de homicidio preterintencional. No existe condena y la imputación no permite establecer todavía cómo murió el hombre. Radio Brisas informó que la autopsia está prevista para el viernes 20 de noviembre a las 9. Sus resultados serán centrales para confirmar o revisar la hipótesis fiscal. No se obtuvo una versión pública formal de la defensa del trabajador investigado.",
+  "fuentes": [
+    {
+      "nombre": "La Capital, 19/11/2026 — investigación y actuaciones policiales",
+      "url": "https://www.lacapitalmdp.com/hallan-muerto-a-un-hombre-en-un-hotel-e-investigan-al-empleado-de-seguridad/"
+    },
+    {
+      "nombre": "Radio Brisas, 19/11/2026 — fiscalía y autopsia programada",
+      "url": "https://www.infobrisas.com/noticias/2026/11/19/115332-investigan-la-muerte-de-un-hombre-frente-a-un-hotel-centrico-e-imputan-a-un-empleado-de-seguridad"
+    },
+    {
+      "nombre": "0223, 19/11/2026 — procedimiento inicial",
+      "url": "https://www.0223.com.ar/nota/2026-11-19-8-43-0-hallaron-muerto-a-un-hombre-en-el-subsuelo-de-un-hotel-investigan-al-empleado-de-seguridad"
+    }
+  ]
+}
 ];
