@@ -927,5 +927,26 @@ export const AUTOMATICAS = [
       "url": "https://www.infobrisas.com/noticias/2026/11/18/115293-intento-robar-un-picaporte-de-bronce-y-termino-en-la-carcel"
     }
   ]
+},
+{
+  "id": "recuperaron-dos-camionetas-robadas-mar-del-plata-villa-gesell-20261119",
+  "titulo": "Recuperaron en Villa Gesell dos camionetas buscadas por robos en Mar del Plata",
+  "bajada": "Una Peugeot Expert vinculada con un intento de robo a una joyería y una Chevrolet Tracker fueron localizadas con pedidos de secuestro por hechos ocurridos en Mar del Plata.",
+  "categoria": "recuperados",
+  "fecha": "2026-11-19T15:16:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Dos vehículos con pedidos de secuestro originados en investigaciones por delitos ocurridos en Mar del Plata fueron encontrados en Villa Gesell durante la última semana. El dato aporta una novedad concreta al seguimiento de los robos de automotores en la ciudad, aunque las actuaciones judiciales todavía deben determinar quiénes intervinieron en cada sustracción y cómo llegaron los rodados al partido vecino.\n\nEl hallazgo más reciente corresponde a una Peugeot Expert gris, abandonada en inmediaciones de Paseo 118 y avenida 14 de Villa Gesell tras un operativo policial relacionado con el intento de robo a una joyería. La verificación de sus identificaciones permitió establecer que tenía un pedido de secuestro activo desde el 28 de octubre por una causa de hurto agravado ocurrida en Mar del Plata. La Unidad Funcional de Instrucción y Debate 6 de Villa Gesell intervino en las pericias y el secuestro del vehículo.\n\nEl segundo caso es una Chevrolet Tracker blanca localizada el 14 de noviembre en una vivienda de avenida 30, entre los paseos 212 y 122. Según la información policial difundida, el control del grabado de los cristales permitió constatar un pedido de secuestro por una causa de robo en Mar del Plata. En esas actuaciones intervino la UFID 7 de Villa Gesell.\n\nLa recuperación de ambos vehículos no implica que sus ocupantes o las personas vinculadas a los lugares de hallazgo sean responsables de los robos originales. Tampoco se informó que los rodados hayan sido restituidos a sus propietarios. Las investigaciones continúan abiertas y deberán aclarar las circunstancias de las sustracciones, sus posibles conexiones y la eventual participación de otras personas. Quienes tengan información relevante pueden aportarla a las autoridades competentes sin difundir datos privados de las víctimas.",
+  "fuentes": [
+    {
+      "nombre": "0223 — dos vehículos robados en Mar del Plata hallados en Villa Gesell, 19/11/2026",
+      "url": "https://www.0223.com.ar/nota/2026-11-19-13-52-0-dos-vehiculos-robados-en-mar-del-plata-fueron-encontrados-en-villa-gesell-en-una-semana"
+    },
+    {
+      "nombre": "0223 — intento de robo a joyería y vehículo investigado, 18/11/2026",
+      "url": "https://www.0223.com.ar/nota/2026-11-18-13-11-0-quiso-robar-una-joyeria-disfrazado-de-mujer-y-escapo-en-una-camioneta-con-patente-de-mar-del-plata"
+    }
+  ]
 }
 ];
