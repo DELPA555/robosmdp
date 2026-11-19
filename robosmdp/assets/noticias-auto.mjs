@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "intento-hurto-auto-documentos-zona-alem-detenido-20261119",
+    "titulo": "Intentó llevarse documentación de un auto en la zona de Alem y terminó detenido",
+    "bajada": "Los propietarios sorprendieron a un hombre dentro de su vehículo cerca de Bernardo de Irigoyen y Primera Junta. Vecinos colaboraron para retenerlo y la Policía secuestró una herramienta metálica.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-19T12:20:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un intento de hurto en un automóvil estacionado en la zona comercial de Alem, en Mar del Plata, terminó con un hombre de 28 años aprehendido y una causa penal iniciada. El episodio ocurrió durante la noche del miércoles 18 de noviembre y fue difundido públicamente el jueves 19. Según el procedimiento policial informado, dos personas habían dejado un Ford Focus en las inmediaciones de Bernardo de Irigoyen y Primera Junta mientras realizaban una compra. Al regresar advirtieron que había alguien dentro del vehículo y que la luz interior permanecía encendida.\n\nDe acuerdo con el relato recogido en la cobertura, el desconocido aparentemente fotografiaba documentación guardada en la guantera. Cuando los propietarios lo descubrieron, escapó a pie. Tras una persecución de algunas cuadras, otras personas que circulaban por el sector colaboraron para retenerlo hasta que llegaron efectivos del Comando de Patrullas Norte. La aprehensión se produjo en inmediaciones de Carlos Pellegrini y Quintana.\n\nDurante el procedimiento se incautaron una tarjeta de identificación vinculada con la documentación del vehículo, un teléfono celular y una pieza metálica artesanal del tipo conocido como 'yuga'. La existencia de esa herramienta no demuestra por sí sola cómo se produjo el ingreso al automóvil. La Fiscalía de Flagrancia, a cargo de Facundo De La Canale, dispuso actuaciones por hurto en grado de tentativa y el traslado del aprehendido a la Unidad Penal 44 de Batán.\n\nLa información disponible no acredita que se hayan sustraído otros bienes ni que existiera una maniobra posterior con los datos presuntamente fotografiados. Tampoco hay una condena: se trata de una imputación que deberá investigarse judicialmente. El episodio destaca la importancia de evitar dejar documentación personal a la vista dentro de vehículos y de comunicar al 911 cualquier situación sospechosa, sin exponerse a una confrontación.",
+    "fuentes": [
+      {
+        "nombre": "La Capital — procedimiento policial en la zona de Alem, 19/11/2026",
+        "url": "https://www.lacapitalmdp.com/detuvieron-a-un-ladron-que-intentaba-robar-en-la-zona-de-alem/"
+      }
+    ]
+  },
+  {
     "id": "amenaza-cuchillo-chofer-colectivo-571-gardel-irala-20261118",
     "titulo": "Amenazaron con un cuchillo a un chofer de la línea 571: hubo un detenido",
     "bajada": "Un conductor de colectivo denunció una amenaza con arma blanca en Gardel e Irala. La Patrulla Municipal aprehendió a un hombre de 30 años y secuestró un cuchillo.",
