@@ -4,6 +4,40 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "robo-eurocafe-garay-olavarria-madrugada-20261120",
+    "titulo": "Volvieron a atacar un café de Garay: rompieron la puerta y robaron la caja",
+    "bajada": "Un local gastronómico cercano a Olavarría sufrió un robo durante la madrugada del viernes. Se llevaron una caja registradora y un teléfono de trabajo; ya había padecido otro ataque en junio.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-20T10:19:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La madrugada del viernes 20 de noviembre dejó un nuevo episodio de inseguridad para los comerciantes de la zona de Garay y Olavarría, en Mar del Plata. Cerca de las 5.20, una persona rompió el acceso vidriado de una cafetería Eurocafé, ingresó al establecimiento y escapó con una caja registradora y un teléfono celular que se utilizaba para atender a los clientes. El hecho fue difundido durante la mañana del mismo viernes.\n\nSegún la reconstrucción periodística realizada en el lugar, el intruso arrojó inicialmente un objeto contra el vidrio y luego insistió con golpes hasta quebrarlo. El comercio sufrió daños materiales importantes en su entrada y sus trabajadores debieron retirar los fragmentos de vidrio para despejar la vereda. No se informó una cifra confirmada de dinero sustraído ni la detención de un sospechoso.\n\nEl antecedente inmediato es especialmente preocupante: el mismo local había sufrido un ataque nocturno similar en junio. Además, esta semana se reportó otro robo a un negocio de telefonía sobre Garay, entre Las Heras y Sarmiento. Son episodios distintos y no hay elementos públicos suficientes para atribuirlos a una misma persona o grupo. La reiteración de daños a locales obliga a prestar atención a la prevención nocturna, el resguardo de registros de cámaras y la recepción de denuncias, sin anticipar conclusiones sobre responsabilidades policiales o judiciales.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas — cobertura en el comercio, 20/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/20/115449-otro-ataque-en-la-madrugada-contra-un-local-de-calle-garay-reaviva-la-preocupacion-de-los-comerciantes"
+      }
+    ]
+  },
+  {
+    "id": "secuestro-cocaina-moto-santa-rita-20261120",
+    "titulo": "Secuestraron cocaína y una moto durante un patrullaje en Santa Rita",
+    "bajada": "El procedimiento se realizó el jueves por la noche en San Salvador y República de Cuba. La Policía incautó 13 envoltorios y una motocicleta; el hombre identificado quedó en libertad mientras avanza la causa.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-20T10:19:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un patrullaje preventivo del Grupo de Prevención Motorizada terminó con el secuestro de estupefacientes y una motocicleta en el barrio Santa Rita de Mar del Plata. El procedimiento ocurrió el jueves 19 de noviembre alrededor de las 21, cerca de San Salvador y República de Cuba, y fue informado públicamente el viernes 20.\n\nDe acuerdo con el parte policial difundido, un hombre de 28 años que circulaba en una moto intentó alejarse de los efectivos y arrojó una bolsa. Los agentes lo interceptaron y encontraron 13 envoltorios con una sustancia que fue sometida a pesaje y prueba química. El resultado comunicado fue de 1,67 gramos de clorhidrato de cocaína. La Fiscalía de Estupefacientes dispuso notificar al hombre de la formación de una causa por presunta infracción al artículo 14, primer párrafo, de la Ley 23.737. Posteriormente recuperó la libertad.\n\nTambién fue secuestrada una motocicleta Zanella de 125 centímetros cúbicos con faltantes visibles de partes y luces. La UFI ODEPA intervino por averiguación de ilícito respecto del rodado, sin que la información disponible permita afirmar que fuera robado. El secuestro de sustancias y la apertura de actuaciones judiciales no equivalen a una condena ni prueban por sí solos comercialización de drogas. Quedan pendientes los resultados de la investigación y cualquier decisión judicial posterior.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas — procedimiento policial en Santa Rita, 20/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/20/115452-intento-descartar-cocaina-al-ver-a-la-policia-y-fue-interceptado"
+      }
+    ]
+  },
+  {
     "id": "intento-hurto-auto-documentos-zona-alem-detenido-20261119",
     "titulo": "Intentó llevarse documentación de un auto en la zona de Alem y terminó detenido",
     "bajada": "Los propietarios sorprendieron a un hombre dentro de su vehículo cerca de Bernardo de Irigoyen y Primera Junta. Vecinos colaboraron para retenerlo y la Policía secuestró una herramienta metálica.",
