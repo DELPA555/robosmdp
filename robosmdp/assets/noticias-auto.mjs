@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "moto-robada-recuperada-barrio-libertad-20261120",
+    "titulo": "Recuperaron una moto robada durante un control en el barrio Libertad",
+    "bajada": "La Policía interceptó una Honda Wave sin patente en Ituzaingó y Leguizamón. La conductora fue imputada por encubrimiento y luego recuperó la libertad.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-20T16:18:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un control preventivo en el barrio Libertad de Mar del Plata permitió recuperar una motocicleta Honda Wave de 110 centímetros cúbicos que registraba un pedido judicial de secuestro por robo. El procedimiento se desarrolló en inmediaciones de Ituzaingó y Leguizamón, con intervención de efectivos policiales y participación de la Patrulla Municipal. La novedad fue difundida el viernes 20 de noviembre; la información consultada no precisa la fecha exacta del operativo ni la del robo original.\n\nSegún el reporte difundido, una mujer de 33 años circulaba en el rodado sin chapa identificatoria ni documentación disponible. Al comprobar los números de motor y chasis, los agentes constataron que la motocicleta era buscada por la Justicia. La conductora fue aprehendida y posteriormente recuperó la libertad, aunque quedó imputada por encubrimiento en una investigación a cargo de la fiscal Lorena Hirigoyen.\n\nEl hallazgo representa un vehículo sustraído que salió de circulación irregular, pero la imputación por encubrimiento no demuestra que la mujer haya participado en el robo original. Tampoco se informó si el rodado fue restituido a su propietario. Es importante verificar la identificación de motor y chasis antes de adquirir una moto usada y exigir documentación legítima de transferencia. Robos MDP continuará atento a novedades sobre la causa y el destino del vehículo.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas — recupero de motocicleta en barrio Libertad, 20/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/20/115476-recuperan-una-moto-con-pedido-de-secuestro-durante-operativo-en-barrio-libertad"
+      }
+    ]
+  },
+  {
     "id": "autopsia-hotel-antartida-pericias-pendientes-20261120",
     "titulo": "La autopsia no aclaró la muerte en el Hotel Antártida y la Fiscalía espera nuevos estudios",
     "bajada": "El informe forense preliminar no permitió establecer la mecánica del fallecimiento del hombre de 31 años. Siguen pendientes análisis toxicológicos e histopatológicos.",
