@@ -4,6 +4,44 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "tarjeta-sustraida-intento-compra-puerto-20261120",
+    "titulo": "Tres aprehendidos en el puerto por intentar pagar con tarjetas sustraídas",
+    "bajada": "Prefectura intervino ante una compra de casi 690 mil pesos. La titular de las tarjetas había denunciado un robo del interior de su vehículo esa mañana.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-20T20:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un intento de compra por 689.994 pesos en un local de indumentaria deportiva del puerto de Mar del Plata terminó con tres personas aprehendidas. El episodio se registró en un complejo comercial de avenida de los Trabajadores, donde intervino Prefectura Naval Argentina ante la utilización de una tarjeta cuya titularidad los compradores no pudieron justificar.\n\nSegún los datos difundidos sobre el procedimiento, la titular de la tarjeta manifestó que esa misma mañana habían sustraído pertenencias de su automóvil estacionado en Mario Bravo y Pescadores. Durante la intervención se encontraron otras tarjetas que corresponderían a la misma damnificada. La Fiscalía de Delitos Económicos, a cargo de David Bruna, dispuso las aprehensiones y actuaciones correspondientes.\n\nEl caso se encuentra bajo investigación: no hay condenas ni se estableció públicamente que las personas aprehendidas hayan cometido el robo original. Ante la sustracción de tarjetas conviene solicitar su bloqueo inmediato, revisar consumos y formular la denuncia. La novedad se conoció el 20 de noviembre y no debe confundirse con la fecha exacta del robo, que habría ocurrido esa misma mañana.",
+    "fuentes": [
+      {
+        "nombre": "0223 — procedimiento de Prefectura, 20/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-20-16-34-0-intentaron-comprar-con-una-tarjeta-robada-y-fueron-detenidos-en-el-puerto"
+      },
+      {
+        "nombre": "Radio Brisas — tarjetas sustraídas en el puerto, 20/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/20/115542-intentaron-comprar-con-una-tarjeta-robada-y-los-detuvo-prefectura"
+      }
+    ]
+  },
+  {
+    "id": "moto-piezas-sustraidas-coronel-dorrego-20261120",
+    "titulo": "Interceptaron una moto con piezas de otra robada en Coronel Dorrego",
+    "bajada": "Durante un control en Gascón y Termas de Río Hondo detectaron plásticos vinculados con una Motomel denunciada como sustraída el 14 de noviembre.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-20T20:10:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un control de la comisaría duodécima en el barrio Coronel Dorrego permitió detectar una Zanella 110 con piezas plásticas correspondientes a otra motocicleta denunciada como robada. El procedimiento ocurrió en la zona de Gascón y Termas de Río Hondo y se difundió el viernes 20 de noviembre. La persona interceptada era menor de edad y su identidad se mantiene reservada.\n\nLa denuncia original se había formulado el 14 de noviembre, cuando una víctima constató la sustracción de una Motomel 110 y una bicicleta del patio de una vivienda. Según la información policial, los plásticos observados en el rodado interceptado pertenecían a la Motomel sustraída. Esto no significa necesariamente que se haya recuperado completa la moto denunciada: la unidad secuestrada fue identificada como una Zanella.\n\nPor disposición judicial se notificó al adolescente de las actuaciones y fue entregado a su progenitor. No se informó una condena ni se estableció quién cometió el robo inicial. La identificación de partes y numeraciones resulta fundamental para detectar vehículos o repuestos de procedencia irregular.",
+    "fuentes": [
+      {
+        "nombre": "0223 — control en Coronel Dorrego, 20/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-20-18-51-0-tiene-16-anos-andaba-en-una-moto-robada-y-lo-atraparon"
+      }
+    ]
+  },
+  {
     "id": "detenido-entradera-comercio-felix-u-camet-octubre-20261120",
     "titulo": "Detuvieron a un sospechoso por un asalto armado a un comercio y una vivienda en Félix U. Camet",
     "bajada": "La DDI avanzó sobre el robo cometido el 15 de octubre: tres hombres armados redujeron al comerciante y sustrajeron dinero y pertenencias. Un investigado quedó detenido y buscan a los demás.",
