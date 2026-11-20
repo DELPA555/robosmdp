@@ -4,6 +4,48 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "autopsia-hotel-antartida-pericias-pendientes-20261120",
+    "titulo": "La autopsia no aclaró la muerte en el Hotel Antártida y la Fiscalía espera nuevos estudios",
+    "bajada": "El informe forense preliminar no permitió establecer la mecánica del fallecimiento del hombre de 31 años. Siguen pendientes análisis toxicológicos e histopatológicos.",
+    "categoria": "justicia",
+    "fecha": "2026-11-20T14:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La investigación por la muerte de un hombre de 31 años ocurrida el miércoles 18 de noviembre en el Hotel Antártida, en la zona de avenida Luro y la costa de Mar del Plata, sumó este viernes una novedad importante: la autopsia preliminar no permitió establecer de manera concluyente cómo se produjo el fallecimiento. La Fiscalía N.º 1, a cargo de Florencia Salas, aguarda estudios toxicológicos e histopatológicos para avanzar en la reconstrucción.\n\nEl episodio se produjo después de una intervención de personal de seguridad del establecimiento, que habría retirado al hombre de un sector restringido. Los investigadores analizan registros de cámaras y testimonios para determinar qué ocurrió antes y durante esa secuencia. La ausencia de una conclusión pericial definitiva impide atribuir una causa de muerte o responsabilidad penal como hecho probado.\n\nUn trabajador de seguridad permanece imputado por homicidio preterintencional, una calificación provisional que no equivale a una condena. Esta publicación actualiza la información inicial del 19 de noviembre; no se trata de una segunda muerte ni de un hecho independiente. El seguimiento deberá centrarse en los resultados de los estudios complementarios y las decisiones posteriores de la Fiscalía.",
+    "fuentes": [
+      {
+        "nombre": "0223 — autopsia y pericias, 20/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-20-10-14-0-muerte-en-el-hotel-aguardan-pericias-complementarias-tras-la-autopsia"
+      },
+      {
+        "nombre": "La Capital — informe preliminar y Fiscalía, 20/11/2026",
+        "url": "https://www.lacapitalmdp.com/muerte-en-el-hotel-la-autopsia-no-aporto-definiciones-para-esclarecer-el-caso/"
+      },
+      {
+        "nombre": "Qué Digital — reconstrucción y estudios pendientes, 20/11/2026",
+        "url": "https://quedigital.com.ar/policiales/muerte-en-el-hotel-dudas-con-la-mecanica-del-hecho-y-estudios-complementarios/"
+      }
+    ]
+  },
+  {
+    "id": "moto-robada-mar-del-plata-recuperada-santa-elena-20261120",
+    "titulo": "Recuperaron en Santa Elena una moto robada en Mar del Plata y aprehendieron al conductor",
+    "bajada": "Un control preventivo en el partido de Mar Chiquita permitió detectar un pedido de secuestro por hurto emitido desde Mar del Plata. El conductor fue imputado por encubrimiento.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-20T14:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una motocicleta denunciada como sustraída en Mar del Plata fue recuperada durante un control policial realizado en Santa Elena, partido de Mar Chiquita, durante la noche del jueves 19 de noviembre. La intervención tuvo lugar en el cruce de Juan de Garay y Magallanes, donde efectivos de la Comisaría Segunda de Santa Clara y del Grupo de Prevención Motorizada verificaron los datos del rodado.\n\nLa consulta al sistema policial permitió constatar un pedido de secuestro activo por hurto solicitado desde la Comisaría Primera de Mar del Plata. Los agentes secuestraron la motocicleta y aprehendieron al hombre que la conducía, de 37 años. Según la información difundida, la Fiscalía de Flagrancia dispuso su imputación por encubrimiento y traslado a la Unidad Penal 44 de Batán.\n\nEl procedimiento constituye un recupero de un vehículo robado en Mar del Plata, aunque la interceptación se produjo fuera del partido de General Pueyrredon. La imputación por encubrimiento no acredita que el conductor haya cometido el hurto original. No se difundieron datos que permitan precisar la fecha o el barrio del robo inicial, ni se confirmó todavía la restitución de la moto a su propietario.",
+    "fuentes": [
+      {
+        "nombre": "El Ciudadano de Mar Chiquita — procedimiento policial, 20/11/2026",
+        "url": "https://www.ciudadanoweb.com.ar/nota_16828-20112026-santa-elena-andaba-una-moto-robada-en-mar-del-plata-y-quedo-aprehendido"
+      }
+    ]
+  },
+  {
     "id": "robo-eurocafe-garay-olavarria-madrugada-20261120",
     "titulo": "Volvieron a atacar un café de Garay: rompieron la puerta y robaron la caja",
     "bajada": "Un local gastronómico cercano a Olavarría sufrió un robo durante la madrugada del viernes. Se llevaron una caja registradora y un teléfono de trabajo; ya había padecido otro ataque en junio.",
