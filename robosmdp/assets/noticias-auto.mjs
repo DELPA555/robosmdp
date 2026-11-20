@@ -4,6 +4,27 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "detenido-entradera-comercio-felix-u-camet-octubre-20261120",
+    "titulo": "Detuvieron a un sospechoso por un asalto armado a un comercio y una vivienda en Félix U. Camet",
+    "bajada": "La DDI avanzó sobre el robo cometido el 15 de octubre: tres hombres armados redujeron al comerciante y sustrajeron dinero y pertenencias. Un investigado quedó detenido y buscan a los demás.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-20T17:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un asalto armado ocurrido el 15 de octubre en el barrio Félix U. Camet, al norte de Mar del Plata, registró un avance judicial difundido este viernes 20 de noviembre. Según la reconstrucción policial publicada por medios locales, tres hombres armados ingresaron a un pequeño comercio, redujeron a su responsable y lo llevaron hacia la vivienda ubicada detrás del local. Los asaltantes se llevaron dinero en pesos y dólares, aparatos electrónicos, joyas, perfumes y mercadería. El robo ocurrió en octubre; la novedad de esta publicación es la detención de uno de los sospechosos tras un allanamiento.\n\nLa investigación, dirigida por el fiscal Fernando Berlingeri y desarrollada con personal de la DDI, analizó registros de cámaras para identificar el automóvil presuntamente utilizado por los autores. Con una orden judicial se allanó un inmueble del barrio Bernardino Rivadavia, donde se secuestraron un Renault 9 y objetos que serán examinados como evidencia. Un hombre de 29 años quedó detenido y fue trasladado a una unidad penitenciaria de Batán, a la espera de prestar declaración. No se publican su identidad ni el domicilio particular del procedimiento, porque no resultan necesarios para informar el avance del expediente.\n\nLos investigadores continúan trabajando para identificar a los demás participantes. El secuestro de elementos y la detención no equivalen a una condena: corresponde a la Justicia determinar la responsabilidad penal de cada persona. Para los comerciantes de la zona, el episodio muestra la gravedad de los robos que combinan un local abierto al público con el acceso a una vivienda. No se informó una resolución judicial definitiva ni la recuperación completa de lo sustraído.",
+    "fuentes": [
+      {
+        "nombre": "Qué Digital — investigación y detención por robo a comercio en Félix U. Camet, 20/11/2026",
+        "url": "https://quedigital.com.ar/policiales/tres-hombres-armados-robaron-un-kiosco-se-llevaron-4-mil-dolares-y-chocolates/"
+      },
+      {
+        "nombre": "0223 — allanamiento y secuestros en causa por asalto en Félix U. Camet, 20/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-20-15-52-0-cayo-uno-de-los-dulceros-robaron-en-una-casa-y-se-llevaron-chocolates-del-local"
+      }
+    ]
+  },
+  {
     "id": "moto-robada-recuperada-barrio-libertad-20261120",
     "titulo": "Recuperaron una moto robada durante un control en el barrio Libertad",
     "bajada": "La Policía interceptó una Honda Wave sin patente en Ituzaingó y Leguizamón. La conductora fue imputada por encubrimiento y luego recuperó la libertad.",
