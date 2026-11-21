@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "recuperan-yaris-entradera-acantilados-tres-aprehendidos-20261121",
+    "titulo": "Recuperaron un Toyota Yaris robado en una entradera en Los Acantilados: tres personas aprehendidas",
+    "bajada": "Un allanamiento en el barrio El Jardín permitió recuperar el vehículo sustraído a una pareja de adultos mayores. La Justicia investiga distintas responsabilidades en el robo y el presunto encubrimiento.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-21T09:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Una investigación por una entradera denunciada el 16 de noviembre en el barrio Los Acantilados tuvo un avance conocido este sábado 21: efectivos policiales recuperaron un Toyota Yaris azul que había sido sustraído a una pareja de adultos mayores y aprehendieron a tres personas durante un allanamiento en el barrio El Jardín. La fecha de publicación de este resultado no debe confundirse con la del asalto original.\n\nDe acuerdo con la reconstrucción difundida por Radio 10 Mar del Plata, al menos cinco asaltantes ingresaron a la vivienda de la pareja, de 77 y 71 años, y se llevaron joyas, relojes y el automóvil. La pesquisa de la Comisaría Quinta incluyó análisis de cámaras y testimonios. Con esos elementos se realizó un procedimiento judicial en El Jardín, donde apareció el vehículo sin sus chapas patentes colocadas.\n\nDurante el operativo también se secuestraron relojes, teléfonos, una réplica de pistola y una munición. Fueron aprehendidos dos hombres de 35 y 31 años y una mujer de 45. Según el reporte, a uno de los hombres se le atribuye provisoriamente robo agravado y encubrimiento, mientras que las otras dos personas fueron imputadas por encubrimiento. Interviene la fiscalía de Flagrancia. Las imputaciones son hipótesis procesales sujetas a prueba: no existe una condena informada.\n\nEl recupero del auto constituye un avance concreto, pero no implica que todos los participantes del asalto hayan sido identificados ni que los restantes objetos denunciados estén restituidos. Robos MDP seguirá las decisiones judiciales y las eventuales nuevas identificaciones, sin difundir domicilios particulares ni datos que expongan a las víctimas.",
+    "fuentes": [
+      {
+        "nombre": "Radio 10 Mar del Plata — allanamiento, recupero y aprehensiones, 21/11/2026",
+        "url": "https://radio10mardelplata.com.ar/tres-aprehendidos-tras-un-allanamiento-recuperaron-un-auto-robado-en-una-entradera-en-mar-del-plata/"
+      }
+    ]
+  },
+  {
     "id": "investigan-corolla-autopartes-vehiculos-baja-allanamiento-20261121",
     "titulo": "Investigan la venta de un Corolla con piezas de vehículos dados de baja y allanaron un depósito",
     "bajada": "Una denuncia por presunta estafa derivó en una inspección de la DDI y una orden judicial para revisar documentación y vehículos en un depósito cercano a Juan B. Justo.",
