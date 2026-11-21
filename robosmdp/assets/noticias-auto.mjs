@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "investigan-corolla-autopartes-vehiculos-baja-allanamiento-20261121",
+    "titulo": "Investigan la venta de un Corolla con piezas de vehículos dados de baja y allanaron un depósito",
+    "bajada": "Una denuncia por presunta estafa derivó en una inspección de la DDI y una orden judicial para revisar documentación y vehículos en un depósito cercano a Juan B. Justo.",
+    "categoria": "investigaciones",
+    "fecha": "2026-11-21T01:18:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La compra de un Toyota Corolla realizada en 2023 terminó bajo investigación judicial después de que su adquirente advirtiera inconsistencias entre los datos del automóvil y los registrados en documentación de su seguro. La denuncia, presentada el 8 de septiembre de 2026, motivó una inspección de la Dirección Departamental de Investigaciones (DDI) en Mar del Plata. La novedad periodística se conoció el viernes 20 de noviembre; no debe confundirse con la fecha de compra ni con la denuncia.\n\nSegún la información judicial reconstruida por 0223, la inspección encontró un grabado de dominio en el parabrisas distinto del que llevaba colocado el vehículo, además de uniones en partes de la carrocería que ameritan pericias. En la investigación se señaló que algunas piezas corresponderían a automóviles dados de baja registralmente en 2015 y 2017. Estos indicios justifican las medidas de prueba, pero todavía no establecen por sí solos el origen ilícito de cada componente ni responsabilidades penales.\n\nA pedido del fiscal de Delitos Económicos Luis Ferreyra, la Justicia de Garantías autorizó un allanamiento en un depósito de la zona de 14 de Julio y Juan B. Justo. La medida contempló revisar documentación comercial, habilitaciones, pólizas y vehículos, con posibilidad de intervención municipal y peritos de Policía Científica. Al momento de la información disponible no se habían difundido resultados concretos del procedimiento, detenciones ni acusaciones formalizadas contra responsables del establecimiento.\n\nEl caso plantea una advertencia para quienes compran usados: conviene contrastar los números de identificación del vehículo y sus grabados con la documentación registral, y realizar una verificación física oficial antes de cerrar la operación. Robos MDP continuará el seguimiento de los resultados periciales y las decisiones de la Fiscalía, distinguiendo siempre una hipótesis de investigación de un delito acreditado.",
+    "fuentes": [
+      {
+        "nombre": "0223 — reconstrucción de la causa judicial y allanamiento, 20/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-20-8-2-0-compro-un-auto-y-descubrio-que-tenia-autopartes-de-otros-dados-de-baja-allanaron-un-deposito"
+      }
+    ]
+  },
+  {
     "id": "detenido-segundo-sospechoso-asalto-almacen-estacion-chapadmalal-20261120",
     "titulo": "Detuvieron al segundo investigado por el asalto armado a un almacén de Estación Chapadmalal",
     "bajada": "El joven de 21 años era buscado desde el robo del 7 de noviembre. Fue interceptado al viajar en un colectivo y también lo investigan por un hurto posterior en otro comercio.",
