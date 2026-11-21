@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "interceptan-suran-pedido-secuestro-arrue-bolivar-20261121",
+    "titulo": "Interceptaron una Suran buscada por robo automotor en Arrué y Bolívar: dos personas aprehendidas",
+    "bajada": "La Policía detectó que el vehículo tenía un pedido de secuestro vigente desde el 18 de noviembre. Sus dos ocupantes fueron notificados de la causa y recuperaron la libertad.",
+    "categoria": "recuperados",
+    "fecha": "2026-11-21T12:17:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un control policial en inmediaciones de Arrué y Bolívar, en Mar del Plata, terminó con el secuestro de un Volkswagen Suran que registraba un pedido activo por robo automotor. Durante la intervención fueron aprehendidas dos personas que circulaban en el vehículo, una mujer de 25 años y un hombre de 31. La información sobre el procedimiento se difundió este sábado 21 de noviembre; el requerimiento de secuestro había sido emitido el 18 de noviembre por la Comisaría Cuarta. No se informó la fecha exacta del robo original ni el momento preciso del control, por lo que no corresponde atribuirle una hora o fecha no confirmada.\n\nSegún el reporte policial difundido por Radio Brisas, los efectivos consultaron la situación registral del automóvil durante la identificación de sus ocupantes y comprobaron que existía una búsqueda vigente en una causa por robo automotor. El rodado quedó incautado para las actuaciones judiciales. El hallazgo de un vehículo con pedido de secuestro no demuestra por sí mismo que sus ocupantes hayan participado del robo inicial.\n\nLa Fiscalía de Flagrancia dispuso las actuaciones y la notificación de las personas investigadas, que posteriormente recuperaron la libertad conforme al artículo 161 del Código Procesal Penal bonaerense. Esa decisión no equivale a una absolución ni confirma responsabilidad penal: la investigación deberá establecer cómo llegó el automóvil a su poder y cuál fue la intervención de cada persona, si la hubo.\n\nRobos MDP seguirá el estado de la causa y la eventual restitución del vehículo a su titular. Por ahora no hay datos corroborados sobre nuevas detenciones, imputaciones específicas ni sentencia, y tampoco corresponde relacionar este procedimiento con otros robos de vehículos por la sola coincidencia de marca o modelo.",
+    "fuentes": [
+      {
+        "nombre": "Radio Brisas — procedimiento policial y situación judicial, 21/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/21/115584-interceptaron-una-vw-suran-con-pedido-de-secuestro-y-aprehendieron-a-sus-ocupantes"
+      }
+    ]
+  },
+  {
     "id": "recuperan-yaris-entradera-acantilados-tres-aprehendidos-20261121",
     "titulo": "Recuperaron un Toyota Yaris robado en una entradera en Los Acantilados: tres personas aprehendidas",
     "bajada": "Un allanamiento en el barrio El Jardín permitió recuperar el vehículo sustraído a una pareja de adultos mayores. La Justicia investiga distintas responsabilidades en el robo y el presunto encubrimiento.",
