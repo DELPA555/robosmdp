@@ -4,6 +4,31 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "detenido-segundo-sospechoso-asalto-almacen-estacion-chapadmalal-20261120",
+    "titulo": "Detuvieron al segundo investigado por el asalto armado a un almacén de Estación Chapadmalal",
+    "bajada": "El joven de 21 años era buscado desde el robo del 7 de noviembre. Fue interceptado al viajar en un colectivo y también lo investigan por un hurto posterior en otro comercio.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-20T23:16:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "La investigación de un asalto a mano armada cometido el 7 de noviembre en un almacén de Estación Chapadmalal sumó una segunda detención este viernes 20 de noviembre. Un joven de 21 años, que permanecía buscado tras la captura de otro sospechoso la semana anterior, fue interceptado por efectivos policiales cuando viajaba en un colectivo de la línea 715. La detención es la novedad de hoy; el asalto original ocurrió trece días antes.\n\nSegún la reconstrucción policial difundida por medios locales, dos hombres ingresaron al almacén de las calles 10 y 11 y uno de ellos intimidó con un arma de fuego a la empleada. Se llevaron alrededor de 300.000 pesos y mercadería. El 13 de noviembre se había informado la detención de un primer investigado, de 25 años, mientras continuaba la búsqueda del segundo. La nueva captura representa un avance en esa misma causa, no un robo diferente.\n\nAdemás, las autoridades vinculan al joven ahora detenido con un hurto denunciado el 18 de noviembre en otro comercio de Estación Chapadmalal, en la zona de calles 9 y 32, donde se sustrajeron zapatillas y alimentos. Esa vinculación permanece bajo investigación y no equivale a una condena. Por disposición del fiscal Fernando Berlingeri, el imputado fue trasladado a la Unidad Penal 15 de Batán para comparecer ante la Justicia. No se difundió una sentencia ni una resolución definitiva sobre los dos episodios. La sucesión de ataques contra pequeños comercios vuelve a poner el foco en la prevención y la respuesta policial en la localidad.",
+    "fuentes": [
+      {
+        "nombre": "0223 — detención del segundo investigado, 20/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-20-19-24-0-lo-buscaban-por-un-robo-y-lo-detuvieron-cuando-bajo-del-colectivo"
+      },
+      {
+        "nombre": "El Marplatense — captura en colectivo, 20/11/2026",
+        "url": "https://www.elmarplatense.com/detuvieron-en-un-colectivo-a-un-joven-acusado-de-un-robo-armado-y-otro-hurto-en-comercios"
+      },
+      {
+        "nombre": "Radio Brisas — primera detención y búsqueda del segundo sospechoso, 13/11/2026",
+        "url": "https://www.infobrisas.com/noticias/2026/11/13/114665-detuvieron-al-autor-de-un-asalto-a-mano-armada-cometido-en-comercio-de-estacion-chapadmalal"
+      }
+    ]
+  },
+  {
     "id": "tarjeta-sustraida-intento-compra-puerto-20261120",
     "titulo": "Tres aprehendidos en el puerto por intentar pagar con tarjetas sustraídas",
     "bajada": "Prefectura intervino ante una compra de casi 690 mil pesos. La titular de las tarjetas había denunciado un robo del interior de su vehículo esa mañana.",
