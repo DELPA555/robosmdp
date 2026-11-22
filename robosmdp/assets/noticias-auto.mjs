@@ -4,6 +4,27 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
   {
+    "id": "asalto-cuchillo-comercio-parque-luro-moto-recuperada-20261121",
+    "titulo": "Asalto con cuchillo en Parque Luro: dos aprehendidos y una moto buscada por hurto",
+    "bajada": "Un operativo cerrojo permitió recuperar pertenencias robadas en un comercio de Patagones al 700. Los dos investigados quedaron a disposición de la Fiscalía 14.",
+    "categoria": "seguridad",
+    "fecha": "2026-11-21T21:15:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "ciudad",
+    "imagen": "",
+    "texto": "Un comercio de Patagones al 700, en Parque Luro, sufrió un asalto en el que se habría utilizado un cuchillo para intimidar a las personas presentes. La información policial se difundió el sábado 21 de noviembre por la tarde; no se precisó la hora exacta del robo. De acuerdo con las coberturas disponibles, los autores se llevaron teléfonos celulares, dinero, dos computadoras portátiles y otros objetos.\n\nTras la denuncia, la Policía desplegó un operativo cerrojo y aprehendió a dos hombres, de 44 y 29 años, en distintos sectores de Mar del Plata: uno en Champagnat y Strobel y el otro en Falkner al 7000. Los agentes informaron que recuperaron pertenencias denunciadas como sustraídas y secuestraron un cuchillo y una motocicleta Zanella ZB utilizada en la huida.\n\nLa verificación de la moto reveló un pedido de secuestro por hurto solicitado por la Comisaría Séptima. Ese dato requiere investigación propia y no acredita por sí mismo la autoría del hurto anterior. Los dos aprehendidos fueron trasladados a la Unidad Penal 44 y quedaron a disposición de la Fiscalía 14. No se informó una sentencia ni corresponde presentarlos como culpables. Robos MDP seguirá la evolución judicial y la restitución de los objetos sin divulgar datos personales innecesarios.",
+    "fuentes": [
+      {
+        "nombre": "QZ Noticias — reporte del procedimiento, 21/11/2026 18:56",
+        "url": "https://www.qznoticias.com/policiales/robaron-un-comercio-con-un-cuchillo-y-cayeron-tras-un-operativo-cerrojo"
+      },
+      {
+        "nombre": "0223 — asalto y operativo cerrojo, 21/11/2026 19:47",
+        "url": "https://www.0223.com.ar/nota/2026-11-21-19-47-0-robaron-un-comercio-a-punta-de-cuchillo-y-escaparon-en-una-moto-robada"
+      }
+    ]
+  },
+{
     "id": "interceptan-suran-pedido-secuestro-arrue-bolivar-20261121",
     "titulo": "Interceptaron una Suran buscada por robo automotor en Arrué y Bolívar: dos personas aprehendidas",
     "bajada": "La Policía detectó que el vehículo tenía un pedido de secuestro vigente desde el 18 de noviembre. Sus dos ocupantes fueron notificados de la causa y recuperaron la libertad.",
