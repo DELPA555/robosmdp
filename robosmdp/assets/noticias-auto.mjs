@@ -1340,5 +1340,30 @@ export const AUTOMATICAS = [
       "url": "https://www.0223.com.ar/nota/2024-4-7-10-5-0-robaron-en-una-escuela-dos-veces-en-una-semana"
     }
   ]
+},
+{
+  "id": "homicidio-investigado-santa-rosa-lima-pareja-detenida-20261122",
+  "titulo": "Investigan un homicidio en Santa Rosa de Lima: una mujer quedó detenida tras la muerte de su pareja",
+  "bajada": "Un hombre murió por heridas de arma blanca en el barrio Santa Rosa de Lima. La Fiscalía investiga las circunstancias y dispuso actuaciones contra su pareja, que será indagada.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-22T18:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "documentos",
+  "imagen": "",
+  "texto": "La muerte violenta de un hombre en el barrio Santa Rosa de Lima, en Mar del Plata, es investigada como homicidio. El episodio fue conocido públicamente este domingo 22 de noviembre y ocurrió en una vivienda de la zona de Almirante Brown al 10.500. Los primeros informes periodísticos coinciden en que la víctima presentaba cuatro heridas de arma blanca, una de ellas mortal en el tórax. La hora exacta del ataque no fue establecida en las coberturas consultadas.\n\nSegún información atribuida a fuentes judiciales, fue la pareja del hombre quien se comunicó con el servicio 911 y sostuvo inicialmente que él se había causado las lesiones. Los investigadores detectaron inconsistencias en esa versión y examinan indicios de una posible alteración de la escena. Se trata de elementos bajo investigación, no de conclusiones definitivas. Personal médico constató el fallecimiento y la Policía intervino en el lugar.\n\nLa Fiscalía de la UFI N.º 1, a cargo de María Florencia Salas, dispuso la detención de la mujer y el avance de la causa por homicidio. Las coberturas difieren en las edades de las personas involucradas, por lo que Robos MDP no reproduce esos datos hasta que puedan confirmarse. La indagatoria está prevista para el lunes 23 de noviembre, según la información disponible al cierre de esta publicación.\n\nLa detención no equivale a una condena. La investigación deberá determinar la secuencia de los hechos, evaluar las pericias y considerar la versión de la imputada y su defensa. No se publican datos de familiares, menores ni la dirección exacta de la vivienda. Esta nota será actualizada ante decisiones judiciales o rectificaciones documentadas.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas — investigación judicial y detención, 22/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/22/115647-un-hombre-fue-asesinado-de-cuatro-punaladas-y-aprehendieron-a-su-pareja"
+    },
+    {
+      "nombre": "La Capital — homicidio en Santa Rosa de Lima, 22/11/2026",
+      "url": "https://www.lacapitalmdp.com/una-mujer-mato-a-su-pareja-de-cuatro-punaladas/"
+    },
+    {
+      "nombre": "0223 — investigación por muerte con arma blanca, 22/11/2026",
+      "url": "https://www.0223.com.ar/nota/2026-11-22-16-47-0-discutian-bastante-seguido-encontraron-muerto-de-cuatro-punaladas-a-un-joven-y-detuvieron-a-su-pareja"
+    }
+  ]
 }
 ];
