@@ -3,7 +3,24 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
-  {
+    {
+    "id": "cinco-hechos-robo-hurto-juicio-rechazo-sobreseimiento-20261121",
+    "titulo": "Cinco hechos de robo y hurto irán a juicio tras el rechazo de un pedido de sobreseimiento",
+    "bajada": "La Cámara de Apelación y Garantías mantuvo el avance del proceso por cinco episodios investigados de marzo. La defensa alegó una intoxicación alcohólica que el tribunal consideró insuficientemente acreditada.",
+    "categoria": "justicia",
+    "fecha": "2026-11-21T22:11:00-03:00",
+    "autor": "Redacción Robos MDP",
+    "arte": "documentos",
+    "imagen": "",
+    "texto": "Una resolución judicial conocida este sábado 21 de noviembre confirmó que un hombre acusado por cinco episodios de robo y hurto ocurridos durante la madrugada del 19 de marzo de 2026 deberá afrontar un juicio, todavía sin fecha informada. La decisión fue atribuida a la Sala II de la Cámara de Apelación y Garantías. La resolución no implica una condena ni acredita definitivamente la autoría de los hechos.\n\nLa defensa oficial había solicitado el sobreseimiento al sostener que el acusado se encontraba bajo una intoxicación alcohólica de tal magnitud que no podía comprender la ilegalidad de sus actos o dirigir su conducta. Según la cobertura judicial difundida por 0223, la Cámara consideró que esa incapacidad no estaba suficientemente demostrada. Entre los elementos examinados figuraba un análisis de alcoholemia efectuado más de 24 horas después de los hechos, cuyo resultado no permitía reconstruir de manera concluyente el estado del imputado al momento de los episodios.\n\nLa acusación comprende dos robos, un hurto de vehículo estacionado en la vía pública, una tentativa de hurto y otro hurto simple, todos atribuidos en concurso material. Los episodios habrían sucedido en un sector relativamente acotado de Mar del Plata. El tribunal rechazó la pretensión de cerrar anticipadamente el proceso; será en el juicio donde se evalúen las pruebas y se determine la eventual responsabilidad penal. La información disponible proviene de una cobertura periodística de la resolución, sin acceso independiente al texto íntegro del fallo.",
+    "fuentes": [
+      {
+        "nombre": "0223 — resolución de Cámara sobre cinco robos y hurtos, 21/11/2026",
+        "url": "https://www.0223.com.ar/nota/2026-11-21-18-21-0-detenido-por-cinco-robos-dijo-que-estaba-borracho-ira-a-juicio"
+      }
+    ]
+  },
+{
     "id": "asalto-cuchillo-comercio-parque-luro-moto-recuperada-20261121",
     "titulo": "Asalto con cuchillo en Parque Luro: dos aprehendidos y una moto buscada por hurto",
     "bajada": "Un operativo cerrojo permitió recuperar pertenencias robadas en un comercio de Patagones al 700. Los dos investigados quedaron a disposición de la Fiscalía 14.",
