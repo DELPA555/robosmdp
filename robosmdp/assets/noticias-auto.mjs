@@ -1311,5 +1311,34 @@ export const AUTOMATICAS = [
         "url": "https://www.lanacion.com.ar/economia/negocios/arcor-cierra-la-planta-de-la-campagnola-en-mar-del-plata-nid19112026/"
       }
     ]
-  }
+  },
+{
+  "id": "vecinos-frustraron-robo-escuela-511-luro-20261122",
+  "titulo": "Vecinos frustraron un robo en la Escuela 511: recuperaron un instrumento y secuestraron una moto buscada",
+  "bajada": "Dos personas fueron sorprendidas cuando forzaban el ingreso a la escuela de avenida Luro al 9200. Una fue aprehendida, la otra escapó y la Policía recuperó un órgano musical.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-22T10:19:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "La intervención de vecinos permitió frustrar un robo en la Escuela N.º 511, ubicada sobre avenida Luro al 9200, en Mar del Plata. El episodio ocurrió durante la tarde del sábado 21 de noviembre y fue informado por distintos medios locales entre ese día y la mañana del domingo 22. Según los reportes del procedimiento, dos personas fueron sorprendidas mientras violentaban una puerta de acceso al establecimiento educativo.\n\nLos vecinos retuvieron a uno de los sospechosos, un joven de 18 años, hasta la llegada de los efectivos policiales. La otra persona escapó y su identificación continúa pendiente. En el operativo se recuperó un órgano musical Yamaha que había sido retirado de la escuela y se secuestró una motocicleta Honda Wave presuntamente utilizada por los involucrados. Al verificar el rodado, los agentes constataron que tenía un pedido de secuestro por robo vigente desde mayo de 2026.\n\nEl aprehendido fue trasladado a la Unidad Penal N.º 44 y quedó a disposición de la Fiscalía de Flagrancia. La aprehensión no constituye una condena, y la existencia de un pedido de secuestro de la motocicleta tampoco demuestra por sí sola quién cometió el robo original. No se informó que hubiera estudiantes presentes ni personas heridas. La recuperación del instrumento es un resultado concreto, pero quedan por esclarecer la participación del segundo sospechoso y el origen de la moto.\n\nEl establecimiento ya había sufrido robos denunciados en abril de 2024, antecedente que pone de relieve la necesidad de medidas sostenidas de protección del equipamiento escolar. Robos MDP seguirá la evolución de la investigación y las eventuales medidas de prevención, sin identificar a integrantes de la comunidad educativa ni difundir información personal innecesaria.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas — procedimiento en Escuela 511, 22/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/22/115605-vecinos-atraparon-a-un-joven-que-queria-robar-en-una-escuela"
+    },
+    {
+      "nombre": "QZ Noticias — intervención vecinal y secuestro, 21/11/2026",
+      "url": "https://www.qznoticias.com/policiales/sono-intento-robar-un-organo-de-una-escuela-pero-lo-sorprendieron-los-vecinos"
+    },
+    {
+      "nombre": "MardelNews — reporte del procedimiento, 21/11/2026",
+      "url": "https://mardelnews.com.ar/dos-jovenes-violentaron-una-escuela-para-robar-un-organo-uno-quedo-detenido/"
+    },
+    {
+      "nombre": "0223 — antecedentes de robos en la escuela, 07/04/2024",
+      "url": "https://www.0223.com.ar/nota/2024-4-7-10-5-0-robaron-en-una-escuela-dos-veces-en-una-semana"
+    }
+  ]
+}
 ];
