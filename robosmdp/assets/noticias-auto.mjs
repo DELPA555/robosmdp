@@ -3,6 +3,23 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
+  {
+  "id": "prision-preventiva-ataque-repartidora-acantilados-20261121",
+  "titulo": "Prisión preventiva para una acusada por el ataque a tiros contra una repartidora",
+  "bajada": "La Justicia de Garantías rechazó la excarcelación de una mujer investigada por un robo armado ocurrido en febrero. La resolución menciona el riesgo procesal tras varios meses sin ser localizada.",
+  "categoria": "justicia",
+  "fecha": "2026-11-21T23:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "documentos",
+  "imagen": "",
+  "texto": "Una resolución del Juzgado de Garantías N.º 6 de Mar del Plata dispuso que permanezca detenida una mujer imputada por la tentativa de robo agravado con arma de fuego contra una repartidora. La medida fue difundida el sábado 21 de noviembre y corresponde a una investigación por un ataque ocurrido el 7 de febrero de 2026, por lo que no debe confundirse la fecha de la resolución con la del hecho.\n\nDe acuerdo con la información judicial publicada, la víctima, una trabajadora de reparto de 36 años, fue abordada en las inmediaciones de las calles 445 y 46. Durante el episodio recibió un disparo en el pecho y le sustrajeron un teléfono. La investigación incluyó testimonios y registros de cámaras. Uno de los investigados fue detenido en marzo; la mujer imputada fue localizada varios meses después en la zona sur de Mar del Plata.\n\nLa defensa solicitó su libertad y cuestionó el mérito de la acusación. La jueza rechazó el planteo y convirtió la detención en prisión preventiva, al considerar que el período en que la imputada no pudo ser localizada representa un riesgo para la continuidad del proceso. La prisión preventiva es una medida cautelar, no una condena. Quedan pendientes las etapas judiciales posteriores y la eventual decisión definitiva sobre responsabilidad penal. Robos MDP no publica datos personales de la víctima ni domicilios particulares.",
+  "fuentes": [
+    {
+      "nombre": "0223 — Resolución de prisión preventiva por ataque a repartidora, 21/11/2026",
+      "url": "https://www.0223.com.ar/nota/2026-11-21-19-51-0-baleo-a-una-repartidora-y-estuvo-profuga-ocho-meses-le-dictaron-preventiva"
+    }
+  ]
+},
     {
     "id": "cinco-hechos-robo-hurto-juicio-rechazo-sobreseimiento-20261121",
     "titulo": "Cinco hechos de robo y hurto irán a juicio tras el rechazo de un pedido de sobreseimiento",
