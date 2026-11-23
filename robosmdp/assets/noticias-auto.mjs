@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "id": "moto-yamaha-recuperada-centro-dos-identificados-20261123",
+  "titulo": "Recuperaron una moto robada en el centro: dos personas fueron identificadas",
+  "bajada": "Un aviso ciudadano permitió localizar una Yamaha con el encendido violentado. La Policía identificó a dos personas y dio intervención a la Justicia juvenil.",
+  "categoria": "recuperados",
+  "fecha": "2026-11-23T15:12:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Un aviso de personas que observaron a dos individuos trasladando a tiro una motocicleta por la calle Arenales permitió activar un procedimiento de la comisaría segunda de Mar del Plata. La intervención, difundida este lunes 23 de noviembre, terminó con la recuperación de una Yamaha de gran cilindrada que, según la información policial, había sido sustraída minutos antes. No se informó la hora exacta del robo.\n\nDurante la búsqueda, los efectivos encontraron la motocicleta abandonada cerca de Tucumán y Garay. El tambor de encendido presentaba signos de violencia. Dos personas fueron identificadas posteriormente en distintos puntos del centro, una en Castelli y Buenos Aires y otra en Entre Ríos y Avellaneda. Un joven se presentó ante la Policía, reconoció el vehículo como propio y aportó documentación respaldatoria.\n\nIntervino la Fiscalía del Fuero de Responsabilidad Penal Juvenil N.º 3, que dispuso actuaciones por presunta tentativa de robo agravado de vehículo dejado en la vía pública y la notificación de formación de causa. Una de las personas identificadas es menor de edad y fue entregada a un adulto responsable; la otra recuperó la libertad conforme a las disposiciones procesales informadas. La identificación policial no constituye una declaración de culpabilidad. El caso destaca la importancia de alertar al 911 ante situaciones sospechosas sin exponerse ni intervenir por cuenta propia.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas — procedimiento policial y recuperación, 23/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/23/115722-recuperaron-una-moto-robada-e-identificaron-a-dos-personas"
+    }
+  ]
+},
+{
   "id": "muerte-investigada-jorge-newbery-presunto-robo-20261123",
   "titulo": "Muerte en Jorge Newbery: investigan un presunto robo y aún hay dudas sobre la secuencia",
   "bajada": "Un hombre de 43 años murió por una herida de arma blanca en una vivienda. La hipótesis inicial apunta a un intruso, pero los investigadores todavía no pudieron corroborar aspectos centrales del relato.",
