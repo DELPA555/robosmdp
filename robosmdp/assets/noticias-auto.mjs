@@ -1390,5 +1390,39 @@ export const AUTOMATICAS = [
       "url": "https://www.lacapitalmdp.com/recibio-cuatro-tiros-y-se-encuentra-en-grave-estado-buscan-al-atacante/"
     }
   ]
+},
+{
+  "id": "arma-secuestrada-napoles-heguilor-bis-20261123",
+  "titulo": "Intervención por una pelea terminó con un revólver secuestrado en Nápoles y Heguilor Bis",
+  "bajada": "La Policía aprehendió a un hombre y secuestró un arma calibre .22 y cinco municiones. La Fiscalía de Flagrancia investiga una presunta portación ilegal.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-23T09:10:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Un procedimiento policial iniciado por una pelea en la zona de Nápoles y Heguilor Bis terminó con un hombre aprehendido y el secuestro de un revólver calibre .22. La información fue publicada el lunes 23 de noviembre, aunque la intervención ocurrió alrededor de las 5 de la madrugada del domingo 22, según el reporte policial difundido. Es importante distinguir la fecha del procedimiento de la de su publicación.\n\nLos efectivos del Comando de Patrullas Sur observaron una confrontación entre varias personas. Según la versión policial, uno de los involucrados intentó retirarse en una motocicleta y entregó un arma a otro hombre, que la arrojó al suelo y escapó. Los agentes retuvieron al conductor y secuestraron el arma ante un testigo. El revólver tenía cuatro cartuchos y en la requisa preventiva se halló una quinta munición. La motocicleta no presentaba impedimentos legales informados.\n\nIntervino la Fiscalía de Flagrancia, que ordenó actuaciones por presunta portación ilegal de arma de fuego de uso civil. La aprehensión y el secuestro son medidas de investigación y no equivalen a una condena. No se informó que se hubieran efectuado disparos ni se identificaron víctimas de un ataque armado en este procedimiento. Robos MDP seguirá las medidas judiciales y la identificación de la persona que huyó, sin atribuirle responsabilidades que aún no estén acreditadas.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas — reporte policial publicado el 23/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/23/115683-un-hombre-fue-aprehendido-con-un-arma-y-municiones-en-su-poder"
+    }
+  ]
+},
+{
+  "id": "patrullero-danado-pelea-espana-tres-febrero-20261123",
+  "titulo": "Pelea en La Perla: investigan daños a un patrullero y dos personas fueron trasladadas",
+  "bajada": "La intervención comenzó por un llamado al 911 en la zona de España y 3 de Febrero. Una persona quedó imputada por daño agravado y otra recuperó la libertad.",
+  "categoria": "justicia",
+  "fecha": "2026-11-23T09:10:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Un llamado al 911 por una pelea en la zona de España, entre 3 de Febrero y 11 de Septiembre, derivó en un procedimiento del Comando de Patrullas Norte y el traslado de dos personas a la Comisaría Primera. La información policial se difundió el lunes 23 de noviembre; la hora exacta del incidente no fue precisada en la cobertura consultada.\n\nAl arribar, los agentes encontraron a dos personas en la calzada y una de ellas presentaba lesiones visibles. Testigos describieron una confrontación que habría comenzado en la vereda y continuado en la calle. Según la versión policial, durante el traslado se produjeron daños en el interior de un patrullero. La investigación deberá determinar la secuencia de los hechos y las responsabilidades individuales, incluidas las circunstancias de las lesiones denunciadas.\n\nLa Fiscalía de Flagrancia dispuso actuaciones por daño agravado respecto de una mujer de 26 años, trasladada a una unidad penitenciaria. El otro involucrado, un hombre de 36 años, fue notificado de presuntas infracciones contravencionales y recuperó la libertad bajo caución juratoria. Estas decisiones procesales no constituyen sentencias ni prueban por sí solas la responsabilidad de las personas investigadas. Robos MDP seguirá la evolución del expediente y cualquier versión adicional que permita aclarar el episodio.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas — procedimiento y decisiones judiciales, 23/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/23/115686-incidente-en-la-zona-de-la-perla-con-danos-a-un-patrullero-una-mujer-trans-quedo-imputada"
+    }
+  ]
 }
 ];
