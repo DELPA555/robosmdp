@@ -1365,5 +1365,30 @@ export const AUTOMATICAS = [
       "url": "https://www.0223.com.ar/nota/2026-11-22-16-47-0-discutian-bastante-seguido-encontraron-muerto-de-cuatro-punaladas-a-un-joven-y-detuvieron-a-su-pareja"
     }
   ]
+},
+{
+  "id": "ataque-cuatro-disparos-barrio-regional-20261122",
+  "titulo": "Investigan un ataque a tiros en el barrio Regional: un hombre llegó herido al HIGA",
+  "bajada": "La víctima recibió cuatro disparos durante la madrugada del domingo en San Lorenzo y República del Líbano. La Fiscalía investiga una tentativa de homicidio y busca establecer quién disparó.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-22T22:17:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "documentos",
+  "imagen": "",
+  "texto": "Un ataque con arma de fuego ocurrido durante la madrugada del domingo 22 de noviembre en el barrio Regional de Mar del Plata es investigado por la Justicia. Según la información coincidente difundida por distintos medios locales, un hombre de 31 años recibió cuatro impactos de bala alrededor de las 5.30, en inmediaciones de San Lorenzo y República del Líbano. No se informó públicamente una motivación comprobada del ataque ni la identidad del agresor.\n\nDespués de resultar herido, el hombre llegó por sus propios medios al Hospital Interzonal General de Agudos (HIGA), donde fue asistido. Los reportes coinciden en que presentaba lesiones en extremidades y en la zona genital, aunque difieren sobre la gravedad de su estado: una cobertura lo describió como grave y otra indicó que estaba fuera de peligro. Ante esa discrepancia, Robos MDP no da por confirmado ninguno de esos pronósticos y queda pendiente la información médica oficial.\n\nPersonal policial intervino a partir del aviso desde el hospital. De acuerdo con las fuentes consultadas, el paciente no aportó información que permitiera identificar a quien efectuó los disparos. La comisaría duodécima y personal de investigación trabajan bajo directivas de la fiscal Florencia Salas, en una causa informada como tentativa de homicidio agravado. Esa calificación es provisoria y no equivale a una sentencia.\n\nLa investigación deberá reconstruir la secuencia, identificar a la persona responsable y determinar las circunstancias del ataque. Esta publicación distingue el momento del hecho, ocurrido en la madrugada del domingo, de su difusión durante el mismo día. No se divulga la identidad del herido ni se especula sobre el móvil.",
+  "fuentes": [
+    {
+      "nombre": "0223 — ataque a tiros en barrio Regional, 22/11/2026",
+      "url": "https://www.0223.com.ar/nota/2026-11-22-11-31-0-le-pegaron-cuatro-tiros-en-los-brazos-y-en-el-pene-fue-por-sus-propios-medios-al-hospital"
+    },
+    {
+      "nombre": "Radio Brisas — cuatro disparos y asistencia en HIGA, 22/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/22/115650-le-dispararon-cuatro-veces-llego-al-higa-y-no-quiso-dar-detalles-del-ataque"
+    },
+    {
+      "nombre": "La Capital — investigación por tentativa de homicidio, 22/11/2026",
+      "url": "https://www.lacapitalmdp.com/recibio-cuatro-tiros-y-se-encuentra-en-grave-estado-buscan-al-atacante/"
+    }
+  ]
 }
 ];
