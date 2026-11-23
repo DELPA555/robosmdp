@@ -3,6 +3,23 @@
    Netlify publica el archivo al recibir cambios en main.
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
+{
+  "id": "robo-picaportes-el-martillo-siete-recuperados-20261123",
+  "titulo": "Robos de picaportes en El Martillo: secuestraron siete piezas y aprehendieron a un sospechoso",
+  "bajada": "Un aviso al 911 desencadenó un operativo en el barrio El Martillo. La Policía encontró herramientas y siete picaportes; la Fiscalía de Flagrancia intervino por robo.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-23T12:18:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Una denuncia vecinal por la sustracción de herrajes motivó un operativo policial en el barrio El Martillo de Mar del Plata. El procedimiento fue difundido el lunes 23 de noviembre a las 10:10, aunque la información consultada no precisa la hora exacta de los robos. La alerta al 911 se originó en la zona de Coronel Vidal y Puán, donde se informó sobre una persona que habría ingresado a una propiedad.\n\nCon la descripción aportada por un damnificado, personal del Comando de Patrullas Sur inició una búsqueda y localizó a un hombre de 34 años en las inmediaciones de Nápoles al 6900. Según el reporte policial publicado, llevaba una bolsa con siete picaportes de distintos colores y herramientas, entre ellas un martillo, destornilladores y una pinza. Los investigadores vincularon la sustracción de piezas con dos propiedades del sector, una en Génova al 7000 y otra en Coronel Vidal al 2200. Se omiten datos de identificación de los vecinos y domicilios particulares más precisos.\n\nLa Fiscalía de Flagrancia, a cargo de María Isabel Sánchez, dispuso la aprehensión, la notificación de la formación de causa por robo y el traslado del investigado a Tribunales para prestar declaración. La aprehensión y el secuestro de objetos son actuaciones de investigación: no equivalen a una condena. La causa deberá determinar el origen de cada elemento y la responsabilidad penal que corresponda. El episodio vuelve a poner en foco los robos de accesorios metálicos en viviendas y la utilidad de denunciar inmediatamente los faltantes.",
+  "fuentes": [
+    {
+      "nombre": "0223 — procedimiento policial en El Martillo, publicado 23/11/2026 10:10",
+      "url": "https://www.0223.com.ar/nota/2026-11-23-10-10-0-cayo-ladron-de-picaportes-en-el-barrio-el-martillo"
+    }
+  ]
+},
   {
   "id": "prision-preventiva-ataque-repartidora-acantilados-20261121",
   "titulo": "Prisión preventiva para una acusada por el ataque a tiros contra una repartidora",
