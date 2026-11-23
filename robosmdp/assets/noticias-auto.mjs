@@ -4,6 +4,40 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "id": "arrebato-cadena-bicicletas-las-heras-colon-20261123",
+  "titulo": "Arrebato en la zona de Colón y Las Heras: un adulto mayor cayó al intentar intervenir",
+  "bajada": "Dos personas en bicicleta le sustrajeron una cadena a una joven y escaparon. Un hombre mayor cayó cuando intentó impedir la huida; el episodio quedó registrado por cámaras.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-23T18:10:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Un arrebato ocurrido este lunes 23 de noviembre alrededor de las 13:15 en Las Heras, entre la avenida Colón y la avenida Patricio Peralta Ramos, volvió a poner en foco los robos cometidos por personas que circulan en bicicleta por zonas de tránsito peatonal. De acuerdo con una cobertura difundida a las 16:25 y basada en registros de cámaras, dos personas que avanzaban por la vereda se acercaron a una joven y una de ellas le arrancó una cadena del cuello.\n\nEn el lugar había un grupo de adultos mayores. Uno de los hombres intentó impedir que escapara el segundo involucrado, quien según el relato también procuró sustraer otra pertenencia. Durante el forcejeo el hombre perdió el equilibrio y cayó de espaldas cerca del escalón de un edificio. Otras personas lo asistieron y pudo levantarse. No hay un parte médico disponible que permita precisar si sufrió lesiones.\n\nLos dos involucrados huyeron en bicicleta y habrían quedado registrados en cámaras de la zona. Hasta el cierre de esta publicación no se pudo confirmar una identificación, detención o recuperación del collar. La secuencia muestra el riesgo adicional de intervenir físicamente ante un robo: ante una emergencia, se recomienda solicitar ayuda al 911, aportar datos de dirección y preservar imágenes sin ponerse en peligro. Robos MDP mantiene abierto el seguimiento de eventuales actuaciones policiales.",
+  "fuentes": [
+    {
+      "nombre": "0223 — registro y relato del arrebato, publicado 23/11/2026 a las 16:25",
+      "url": "https://www.0223.com.ar/nota/2026-11-23-16-25-0-bicichorros-le-robaron-a-una-joven-y-un-jubilado-quiso-frenarlos-pero-lo-tiraron-al-piso"
+    }
+  ]
+},
+{
+  "id": "encapuchados-techo-bernardino-rivadavia-reclamo-20261123",
+  "titulo": "Bernardino Rivadavia: cámaras registraron personas encapuchadas bajando de un techo",
+  "bajada": "Vecinos del sector de Cabildo y Teodoro Bronzini difundieron imágenes de madrugada y reclamaron patrullajes. No está acreditado que se haya concretado un robo.",
+  "categoria": "comunidad",
+  "fecha": "2026-11-23T18:10:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "Una cámara particular registró durante la madrugada de este lunes 23 de noviembre a varias personas con capuchas que descendían de un techo y corrían por la vereda en el barrio Bernardino Rivadavia. El registro corresponde aproximadamente a las 3:15 en el sector de Cabildo, entre Teodoro Bronzini y Tierra del Fuego, según la información publicada a las 13:49 por un medio local que recibió las imágenes.\n\nLa filmación permite describir el desplazamiento y la huida, pero por sí sola no prueba que esas personas hayan cometido un robo ni permite determinar qué hacían previamente en la propiedad. Tampoco se obtuvo confirmación de una denuncia penal, de daños, de objetos sustraídos o de detenciones vinculadas con el episodio. Por esa razón, Robos MDP presenta el hecho como un registro de movimientos sospechosos y un reclamo vecinal, no como un delito esclarecido.\n\nResidentes del barrio manifestaron preocupación por la inseguridad y pidieron más presencia policial y patrullajes preventivos. La situación merece una respuesta verificable sobre recorridas y atención de denuncias, sin atribuir responsabilidades penales a personas no identificadas. Quienes cuenten con registros originales pueden preservarlos y aportarlos a la autoridad competente; ante una situación en curso, corresponde comunicarse al 911 sin exponerse.",
+  "fuentes": [
+    {
+      "nombre": "0223 — registro de cámara y reclamo vecinal, publicado 23/11/2026 a las 13:49",
+      "url": "https://www.0223.com.ar/nota/2026-11-23-13-49-0-como-spiderman-encapuchados-bajaron-de-un-techo-y-escaparon-a-toda-velocidad"
+    }
+  ]
+},
+{
   "id": "moto-yamaha-recuperada-centro-dos-identificados-20261123",
   "titulo": "Recuperaron una moto robada en el centro: dos personas fueron identificadas",
   "bajada": "Un aviso ciudadano permitió localizar una Yamaha con el encendido violentado. La Policía identificó a dos personas y dio intervención a la Justicia juvenil.",
