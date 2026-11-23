@@ -4,6 +4,31 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "id": "muerte-investigada-jorge-newbery-presunto-robo-20261123",
+  "titulo": "Muerte en Jorge Newbery: investigan un presunto robo y aún hay dudas sobre la secuencia",
+  "bajada": "Un hombre de 43 años murió por una herida de arma blanca en una vivienda. La hipótesis inicial apunta a un intruso, pero los investigadores todavía no pudieron corroborar aspectos centrales del relato.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-23T14:12:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "La muerte de un hombre de 43 años durante la madrugada del lunes 23 de noviembre en el barrio Jorge Newbery abrió una investigación penal para determinar qué ocurrió dentro de una vivienda del sector de Bayley y Alberti. El fallecimiento por una lesión de arma blanca está informado por distintas coberturas locales. La explicación de un presunto asalto, en cambio, continúa bajo verificación judicial y no debe presentarse como una reconstrucción definitiva.\n\nSegún el relato inicial recogido por la Policía, un hombre de 69 años habría sorprendido a un desconocido dentro de la propiedad mientras descansaba. Su hijo intervino ante el supuesto forcejeo y recibió una herida mortal. También se informó la presunta sustracción de un teléfono celular. Sin embargo, fuentes judiciales señalaron que todavía no se pudo corroborar cómo habría escapado la tercera persona: los testimonios vecinales y las primeras observaciones del perímetro no confirmaron esa salida.\n\nIntervinieron efectivos de la comisaría duodécima, investigadores y Policía Científica, bajo la dirección de la fiscal Constanza Mandagarán. Se dispuso una autopsia y el análisis de cámaras y demás elementos para reconstruir el episodio. Existen diferencias entre las primeras crónicas sobre la ubicación precisa de la lesión; por eso, hasta contar con resultados periciales, Robos MDP evita afirmaciones categóricas sobre la mecánica del ataque. No hay una persona detenida ni una autoría establecida en las fuentes consultadas. La investigación continúa y la hipótesis de homicidio en ocasión de robo es provisoria.",
+  "fuentes": [
+    {
+      "nombre": "0223 — investigación inicial, 23/11/2026 09:49",
+      "url": "https://www.0223.com.ar/nota/2026-11-23-9-49-0-mataron-a-un-hombre-en-su-casa-e-investigan-si-fue-durante-un-intento-de-robo"
+    },
+    {
+      "nombre": "Radio Brisas — dudas judiciales sobre el relato, 23/11/2026",
+      "url": "https://www.infobrisas.com/noticias/2026/11/23/115704-investigan-la-muerte-de-un-hombre-de-43-anos-en-el-barrio-jorge-newbery-y-hay-dudas-sobre-como-ocurrio-el-episodio"
+    },
+    {
+      "nombre": "La Capital — primeras actuaciones, 23/11/2026",
+      "url": "https://www.lacapitalmdp.com/matan-a-un-hombre-que-salio-en-defensa-de-su-padre-durante-un-presunto-robo/"
+    }
+  ]
+},
+{
   "id": "robo-picaportes-el-martillo-siete-recuperados-20261123",
   "titulo": "Robos de picaportes en El Martillo: secuestraron siete piezas y aprehendieron a un sospechoso",
   "bajada": "Un aviso al 911 desencadenó un operativo en el barrio El Martillo. La Policía encontró herramientas y siete picaportes; la Fiscalía de Flagrancia intervino por robo.",
