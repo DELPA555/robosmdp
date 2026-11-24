@@ -1542,5 +1542,77 @@ export const AUTOMATICAS = [
       "url": "https://www.infobrisas.com/noticias/2026/11/23/115686-incidente-en-la-zona-de-la-perla-con-danos-a-un-patrullero-una-mujer-trans-quedo-imputada"
     }
   ]
+},
+{
+  "categoria": "seguridad",
+  "fecha": "2026-11-24T19:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "heladeria-los-pinares-tentativa-robo-20261124",
+  "titulo": "Los Pinares: un vecino alertó sobre un intento de robo en una heladería",
+  "bajada": "La Policía aprehendió a un hombre acusado de intentar sustraer equipamiento de refrigeración de un comercio de avenida Constitución.",
+  "texto": "Un comercio gastronómico de Los Pinares fue escenario de una intervención policial este martes 24 de noviembre. Dos medios locales, a partir de información policial, informaron que un vecino retuvo a un hombre sospechado de intentar llevarse equipamiento de refrigeración hasta la llegada de los agentes.\n\nLa Comisaría Séptima intervino y se iniciaron actuaciones por tentativa de robo agravado. El sospechoso fue trasladado a Batán, según la cobertura publicada a las 18:08. La calificación es provisoria y no equivale a una condena. No se informó una valoración económica del equipo ni se obtuvo la versión del investigado. Ante episodios similares se recomienda llamar al 911 y evitar confrontaciones.",
+  "fuentes": [
+    {
+      "nombre": "0223 — procedimiento policial",
+      "url": "https://www.0223.com.ar/nota/2026-11-24-18-8-0-robo-un-equipo-de-refrigeracion-de-una-heladeria-en-los-pinares"
+    },
+    {
+      "nombre": "Radio 10 — cobertura del hecho",
+      "url": "https://radio10mardelplata.com.ar/intento-robar-en-una-heladeria-de-avenida-constitucion-pero-un-vecino-lo-retuvo-hasta-que-llego-la-policia/"
+    }
+  ]
+},
+{
+  "categoria": "seguridad",
+  "fecha": "2026-11-24T19:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "robo-hamburgueseria-castelli-20261124",
+  "titulo": "Robo en una hamburguesería: recuperaron dinero y un teléfono",
+  "bajada": "Un procedimiento policial en el macrocentro terminó con un aprehendido y una causa penal tras la denuncia por daños y faltantes en un comercio.",
+  "texto": "Durante la madrugada del martes 24 de noviembre, un comercio gastronómico de la calle Castelli sufrió la rotura de su vidriera y la sustracción de pertenencias, según información policial difundida por Noticias Mar del Plata. El aviso al 911 motivó una búsqueda en la zona.\n\nLos agentes interceptaron a un sospechoso y recuperaron efectivo y un celular que el comerciante reconoció. También se aportaron grabaciones de seguridad. La Fiscalía de Flagrancia dispuso actuaciones por robo y la devolución de los elementos a su propietario. No se conoce una sentencia ni la versión del acusado. El episodio pone de relieve el impacto de los daños materiales sobre los comercios, más allá del valor de los bienes sustraídos.",
+  "fuentes": [
+    {
+      "nombre": "Noticias Mar del Plata — procedimiento y actuación fiscal",
+      "url": "https://noticiasmardelplata.com/rompio-el-vidrio-con-una-piedra-y-robo-en-una-reconocida-hamburgueseria/"
+    }
+  ]
+},
+{
+  "categoria": "seguridad",
+  "fecha": "2026-11-24T19:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "controles-motos-cinco-barrios-20261124",
+  "titulo": "Controles nocturnos de motos en cinco barrios de Mar del Plata",
+  "bajada": "La Patrulla Municipal y la Policía retiraron vehículos de circulación por infracciones de tránsito y documentación.",
+  "texto": "Un operativo nocturno de fiscalización abarcó Florencio Sánchez, Fortunato de la Plaza, El Martillo, Bosque Alegre y Las Heras, según información difundida este martes 24 de noviembre. Participaron agentes municipales y efectivos policiales.\n\nLos procedimientos detectaron incumplimientos relacionados con documentación, patentes y condiciones de circulación. No se informó el número total de vehículos secuestrados ni se acreditó que fueran robados. Para evaluar el alcance de estos controles será importante conocer las cifras de infracciones, su distribución territorial y la continuidad de los operativos.",
+  "fuentes": [
+    {
+      "nombre": "0223 — operativo de prevención",
+      "url": "https://www.0223.com.ar/nota/2026-11-24-13-16-0-chau-picadas-secuestraron-motos-por-falta-de-documentacion-y-patentes-en-cinco-barrios"
+    }
+  ]
+},
+{
+  "categoria": "seguridad",
+  "fecha": "2026-11-24T19:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "denuncia-robo-departamento-centro-20261124",
+  "titulo": "Denuncian el robo de ahorros y pertenencias en un departamento céntrico",
+  "bajada": "Los damnificados difundieron registros de cámaras de un episodio ocurrido el viernes 20 de noviembre en la zona de Gascón y Corrientes.",
+  "texto": "Una familia denunció la sustracción de dinero, dispositivos electrónicos y ropa de un departamento céntrico de Mar del Plata. El episodio habría ocurrido el viernes 20 de noviembre y fue difundido por 0223 el martes 24, junto con imágenes aportadas por los damnificados.\n\nLos registros muestran a dos personas dentro del edificio, según la cobertura. Las circunstancias del ingreso no están esclarecidas. No se pudo confirmar una detención, recuperación de bienes ni una resolución judicial. La información se presenta como denuncia de los afectados y no como una determinación de responsabilidades. Se recomienda conservar los registros originales y aportarlos a las autoridades.",
+  "fuentes": [
+    {
+      "nombre": "0223 — denuncia y registros de cámaras",
+      "url": "https://www.0223.com.ar/nota/2026-11-24-15-54-0-video-desvalijaron-un-departamento-del-centro-y-se-llevaron-una-playstation-una-notebook-y-prendas-costosas"
+    }
+  ]
 }
 ];
