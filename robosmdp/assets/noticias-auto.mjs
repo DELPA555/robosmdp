@@ -4,6 +4,31 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "id": "presunta-usurpacion-terreno-playa-serena-20261123",
+  "titulo": "Playa Serena: intervención policial ante un presunto intento de ocupación de un lote",
+  "bajada": "Dos personas fueron identificadas el lunes tras un procedimiento en el sur de Mar del Plata. Las fiscalías intervinientes dispusieron actuaciones y una citación.",
+  "categoria": "seguridad",
+  "fecha": "2026-11-24T00:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "texto": "La Policía intervino el lunes 23 de noviembre en el sector de las calles 445 y 24, en Playa Serena, ante una presunta ocupación de un terreno. Según los reportes periodísticos basados en información policial, dos personas habían instalado elementos para delimitar el predio y fueron trasladadas a una dependencia para su identificación.\n\nLas fiscalías 12 y 4 dispusieron actuaciones y la notificación para una primera audiencia. No se informó una orden de detención posterior ni una sentencia. La titularidad del terreno y las circunstancias de la presunta ocupación deberán esclarecerse en el expediente. No se dispone de la versión de las personas involucradas.\n\nEl caso fue difundido durante la tarde y noche del lunes. Ante conflictos por terrenos, corresponde acudir a las autoridades y evitar confrontaciones directas. Robos MDP seguirá las novedades judiciales.",
+  "fuentes": [
+    {
+      "nombre": "0223 — procedimiento del 23/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-23-19-10-0-pusieron-palos-y-cables-en-un-terreno-ajeno-los-aprehendieron"
+    },
+    {
+      "nombre": "Radio Brisas — intervención fiscal",
+      "url": "https://www.infobrisas.com/noticias/2026/11/23/115755-identificaron-a-dos-personas-que-usurparon-un-terreno-en-playa-serena"
+    },
+    {
+      "nombre": "El Marplatense — situación procesal",
+      "url": "https://www.elmarplatense.com/intentaron-ocupar-un-terreno-en-playa-serena-y-terminaron-identificados-por-la-policia"
+    }
+  ]
+},
+{
   "id": "arrebato-cadena-bicicletas-las-heras-colon-20261123",
   "titulo": "Arrebato en la zona de Colón y Las Heras: un adulto mayor cayó al intentar intervenir",
   "bajada": "Dos personas en bicicleta le sustrajeron una cadena a una joven y escaparon. Un hombre mayor cayó cuando intentó impedir la huida; el episodio quedó registrado por cámaras.",
