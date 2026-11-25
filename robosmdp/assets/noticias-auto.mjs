@@ -1614,5 +1614,43 @@ export const AUTOMATICAS = [
       "url": "https://www.0223.com.ar/nota/2026-11-24-15-54-0-video-desvalijaron-un-departamento-del-centro-y-se-llevaron-una-playstation-una-notebook-y-prendas-costosas"
     }
   ]
+},
+{
+  "fecha": "2026-11-24T21:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "recuperan-camara-venta-online-centro-20261124",
+  "titulo": "Reconoció su cámara sustraída en una publicación de venta y la Policía la recuperó",
+  "bajada": "La denuncia digital derivó en un procedimiento en el centro. Un hombre quedó imputado por presunto encubrimiento y recuperó la libertad.",
+  "categoria": "recuperados",
+  "texto": "Una cámara fotográfica denunciada como sustraída el 4 de noviembre en la zona de Colón y Catamarca fue secuestrada por la Policía este martes 24. Según la información policial difundida por 0223 a las 17:53, la víctima identificó el equipo en una oferta de venta por internet y realizó una denuncia digital.\n\nPersonal de la Comisaría Primera intervino cerca de Luro y Santiago del Estero. La fiscalía dispuso notificar al investigado de una causa por encubrimiento agravado por ánimo de lucro y posteriormente dejarlo en libertad. No se informó que se le atribuyera la sustracción original ni se confirmó la devolución del equipo a su dueño.\n\nAnte una oferta sospechosa, conviene conservar capturas y comprobantes de propiedad y acudir a la Policía, sin organizar encuentros por cuenta propia.",
+  "fuentes": [
+    {
+      "nombre": "0223 — procedimiento y disposición fiscal del 24/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-24-17-53-0-quiso-vender-una-camara-fotografica-robada-y-lo-descubrieron"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-24T21:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "amenazas-lesiones-vivienda-los-pinares-20261124",
+  "titulo": "Los Pinares: dos aprehendidos tras una denuncia por amenazas y agresión en una vivienda",
+  "bajada": "La Fiscalía de Flagrancia intervino después de un episodio denunciado por moradores del barrio. Una persona sufrió lesiones leves, según la Policía.",
+  "categoria": "seguridad",
+  "texto": "Un procedimiento policial en Los Pinares terminó este martes 24 de noviembre con dos personas aprehendidas. De acuerdo con la información policial reproducida por dos medios locales, los moradores de una vivienda denunciaron un ingreso no autorizado a su patio, amenazas y una agresión que dejó lesiones leves a una de las víctimas.\n\nLa Fiscalía de Flagrancia dispuso actuaciones por violación de domicilio, amenazas y lesiones leves, además del traslado de los investigados a dependencias penitenciarias de Batán. No se informó una sentencia ni se conoce la versión de los imputados. Tampoco se acreditó una sustracción de bienes, por lo que no corresponde presentar el episodio como una entradera consumada.\n\nLa cobertura de 0223 fue publicada a las 16:15. El caso queda bajo seguimiento judicial.",
+  "fuentes": [
+    {
+      "nombre": "0223 — información policial y fiscal",
+      "url": "https://www.0223.com.ar/nota/2026-11-24-16-15-0-se-metieron-en-una-casa-amenazaron-y-agredieron-a-los-duenos"
+    },
+    {
+      "nombre": "Radio 10 Mar del Plata — procedimiento",
+      "url": "https://radio10mardelplata.com.ar/dos-personas-fueron-aprehendidas-tras-ingresar-a-una-vivienda-y-amenazar-a-sus-moradores/"
+    }
+  ]
 }
 ];
