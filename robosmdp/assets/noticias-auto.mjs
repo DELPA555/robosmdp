@@ -4,6 +4,52 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-25T11:10:29-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "entradera-los-tilos-familia-detenido-20261125",
+  "titulo": "Los Tilos: una familia sufrió un asalto en su casa y hay un detenido",
+  "bajada": "El robo ocurrió el martes 24 de noviembre. Entre las víctimas había dos adultos mayores y la investigación quedó a cargo de la Fiscalía 13.",
+  "categoria": "seguridad",
+  "texto": "Una familia del barrio Los Tilos denunció un asalto domiciliario ocurrido el martes 24 de noviembre. Según las coberturas publicadas este miércoles, tres personas fueron reducidas y una de ellas sufrió golpes. Los bienes denunciados como sustraídos incluyen dinero, equipos electrónicos y un automóvil familiar.\n\nLa investigación policial derivó en la detención de un hombre de 44 años y el secuestro de otro vehículo que los investigadores vinculan preliminarmente con el episodio. Interviene la Fiscalía 13. No se ha acreditado una condena ni se conoce la versión del detenido.\n\nEl caso pone de relieve la vulnerabilidad de las personas mayores frente a la violencia domiciliaria. Queda pendiente confirmar la recuperación del automóvil familiar y la situación de los restantes involucrados. Ante una emergencia, se recomienda llamar al 911 y evitar confrontaciones.",
+  "fuentes": [
+    {
+      "nombre": "La Capital — cobertura del 25/11",
+      "url": "https://www.lacapitalmdp.com/dos-ladrones-asaltaron-a-una-familia-mientras-dormia-uno-fue-detenido-y-el-otro-logro-fugarse/"
+    },
+    {
+      "nombre": "0223 — denuncia y bienes sustraídos",
+      "url": "https://www.0223.com.ar/nota/2026-11-25-8-45-0-asaltaron-a-familia-cuando-dormia-ataron-y-golpearon-a-una-de-las-victimas"
+    },
+    {
+      "nombre": "Radio 10 — procedimiento y fiscalía",
+      "url": "https://radio10mardelplata.com.ar/detuvieron-a-un-hombre-de-44-anos-por-un-violento-asalto-a-una-familia-en-mar-del-plata/"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-25T11:10:29-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "jorge-newbery-homicidio-detencion-actualizacion-20261125",
+  "titulo": "Crimen en Jorge Newbery: la Justicia ordenó detener a un sospechoso",
+  "bajada": "Actualización del homicidio del lunes 23: la investigación incorporó registros de cámaras y testimonios que permitieron avanzar con una captura.",
+  "categoria": "justicia",
+  "texto": "La investigación por la muerte de un hombre de 43 años en Jorge Newbery registró un avance este miércoles 25 de noviembre. La Policía detuvo a un sospechoso en el marco de la causa dirigida por la fiscal Constanza Mandagarán, según dos coberturas locales.\n\nLos informes coinciden en que el análisis de imágenes y otros elementos de prueba permitió avanzar en la identificación. Radio Brisas informó que el Juzgado de Garantías avaló el pedido de captura. La hipótesis de un robo sigue siendo objeto de investigación; las versiones periodísticas difieren en algunos detalles del procedimiento, por lo que no corresponde establecerlos como definitivos.\n\nEsta nota actualiza la información publicada por Robos MDP el 23 de noviembre. La detención no equivale a una condena. No se dispone de la versión de la defensa ni de una resolución definitiva sobre el móvil.",
+  "fuentes": [
+    {
+      "nombre": "La Capital — avance de la investigación",
+      "url": "https://www.lacapitalmdp.com/detuvieron-al-ladron-que-asesino-a-un-hombre-en-el-barrio-jorge-newbery/"
+    },
+    {
+      "nombre": "Radio Brisas — orden de captura y evidencias",
+      "url": "https://www.infobrisas.com/noticias/2026/11/25/115953-detuvieron-al-sospechoso-de-asesinar-a-un-hombre-en-su-vivienda-del-barrio-jorge-newbery"
+    }
+  ]
+},
+{
   "id": "presunta-usurpacion-terreno-playa-serena-20261123",
   "titulo": "Playa Serena: intervención policial ante un presunto intento de ocupación de un lote",
   "bajada": "Dos personas fueron identificadas el lunes tras un procedimiento en el sur de Mar del Plata. Las fiscalías intervinientes dispusieron actuaciones y una citación.",
