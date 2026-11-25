@@ -4,6 +4,27 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-25T17:11:37-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "nueva-pompeya-inspector-transito-atropellado-20261125",
+  "titulo": "Nueva Pompeya: un inspector fue atropellado durante un control de tránsito",
+  "bajada": "El trabajador municipal está fuera de peligro. El taxi involucrado fue secuestrado tras un operativo de seguimiento.",
+  "categoria": "seguridad",
+  "texto": "Un procedimiento de fiscalización vehicular realizado este miércoles 25 de noviembre en Nueva Pompeya terminó con un trabajador municipal atropellado. Según dos coberturas locales, el conductor de un taxi habría eludido la inspección y el Centro de Operaciones y Monitoreo colaboró para localizar el automóvil.\n\nEl agente recibió asistencia sanitaria y se encuentra fuera de peligro. Las publicaciones difieren sobre si fue trasladado para una evaluación posterior. El vehículo quedó secuestrado y, según la información difundida, carecía de seguro obligatorio.\n\nLa federación de conductores de taxis expresó su rechazo a lo ocurrido y manifestó su apoyo al inspector. No se conoce la versión del conductor involucrado ni una resolución judicial sobre el episodio. El caso plantea la necesidad de garantizar condiciones seguras para los trabajadores que realizan controles en la vía pública.",
+  "fuentes": [
+    {
+      "nombre": "0223 — información oficial y comunicado gremial",
+      "url": "https://www.0223.com.ar/nota/2026-11-25-11-5-0-taxista-quiso-evadir-un-control-y-atropello-a-un-agente-de-transito"
+    },
+    {
+      "nombre": "El Marplatense — operativo y asistencia",
+      "url": "https://www.elmarplatense.com/escapo-de-un-control-de-transito-atropello-a-un-inspector-y-lo-arrastro-sobre-el-capo-de-su-taxi"
+    }
+  ]
+},
+{
   "fecha": "2026-11-25T13:15:00-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "ciudad",
