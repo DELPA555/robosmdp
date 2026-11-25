@@ -4,6 +4,31 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-25T13:15:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "parque-hermoso-homicidio-investigacion-20261125",
+  "titulo": "Parque Hermoso: investigan una agresión que terminó con la muerte de un vecino",
+  "bajada": "Un hombre de 62 años falleció en el Hospital Interzonal tras sufrir lesiones graves el martes. La Fiscalía investiga un posible conflicto familiar.",
+  "categoria": "justicia",
+  "texto": "La Justicia investiga la muerte de un vecino de Parque Hermoso que había sido trasladado de urgencia al Hospital Interzonal General de Agudos el martes 24 de noviembre. El hombre, de 62 años, sufrió una lesión grave en la cabeza y falleció durante la mañana del miércoles 25.\n\nLas coberturas locales ubican el episodio en el sector de avenida Mario Bravo y Heguilor. La fiscal Constanza Mandagarán dirige las actuaciones y se realizaron peritajes para esclarecer lo ocurrido. Una de las hipótesis apunta a un conflicto familiar, pero todavía no existe una determinación judicial definitiva de responsabilidades.\n\nRadio Brisas informó que el sospechoso no había sido localizado al momento de su publicación. No se conoce su versión. El caso queda bajo seguimiento de Robos MDP para informar eventuales novedades judiciales sin anticipar culpabilidades.",
+  "fuentes": [
+    {
+      "nombre": "La Capital — información del 25 de noviembre",
+      "url": "https://www.lacapitalmdp.com/matan-a-golpes-a-un-hombre-en-parque-hermoso/"
+    },
+    {
+      "nombre": "Radio Brisas — investigación y peritajes",
+      "url": "https://www.infobrisas.com/noticias/2026/11/25/115962-discusion-familiar-en-parque-hermoso-termino-con-un-muerto-por-un-golpe-en-la-cabeza-con-una-rama"
+    },
+    {
+      "nombre": "Noticias Mar del Plata — actuaciones judiciales",
+      "url": "https://noticiasmardelplata.com/pelea-familiar-termino-con-un-muerto-tras-recibir-un-palazo-en-la-cabeza/"
+    }
+  ]
+},
+{
   "fecha": "2026-11-25T11:10:29-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "ciudad",
