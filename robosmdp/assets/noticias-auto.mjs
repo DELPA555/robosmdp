@@ -4,6 +4,23 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-26T11:53:00-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "documentos",
+  "imagen": "",
+  "id": "fallo-laboral-periodo-prueba-jck-20261126",
+  "titulo": "Estaba en blanco, demandó a su empleador por casi $8 millones y la Justicia rechazó su reclamo con costas",
+  "bajada": "El Tribunal del Trabajo N.º 3 de Mar del Plata ratificó la validez del despido durante el período de prueba. Los honorarios regulados superan los $3,8 millones.",
+  "categoria": "justicia",
+  "texto": "El Tribunal del Trabajo N.º 3 de Mar del Plata rechazó por unanimidad una demanda contra JCK Tecnología de Consumo S.A. por $7.770.666,65, además de certificaciones laborales y comprobantes de aportes. La sentencia fue firmada el 24 de noviembre de 2026 y puesta a disposición electrónica el 26 de noviembre.\n\nLa extrabajadora había ingresado el 1 de agosto de 2024 como vendedora de jornada completa. La empresa comunicó su desvinculación el 9 de enero de 2025 invocando el período de prueba del artículo 92 bis de la Ley de Contrato de Trabajo. La demandante cuestionó la fecha de baja y el cumplimiento de las obligaciones previsionales, sosteniendo que correspondían indemnizaciones adicionales.\n\nEl Tribunal tuvo por acreditada la correcta registración laboral ante ARCA y consideró que no se probó la prestación de tareas fuera de registración. La pericia contable también acreditó una transferencia de $1.054.208 correspondiente a la liquidación final, realizada el 14 de enero de 2025. Los magistrados rechazaron los reclamos por indemnización por antigüedad y otros conceptos, así como los planteos de inconstitucionalidad, y dispusieron la entrega por Secretaría de la certificación de servicios incorporada al expediente.\n\nLos honorarios regulados ascienden a $3.809.723,12 antes de aportes e IVA: $650.440,53 para cada uno de los dos abogados de la demandante, $1.858.401,53 para el abogado de la empresa y $650.440,53 para la perito contadora. Las costas fueron impuestas a la demandante vencida, sin perjuicio del beneficio de gratuidad laboral expresamente preservado por el Tribunal. Esto no equivale a una obligación inmediata de desembolsar la totalidad de esos importes.\n\nEl fallo destaca la importancia de la registración, los recibos, las comunicaciones y los comprobantes de pago para ambas partes de una relación laboral. No contiene una declaración de fraude o mala fe de la trabajadora. No se ha acreditado que la sentencia esté firme. La fuente primaria es la copia de la sentencia del expediente 39.792 facilitada a la redacción; el portal judicial permite consultar expedientes conforme a sus condiciones de acceso.",
+  "fuentes": [
+    {
+      "nombre": "Tribunal del Trabajo N.º 3 de Mar del Plata — sentencia del expediente 39.792, copia documental facilitada a la redacción; portal de consulta judicial",
+      "url": "https://mev.scba.gov.ar/"
+    }
+  ]
+},
+{
   "fecha": "2026-11-26T01:14:35-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "ciudad",
