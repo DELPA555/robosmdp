@@ -4,6 +4,27 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-26T01:14:35-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "parque-pena-captura-causa-etchepare-20261126",
+  "titulo": "Parque Peña: una captura y dos aprehensiones en la investigación de las Torres Etchepare",
+  "bajada": "La DDI realizó un allanamiento el miércoles 25 de noviembre en el marco de una causa por presunta asociación ilícita.",
+  "categoria": "justicia",
+  "texto": "La investigación judicial sobre una presunta organización delictiva vinculada al complejo Etchepare tuvo un nuevo avance el miércoles 25 de noviembre. Un procedimiento de la DDI en Parque Peña terminó con la captura de un hombre buscado por la Justicia y la aprehensión de dos mujeres.\n\nLa medida fue solicitada por la fiscal Florencia Salas y autorizada por el Juzgado de Garantías N° 5, según la cobertura de 0223. Durante el allanamiento se incautaron sustancias identificadas como cocaína, teléfonos y municiones. La Capital también informó sobre la captura y los secuestros.\n\nSe prevé que las tres personas comparezcan ante la Justicia este jueves. La investigación continúa y no existe una condena por estos hechos. No se conoce la versión de las defensas. Robos MDP seguirá las decisiones judiciales que permitan precisar la situación procesal de cada persona.",
+  "fuentes": [
+    {
+      "nombre": "0223 — información fiscal y policial del 25/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-25-21-13-0-mas-droga-y-municiones-detienen-a-profugo-y-aprehenden-a-dos-familiares-de-la-reina"
+    },
+    {
+      "nombre": "La Capital — captura en Parque Peña",
+      "url": "https://www.lacapitalmdp.com/capturan-a-un-profugo-en-una-casa-de-parque-pena-tenia-municiones-y-cocaina/"
+    }
+  ]
+},
+{
   "fecha": "2026-11-25T17:11:37-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "ciudad",
