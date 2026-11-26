@@ -4,6 +4,56 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-26T14:15:16-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "acantilados-investigacion-vehiculos-chaleco-20261126",
+  "titulo": "Los Acantilados: allanaron un predio investigado por robos de vehículos",
+  "bajada": "La Policía incautó teléfonos y un chaleco con inscripción policial. La causa comenzó por un intento de robo del 29 de octubre.",
+  "categoria": "seguridad",
+  "texto": "Una investigación sobre delitos automotores derivó en un allanamiento en Los Acantilados, en el sector de las calles 515 y 487. El procedimiento fue difundido este jueves 26 de noviembre y está relacionado con un intento de robo registrado el 29 de octubre, tras el cual se recuperó una motocicleta buscada por la Policía.\n\nLos investigadores sospechan que el terreno estaba vinculado con el ocultamiento de vehículos sustraídos. Durante la medida judicial se incautaron cuatro teléfonos, un equipo de comunicación y un chaleco con identificación policial cuya numeración no era legible. Un joven de 21 años fue notificado por presunto encubrimiento agravado.\n\nIntervienen la fiscalía especializada en delitos contra la propiedad automotor y el Juzgado de Garantías N.º 2. El análisis de los elementos secuestrados continúa. No se informó una condena ni se acreditó la procedencia del chaleco; tampoco se conoce la versión del investigado.",
+  "fuentes": [
+    {
+      "nombre": "QZ Noticias, 26/11",
+      "url": "https://www.qznoticias.com/policiales/secuestraron-un-chaleco-antibalas-de-la-policia-en-un-aguantadero-de-autos-robados"
+    },
+    {
+      "nombre": "Radio 10, 26/11",
+      "url": "https://radio10mardelplata.com.ar/allanaron-un-predio-en-los-acantilados-por-una-investigacion-sobre-robos-de-vehiculos-secuestraron-un-chaleco-antibalas-con-inscripcion-policial-cuatro-celulares-y-equipos-de-comunicacion/"
+    },
+    {
+      "nombre": "Noticias Mar del Plata, 26/11",
+      "url": "https://noticiasmardelplata.com/allanaron-un-predio-utilizado-para-enfriar-vehiculos-y-secuestraron-elementos-policiales/"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-26T14:15:16-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "recupero-perra-dogo-investigacion-incendio-20261126",
+  "titulo": "Recuperaron una perra robada: estaba atada a un árbol en un descampado",
+  "bajada": "La Fiscalía ordenó devolver el animal a su dueño. La investigación incluye denuncias por incendio, amenazas y daños.",
+  "categoria": "recuperados",
+  "texto": "Una perra de raza dogo volvió a manos de su propietario después de que efectivos de la Comisaría Decimoquinta la localizaran en un terreno descampado de Mar del Plata. El hallazgo fue informado este jueves 26 de noviembre. Las fuentes consultadas no precisan el barrio ni el día exacto de la sustracción.\n\nLa búsqueda formaba parte de una causa más amplia iniciada por denuncias de un vecino que también informó daños en vehículos y un incendio en su vivienda. La Policía había efectuado cuatro allanamientos en octubre y secuestrado distintos elementos de interés para la investigación.\n\nLa fiscal Constanza Mandagarán, de la UFI N.º 4, dispuso la restitución del animal y la continuidad de las actuaciones. No se informó una resolución definitiva sobre las responsabilidades por los hechos denunciados. El recupero es un avance concreto, aunque la investigación sigue abierta.",
+  "fuentes": [
+    {
+      "nombre": "0223, 26/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-26-9-15-0-recuperaron-una-perra-dogo-robada-tras-un-incendio"
+    },
+    {
+      "nombre": "La Capital, 26/11",
+      "url": "https://www.lacapitalmdp.com/hallaron-atada-en-un-descampado-a-una-perra-que-habia-sido-robada-semanas-atras/"
+    },
+    {
+      "nombre": "Radio Brisas, 26/11",
+      "url": "https://www.infobrisas.com/noticias/2026/11/26/116082-recuperaron-una-perra-dogo-robada-tras-un-violento-conflicto"
+    }
+  ]
+},
+{
   "fecha": "2026-11-26T11:53:00-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "documentos",
