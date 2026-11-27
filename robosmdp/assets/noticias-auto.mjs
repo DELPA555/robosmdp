@@ -4,6 +4,69 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-27T19:16:31-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "punta-mogotes-entradera-cinco-aprehendidos-20261127",
+  "titulo": "Punta Mogotes: cinco aprehendidos tras un asalto violento a una vecina mayor",
+  "bajada": "Una alerta vecinal permitió la intervención policial y el recupero de dinero. La causa sigue bajo investigación.",
+  "categoria": "seguridad",
+  "texto": "Una mujer de 88 años sufrió un asalto en su vivienda de Punta Mogotes el jueves 26 de noviembre. Según los reportes periodísticos publicados el viernes, la víctima fue agredida y un vecino dio aviso al 911.\n\nLa intervención policial terminó con cinco personas aprehendidas y el recupero de $2.390.000, según Radio 10. La investigación también busca establecer la participación de otra persona. Las actuaciones incluyen intervención del fuero juvenil, sin que corresponda divulgar identidades protegidas.\n\nEl caso pone de relieve la importancia de alertar a emergencias ante situaciones de violencia, sin exponerse a confrontaciones. Las responsabilidades penales todavía deben determinarse judicialmente.",
+  "fuentes": [
+    {
+      "nombre": "Radio 10, 27/11",
+      "url": "https://radio10mardelplata.com.ar/mar-del-plata-cinco-hombres-fueron-detenidos-tras-una-violenta-entradera-a-una-mujer-de-88-anos/"
+    },
+    {
+      "nombre": "Las Noticias, 27/11",
+      "url": "https://lasnoticias.com.ar/cinco-detenidos-por-golpear-atar-y-robar-a-una-mujer-de-88-anos-en-mar-del-plata/"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-27T19:16:31-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "alfar-recupero-bienes-casa-veraneo-20261127",
+  "titulo": "Alfar: recuperaron muebles y electrodomésticos tras investigar un robo",
+  "bajada": "Tres personas quedaron detenidas en una causa por la sustracción de bienes de una vivienda de uso turístico.",
+  "categoria": "recuperados",
+  "texto": "Una denuncia por un robo ocurrido el 5 de noviembre en una casa de veraneo derivó en un procedimiento policial este viernes 27. La investigación incluyó el examen de registros de cámaras y consultas a vecinos del barrio Alfar.\n\nDurante el operativo se recuperaron bienes domésticos, entre ellos muebles y electrodomésticos. Tres hombres quedaron detenidos por disposición de la fiscalía interviniente. También se secuestró un vehículo de interés para la causa.\n\nEl recupero permite avanzar hacia la restitución de las pertenencias al propietario. La investigación judicial continúa y las detenciones no equivalen a una declaración de culpabilidad.",
+  "fuentes": [
+    {
+      "nombre": "0223, 27/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-27-17-17-0-detuvieron-a-tres-hombres-por-el-robo-en-una-casa-de-veraneo-recuperaron-muebles-y-electrodomesticos"
+    },
+    {
+      "nombre": "Radio 10, 27/11",
+      "url": "https://radio10mardelplata.com.ar/tres-hombres-fueron-detenidos-por-el-robo-a-una-vivienda-del-barrio-alfar-recuperaron-muebles-electrodomesticos-y-otros-bienes/"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-27T19:16:31-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "ruedas-auxilio-siete-secuestradas-20261127",
+  "titulo": "Robos de auxilios: siete ruedas secuestradas y una investigación abierta",
+  "bajada": "Dos allanamientos permitieron reunir elementos de prueba tras denuncias de propietarios de camionetas.",
+  "categoria": "seguridad",
+  "texto": "La Policía realizó dos allanamientos el jueves 26 de noviembre en Mar del Plata tras investigar sustracciones de ruedas de repuesto de vehículos estacionados. Entre los antecedentes figura una denuncia por un hecho del 7 de noviembre en la zona de Belgrano al 3900.\n\nLos procedimientos permitieron incautar siete ruedas completas, un vehículo y otros elementos de interés probatorio. Un hombre quedó aprehendido y a disposición de la fiscalía especializada en delitos contra la propiedad automotor.\n\nLa pesquisa deberá establecer la procedencia de los neumáticos y su posible relación con otras denuncias. No se informó una condena ni la restitución de todas las ruedas a sus propietarios.",
+  "fuentes": [
+    {
+      "nombre": "0223, 26/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-26-20-34-0-cayo-una-banda-que-robaba-ruedas-de-auxilio-en-mar-del-plata-secuestraron-neumaticos-y-herramientas"
+    },
+    {
+      "nombre": "Radio 10, 27/11",
+      "url": "https://radio10mardelplata.com.ar/dos-allanamientos-por-robos-de-ruedas-de-auxilio-y-un-hombre-detenido/"
+    }
+  ]
+},
+{
   "fecha": "2026-11-26T14:15:16-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "ciudad",
