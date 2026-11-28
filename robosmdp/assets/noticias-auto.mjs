@@ -4,6 +4,69 @@
    No modificar ARCHIVO en noticias-data.mjs al agregar notas diarias. */
 export const AUTOMATICAS = [
 {
+  "fecha": "2026-11-28T04:19:03-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "amenazas-choque-zona-norte-20261128",
+  "titulo": "Zona norte: un choque derivó en una causa por amenazas con arma de fuego",
+  "bajada": "Un hombre de 70 años denunció una intimidación tras un incidente vial. La Policía aprehendió a otro conductor.",
+  "categoria": "seguridad",
+  "texto": "Un incidente vial registrado el jueves 26 de noviembre en López de Gómara y López y Planes terminó con una intervención del Comando de Patrullas Norte. Un llamado al 911 movilizó a los efectivos, que aprehendieron a un joven de 25 años tras la denuncia de otro conductor.\n\nLa Policía incautó un arma de fuego y la remitió para peritajes. La Fiscalía de Flagrancia abrió una causa por amenazas agravadas y dispuso el traslado del imputado a la unidad penal de Batán. La información fue difundida entre el jueves y el viernes.\n\nNo se conoce la versión de la defensa ni una resolución definitiva. Ante una discusión vial violenta, resulta prioritario evitar la confrontación y solicitar asistencia.",
+  "fuentes": [
+    {
+      "nombre": "Qué Digital, 26/11",
+      "url": "https://quedigital.com.ar/policiales/discusion-de-transito-amenaza-con-arma-de-fuego-y-un-joven-detenido/"
+    },
+    {
+      "nombre": "0223, 26/11",
+      "url": "https://www.0223.com.ar/nota/2026-11-26-20-9-0-chocaron-y-la-pudrio-amenazo-con-un-arma-de-fuego-al-otro-conductor-y-termino-aprehendido"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-28T04:19:03-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "etchepare-quince-prisiones-preventivas-20261128",
+  "titulo": "Torres Etchepare: la Justicia ordenó mantener detenidos a quince imputados",
+  "bajada": "La fiscalía confirmó el avance procesal de la investigación y anticipó nuevos pedidos de prisión preventiva.",
+  "categoria": "justicia",
+  "texto": "La investigación sobre una presunta organización delictiva en el complejo Etchepare avanzó con una decisión del Juzgado de Garantías N.º 5, difundida el viernes 27 de noviembre. Según explicó la fiscal Florencia Salas a medios locales, prosperaron quince de los dieciséis pedidos de prisión preventiva presentados.\n\nLa causa comprende hipótesis de robos, amenazas, usurpaciones y comercialización de drogas. La fiscalía anticipó que solicitará medidas para otras tres personas detenidas en el procedimiento del miércoles en Parque Peña, informado anteriormente por este diario.\n\nLa decisión cautelar no constituye una sentencia condenatoria. Una de las personas señaladas como responsable de la estructura dio previamente una versión exculpatoria, según la cobertura periodística. La investigación continúa.",
+  "fuentes": [
+    {
+      "nombre": "Radio Brisas, declaraciones de la fiscal, 27/11",
+      "url": "https://www.infobrisas.com/noticias/2026/11/27/116247-un-submundo-dedicado-a-cometer-delitos-la-descripcion-de-la-fiscal-salas-sobre-las-torres-etchepare"
+    },
+    {
+      "nombre": "El Marplatense, 27/11",
+      "url": "https://www.elmarplatense.com/confirmaron-las-prisiones-preventivas-de-15-detenidos-por-la-causa-de-las-torres-de-etchepare"
+    }
+  ]
+},
+{
+  "fecha": "2026-11-28T04:19:03-03:00",
+  "autor": "Redacción Robos MDP",
+  "arte": "ciudad",
+  "imagen": "",
+  "id": "el-martillo-intento-robo-moto-kiosco-20261128",
+  "titulo": "El Martillo: un vecino sufrió un intento de robo de moto y salió ileso de un ataque a tiros",
+  "bajada": "El episodio ocurrió el miércoles cerca de un kiosco. La comerciante alertó al 911 y el hecho quedó registrado en cámaras.",
+  "categoria": "seguridad",
+  "texto": "Un vecino que realizaba una compra en un kiosco de Peralta Ramos y García Lorca sufrió un intento de robo de su motocicleta la noche del miércoles 25 de noviembre. La cobertura publicada el jueves por 0223 indica que seis personas participaron en el episodio y que hubo disparos durante un forcejeo.\n\nLa víctima no sufrió impactos de bala y los atacantes no consiguieron llevarse el vehículo. La comerciante dio aviso a emergencias y vecinos asistieron al hombre, según el relato de su hija difundido por ese medio. La Bristol también recogió el caso en su edición del viernes.\n\nNo se informó la identificación de los responsables. La recomendación ante un asalto armado es priorizar la integridad física y evitar resistencias que puedan agravar el riesgo.",
+  "fuentes": [
+    {
+      "nombre": "0223, 26/11, registro de cámaras y testimonio familiar",
+      "url": "https://www.0223.com.ar/nota/2026-11-26-18-53-0-te-estan-robando-fue-al-kiosco-y-lo-abordaron-seis-delincuentes-para-sacarle-la-moto"
+    },
+    {
+      "nombre": "La Bristol, edición del 27/11",
+      "url": "https://labristol.ar/tapa/"
+    }
+  ]
+},
+{
   "fecha": "2026-11-27T19:16:31-03:00",
   "autor": "Redacción Robos MDP",
   "arte": "ciudad",
